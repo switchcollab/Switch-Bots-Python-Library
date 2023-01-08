@@ -1,5 +1,4 @@
-aiostomp==1.7.3
-anyio==3.6.2
+vianyio==3.6.2
 async-timeout==4.0.2
 asyncio==3.4.3
 bleach==5.0.1
