@@ -1,17 +1,11 @@
-from websockets import connect
 import asyncio
 import logging
 import os
 from pathlib import Path
 import sys
-import time
-from switch.utils.asyncstomp import AsyncWsClient
-from dotenv import load_dotenv
+from websockets import connect
 
-dotenv_path = Path('../.env')
-load_dotenv(dotenv_path=dotenv_path)
-
-TOKEN = os.getenv('ACCESS_TOKEN') if os.getenv('ACCESS_TOKEN') else ""
+TOKEN = os.getenv("ACCESS_TOKEN") if os.getenv("ACCESS_TOKEN") else ""
 uri = "ws://51.158.56.0:8080/comm"
 logging.basicConfig(level=logging.DEBUG)
 
@@ -74,5 +68,5 @@ def main(args):
         logging.info("Successfully shutdown.")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main(sys.argv)

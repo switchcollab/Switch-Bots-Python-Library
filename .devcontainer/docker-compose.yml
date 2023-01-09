@@ -1,0 +1,9 @@
+version: '3.7'
+services:
+  switch_python_lib:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    volumes:
+      - ..:/workspace
+      - /workspace/src/venv
