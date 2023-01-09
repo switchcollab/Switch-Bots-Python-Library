@@ -14,7 +14,10 @@
 			"extensions": [
 				"GitHub.copilot",
 				"ms-azuretools.vscode-docker",
-				"rangav.vscode-thunder-client"
+				"rangav.vscode-thunder-client",
+				"ms-python.python",
+				"ms-python.vscode-pylance",
+				"ms-python.isort"
 			]
 		}
 	}
