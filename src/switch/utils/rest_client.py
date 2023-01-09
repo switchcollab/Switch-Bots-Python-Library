@@ -1,5 +1,4 @@
 # import the standard JSON parser
-from contextlib import AbstractAsyncContextManager
 import json
 import logging
 from typing import Optional, Tuple
@@ -11,7 +10,9 @@ from switch.utils.types import JSONDict
 
 _logger = logging.getLogger(__name__)
 
-DEFAULT_HEADERS = {"Content-Type": "application/json", "Accept": "application/json"}
+DEFAULT_HEADERS = {"Content-Type": "application/json",
+                   "Accept": "application/json"}
+
 
 class RestClient(
 ):
@@ -54,7 +55,8 @@ class RestClient(
             ) from exc
 
     def _build_client(self) -> httpx.AsyncClient:
-        return httpx.AsyncClient(**self._client_kwargs)  # type: ignore[arg-type]
+        # type: ignore[arg-type]
+        return httpx.AsyncClient(**self._client_kwargs)
 
     async def initialize(self) -> None:
         _logger.debug("Initializing HTTPXRequest")
@@ -68,45 +70,44 @@ class RestClient(
             return
         await self._client.aclose()
 
-    async def get(self, url: str, data: dict = None, headers: dict=None) -> Tuple[int, bytes]:
+    async def get(self, url: str, data: dict = None, headers: dict = None) -> Tuple[int, bytes]:
         """See :meth:`BaseRequest.get`."""
         return await self.do_request(url, "GET", data, headers)
 
-    async def post(self, url: str, data: dict = None, headers: dict=None) -> Tuple[int, bytes]:
+    async def post(self, url: str, data: dict = None, headers: dict = None) -> Tuple[int, bytes]:
         """See :meth:`BaseRequest.post`."""
         return await self.do_request(url, "POST", data, headers)
 
-    async def put(self, url: str, data: dict = None, headers: dict=None) -> Tuple[int, bytes]:
+    async def put(self, url: str, data: dict = None, headers: dict = None) -> Tuple[int, bytes]:
         """See :meth:`BaseRequest.put`."""
         return await self.do_request(url, "PUT", data, headers)
 
-    async def delete(self, url: str, data: dict = None, headers: dict=None) -> Tuple[int, bytes]:
+    async def delete(self, url: str, data: dict = None, headers: dict = None) -> Tuple[int, bytes]:
         """See :meth:`BaseRequest.delete`."""
         return await self.do_request(url, "DELETE", data, headers)
 
-    async def patch(self, url: str, data: dict = None, headers: dict=None) -> Tuple[int, bytes]:
+    async def patch(self, url: str, data: dict = None, headers: dict = None) -> Tuple[int, bytes]:
         """See :meth:`BaseRequest.patch`."""
         return await self.do_request(url, "PATCH", data, headers)
 
-    async def head(self, url: str, data: dict = None, headers: dict=None) -> Tuple[int, bytes]:
+    async def head(self, url: str, data: dict = None, headers: dict = None) -> Tuple[int, bytes]:
         """See :meth:`BaseRequest.head`."""
         return await self.do_request(url, "HEAD", data, headers)
 
-    async def options(self, url: str, data: dict = None, headers: dict=None) -> Tuple[int, bytes]:
+    async def options(self, url: str, data: dict = None, headers: dict = None) -> Tuple[int, bytes]:
         """See :meth:`BaseRequest.options`."""
         return await self.do_request(url, "OPTIONS", data, headers)
 
     def prepare_request_data(self, data: dict) -> dict:
         return {**data} if data else {}
-    
+
     def prepare_request_headers(self, headers: dict) -> dict:
         if headers is None:
-                headers = {}
-        reqHeaders= {**DEFAULT_HEADERS, **headers}
+            headers = {}
+        reqHeaders = {**DEFAULT_HEADERS, **headers}
         return reqHeaders
 
-    
-    async def do_request(self, url: str, method: str, data: dict = None, headers: dict=None) -> Tuple[int, bytes]:
+    async def do_request(self, url: str, method: str, data: dict = None, headers: dict = None) -> Tuple[int, bytes]:
         if self._client.is_closed:
             raise RuntimeError("This RestClient is not initialized!")
         try:
@@ -117,10 +118,8 @@ class RestClient(
             # HTTPError must come last as its the base httpx exception class
             # TODO p4: do something smart here; for now just raise NetworkError
             raise NetworkError(f"httpx HTTPError: {err}") from err
-       
+
         return response.status_code, response.content
-    
-   
 
     @staticmethod
     def parse_json_payload(payload: bytes) -> JSONDict:

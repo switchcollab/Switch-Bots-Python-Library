@@ -1,16 +1,17 @@
 import time
 from threading import Thread
 
-from .frame import Frame
+from switch.utils.ws.common import WsFrame
+from .ws_subscription import WsSubscription
 import websocket
 import logging
 
 VERSIONS = '1.1,1.0'
 
-#["CONNECT\nAuthorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjM1LCJpc19ib3QiOnRydWUsImFjdGl2ZSI6dHJ1ZSwiaWF0IjoxNjcyMzM3MDc3LCJleHAiOjE2NzM1NDY2Nzd9.vqLqQ0M5yQFkIWwDh9k38oIfh8TFItywWJoMoS3iYcY\naccept-version:1.1,1.0\nheart-beat:10000,10000\n\n\u0000"]
-class Client:
 
-    def __init__(self, url:str):
+class WsClient:
+
+    def __init__(self, url: str):
 
         self.url = url
         self.ws = websocket.WebSocketApp(self.url)
@@ -18,14 +19,13 @@ class Client:
         self.ws.on_message = self._on_message
         self.ws.on_error = self._on_error
         self.ws.on_close = self._on_close
-        
 
         self.opened = False
 
         self.connected = False
 
         self.counter = 0
-        self.subscriptions = {}
+        self.subscriptions: dict[str, WsSubscription] = {}
 
         self._connect_args = None
 
@@ -44,18 +44,16 @@ class Client:
             total_ms += 250
             if 0 < timeout < total_ms:
                 raise TimeoutError(f"Connection to {self.url} timed out")
-    
 
     def _do_heartbeat(self):
-       while self.connected:
+        while self.connected:
             time.sleep(5)
-            self._transmit("\n",{})
+            self._transmit("\n", {})
 
     def start_heartbeat(self):
-        self._heartbeat_thread = Thread(target = self._do_heartbeat)
+        self._heartbeat_thread = Thread(target=self._do_heartbeat)
         self._heartbeat_thread.daemon = True
         self._heartbeat_thread.start()
-        
 
     def _on_open(self, ws_app, *args):
         self.opened = True
@@ -70,13 +68,12 @@ class Client:
         logging.debug(error)
 
     def _on_message(self, ws_app, message, *args):
-        frame = Frame.unmarshall_single(message)
+        frame = WsFrame.unmarshall_single(message)
 
-        if frame.command!="PONG":
+        if frame.command != "PONG":
             logging.debug("\n<<< " + str(message))
         else:
-            logging.debug("\n<<< "+ frame.command)
-        
+            logging.debug("\n<<< " + frame.command)
 
         _results = []
         if frame.command == "CONNECTED":
@@ -90,15 +87,15 @@ class Client:
             subscription = frame.headers['subscription']
 
             if subscription in self.subscriptions:
-                onreceive = self.subscriptions[subscription]
+                sub = self.subscriptions[subscription]
                 messageID = frame.headers['message-id']
 
-                def ack(headers):
+                async def ack(headers):
                     if headers is None:
                         headers = {}
                     return self.ack(messageID, subscription, headers)
 
-                def nack(headers):
+                async def nack(headers):
                     if headers is None:
                         headers = {}
                     return self.nack(messageID, subscription, headers)
@@ -106,7 +103,7 @@ class Client:
                 frame.ack = ack
                 frame.nack = nack
 
-                _results.append(onreceive(frame))
+                _results.append(sub.receive(frame))
             else:
                 info = "Unhandled received MESSAGE: " + str(frame)
                 logging.debug(info)
@@ -126,23 +123,23 @@ class Client:
         return _results
 
     def _transmit(self, command, headers, body=None):
-        out =  l = Frame.marshall(command, headers, body)
+        out = l = WsFrame.marshall(command, headers, body)
         if command == "\n":
-            l="PING"
-            out=command
+            l = "PING"
+            out = command
         logging.debug("\n>>> " + l)
         self.ws.send(out)
 
     def connect(self, login=None, passcode=None, headers=None, connectCallback=None, errorCallback=None,
                 timeout=0, **kwargs):
 
-        self._connect_args=kwargs
+        self._connect_args = kwargs
 
         logging.debug("Opening web socket...")
         self._connect(timeout)
 
         headers = headers if headers is not None else {}
-        #headers['host'] = self.url
+        # headers['host'] = self.url
         headers['accept-version'] = VERSIONS
         headers['heart-beat'] = '10000,10000'
 
@@ -163,7 +160,7 @@ class Client:
         self._transmit("DISCONNECT", headers)
         self.ws.on_close = None
         self.ws.close()
-       
+
         if disconnectCallback is not None:
             disconnectCallback()
 
@@ -183,17 +180,19 @@ class Client:
         if headers is None:
             headers = {}
         if 'id' not in headers or headers['id'] is None or headers['id'] == "":
-            headers["id"] = "sub-" + str(self.counter)
+            id = "sub-" + str(self.counter)
             self.counter += 1
-        
-        headers['destination'] = destination
-        self.subscriptions[headers["id"]] = callback
-        self._transmit("SUBSCRIBE", headers)
+        else:
+            id = headers['id']
 
-        def unsubscribe():
-            self.unsubscribe(headers["id"])
+        sub = WsSubscription(client=self, destination=destination,
+                             callback=callback, headers=headers, id=id)
+        self._start_subscription(sub)
+        self.subscriptions[id] = sub
+        return sub
 
-        return headers["id"], unsubscribe
+    def _start_subscription(self, subscription: WsSubscription):
+        return subscription.start()
 
     def unsubscribe(self, id):
         del self.subscriptions[id]

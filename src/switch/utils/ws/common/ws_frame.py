@@ -1,4 +1,3 @@
-from urllib.parse import urlparse
 
 Byte = {
     'LF': '\x0A',
@@ -6,7 +5,7 @@ Byte = {
 }
 
 
-class Frame:
+class WsFrame:
 
     def __init__(self, command, headers, body):
         self.command = command
@@ -14,7 +13,7 @@ class Frame:
         self.body = body
 
     def __str__(self):
-        if self.command==Byte['LF']:
+        if self.command == Byte['LF']:
             return self.command
 
         lines = [self.command]
@@ -42,7 +41,7 @@ class Frame:
         command = lines[0].strip()
         if command == '':
             command = "PONG"
-            return Frame(command, {}, None)
+            return WsFrame(command, {}, None)
         headers = {}
 
         # get all headers
@@ -56,8 +55,8 @@ class Frame:
         # set body to None if there is no body
         body = None if lines[i + 1] == Byte['NULL'] else lines[i + 1][:-1]
 
-        return Frame(command, headers, body)
+        return WsFrame(command, headers, body)
 
     @staticmethod
     def marshall(command, headers, body):
-        return str(Frame(command, headers, body)) + Byte['NULL']
+        return str(WsFrame(command, headers, body)) + Byte['NULL']
