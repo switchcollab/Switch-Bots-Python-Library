@@ -1,6 +1,9 @@
 .vscode
 __pycache__
 .env
+.env*
+.private
+dist
 src/venv
 switch.egg-info
 build
