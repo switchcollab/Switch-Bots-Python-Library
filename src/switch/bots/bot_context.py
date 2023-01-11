@@ -1,11 +1,17 @@
 from typing import TYPE_CHECKING, Generic, TypeVar
 
+
 if TYPE_CHECKING:
-    from switch.bots.request import Request
+    from switch.bots.event import Event
+    from switch.bots.bot import Bot
+    from switch import SwitchApp
 
 
-ReqType= TypeVar('ReqType', bound= 'Request')
+EventType = TypeVar("EventType", bound="Event")
 
-class BotContext(Generic[ReqType]):
-    def __init__(self, request: ReqType):
-        self.request = request
+
+class BotContext(Generic[EventType]):
+    def __init__(self, bot: "Bot", event: EventType, app: "SwitchApp"):
+        self.event = event
+        self.bot = bot
+        self.app = app

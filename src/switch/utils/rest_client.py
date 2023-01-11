@@ -2,6 +2,7 @@
 import json
 import logging
 from typing import Optional, Tuple
+
 # import the REST library
 import httpx
 
@@ -10,12 +11,10 @@ from switch.utils.types import JSONDict
 
 _logger = logging.getLogger(__name__)
 
-DEFAULT_HEADERS = {"Content-Type": "application/json",
-                   "Accept": "application/json"}
+DEFAULT_HEADERS = {"Content-Type": "application/json", "Accept": "application/json"}
 
 
-class RestClient(
-):
+class RestClient:
     __slots__ = ("_client", "_client_kwargs")
 
     def __init__(
@@ -58,7 +57,7 @@ class RestClient(
         # type: ignore[arg-type]
         return httpx.AsyncClient(**self._client_kwargs)
 
-    async def initialize(self) -> None:
+    def initialize(self) -> None:
         _logger.debug("Initializing HTTPXRequest")
         if self._client.is_closed:
             self._client = self._build_client()
@@ -94,12 +93,15 @@ class RestClient(
         """See :meth:`BaseRequest.head`."""
         return await self.do_request(url, "HEAD", data, headers)
 
-    async def options(self, url: str, data: dict = None, headers: dict = None) -> Tuple[int, bytes]:
+    async def options(
+        self, url: str, data: dict = None, headers: dict = None
+    ) -> Tuple[int, bytes]:
         """See :meth:`BaseRequest.options`."""
         return await self.do_request(url, "OPTIONS", data, headers)
 
-    def prepare_request_data(self, data: dict) -> dict:
-        return {**data} if data else {}
+    def prepare_request_data(self, data: dict) -> str | None:
+        data = {**data} if data else {}
+        return data
 
     def prepare_request_headers(self, headers: dict) -> dict:
         if headers is None:
@@ -107,7 +109,9 @@ class RestClient(
         reqHeaders = {**DEFAULT_HEADERS, **headers}
         return reqHeaders
 
-    async def do_request(self, url: str, method: str, data: dict = None, headers: dict = None) -> Tuple[int, bytes]:
+    async def do_request(
+        self, url: str, method: str, data: dict = None, headers: dict = None
+    ) -> Tuple[int, bytes]:
         if self._client.is_closed:
             raise RuntimeError("This RestClient is not initialized!")
         try:

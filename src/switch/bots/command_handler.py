@@ -1,30 +1,41 @@
 import re
 from typing import TYPE_CHECKING, TypeVar
+from switch.bots.command_event import CommandEvent
+from switch.bots.constants import EventType, VALID_COMMAND_REGEX
 
 from switch.utils.types import SCT, HandlerCallback
 from switch.bots.base_handler import BaseHandler
 from switch.bots.bot_context import BotContext
-from switch.bots.request import Request
+from switch.bots.event import Event
 
 if TYPE_CHECKING:
     pass
 
 ResType = TypeVar("ResType")
 
+
 class CommandHandler(BaseHandler):
-    def __init__(self, command: SCT[str], callback: HandlerCallback[BotContext[Request],ResType], **kwargs):
+    def __init__(
+        self,
+        command: SCT[str],
+        callback: HandlerCallback[BotContext[CommandEvent], ResType],
+        **kwargs,
+    ):
         super().__init__(callback, **kwargs)
         if isinstance(command, str):
             commands = frozenset({command.lower()})
         else:
             commands = frozenset(x.lower() for x in command)
         for comm in commands:
-            if not re.match(r"^[\da-z_]{1,32}$", comm):
+            if not re.match(VALID_COMMAND_REGEX, comm):
                 raise ValueError(f"Command `{comm}` is not a valid bot command.")
         self.commands = commands
 
-    async def should_handle(self, context: BotContext[Request]) -> bool:
-        if context.request.message is None:
-            return False
-        return True
-    
+    async def should_handle(self, context: BotContext[CommandEvent]) -> bool:
+        if (
+            context.event.type == EventType.COMMAND
+            and context.event.message is not None
+            and context.event.command in self.commands
+        ):
+            return True
+        return False

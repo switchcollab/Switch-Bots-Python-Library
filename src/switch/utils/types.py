@@ -1,6 +1,13 @@
 from enum import Enum
-from typing import Any, Dict
+from typing import Any, Callable, Collection, Coroutine, Dict, TypeVar, Union
 
+CtxType = TypeVar("CtxType")
+ResType = TypeVar("ResType")
+HandlerCallback = Callable[[CtxType], Coroutine[Any, Any, ResType]]
+
+RT = TypeVar("RT")
+SCT = Union[RT, Collection[RT]]
+"""Single instance or collection of instances."""
 
 JSONDict = Dict[str, Any]
 

@@ -1,14 +1,15 @@
 from switch.api.auth.controllers import UserController
-from switch.utils import SwitchRestClient
+from switch.base import SwitchRestClient
+from switch.config import APP_CONFIG
 
-BASE_URL = 'http://51.159.11.53:9999/api'
 
 class AuthClient(SwitchRestClient):
-    def __init__(self):
-        super().__init__(BASE_URL)
+    def __init__(self, base_url: str = APP_CONFIG['AUTH_SERVICE']['BASE_URL']):
+        super().__init__(base_url)
         self._users = None
         self._authorization = None
     
+    @property
     def users(self) -> UserController:
         """Get the users controller"""
         if self._users is None:

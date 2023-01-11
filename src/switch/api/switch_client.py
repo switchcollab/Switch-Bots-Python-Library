@@ -1,6 +1,8 @@
 from switch.api.auth.auth_client import AuthClient
 from switch.api.auth.models.user import User
+from .community import CommunityClient
 from .chat import ChatClient
+from .auth import AuthClient
 
 class SwitchClient(object):
     def __init__(self, **kwargs):
@@ -9,12 +11,14 @@ class SwitchClient(object):
         self.__dict__.update(kwargs)
         self._chat_client:ChatClient = None
         self._auth_client:AuthClient = None
+        self._community_client:CommunityClient = None
         self._user:User = None
 
-    async def initialize(self):
+    def initialize(self):
         """Initialize the client"""
-        await self.chat.initialize()
-        await self.auth.initialize()
+        self.chat.initialize()
+        self.auth.initialize()
+        self.community.initialize()
     
     @property
     def user(self) -> User:
@@ -54,6 +58,14 @@ class SwitchClient(object):
         """Get the auth client"""
         if self._auth_client is None:
             self._auth_client = AuthClient()
+            self._auth_client.token = self.token
+        return self._auth_client
+    
+    @property
+    def community(self) -> CommunityClient:
+        """Get the auth client"""
+        if self._auth_client is None:
+            self._auth_client = CommunityClient()
             self._auth_client.token = self.token
         return self._auth_client
 
