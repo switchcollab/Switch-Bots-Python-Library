@@ -8,13 +8,18 @@ from switch import SwitchApp
 from switch.api.chat.models import InlineKeyboardButton, InlineMarkup
 from switch.bots import (
     BotContext,
+)
+from switch.bots.events import (
     CommandEvent,
     MessageEvent,
-    CommandHandler,
+    CallbackQueryEvent,
+)
+
+from switch.bots.handlers import (
     MessageHandler,
     UnknownCommandHandler,
     CallbackQueryHandler,
-    CallbackQueryEvent,
+    CommandHandler,
 )
 
 env_file = os.path.join(os.path.dirname(__file__), "..", "..", ".env")
@@ -76,12 +81,16 @@ async def query_callback_handler(ctx: BotContext[CallbackQueryEvent]):
 async def main():
     app = SwitchApp.builder().token(TOKEN).build()
 
-    app.add_handler(CommandHandler(command="echo", callback=echo_handler))
-    app.add_handler(CommandHandler(command="buttons", callback=buttons_handler))
-    app.add_handler(CallbackQueryHandler(callback=query_callback_handler))
-    app.add_handler(MessageHandler(callback=message_handler))
-    app.add_handler(UnknownCommandHandler(callback=unkown_command_handler))
-    await app.run()
+    try:
+        app.add_handler(CommandHandler(command="echo", callback=echo_handler))
+        app.add_handler(CommandHandler(command="buttons", callback=buttons_handler))
+        app.add_handler(CallbackQueryHandler(callback=query_callback_handler))
+        app.add_handler(MessageHandler(callback=message_handler))
+        app.add_handler(UnknownCommandHandler(callback=unkown_command_handler))
+
+        await app.start()
+    finally:
+        await app.__aexit__()
 
 
 if __name__ == "__main__":

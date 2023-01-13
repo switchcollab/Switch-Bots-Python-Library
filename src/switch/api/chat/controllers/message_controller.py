@@ -22,19 +22,19 @@ class MessageController:
             user_id = self.client.user.id
         _logger.debug("Getting messages for user %s", user_id)
         response = await self.client.get(f"{BASE_PATH}/{user_id}")
-        return Message.from_json_list(response.data)
+        return Message.build_from_json_list(response.data)
 
     async def send_message(self, message: Message) -> Message:
         data = message.to_json_request()
         _logger.debug("Sending message %s", json.dumps(data))
         response = await self.client.post(f"{BASE_PATH}/create", data=data)
-        return Message.from_json(response.data["message"])
+        return Message.build_from_json(response.data["message"])
 
     async def edit_message(self, message: Message) -> Message:
         data = message.to_json_request()
         _logger.debug("Editing message %s", json.dumps(data))
         response = await self.client.put(f"{BASE_PATH}?id={message.id}", data=data)
-        return Message.from_json(response.data["message"])
+        return Message.build_from_json(response.data["message"])
 
     async def delete_message(self, message: int | Message) -> bool:
         if isinstance(message, Message):

@@ -1,7 +1,7 @@
 import re
 from switch.api.chat.models import Message
 from switch.bots.constants import EventType, COMMAND_PARSER_REGEX
-from switch.bots.message_event import MessageEvent
+from switch.bots.events.message_event import MessageEvent
 
 
 class CommandEvent(MessageEvent):
@@ -9,7 +9,7 @@ class CommandEvent(MessageEvent):
 
     def __init__(self, message: Message):
         super().__init__(message=message)
-        self._type = EventType.COMMAND
+        self._type = EventType.CHAT_COMMAND
         self._command: str = None
         self._args: str = None
         self.parse_message()

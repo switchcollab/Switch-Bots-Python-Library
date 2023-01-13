@@ -3,11 +3,11 @@ from .event import Event
 from switch.api.chat.models import Message
 
 
-class MessageEvent(Event):
+class MemberJoinEvent(Event):
     """Event for when a message is received from a user."""
 
     def __init__(self, message: Message):
-        super().__init__(EventType.MESSAGE)
+        super().__init__(EventType.COMMUNITY_MEMBER_JOIN)
         self._message = message
         self.parse_message()
 

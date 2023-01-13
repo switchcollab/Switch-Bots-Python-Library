@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Generic, TypeVar
 
 
 if TYPE_CHECKING:
-    from switch.bots.event import Event
+    from switch.bots.events import Event
     from switch.bots.bot import Bot
     from switch import SwitchApp
 

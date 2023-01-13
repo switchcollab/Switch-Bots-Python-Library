@@ -24,6 +24,8 @@ class AsyncWsClient:
         self._connect_args = None
         self._connectCallback = None
         self.errorCallback = None
+        self._connectIntents = 0
+        self._connectInterval = 1
 
     async def _send_heartbeat(self):
         while True:
@@ -33,16 +35,17 @@ class AsyncWsClient:
     async def _start_heartbeat(self):
         await self._send_heartbeat()
 
-    def _on_open(self, ws_app, *args):
+    async def _on_open(self, ws_app, *args):
         self.opened = True
 
-    def _on_close(self, ws_app, *args):
+    async def _on_close(self, ws_app, *args):
         self.connected = False
-        logging.debug("Whoops! Lost connection to " + self.ws.url)
+        logging.debug("Whoops! Lost connection to " + self.url)
         self._clean_up()
-        self.connect(**self._connect_args)
+        await asyncio.sleep(self._connectInterval * self._connectIntents)
+        await self.connect(**self._connect_args)
 
-    def _on_error(self, ws_app, error, *args):
+    async def _on_error(self, ws_app, error, *args):
         logging.debug(error)
 
     async def _on_message(self, ws_app, message, *args):
@@ -164,9 +167,9 @@ class AsyncWsClient:
             async for message in self.ws:
                 await self._on_message(self.ws, message)
         except websockets.exceptions.ConnectionClosed:
-            self._on_close(self.ws)
+            await self._on_close(self.ws)
         except Exception as e:
-            self._on_error(self.ws, e)
+            await self._on_error(self.ws, e)
 
     async def disconnect(self, disconnectCallback=None, headers=None):
         headers = self._set_default_headers(headers)

@@ -24,10 +24,9 @@ class InlineKeyboardButton(SwitchObject):
             "callbackData": self.callback_data,
         }
 
-    @classmethod
-    def from_json(cls, data: JSONDict) -> "InlineKeyboardButton":
-        return cls(
-            text=data.get("text"),
-            url=data.get("url"),
-            callback_data=data.get("callbackData"),
-        )
+    def from_json(self, data: JSONDict) -> "InlineKeyboardButton":
+        if data is not None:
+            self.text = (data.get("text"),)
+            self.url = (data.get("url"),)
+            self.callback_data = (data.get("callbackData"),)
+        return self

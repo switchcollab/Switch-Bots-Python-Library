@@ -2,11 +2,13 @@ import enum
 
 
 class EventType(enum.Enum):
-    """Represents the type of a request."""
+    """Represents the type of a event."""
 
+    # Chat
     CHAT_MESSAGE = "CHAT_MESSAGE"
     CHAT_COMMAND = "CHAT_COMMAND"
     CHAT_CALLBACK_QUERY = "CHAT_CALLBACK_QUERY"
+    # Community
     COMMUNITY_CHANNEL_CREATE = "COMMUNITY_CHANNEL_CREATE"
     COMMUNITY_CHANNEL_UPDATE = "COMMUNITY_CHANNEL_UPDATE"
     COMMUNITY_CHANNEL_DELETE = "COMMUNITY_CHANNEL_DELETE"
@@ -18,7 +20,3 @@ class EventType(enum.Enum):
     COMMUNITY_MEMBER_JOIN = "COMMUNITY_MEMBER_JOIN"
     COMMUNITY_MEMBER_LEAVE = "COMMUNITY_MEMBER_LEAVE"
     COMMUNITY_UPDATE = "COMMUNITY_UPDATE"
-
-
-VALID_COMMAND_REGEX = r"^[\da-z0-9_]{1,32}$"
-COMMAND_PARSER_REGEX = r"^/([\da-zA-Z0-9_]{1,32})(?:\s+(.*))?$"

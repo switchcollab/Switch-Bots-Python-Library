@@ -1,12 +1,12 @@
 import re
 from typing import TYPE_CHECKING, TypeVar
 from switch.bots.constants import EventType
-from switch.bots.callback_query_event import CallbackQueryEvent
+from switch.bots.events.callback_query_event import CallbackQueryEvent
 
 from switch.utils.types import SCT, HandlerCallback
-from switch.bots.base_handler import BaseHandler
+from switch.bots.handlers.base_handler import BaseHandler
 from switch.bots.bot_context import BotContext
-from switch.bots.event import Event
+from switch.bots.events.event import Event
 
 if TYPE_CHECKING:
     pass

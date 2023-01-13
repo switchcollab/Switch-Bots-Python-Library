@@ -1,14 +1,14 @@
 from typing import TYPE_CHECKING
-from switch.api.auth.models.user import User
+from switch.api.auth.models.auth_user import AuthUser
 from switch.api.chat.models import Message
 
 if TYPE_CHECKING:
     from switch import SwitchApp
 
 
-class Bot(User):
-    def __init__(self, user_name: str, id=None, **kwargs):
-        super().__init__(user_name, id, **kwargs)
+class Bot(AuthUser):
+    def __init__(self):
+        super().__init__()
         self._me = None
         self._info = None
         self._app: "SwitchApp" = None

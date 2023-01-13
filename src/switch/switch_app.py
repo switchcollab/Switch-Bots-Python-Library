@@ -1,19 +1,27 @@
 import asyncio
+from contextlib import AbstractContextManager
+import functools
 import json
 import logging
 import re
+import signal
 from typing import Collection
+from switch.api.community.events.community_event import CommunityEvent
 from switch.api.switch_client import SwitchClient
-from switch.bots import BaseHandler, BotContext, Event, Bot, CommandEvent, MessageEvent
+from switch.bots import BotContext, Bot
+from switch.bots.events import CommandEvent, MessageEvent
+from switch.bots.handlers import (
+    BaseHandler,
+)
 from switch.error import SwitchError
 from switch.utils.ws.common.ws_message import WsMessage
 from switch.api.chat.models import Message
-from switch.bots.constants import EventType, COMMAND_PARSER_REGEX
+from switch.bots.constants import COMMAND_PARSER_REGEX
 
 logger = logging.getLogger(f"{__name__}")
 
 
-class SwitchApp:
+class SwitchApp(AbstractContextManager):
     def __init__(self, loop: asyncio.AbstractEventLoop = None):
         self._switch_client: SwitchClient = None
         self._loop = loop or asyncio.get_event_loop()
@@ -85,7 +93,7 @@ class SwitchApp:
         if raw_message.body is not None and raw_message.body != "":
             json_data = json.loads(raw_message.body)
             if "message" in json_data and "type" in json_data and json_data["type"] == "Message":
-                message = Message.from_json(json_data["message"]["msg"])
+                message = Message.build_from_json(json_data["message"]["msg"])
                 if (
                     message.user_id == self.bot.id
                 ):  # ignore messages from self to avoid infinite loop
@@ -98,14 +106,27 @@ class SwitchApp:
         if evt is not None:
             await self.process_event(self._build_context(evt))
 
-    async def run(self):
+    async def on_community_event(self, evt: CommunityEvent):
+        if evt is not None and isinstance(evt, Event):
+            await self.process_event(self._build_context(evt))
+
+    async def on_chat_event(self, evt: Event):
+        if evt is not None:
+            await self.process_event(self._build_context(evt))
+
+    async def start(self):
         try:
+
             if self._running:
                 raise SwitchError("App is already running")
             self._running = True
             """Starts the app"""
             await self._validate_run()
-            self._loop.create_task(self.api.chat.run(on_message=self.on_chat_message))
+            await (self.api.chat.start())
+            await (self.api.community.start())
+
+            await self.api.community.subscribeToNotifications(callback=self.on_community_event)
+            await self.api.chat.subscribeToNotifications(callback=self.on_chat_event)
 
             # on app start hook
             for handler in self.handlers:
@@ -119,21 +140,38 @@ class SwitchApp:
         except asyncio.CancelledError:
             self._running = False
             # await self._do_stop()
-            print("Tasks has been canceled")
 
     async def _do_stop(self):
+        logger.info("stopping app...")
         # on app stop hook
         for handler in self.handlers:
             await handler.on_app_stop(self)
 
         # await self.bot.on_app_stop(self)
         self._running = False
-        self._loop.stop()
 
     async def stop(self):
         if not self._running:
             return
         await self._do_stop()
+
+    def __enter__(self):
+        return self.start()
+
+    def __exit__(self, *args):
+        try:
+            self.stop()
+        except ConnectionError:
+            pass
+
+    async def __aenter__(self):
+        return await self.start()
+
+    async def __aexit__(self, *args):
+        try:
+            await self.stop()
+        except ConnectionError:
+            pass
 
     @staticmethod
     def builder() -> "SwitchAppBuilder":

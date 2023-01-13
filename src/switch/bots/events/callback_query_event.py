@@ -1,7 +1,11 @@
 import re
+
+import switch
+
 from switch.api.chat.models import Message
 from switch.bots.constants import EventType
-from switch.bots.message_event import MessageEvent
+
+from ..events.message_event import MessageEvent
 
 
 class CallbackQueryEvent(MessageEvent):
@@ -9,7 +13,7 @@ class CallbackQueryEvent(MessageEvent):
 
     def __init__(self, message: Message):
         super().__init__(message=message)
-        self._type = EventType.CALLBACK_QUERY
+        self._type = EventType.CHAT_CALLBACK_QUERY
         self._callback_data: str = None
         self.parse_message()
 

@@ -33,13 +33,13 @@ class InlineMarkup(SwitchObject):
             "inlineKeyboard": [[x.to_json() for x in row] for row in self._inline_keyboard],
         }
 
-    @classmethod
-    def from_json(cls, data: JSONDict) -> "InlineMarkup":
+    def from_json(self, data: JSONDict) -> "InlineMarkup":
         if data is None or data.get("inlineKeyboard") is None:
             return None
-        return cls(
-            inline_keyboard=[
-                [InlineKeyboardButton.from_json(x) for x in row]
+        self.inline_keyboard = (
+            [
+                [InlineKeyboardButton.build_from_json(x) for x in row]
                 for row in data.get("inlineKeyboard") or []
             ],
         )
+        return self
