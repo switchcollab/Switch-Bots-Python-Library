@@ -13,7 +13,7 @@ def reload_config():
         "CHAT_SERVICE": {
             "BASE_URL": os.getenv("CHAT_SERVICE_BASE_URL") or "http://51.159.11.53:9999",
             "WS_URL": os.getenv("CHAT_SERVICE_WS_URL")
-            or "ws://51.158.56.0:8080/v1/websocket/message",
+            or "ws://51.159.11.53:9999/v1/websocket/message/ws",
         },
         "BOT_SERVICE": {
             "BASE_URL": os.getenv("BOT_SERVICE_BASE_URL") or "http://51.159.11.53:9999",
@@ -24,7 +24,7 @@ def reload_config():
         "COMMUNITY_SERVICE": {
             "BASE_URL": os.getenv("COMMUNITY_SERVICE_BASE_URL") or "http://51.159.11.53:9999",
             "WS_URL": os.getenv("COMMUNITY_SERVICE_WS_URL")
-            or "ws://51.159.11.53:9999/v1/websocket/community",
+            or "ws://51.159.11.53:9999/v1/websocket/community/ws",
         },
     }
 
