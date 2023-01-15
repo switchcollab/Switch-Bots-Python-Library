@@ -22,7 +22,7 @@ class BaseHandler(Generic[CtxType, ResType], ABC):
         pass
 
     async def should_handle(self, context: CtxType) -> bool:
-        return True
+        return False
 
     async def handle(
         self,

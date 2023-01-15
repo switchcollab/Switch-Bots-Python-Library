@@ -5,8 +5,6 @@ from switch.utils.types import JSONDict
 
 
 class InlineKeyboardButton(SwitchObject):
-    __slots__ = ("text", "url", "callback_data")
-
     def __init__(
         self,
         text: str,

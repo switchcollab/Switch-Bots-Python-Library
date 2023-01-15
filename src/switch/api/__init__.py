@@ -3,5 +3,6 @@ from . import chat
 from . import auth
 from . import community
 from . import common
+from . import bot
 
-__all__ = ["chat", "auth", "community", "common", "SwitchClient"]
+__all__ = ["chat", "auth", "community", "common", "SwitchClient", "bot"]

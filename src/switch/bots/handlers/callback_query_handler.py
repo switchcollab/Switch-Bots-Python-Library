@@ -1,12 +1,11 @@
 import re
 from typing import TYPE_CHECKING, TypeVar
-from switch.bots.constants import EventType
-from switch.bots.events.callback_query_event import CallbackQueryEvent
+from switch.api.chat.events import CallbackQueryEvent
+from switch.types import EventType
 
 from switch.utils.types import SCT, HandlerCallback
-from switch.bots.handlers.base_handler import BaseHandler
+from switch.bots.handlers.event_handler import EventHandler
 from switch.bots.bot_context import BotContext
-from switch.bots.events.event import Event
 
 if TYPE_CHECKING:
     pass
@@ -14,13 +13,15 @@ if TYPE_CHECKING:
 ResType = TypeVar("ResType")
 
 
-class CallbackQueryHandler(BaseHandler):
+class CallbackQueryHandler(EventHandler):
     def __init__(
         self, callback: HandlerCallback[BotContext[CallbackQueryEvent], ResType], **kwargs
     ):
-        super().__init__(callback, **kwargs)
+        super().__init__(EventType.CALLBACK_QUERY, callback, **kwargs)
 
     async def should_handle(self, context: BotContext[CallbackQueryEvent]) -> bool:
-        if context.event.type == EventType.CALLBACK_QUERY and context.event.message is not None:
-            return True
-        return False
+        return (
+            await super().should_handle(context)
+            and context.event.callback_query is not None
+            and context.event.message is not None
+        )

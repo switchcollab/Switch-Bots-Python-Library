@@ -8,8 +8,6 @@ if TYPE_CHECKING:
 
 
 class InlineMarkup(SwitchObject):
-    __slots__ = ("_inline_keyboard",)
-
     def __init__(
         self,
         inline_keyboard: List[List["InlineKeyboardButton"]] = None,

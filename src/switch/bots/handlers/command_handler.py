@@ -1,11 +1,12 @@
 import re
 from typing import TYPE_CHECKING, TypeVar
-from switch.bots.constants import EventType, VALID_COMMAND_REGEX
+from switch.bots.constants import VALID_COMMAND_REGEX
+from switch.types import EventType
 
 from switch.utils.types import SCT, HandlerCallback
-from switch.bots.handlers.base_handler import BaseHandler
+from switch.bots.handlers.event_handler import EventHandler
 from switch.bots.bot_context import BotContext
-from switch.bots.events.command_event import CommandEvent
+from switch.api.chat.events import CommandEvent
 
 if TYPE_CHECKING:
     pass
@@ -13,14 +14,14 @@ if TYPE_CHECKING:
 ResType = TypeVar("ResType")
 
 
-class CommandHandler(BaseHandler):
+class CommandHandler(EventHandler):
     def __init__(
         self,
         command: SCT[str],
         callback: HandlerCallback[BotContext[CommandEvent], ResType],
         **kwargs,
     ):
-        super().__init__(callback, **kwargs)
+        super().__init__(EventType.COMMAND, callback, **kwargs)
         if isinstance(command, str):
             commands = frozenset({command.lower()})
         else:
@@ -31,11 +32,10 @@ class CommandHandler(BaseHandler):
         self.commands = commands
 
     async def should_handle(self, context: BotContext[CommandEvent]) -> bool:
-        if (
-            context.event.type == EventType.COMMAND
-            and context.event.message is not None
+        return (
+            await super().should_handle(context)
+            and context.event.command is not None
             and context.event.command in self.commands
             and context.event.message.user_id != context.bot.id
-        ):
-            return True
-        return False
+            and context.event.message is not None
+        )

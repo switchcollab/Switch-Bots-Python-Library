@@ -13,7 +13,7 @@ class User(SwitchObject):
         "deleted",
         "role_info",
         "admin",
-        "bot",
+        "is_bot",
     )
 
     def __init__(
@@ -26,7 +26,7 @@ class User(SwitchObject):
         deleted: Optional[bool] = None,
         role_info: Optional[str] = None,
         admin: Optional[bool] = None,
-        bot: Optional[bool] = None,
+        is_bot: Optional[bool] = None,
     ):
         self.id = id
         self.name = name
@@ -36,7 +36,7 @@ class User(SwitchObject):
         self.deleted = deleted
         self.role_info = role_info
         self.admin = admin
-        self.bot = bot
+        self.is_bot = is_bot
 
     def to_json(self) -> JSONDict:
         return {
@@ -48,7 +48,7 @@ class User(SwitchObject):
             "deleted": self.deleted,
             "roleInfo": self.role_info,
             "admin": self.admin,
-            "bot": self.bot,
+            "is_bot": self.is_bot,
         }
 
     def from_json(self, data: Optional[JSONDict] = None) -> "User":
@@ -61,5 +61,5 @@ class User(SwitchObject):
             self.deleted = data.get("deleted")
             self.role_info = data.get("roleInfo")
             self.admin = data.get("admin")
-            self.bot = data.get("bot")
+            self.is_bot = data.get("is_bot")
         return self

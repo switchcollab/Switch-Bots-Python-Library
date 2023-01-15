@@ -9,21 +9,21 @@ class Event(SwitchObject):
 
     def __init__(
         self,
-        event_type: Optional[EventType] = None,
+        type: Optional[EventType] = None,
         data: Optional[dict] = None,
     ):
-        self.event_type = event_type
+        self.type = type
         self.data = data
 
     def from_json(self, data: JSONDict) -> "Event":
         if data is not None:
             details = data.get("details") or {}
-            self.event_type = EventType(data.get("type"))
+            self.type = EventType(data.get("type"))
             self.data = details
         return self
 
     def to_json(self) -> JSONDict:
         return {
-            "type": self.event_type,
+            "type": self.type,
             "details": self.data,
         }

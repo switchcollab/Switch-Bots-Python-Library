@@ -1,2 +1,0 @@
-class EventHandler(BaseHandler):
-    pass

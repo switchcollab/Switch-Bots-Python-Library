@@ -4,29 +4,32 @@ from switch.api.community.models.channel import Channel
 from switch.api.community.models.community import Community
 from switch.api.community.models.group import Group
 from switch.api.common.models.user import User
+from switch.api.chat.models.message import Message
 from switch.types import EventType
 from switch.utils.types import JSONDict
 
 
 class ChatEvent(Event):
-    __slots__ = (
-        "event_type",
-        "community_id",
-        "community",
-        "group_id",
-        "group",
-        "channel_id",
-        "channel",
-        "action_by_id",
-        "action_by",
-        "data",
-        "user_id",
-        "user",
-    )
+    # __slots__ = (
+    #     "event_type",
+    #     "community_id",
+    #     "community",
+    #     "group_id",
+    #     "group",
+    #     "channel_id",
+    #     "channel",
+    #     "action_by_id",
+    #     "action_by",
+    #     "data",
+    #     "user_id",
+    #     "user",
+    #     "message",
+    #     "message_id",
+    # )
 
     def __init__(
         self,
-        event_type: Optional[EventType] = None,
+        type: Optional[EventType] = None,
         community_id: Optional[str] = None,
         community: Optional[Community] = None,
         group_id: Optional[str] = None,
@@ -38,8 +41,10 @@ class ChatEvent(Event):
         data: Optional[dict] = None,
         user_id: Optional[str] = None,
         user: Optional[User] = None,
+        message: Optional[Message] = None,
+        message_id: Optional[str] = None,
     ):
-        super().__init__(event_type=event_type, data=data)
+        super().__init__(type=type, data=data)
         self.community_id = community_id
         self.community = community
         self.group_id = group_id
@@ -50,6 +55,8 @@ class ChatEvent(Event):
         self.action_by = action_by
         self.user_id = user_id
         self.user = user
+        self.message = message
+        self.message_id = message_id
 
     def to_json(self) -> JSONDict:
         d = super().to_json()
@@ -84,4 +91,7 @@ class ChatEvent(Event):
             self.action_by = User.build_from_json(data.get("actionBy"))
             self.user_id = data.get("userId")
             self.user = User.build_from_json(details.get("user"))
+            self.data = details
+            self.message_id = data.get("messageId")
+            self.message = Message.build_from_json(details.get("message"))
         return self

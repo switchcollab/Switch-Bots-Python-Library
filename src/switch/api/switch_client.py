@@ -3,6 +3,7 @@ from switch.api.auth.models.auth_user import AuthUser
 from .community import CommunityClient
 from .chat import ChatClient
 from .auth import AuthClient
+from .bot import BotClient
 
 
 class SwitchClient(object):
@@ -13,6 +14,7 @@ class SwitchClient(object):
         self._chat_client: ChatClient = None
         self._auth_client: AuthClient = None
         self._community_client: CommunityClient = None
+        self._bot_client: BotClient = None
         self._user: AuthUser = None
 
     def initialize(self):
@@ -32,6 +34,8 @@ class SwitchClient(object):
             self._chat_client.user = value
         if self._community_client is not None:
             self._community_client.user = value
+        if self._bot_client is not None:
+            self._bot_client.user = value
 
     @property
     def token(self) -> str:
@@ -46,6 +50,10 @@ class SwitchClient(object):
             self._chat_client.token = value
         if self._auth_client is not None:
             self._auth_client.token = value
+        if self._community_client is not None:
+            self._community_client.token = value
+        if self._bot_client is not None:
+            self._bot_client.token = value
 
     @property
     def chat(self) -> ChatClient:
@@ -72,3 +80,12 @@ class SwitchClient(object):
             self._community_client.token = self.token
             self._community_client.user = self.user
         return self._community_client
+
+    @property
+    def bot(self) -> BotClient:
+        """Get the bot client"""
+        if self._bot_client is None:
+            self._bot_client = BotClient()
+            self._bot_client.token = self.token
+            self._bot_client.user = self.user
+        return self._bot_client

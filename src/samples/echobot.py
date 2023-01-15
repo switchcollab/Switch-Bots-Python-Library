@@ -3,23 +3,19 @@ import logging
 import os
 from dotenv import load_dotenv
 
-from switch import config
 from switch import SwitchApp
+from switch.api.bot.models.bot_command_info import BotCommandInfo
+from switch.api.chat.events import CallbackQueryEvent, CommandEvent, MessageEvent
 from switch.api.chat.models import InlineKeyboardButton, InlineMarkup
-from switch.bots import (
-    BotContext,
-)
-from switch.bots.events import (
-    CommandEvent,
-    MessageEvent,
-    CallbackQueryEvent,
-)
+from switch.bots import BotContext
+
 
 from switch.bots.handlers import (
     MessageHandler,
     UnknownCommandHandler,
     CallbackQueryHandler,
     CommandHandler,
+    event_handler,
 )
 
 env_file = os.path.join(os.path.dirname(__file__), "..", "..", ".env")
@@ -35,8 +31,8 @@ logger = logging.getLogger(__name__)
 
 async def echo_handler(ctx: BotContext[CommandEvent]):
     m = await ctx.bot.prepare_response_message(ctx.event.message)
-    text = ctx.event.args or "No args"
-    m.message = f"Echo: {text}"
+    text = ctx.event.params or "No args"
+    m.message = f"Your message: {text}"
     await ctx.bot.send_message(m)
 
 
@@ -79,7 +75,19 @@ async def query_callback_handler(ctx: BotContext[CallbackQueryEvent]):
 
 
 async def main():
-    app = SwitchApp.builder().token(TOKEN).build()
+    app = (
+        SwitchApp.builder()
+        .token(TOKEN)
+        .commands(
+            [
+                BotCommandInfo("echo", "Echoes back the message", True),
+                BotCommandInfo("buttons", "Shows buttons", True),
+                BotCommandInfo("help", "Shows help", True),
+            ]
+        )
+        .description("Super cool!")
+        .build()
+    )
 
     try:
         app.add_handler(CommandHandler(command="echo", callback=echo_handler))

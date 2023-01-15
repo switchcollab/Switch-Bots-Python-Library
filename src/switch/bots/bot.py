@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 from switch.api.auth.models.auth_user import AuthUser
+from switch.api.bot.models import BotInfo, BotCommandInfo
 from switch.api.chat.models import Message
 
 if TYPE_CHECKING:
@@ -10,7 +11,7 @@ class Bot(AuthUser):
     def __init__(self):
         super().__init__()
         self._me = None
-        self._info = None
+        self._info: BotInfo = None
         self._app: "SwitchApp" = None
 
     @property
@@ -26,24 +27,32 @@ class Bot(AuthUser):
         This method registers the bot commands and updates the bot info
         """
         # get all app commands
+        commands = self.app.commands or []
+        description = self.app.description
+        # register the commands
+        self._info = BotInfo(description=description, id=self.id)
+        for command in commands:
+            self.info.commands.append(
+                BotCommandInfo(command=command.command, description=command.description)
+            )
+        self.info = await self.app.api.bot.bots.update_bot_info(self.info)
 
         pass
 
-    async def get_me(self) -> dict:
-        """Get user bot info"""
-        raise NotImplementedError
+    @property
+    def info(self) -> BotInfo:
+        """Get the bot info"""
+        return self._info
 
-    async def get_info(self) -> dict:
-        """Get bot info"""
-        raise NotImplementedError
+    @info.setter
+    def info(self, value: BotInfo):
+        """Set the bot info"""
+        self._info = value
 
-    async def get_commands(self) -> list:
-        """Get the commands"""
-        raise NotImplementedError
-
-    async def get_updates(self, **kwargs) -> list:
-        """Get updates"""
-        raise NotImplementedError
+    @property
+    def commands(self) -> list[BotCommandInfo]:
+        """Get the bot commands"""
+        return self._info.commands or []
 
     async def prepare_message(self, receiver_id: int, text: str, **kwargs) -> Message:
         """Prepare a message to be sent to a user"""

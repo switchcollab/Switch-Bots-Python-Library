@@ -1,10 +1,11 @@
 from typing import TYPE_CHECKING, TypeVar
-from switch.bots.constants import EventType
-from switch.bots.events.message_event import MessageEvent
+from switch.api.chat.events import MessageEvent
 
+from switch.bots.handlers import BaseHandler
+from switch.bots import BotContext
+from .event_handler import EventHandler
+from switch.types import EventType
 from switch.utils.types import HandlerCallback
-from switch.bots.handlers.base_handler import BaseHandler
-from switch.bots.bot_context import BotContext
 
 if TYPE_CHECKING:
     pass
@@ -12,11 +13,13 @@ if TYPE_CHECKING:
 ResType = TypeVar("ResType")
 
 
-class MessageHandler(BaseHandler):
+class MessageHandler(EventHandler):
     def __init__(self, callback: HandlerCallback[BotContext[MessageEvent], ResType], **kwargs):
-        super().__init__(callback, **kwargs)
+        super().__init__(EventType.MESSAGE, callback, **kwargs)
 
     async def should_handle(self, context: BotContext[MessageEvent]) -> bool:
-        if context.event.type == EventType.MESSAGE and context.event.message is not None:
-            return True
-        return False
+        return (
+            await super().should_handle(context)
+            and context.event.message is not None
+            and context.event.message.user_id != context.bot.id
+        )

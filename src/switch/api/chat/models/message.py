@@ -6,40 +6,6 @@ from .inline_markup import InlineMarkup
 
 
 class Message(SwitchObject):
-    __slots__ = (
-        "button_name",
-        "button_pressed_id",
-        "callback_data",
-        "channel_chat",
-        "channel_id",
-        "command_name",
-        "community_id",
-        "edit",
-        "flag",
-        "forward",
-        "group_chat",
-        "group_id",
-        "id",
-        "information",
-        "inline_markup",
-        "is_read",
-        "media_link",
-        "mentioned_ids",
-        "message",
-        "personal_chat",
-        "pinned",
-        "reactions",
-        "receiver_id",
-        "replied_message",
-        "replied_to",
-        "replies",
-        "reply_count",
-        "request_id",
-        "sent_date",
-        "status",
-        "user_id",
-    )
-
     def __init__(
         self,
         id: int = None,

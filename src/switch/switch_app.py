@@ -1,22 +1,16 @@
 import asyncio
 from contextlib import AbstractContextManager
-import functools
-import json
 import logging
-import re
-import signal
-from typing import Collection
+from typing import Collection, List
+from switch.bots import Bot, Command
+from switch.api.common.events.event import Event
 from switch.api.community.events.community_event import CommunityEvent
 from switch.api.switch_client import SwitchClient
-from switch.bots import BotContext, Bot
-from switch.bots.events import CommandEvent, MessageEvent
+from switch.bots import BotContext
 from switch.bots.handlers import (
     BaseHandler,
 )
 from switch.error import SwitchError
-from switch.utils.ws.common.ws_message import WsMessage
-from switch.api.chat.models import Message
-from switch.bots.constants import COMMAND_PARSER_REGEX
 
 logger = logging.getLogger(f"{__name__}")
 
@@ -28,6 +22,8 @@ class SwitchApp(AbstractContextManager):
         self._bot: "Bot" = None
         self._handlers: Collection[BaseHandler] = []
         self._running = False
+        self._description = None
+        self._commands: List[Command] = []
 
     @property
     def api(self) -> SwitchClient:
@@ -44,6 +40,27 @@ class SwitchApp(AbstractContextManager):
         if self._handlers is None:
             self._handlers = []
         return self._handlers
+
+    @property
+    def description(self) -> str:
+        return self._description
+
+    @description.setter
+    def description(self, value: str) -> "SwitchApp":
+        self._description = value
+        return self
+
+    def command(self, command: str) -> "SwitchApp":
+        self._commands.append(Command(command=command))
+        return self
+
+    @property
+    def commands(self) -> List[Command]:
+        return self._commands
+
+    @commands.setter
+    def commands(self, commands: List[Command]) -> "SwitchApp":
+        self._commands = commands
 
     def token(self, value: str) -> "SwitchApp":
         self.api.token = value
@@ -87,25 +104,6 @@ class SwitchApp(AbstractContextManager):
                 await handler.handle(ctx)
                 break
 
-    async def on_chat_message(self, raw_message: WsMessage):
-        evt: Event = None
-        # check if message is a command or a regular message
-        if raw_message.body is not None and raw_message.body != "":
-            json_data = json.loads(raw_message.body)
-            if "message" in json_data and "type" in json_data and json_data["type"] == "Message":
-                message = Message.build_from_json(json_data["message"]["msg"])
-                if (
-                    message.user_id == self.bot.id
-                ):  # ignore messages from self to avoid infinite loop
-                    return
-                if re.match(COMMAND_PARSER_REGEX, message.message):
-                    evt = CommandEvent(message)
-                else:
-                    evt = MessageEvent(message)
-
-        if evt is not None:
-            await self.process_event(self._build_context(evt))
-
     async def on_community_event(self, evt: CommunityEvent):
         if evt is not None and isinstance(evt, Event):
             await self.process_event(self._build_context(evt))
@@ -122,17 +120,22 @@ class SwitchApp(AbstractContextManager):
             self._running = True
             """Starts the app"""
             await self._validate_run()
-            await (self.api.chat.start())
-            await (self.api.community.start())
 
-            await self.api.community.subscribeToNotifications(callback=self.on_community_event)
-            await self.api.chat.subscribeToNotifications(callback=self.on_chat_event)
+            try:
+                await (self.api.chat.start())
+                await self.api.chat.subscribeToNotifications(callback=self.on_chat_event)
+            except Exception as e:
+                logger.exception(e)
+
+            try:
+                await (self.api.community.start())
+                await self.api.community.subscribeToNotifications(callback=self.on_community_event)
+            except Exception as e:
+                logger.exception(e)
 
             # on app start hook
             for handler in self.handlers:
                 await handler.on_app_start(self)
-
-            await self.bot.on_app_start(self)
 
             # run forever
             while self._running:
@@ -184,6 +187,15 @@ class SwitchAppBuilder:
 
     def token(self, value: str) -> "SwitchAppBuilder":
         self._switch_app.token(value)
+        return self
+
+    def description(self, value: str) -> "SwitchAppBuilder":
+        self._switch_app.description = value
+        return self
+
+    def commands(self, commands: List[Command] = []) -> "SwitchAppBuilder":
+        for command in commands:
+            self._switch_app.commands.append(command)
         return self
 
     def build(self) -> SwitchApp:

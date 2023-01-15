@@ -2,10 +2,11 @@ import json
 from typing import Tuple
 from switch.api.auth.models.auth_user import AuthUser
 from switch.api.chat.controllers import MessageController
-from switch.api.chat.events.chat_event import ChatEvent
+from switch.api.chat.events import ChatEvent, CallbackQueryEvent, MessageEvent, CommandEvent
 from switch.base import SwitchRestClient, SwitchWSAsyncClient
 from switch.config import APP_CONFIG
 from switch.error import SwitchError
+from switch.types import EventType
 from switch.utils.ws.asyncstomp.async_ws_subscription import AsyncWsSubscription
 from switch.utils.ws.common.ws_message import WsMessage
 
@@ -17,7 +18,8 @@ class ChatClient(SwitchRestClient):
         ws_url: str = APP_CONFIG["CHAT_SERVICE"]["WS_URL"],
     ):
         super().__init__(base_url)
-        self._messages = None
+        self._messages: MessageController = None
+        self._bots: BotController = None
         self._authorization = None
         self._user: AuthUser = None
         self._ws: SwitchWSAsyncClient = None
@@ -60,9 +62,19 @@ class ChatClient(SwitchRestClient):
         )
         return subscription
 
-    def _parse_event(self, raw_message: WsMessage):
+    def _parse_event(self, raw_message: WsMessage) -> ChatEvent:
         json_data = json.loads(raw_message.body)
-        return ChatEvent.build_from_json(json_data)
+        type = json_data.get("type", "MESSAGE")
+        evt: ChatEvent = None
+        if type == EventType.MESSAGE.value:
+            evt = MessageEvent.build_from_json(json_data)
+        elif type == EventType.COMMAND.value:
+            evt = CommandEvent.build_from_json(json_data)
+        elif type == EventType.CALLBACK_QUERY.value:
+            evt = CallbackQueryEvent.build_from_json(json_data)
+        else:
+            evt = ChatEvent.build_from_json(json_data)
+        return evt
 
     async def start(self):
         """Start the chat client"""
