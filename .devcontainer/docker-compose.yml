@@ -7,3 +7,4 @@ services:
     volumes:
       - ..:/workspace
       - /workspace/src/venv
+      - /workspace/docs/node_modules
