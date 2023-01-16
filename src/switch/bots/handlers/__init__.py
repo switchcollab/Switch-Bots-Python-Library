@@ -16,22 +16,21 @@ from .user_banned_handler import UserBannedHandler
 from .community_updated_handler import CommunityUpdatedHandler
 from .unknown_command_handler import UnknownCommandHandler
 
-__all__ = [
-    "BaseHandler",
-    "EventHandler",
-    "CommandHandler",
-    "MessageHandler",
-    "UnknownCommandHandler",
-    "CallbackQueryHandler",
-    "ChannelCreatedHandler",
-    "ChannelDeletedHandler",
-    "ChannelUpdatedHandler",
-    "GroupCreatedHandler",
-    "GroupDeletedHandler",
-    "GroupUpdatedHandler",
-    "MemberJoinedHandler",
-    "MemberLeftHandler",
-    "UserBannedHandler",
-    "CommunityUpdatedHandler",
-    "UnknownCommandHandler",
-]
+
+class Handlers(
+    CommandHandler,
+    MessageHandler,
+    CallbackQueryHandler,
+    UnknownCommandHandler,
+    ChannelCreatedHandler,
+    ChannelDeletedHandler,
+    ChannelUpdatedHandler,
+    GroupCreatedHandler,
+    GroupDeletedHandler,
+    GroupUpdatedHandler,
+    MemberJoinedHandler,
+    MemberLeftHandler,
+    UserBannedHandler,
+    CommunityUpdatedHandler,
+):
+    pass

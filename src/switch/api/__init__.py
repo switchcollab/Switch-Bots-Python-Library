@@ -1,8 +1,6 @@
-from .switch_client import SwitchClient
-from . import chat
-from . import auth
-from . import community
-from . import common
-from . import bot
-
-__all__ = ["chat", "auth", "community", "common", "SwitchClient", "bot"]
+from .api_client import ApiClient
+from .chat import *
+from .auth import *
+from .community import *
+from .common import *
+from .bot import *

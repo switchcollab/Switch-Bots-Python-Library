@@ -33,6 +33,7 @@ class AsyncWsClient:
         self._connectInterval = 1
         self._maxConnectIntents = 30
         self._connecting = False
+        self._gracefully_disconnect = False
 
     async def _start_heartbeat(self):
         elapsed = 0
@@ -49,6 +50,8 @@ class AsyncWsClient:
 
     async def _on_close(self, ws_app, *args):
         self.connected = False
+        if self._gracefully_disconnect:
+            return
         logging.error("Whoops! Lost connection to " + self.url)
         await self._clean_up()
         if self._connectIntents >= self._maxConnectIntents:
@@ -215,6 +218,7 @@ class AsyncWsClient:
     async def disconnect(self, disconnectCallback=None, headers=None):
         headers = self._set_default_headers(headers)
         await self._transmit("DISCONNECT", headers)
+        self._gracefully_disconnect = True
         await self.ws.close()
         await self._clean_up()
         if disconnectCallback is not None:

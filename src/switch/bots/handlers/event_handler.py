@@ -24,7 +24,7 @@ class EventHandler(BaseHandler):
         filter: Optional[Filter] = None,
         **kwargs,
     ):
-        super().__init__(callback, **kwargs)
+        super().__init__(callback, filter, **kwargs)
         if isinstance(event_types, EventType):
             event_types = frozenset({event_types})
         else:

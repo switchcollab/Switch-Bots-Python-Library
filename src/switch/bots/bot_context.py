@@ -1,35 +1,44 @@
 from typing import TYPE_CHECKING, Generic, TypeVar
+from switch.api.api_client import ApiClient
 from switch.api.chat.models import Message
 from .bot import Bot
 from switch.api.common.events import Event
 
-if TYPE_CHECKING:
-    from switch import SwitchApp
-
-
 EventType = TypeVar("EventType", bound="Event")
 
 
-class BotContext(Generic[EventType]):
-    def __init__(self, bot: "Bot", event: EventType, app: "SwitchApp"):
+class BotContext(Generic[EventType], ApiClient):
+    def __init__(self, bot: "Bot", event: EventType):
         self.event = event
         self.bot = bot
-        self.app = app
+        # copy the api client
+        self._chat_client = bot.chat_service
+        self._auth_client = bot.auth_service
+        self._community_client = bot.community_service
+        self._bot_client = bot.bots_service
 
     async def prepare_message(self, receiver_id: int, text: str, **kwargs) -> Message:
-        return self.bot.prepare_message(receiver_id=receiver_id, text=text, **kwargs)
+        """
+        Prepares a message to be sent to the given receiver.
+
+        Parameters:
+            receiver_id (:obj:`int`): The receiver's id.
+            text (:obj:`str`): The message's text.
+            **kwargs: Additional keyword arguments to pass to the message constructor.
+
+        Returns:
+            :obj:`switch.api.chat.models.Message`: The prepared message.
+        """
+        return await self.bot.prepare_message(receiver_id=receiver_id, text=text, **kwargs)
 
     async def prepare_response_message(self, message: Message) -> Message:
-        return self.bot.prepare_response_message(message=message)
+        """
+        Prepares a message to be sent as a response to the given message.
 
-    async def send_message(self, message: Message) -> Message | bool:
-        return self.bot.send_message(message=message)
+        Parameters:
+            message (:obj:`switch.api.chat.models.Message`): The message to respond to.
 
-    async def edit_message(self, message: Message) -> Message | bool:
-        return self.bot.edit_message(message=message)
-
-    async def edit_message_text(self, message: Message, text: str, **kwargs) -> Message | bool:
-        return self.bot.edit_message_text(message=message, text=text, **kwargs)
-
-    async def delete_message(self, message: int | Message, **kwargs) -> bool:
-        return self.bot.delete_message(message=message, **kwargs)
+        Returns:
+            :obj:`switch.api.chat.models.Message`: The prepared message.
+        """
+        return await self.bot.prepare_response_message(message=message)

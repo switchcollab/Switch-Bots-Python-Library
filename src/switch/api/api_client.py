@@ -1,12 +1,22 @@
-from switch.api.auth.auth_client import AuthClient
-from switch.api.auth.models.auth_user import AuthUser
-from .community import CommunityClient
-from .chat import ChatClient
+import switch
 from .auth import AuthClient
+from .chat import ChatClient
+from .community import CommunityClient
 from .bot import BotClient
+from .auth.models import AuthUser
+
+from .auth.methods import AuthMethods
+from .bot.methods import BotMethods
+from .chat.methods import ChatMethods
+from .community.methods import CommunityMethods
 
 
-class SwitchClient(object):
+class ApiClient(
+    AuthMethods,
+    BotMethods,
+    ChatMethods,
+    CommunityMethods,
+):
     def __init__(self, **kwargs):
         """Initialize the client"""
         self._token: str = None
@@ -16,12 +26,13 @@ class SwitchClient(object):
         self._community_client: CommunityClient = None
         self._bot_client: BotClient = None
         self._user: AuthUser = None
+        self.initialize()
 
     def initialize(self):
         """Initialize the client"""
-        self.chat.initialize()
-        self.auth.initialize()
-        self.community.initialize()
+        self.chat_service.initialize()
+        self.auth_service.initialize()
+        self.community_service.initialize()
 
     @property
     def user(self) -> AuthUser:
@@ -56,7 +67,7 @@ class SwitchClient(object):
             self._bot_client.token = value
 
     @property
-    def chat(self) -> ChatClient:
+    def chat_service(self) -> ChatClient:
         """Get the chat client"""
         if self._chat_client is None:
             self._chat_client = ChatClient()
@@ -65,7 +76,7 @@ class SwitchClient(object):
         return self._chat_client
 
     @property
-    def auth(self) -> AuthClient:
+    def auth_service(self) -> AuthClient:
         """Get the auth client"""
         if self._auth_client is None:
             self._auth_client = AuthClient()
@@ -73,8 +84,8 @@ class SwitchClient(object):
         return self._auth_client
 
     @property
-    def community(self) -> CommunityClient:
-        """Get the auth client"""
+    def community_service(self) -> CommunityClient:
+        """Get the community client"""
         if self._community_client is None:
             self._community_client = CommunityClient()
             self._community_client.token = self.token
@@ -82,7 +93,7 @@ class SwitchClient(object):
         return self._community_client
 
     @property
-    def bot(self) -> BotClient:
+    def bots_service(self) -> BotClient:
         """Get the bot client"""
         if self._bot_client is None:
             self._bot_client = BotClient()

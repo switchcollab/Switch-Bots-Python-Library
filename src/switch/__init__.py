@@ -1,10 +1,11 @@
-from . import utils
-from . import api
-from . import base
-from . import error
-from . import config
-from . import types
-from .switch_app import SwitchApp
-from . import bots
+from .utils import *
+from .api import *
+from .base import *
+from .error import *
+from .config import *
+from .types import *
 
-__all__ = ["utils", "api", "base", "error", "SwitchApp", "config", "bots", "types"]
+# from .bot_client import SwitchBotClient
+from .app import App
+from .bot_app import BotApp
+from .bots import *

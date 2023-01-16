@@ -1,10 +1,10 @@
-class Command:
+class RegiterCommand:
     def __init__(
         self,
-        name: str,
+        command: str,
         description: str,
         channel: bool = False,
     ):
-        self.name = name
+        self.command = command
         self.description = description
         self.channel = channel

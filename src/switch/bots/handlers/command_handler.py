@@ -1,5 +1,5 @@
 import re
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING, Optional, TypeVar
 from switch.bots.constants import VALID_COMMAND_REGEX
 from switch.bots.filters.filter import Filter
 from switch.types import EventType
@@ -20,7 +20,7 @@ class CommandHandler(EventHandler):
         self,
         command: SCT[str],
         callback: HandlerCallback[BotContext[CommandEvent], ResType],
-        filter: Filter = None,
+        filter: Optional[Filter] = None,
         **kwargs,
     ):
         super().__init__(EventType.COMMAND, callback, filter, **kwargs)

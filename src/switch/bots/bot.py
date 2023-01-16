@@ -1,41 +1,50 @@
 from typing import TYPE_CHECKING
+from switch.api.api_client import ApiClient
 from switch.api.auth.models.auth_user import AuthUser
 from switch.api.bot.models import BotInfo, BotCommandInfo
 from switch.api.chat.models import Message
 
 if TYPE_CHECKING:
-    from switch import SwitchApp
+    from switch import BotApp
 
 
-class Bot(AuthUser):
+class Bot(AuthUser, ApiClient):
     def __init__(self):
         super().__init__()
-        self._me = None
         self._info: BotInfo = None
-        self._app: "SwitchApp" = None
+        self._app: "BotApp" = None
 
     @property
-    def app(self) -> "SwitchApp":
+    def app(self) -> "BotApp":
         return self._app
 
     @app.setter
-    def app(self, value: "SwitchApp"):
+    def app(self, value: "BotApp"):
         self._app = value
+        # copy the api client
+        self._chat_client = value.chat_service
+        self._auth_client = value.auth_service
+        self._community_client = value.community_service
+        self._bot_client = value.bots_service
 
-    async def on_app_start(self, app: "SwitchApp"):
+    async def on_app_start(self, app: "BotApp"):
         """Called when app start
         This method registers the bot commands and updates the bot info
         """
         # get all app commands
-        commands = self.app.commands or []
-        description = self.app.description
+        commands = self.app._register_commands or []
+        description = self.app._description or ""
         # register the commands
         self._info = BotInfo(description=description, id=self.id)
         for command in commands:
             self.info.commands.append(
-                BotCommandInfo(command=command.command, description=command.description)
+                BotCommandInfo(
+                    command=command.command,
+                    description=command.description,
+                    channel=command.channel,
+                )
             )
-        self.info = await self.app.api.bot.bots.update_bot_info(self.info)
+        self.info = await self.update_bot_info(self.info)
 
         pass
 
@@ -55,29 +64,31 @@ class Bot(AuthUser):
         return self._info.commands or []
 
     async def prepare_message(self, receiver_id: int, text: str, **kwargs) -> Message:
-        """Prepare a message to be sent to a user"""
+        """
+        Prepares a message to be sent to the given receiver.
+
+        Parameters:
+            receiver_id (:obj:`int`): The receiver's id.
+            text (:obj:`str`): The message's text.
+            **kwargs: Additional keyword arguments to pass to the message constructor.
+
+        Returns:
+            :obj:`switch.api.chat.models.Message`: The prepared message.
+        """
         message = Message(receiver_id=receiver_id, message=text, **kwargs)
         message.user_id = self.id
         return message
 
     async def prepare_response_message(self, message: Message) -> Message:
-        """Prepare a message to be sent to a user that is a response to a message"""
+        """
+        Prepares a message to be sent as a response to the given message.
+
+        Parameters:
+            message (:obj:`switch.api.chat.models.Message`): The message to respond to.
+
+        Returns:
+            :obj:`switch.api.chat.models.Message`: The prepared message.
+        """
         message = Message(receiver_id=message.user_id, message=message.message)
         message.user_id = self.id
         return message
-
-    async def send_message(self, message: Message) -> Message | bool:
-        message.user_id = self.id
-        return await self.app.api.chat.messages.send_message(message=message)
-
-    async def edit_message(self, message: Message) -> Message | bool:
-        message.user_id = self.id
-        return await self.app.api.chat.messages.edit_message(message=message)
-
-    async def edit_message_text(self, message: Message, text: str, **kwargs) -> Message | bool:
-        message.message = text
-        return self.edit_message(message=message)
-
-    async def delete_message(self, message: int | Message, **kwargs) -> bool:
-        """Delete a message"""
-        return await self.app.api.chat.messages.delete_message(message=message)

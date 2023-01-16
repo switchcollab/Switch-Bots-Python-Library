@@ -1,7 +1,5 @@
 import json
-from typing import Tuple
 from switch.api.auth.models.auth_user import AuthUser
-from switch.api.chat.controllers import MessageController
 from switch.api.community.events.community_event import CommunityEvent
 from switch.base import SwitchRestClient, SwitchWSAsyncClient
 from switch.config import APP_CONFIG
@@ -47,7 +45,7 @@ class CommunityClient(SwitchRestClient):
             raise SwitchError("Callback is not set")
         return await self.ws.subscribe(endpoint, callback=callback)
 
-    async def subscribeToNotifications(self, callback=None) -> AsyncWsSubscription:
+    async def subscribe_to_notifications(self, callback=None) -> AsyncWsSubscription:
         subscription = await self.ws.subscribe(
             "/user/queue/events",
             callback=lambda event: callback(self._parse_event(event)),

@@ -1,24 +1,27 @@
 from typing import Optional
-from switch.api.community.models import Community, Group, Channel
+import switch
 from switch.base.switch_object import SwitchObject
-from switch.types import EventType
-from switch.api.common.models.user import User
-from switch.utils.types import JSONDict
+
+# from switch.api.community.models import Community, Group, Channel
+# from switch.base.switch_object import SwitchObject
+# from switch.types import EventType
+# from switch.api.common.models.user import User
+# from switch.utils.types import JSONDict
 
 
 class Event(SwitchObject):
     def __init__(
         self,
-        type: Optional[EventType] = None,
+        type: Optional["switch.EventType"] = None,
         data: Optional[dict] = None,
         community_id: Optional[str] = None,
-        community: Optional[Community] = None,
+        community: Optional["switch.Community"] = None,
         group_id: Optional[str] = None,
-        group: Optional[Group] = None,
+        group: Optional["switch.Group"] = None,
         channel_id: Optional[str] = None,
-        channel: Optional[Channel] = None,
+        channel: Optional["switch.Channel"] = None,
         action_by_id: Optional[str] = None,
-        action_by: Optional[User] = None,
+        action_by: Optional["switch.User"] = None,
     ):
         self.type = type
         self.data = data
@@ -31,22 +34,22 @@ class Event(SwitchObject):
         self.channel_id = channel_id
         self.channel = channel
 
-    def from_json(self, data: JSONDict) -> "Event":
+    def from_json(self, data: switch.JSONDict) -> "Event":
         if data is not None:
             details = data.get("details") or {}
-            self.type = EventType(data.get("type"))
+            self.type = switch.EventType(data.get("type"))
             self.action_by_id = details.get("actionById")
-            self.action_by = User.build_from_json(details.get("actionBy"))
+            self.action_by = switch.User.build_from_json(details.get("actionBy"))
             self.community_id = details.get("communityId")
-            self.community = Community.build_from_json(details.get("community"))
+            self.community = switch.Community.build_from_json(details.get("community"))
             self.group_id = details.get("groupId")
-            self.group = Group.build_from_json(details.get("group"))
+            self.group = switch.Group.build_from_json(details.get("group"))
             self.channel_id = details.get("channelId")
-            self.channel = Channel.build_from_json(details.get("channel"))
+            self.channel = switch.Channel.build_from_json(details.get("channel"))
             self.data = details
         return self
 
-    def to_json(self) -> JSONDict:
+    def to_json(self) -> switch.JSONDict:
         return {
             "type": self.type,
             "details": self.data,

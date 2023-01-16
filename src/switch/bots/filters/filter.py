@@ -94,7 +94,7 @@ async def bot_filter(self, ctx: BotContext[MessageEvent]):
     )
 
 
-bot = create(bot_filter)
+is_bot = create(bot_filter)
 """Filter messages coming from bots."""
 
 

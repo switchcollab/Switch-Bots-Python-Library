@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING, Optional, TypeVar
 from switch.api.chat.events import MessageEvent
 from switch.api.community.events import CommunityEvent
 from switch.bots.filters.filter import Filter
@@ -19,7 +19,7 @@ class ChannelUpdatedHandler(EventHandler):
     def __init__(
         self,
         callback: HandlerCallback[BotContext[CommunityEvent], ResType],
-        filter: Filter = None,
+        filter: Optional[Filter] = None,
         **kwargs,
     ):
         super().__init__(EventType.CHANNEL_UPDATE, callback, filter, **kwargs)

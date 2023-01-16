@@ -1,3 +1,3 @@
-from . import models
+from .controllers import *
+from .models import *
 from .auth_client import AuthClient
-__all__ = ['models', 'AuthClient']
