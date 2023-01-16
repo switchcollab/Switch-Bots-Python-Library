@@ -4,24 +4,6 @@ from switch.base.switch_object import SwitchObject
 
 
 class Community(SwitchObject):
-    __slots__ = (
-        "id",
-        "name",
-        "username",
-        "profile_url",
-        "cover_url",
-        "is_public",
-        "is_free",
-        "created_by",
-        "guidelines",
-        "description",
-        "verified",
-        "category",
-        "type",
-        "link",
-        "icon",
-    )
-
     def __init__(
         self,
         id: Optional[str] = None,

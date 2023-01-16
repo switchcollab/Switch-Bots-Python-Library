@@ -10,23 +10,6 @@ from switch.utils.types import JSONDict
 
 
 class ChatEvent(Event):
-    # __slots__ = (
-    #     "event_type",
-    #     "community_id",
-    #     "community",
-    #     "group_id",
-    #     "group",
-    #     "channel_id",
-    #     "channel",
-    #     "action_by_id",
-    #     "action_by",
-    #     "data",
-    #     "user_id",
-    #     "user",
-    #     "message",
-    #     "message_id",
-    # )
-
     def __init__(
         self,
         type: Optional[EventType] = None,
@@ -44,15 +27,18 @@ class ChatEvent(Event):
         message: Optional[Message] = None,
         message_id: Optional[str] = None,
     ):
-        super().__init__(type=type, data=data)
-        self.community_id = community_id
-        self.community = community
-        self.group_id = group_id
-        self.group = group
-        self.channel_id = channel_id
-        self.channel = channel
-        self.action_by_id = action_by_id
-        self.action_by = action_by
+        super().__init__(
+            type=type,
+            data=data,
+            action_by=action_by,
+            action_by_id=action_by_id,
+            channel=channel,
+            channel_id=channel_id,
+            group=group,
+            group_id=group_id,
+            community=community,
+            community_id=community_id,
+        )
         self.user_id = user_id
         self.user = user
         self.message = message
@@ -63,14 +49,6 @@ class ChatEvent(Event):
 
         d.update(
             {
-                "communityId": self.community_id,
-                "community": self.community.to_json(),
-                "groupId": self.group_id,
-                "group": self.group.to_json(),
-                "channelId": self.channel_id,
-                "channel": self.channel.to_json(),
-                "actionById": self.action_by_id,
-                "actionBy": self.action_by.to_json(),
                 "userId": self.user_id,
                 "user": self.user.to_json(),
             }
@@ -87,10 +65,8 @@ class ChatEvent(Event):
             self.group = Group.build_from_json(details.get("group"))
             self.channel_id = (data.get("channelId"),)
             self.channel = Channel.build_from_json(details.get("channel"))
-            self.action_by_id = data.get("actionById")
-            self.action_by = User.build_from_json(data.get("actionBy"))
-            self.user_id = data.get("userId")
-            self.user = User.build_from_json(details.get("user"))
+            self.user_id = data.get("userId") or data.get("senderId")
+            self.user = User.build_from_json(details.get("user") or details.get("sender"))
             self.data = details
             self.message_id = data.get("messageId")
             self.message = Message.build_from_json(details.get("message"))

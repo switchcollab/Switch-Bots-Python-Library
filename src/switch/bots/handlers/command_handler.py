@@ -1,6 +1,7 @@
 import re
 from typing import TYPE_CHECKING, TypeVar
 from switch.bots.constants import VALID_COMMAND_REGEX
+from switch.bots.filters.filter import Filter
 from switch.types import EventType
 
 from switch.utils.types import SCT, HandlerCallback
@@ -19,9 +20,10 @@ class CommandHandler(EventHandler):
         self,
         command: SCT[str],
         callback: HandlerCallback[BotContext[CommandEvent], ResType],
+        filter: Filter = None,
         **kwargs,
     ):
-        super().__init__(EventType.COMMAND, callback, **kwargs)
+        super().__init__(EventType.COMMAND, callback, filter, **kwargs)
         if isinstance(command, str):
             commands = frozenset({command.lower()})
         else:

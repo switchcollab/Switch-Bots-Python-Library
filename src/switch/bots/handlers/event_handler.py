@@ -1,6 +1,7 @@
 import re
-from typing import TYPE_CHECKING, Generic, TypeVar
+from typing import TYPE_CHECKING, Generic, Optional, TypeVar
 from switch.bots.constants import VALID_COMMAND_REGEX
+from switch.bots.filters.filter import Filter
 from switch.types import EventType
 
 from switch.utils.types import SCT, HandlerCallback
@@ -18,8 +19,9 @@ ResType = TypeVar("ResType")
 class EventHandler(BaseHandler):
     def __init__(
         self,
-        event_types: SCT[EventType],
+        event_types: Optional[SCT[EventType]],
         callback: HandlerCallback[BotContext[Event], ResType],
+        filter: Optional[Filter] = None,
         **kwargs,
     ):
         super().__init__(callback, **kwargs)
@@ -28,8 +30,11 @@ class EventHandler(BaseHandler):
         else:
             event_types = frozenset(event_types)
         self.event_types = event_types
+        self.filter = filter
 
     async def should_handle(self, context: BotContext[Event]) -> bool:
-        if context.event.type in self.event_types:
-            return True
-        return False
+        if (self.event_types is not None) and (not context.event.type in self.event_types):
+            return False
+        if self.filter:
+            return await self.filter(context)
+        return True

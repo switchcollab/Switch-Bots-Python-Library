@@ -9,21 +9,6 @@ from switch.utils.types import JSONDict
 
 
 class CommunityEvent(Event):
-    __slots__ = (
-        "event_type",
-        "community_id",
-        "community",
-        "group_id",
-        "group",
-        "channel_id",
-        "channel",
-        "action_by_id",
-        "action_by",
-        "data",
-        "user_id",
-        "user",
-    )
-
     def __init__(
         self,
         event_type: Optional[EventType] = None,
@@ -39,15 +24,22 @@ class CommunityEvent(Event):
         user_id: Optional[str] = None,
         user: Optional[User] = None,
     ):
-        super().__init__(event_type=event_type, data=data)
+        super().__init__(
+            event_type=event_type,
+            data=data,
+            action_by=action_by,
+            action_by_id=action_by_id,
+            community=community,
+            community_id=community_id,
+            group=group,
+            group_id=group_id,
+        )
         self.community_id = community_id
         self.community = community
         self.group_id = group_id
         self.group = group
         self.channel_id = channel_id
         self.channel = channel
-        self.action_by_id = action_by_id
-        self.action_by = action_by
         self.user_id = user_id
         self.user = user
 
@@ -62,8 +54,6 @@ class CommunityEvent(Event):
                 "group": self.group.to_json(),
                 "channelId": self.channel_id,
                 "channel": self.channel.to_json(),
-                "actionById": self.action_by_id,
-                "actionBy": self.action_by.to_json(),
                 "userId": self.user_id,
                 "user": self.user.to_json(),
             }
@@ -80,8 +70,6 @@ class CommunityEvent(Event):
             self.group = Group.build_from_json(details.get("group"))
             self.channel_id = (data.get("channelId"),)
             self.channel = Channel.build_from_json(details.get("channel"))
-            self.action_by_id = data.get("actionById")
-            self.action_by = User.build_from_json(data.get("actionBy"))
             self.user_id = data.get("userId")
             self.user = User.build_from_json(details.get("user"))
         return self

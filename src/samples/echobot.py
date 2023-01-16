@@ -8,6 +8,7 @@ from switch.api.bot.models.bot_command_info import BotCommandInfo
 from switch.api.chat.events import CallbackQueryEvent, CommandEvent, MessageEvent
 from switch.api.chat.models import InlineKeyboardButton, InlineMarkup
 from switch.bots import BotContext
+from switch.bots.filters import text
 
 
 from switch.bots.handlers import (
@@ -90,10 +91,17 @@ async def main():
     )
 
     try:
-        app.add_handler(CommandHandler(command="echo", callback=echo_handler))
+        app.add_handler(
+            CommandHandler(
+                command="echo",
+                callback=echo_handler,
+            )
+        )
         app.add_handler(CommandHandler(command="buttons", callback=buttons_handler))
         app.add_handler(CallbackQueryHandler(callback=query_callback_handler))
-        app.add_handler(MessageHandler(callback=message_handler))
+        app.add_handler(
+            MessageHandler(callback=message_handler, filter=text("hello") | text("hi"))
+        )
         app.add_handler(UnknownCommandHandler(callback=unkown_command_handler))
 
         await app.start()

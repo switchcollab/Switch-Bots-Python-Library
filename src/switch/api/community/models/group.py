@@ -4,22 +4,6 @@ from switch.base.switch_object import SwitchObject
 
 
 class Group(SwitchObject):
-    __slots__ = (
-        "id",
-        "name",
-        "community_id",
-        "enabled_free",
-        "enabled_public",
-        "default_group",
-        "is_public",
-        "created_by",
-        "icon",
-        "group_logo_url",
-        "allowed_content",
-        "created_at",
-        "updated_at",
-    )
-
     def __init__(
         self,
         id: Optional[str] = None,

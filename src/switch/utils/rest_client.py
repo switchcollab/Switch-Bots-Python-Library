@@ -15,8 +15,6 @@ DEFAULT_HEADERS = {"Content-Type": "application/json", "Accept": "application/js
 
 
 class RestClient:
-    __slots__ = ("_client", "_client_kwargs")
-
     def __init__(
         self,
         connection_pool_size: int = 1,

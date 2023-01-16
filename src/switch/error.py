@@ -15,13 +15,12 @@ def _lstrip_str(in_s: str, lstr: str) -> str:
         res = in_s
     return res
 
+
 class SwitchError(Exception):
     """
     Base class for Seitch errors.
     .. seealso:: :wiki:`Exceptions, Warnings and Logging <Exceptions%2C-Warnings-and-Logging>`
     """
-
-    __slots__ = ("message",)
 
     def __init__(self, message: str):
         super().__init__()
@@ -43,11 +42,9 @@ class SwitchError(Exception):
     def __reduce__(self) -> Tuple[type, Tuple[str]]:
         return self.__class__, (self.message,)
 
+
 class NetworkError(SwitchError):
     """Base class for exceptions due to networking errors.
     Examples:
         :any:`Raw API Bot <examples.rawapibot>`
     """
-
-    __slots__ = ()
-

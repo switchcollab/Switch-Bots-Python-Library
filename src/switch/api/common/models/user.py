@@ -4,18 +4,6 @@ from switch.base.switch_object import SwitchObject
 
 
 class User(SwitchObject):
-    __slots__ = (
-        "id",
-        "name",
-        "username",
-        "image_url",
-        "active",
-        "deleted",
-        "role_info",
-        "admin",
-        "is_bot",
-    )
-
     def __init__(
         self,
         id: Optional[str] = None,
