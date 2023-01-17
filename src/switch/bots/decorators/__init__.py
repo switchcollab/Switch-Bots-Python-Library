@@ -10,7 +10,7 @@ from .on_group_deleted import OnGroupDeleted
 from .on_group_updated import OnGroupUpdated
 from .on_member_joined import OnMemberJoined
 from .on_member_left import OnMemberLeft
-from .on_user_ban import OnUserBan
+from .on_user_banned import OnUserBanned
 from .on_unknown_command import OnUnknownCommand
 
 
@@ -27,7 +27,7 @@ class Decorators(
     OnGroupUpdated,
     OnMemberJoined,
     OnMemberLeft,
-    OnUserBan,
+    OnUserBanned,
     OnUnknownCommand,
 ):
     pass

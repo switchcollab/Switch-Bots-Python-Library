@@ -2,7 +2,7 @@ import logging
 import os
 from dotenv import load_dotenv
 
-from switch import BotApp, RegiterCommand, BotContext, MessageEvent, CallbackQueryEvent
+from switch import BotApp, RegisterCommand, BotContext, MessageEvent, CallbackQueryEvent
 
 
 env_file = os.path.join(os.path.dirname(__file__), "..", "..", ".env")
@@ -21,9 +21,9 @@ app = BotApp(
     TOKEN, "A cool bot with annotations and everything you could possibly want :)"
 ).register_command(
     [
-        RegiterCommand("test", "Test command", True),
-        RegiterCommand("echo", "Echoes the message", True),
-        RegiterCommand("buttons", "Shows buttons", True),
+        RegisterCommand("test", "Test command", True),
+        RegisterCommand("echo", "Echoes the message", True),
+        RegisterCommand("buttons", "Shows buttons", True),
     ]
 )
 

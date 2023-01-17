@@ -3,7 +3,6 @@ from .event_handler import EventHandler
 from .command_handler import CommandHandler
 from .message_handler import MessageHandler
 from .callback_query_handler import CallbackQueryHandler
-from .unknown_command_handler import UnknownCommandHandler
 from .channel_created_handler import ChannelCreatedHandler
 from .channel_deleted_handler import ChannelDeletedHandler
 from .channel_updated_handler import ChannelUpdatedHandler

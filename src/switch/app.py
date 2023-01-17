@@ -3,7 +3,7 @@ from contextlib import AbstractContextManager
 import logging
 import signal
 from signal import signal as signal_fn, SIGINT, SIGTERM, SIGABRT
-from typing import Callable
+from typing import Callable, Optional
 import switch
 from switch.api import ApiClient
 from switch.api.auth.models import AuthUser
@@ -21,7 +21,11 @@ signals = {
 
 
 class App(AbstractContextManager, ApiClient):
-    def __init__(self, token: str, loop: asyncio.AbstractEventLoop = None):
+    def __init__(
+        self,
+        token: str,
+        loop: asyncio.AbstractEventLoop = None,
+    ):
         """Initialize the client"""
         super().__init__()
         self.token = token

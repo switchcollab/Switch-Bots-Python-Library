@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 from switch import (
     BotApp,
-    RegiterCommand,
+    RegisterCommand,
     BotContext,
     MessageEvent,
     CallbackQueryEvent,
@@ -13,6 +13,12 @@ from switch import (
     InlineKeyboardButton,
     CommunityUpdatedEvent,
     MessageHandler,
+    is_bot,
+    community,
+    channel,
+    user,
+    text,
+    regexp,
 )
 
 
@@ -32,14 +38,14 @@ app = BotApp(
     TOKEN, "A cool bot with annotations and everything you could possibly want :)"
 ).register_command(
     [
-        RegiterCommand("test", "Test command", True),
-        RegiterCommand("echo", "Echoes the message", True),
-        RegiterCommand("buttons", "Shows buttons", True),
+        RegisterCommand("test", "Test command", True),
+        RegisterCommand("echo", "Echoes the message", True),
+        RegisterCommand("buttons", "Shows buttons", True),
     ]
 )
 
 
-@app.on_command("buttons")
+@app.on_command("buttons", text("buttons") & (is_bot | user("admin")))
 async def buttons_handler(ctx: BotContext[CommandEvent]):
     m = await ctx.bot.prepare_response_message(ctx.event.message)
     m.message = f"Please select an option:"

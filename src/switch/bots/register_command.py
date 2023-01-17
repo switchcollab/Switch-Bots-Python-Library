@@ -1,4 +1,4 @@
-class RegiterCommand:
+class RegisterCommand:
     def __init__(
         self,
         command: str,

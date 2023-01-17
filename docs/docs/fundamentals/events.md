@@ -1,5 +1,5 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 ---
 
 # Events
@@ -10,10 +10,70 @@ PySwitch is an event-driven framework. This means that the framework is designed
 
 There are several types of events that can be handled by PySwitch:
 
+#### `Generic event`
+All events inherit from the `Event` class. This class contains the following properties:
+
+- `type:EventType` - The type of the event.
+- `community_id:str` - The ID of the community where the event was triggered.
+- `community:Community`- The community where the event was triggered.
+- `channel_id:str`- The ID of the channel where the event was triggered.
+- `channel:Channel`- The channel where the event was triggered.
+- `group_id:str` - The ID of the group where the event was triggered.
+- `group:Group` - The group where the event was triggered.
+- `action_by_id:str` - The ID of the user that triggered the event.
+- `action_by:User` - The user that triggered the event.
+
 ### Chat events
 
-- `MessageEvent` - A message was sent to a chat.
-- `ComandEvent` - A command was sent to a chat.
-- `CallbackQueryEvent` - A query callback was sent (user pressed a button, for example).
+#### `MessageEvent`
+A message was sent to a chat.
+
+**Additional properties:**
+- `message:Message` - The message that was sent.
+- `message_id:str` - The ID of the message that was sent.
+- `user_id:str` - The ID of the user that sent the message.
+- `user:User` - The user that sent the message.
+- `receiver_id:str` - The ID of the user that received the message.
+- `receiver:User` - The user that received the message.
+
+
+#### `ComandEvent`
+A command was sent to a chat.
+
+**Additional properties:**
+- `command:str` - The command name.
+- `args:str` - The arguments (the message text without the command name and the '/').
+- `message:Message` - The message that was sent.
+- `message_id:str` - The ID of the message that was sent.
+- `user_id:str` - The ID of the user that sent the message.
+- `user:User` - The user that sent the message.
+- `receiver_id:str` - The ID of the user that received the message.
+- `receiver:User` - The user that received the message.
+
+
+#### `CallbackQueryEvent` 
+A query callback was sent (user pressed a button, for example).
+- `callback_data:str` - The callback data.
+- `command:str` - The command name.
+- `args:str` - The arguments (the message text without the command name and the '/').
+- `message:Message` - The message that was sent.
+- `message_id:str` - The ID of the message that was sent.
+- `user_id:str` - The ID of the user that sent the message.
+- `user:User` - The user that sent the message.
+- `receiver_id:str` - The ID of the user that received the message.
+- `receiver:User` - The user that received the message.
 
 ### Community events
+
+These events inherit from the `Event` class. **And none of them have additional properties.**
+
+- `CommunityUpdatedEvent` - A community was updated
+- `MemberJoinedEvent` - A community was joined by an user
+- `MemberLeftEvent` - A community was left by an user
+- `ChannelCreatedEvent` - A channel was created
+- `ChannelUpdatedEvent` - A channel was updated
+- `ChannelDeletedEvent` - A channel was deleted
+- `GroupCreatedEvent` - A group was created
+- `GroupUpdatedEvent` - A group was updated
+- `GroupDeletedEvent` - A group was deleted
+- `UserBannedEvent` - An user was banned

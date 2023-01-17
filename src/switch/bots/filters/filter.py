@@ -211,7 +211,7 @@ def text(text: Optional[SCT[str]]):
 """ Filter messages by text. """
 
 
-def regex_filter(regexp: Optional[SCT[str]]):
+def regexp(regexp: Optional[SCT[str]]):
     async def func(self, ctx: BotContext[MessageEvent]):
         regexp = self.regexp
         if regexp is None:

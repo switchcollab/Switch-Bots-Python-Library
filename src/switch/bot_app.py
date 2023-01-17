@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from typing import List, Collection
+from typing import List, Collection, Optional
 import switch
 from switch.api.community.events import CommunityEvent
 from switch.api.chat.events import ChatEvent
@@ -14,15 +14,22 @@ logger = logging.getLogger(f"{__name__}")
 class BotApp(App, Decorators):
     """Bot client"""
 
-    def __init__(self, token: str, description: str, loop: asyncio.AbstractEventLoop = None):
+    def __init__(
+        self,
+        token: str,
+        bot_description: Optional[str] = None,
+        auto_update_bot: Optional[bool] = True,
+        loop: asyncio.AbstractEventLoop = None,
+    ):
         """Initialize the client"""
         super().__init__(token, loop)
         self._user_type = switch.bots.Bot
         self.on_chat_service_start = self._on_chat_service_start
         self.on_community_service_start = self._on_community_service_start
         self._handlers: List[BaseHandler] = []
-        self._register_commands: List[switch.bots.RegiterCommand] = []
-        self._description = description
+        self._register_commands: List[switch.bots.RegisterCommand] = []
+        self._bot_description = bot_description
+        self.auto_update_bot = auto_update_bot
 
     @property
     def bot(self) -> "switch.bots.Bot":
@@ -35,7 +42,7 @@ class BotApp(App, Decorators):
         return self._handlers
 
     def register_command(
-        self, command: switch.bots.RegiterCommand | List[switch.bots.RegiterCommand]
+        self, command: switch.bots.RegisterCommand | List[switch.bots.RegisterCommand]
     ) -> "BotApp":
         if self._running:
             raise switch.SwitchError("Cannot register commands after the app has started")

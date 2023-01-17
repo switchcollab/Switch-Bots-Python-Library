@@ -3,8 +3,8 @@ import switch
 from switch.bots.filters.filter import Filter
 
 
-class OnUserBan:
-    def on_user_ban(self: "switch.BotApp" = None, filter: Optional[Filter] = None) -> Callable:
+class OnUserBanned:
+    def on_user_banned(self: "switch.BotApp" = None, filter: Optional[Filter] = None) -> Callable:
         """Decorator for handling user ban."""
 
         def decorator(func: Callable) -> Callable:
