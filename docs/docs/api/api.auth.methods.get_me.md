@@ -1,6 +1,6 @@
 <!-- markdownlint-disable -->
 
-<a href="../../../src/switch/api/auth/methods/get_me.py#L0"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/auth/methods/get_me.py#L0"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 # <kbd>module</kbd> `api.auth.methods.get_me`
 
@@ -11,7 +11,7 @@
 
 ---
 
-<a href="../../../src/switch/api/auth/methods/get_me.py#L8"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/auth/methods/get_me.py#L8"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>class</kbd> `GetMe`
 
@@ -23,7 +23,7 @@
 
 ---
 
-<a href="../../../src/switch/api/auth/methods/get_me.py#L9"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/auth/methods/get_me.py#L9"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `get_me`
 

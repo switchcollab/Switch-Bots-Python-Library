@@ -1,6 +1,6 @@
 <!-- markdownlint-disable -->
 
-<a href="../../../src/switch/api/community/events/community_event.py#L0"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/community/events/community_event.py#L0"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 # <kbd>module</kbd> `api.community.events.community_event`
 
@@ -11,14 +11,14 @@
 
 ---
 
-<a href="../../../src/switch/api/community/events/community_event.py#L13"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/community/events/community_event.py#L13"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>class</kbd> `CommunityEvent`
 
 
 
 
-<a href="../../../src/switch/api/community/events/community_event.py#L14"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/community/events/community_event.py#L14"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `__init__`
 
@@ -48,7 +48,7 @@ __init__(
 
 ---
 
-<a href="../../../src/switch/api/community/events/community_event.py#L59"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/community/events/community_event.py#L59"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `from_json`
 
@@ -62,7 +62,7 @@ from_json(data: Dict[str, Any]) → ~T
 
 ---
 
-<a href="../../../src/switch/api/community/events/community_event.py#L42"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/community/events/community_event.py#L42"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `to_json`
 

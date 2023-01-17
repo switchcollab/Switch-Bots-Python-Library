@@ -1,6 +1,6 @@
 <!-- markdownlint-disable -->
 
-<a href="../../../src/switch/base/switch_client.py#L0"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/base/switch_client.py#L0"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 # <kbd>module</kbd> `base.switch_client`
 
@@ -11,14 +11,14 @@
 
 ---
 
-<a href="../../../src/switch/base/switch_client.py#L10"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/base/switch_client.py#L10"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>class</kbd> `SwitchRestClient`
 
 
 
 
-<a href="../../../src/switch/base/switch_client.py#L11"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/base/switch_client.py#L11"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `__init__`
 
@@ -51,7 +51,7 @@ __init__(base_url: str = None, token: str = None)
 
 ---
 
-<a href="../../../src/switch/base/switch_client.py#L44"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/base/switch_client.py#L44"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `delete`
 
@@ -67,7 +67,7 @@ See :meth:`BaseRequest.delete`.
 
 ---
 
-<a href="../../../src/switch/base/switch_client.py#L81"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/base/switch_client.py#L81"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `do_request`
 
@@ -86,7 +86,7 @@ do_request(
 
 ---
 
-<a href="../../../src/switch/base/switch_client.py#L32"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/base/switch_client.py#L32"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `get`
 
@@ -102,7 +102,7 @@ See :meth:`BaseRequest.get`.
 
 ---
 
-<a href="../../../src/switch/base/switch_client.py#L52"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/base/switch_client.py#L52"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `head`
 
@@ -118,7 +118,7 @@ See :meth:`BaseRequest.head`.
 
 ---
 
-<a href="../../../src/switch/base/switch_client.py#L56"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/base/switch_client.py#L56"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `options`
 
@@ -134,7 +134,7 @@ See :meth:`BaseRequest.options`.
 
 ---
 
-<a href="../../../src/switch/base/switch_client.py#L60"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/base/switch_client.py#L60"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `parse_response`
 
@@ -148,7 +148,7 @@ parse_response(response: Tuple[int, bytes]) → RestResponse[Dict[str, Any]]
 
 ---
 
-<a href="../../../src/switch/base/switch_client.py#L48"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/base/switch_client.py#L48"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `patch`
 
@@ -164,7 +164,7 @@ See :meth:`BaseRequest.patch`.
 
 ---
 
-<a href="../../../src/switch/base/switch_client.py#L36"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/base/switch_client.py#L36"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `post`
 
@@ -180,7 +180,7 @@ See :meth:`BaseRequest.post`.
 
 ---
 
-<a href="../../../src/switch/base/switch_client.py#L72"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/base/switch_client.py#L72"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `prepare_request_data`
 
@@ -194,7 +194,7 @@ prepare_request_data(data: dict) → dict
 
 ---
 
-<a href="../../../src/switch/base/switch_client.py#L75"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/base/switch_client.py#L75"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `prepare_request_headers`
 
@@ -208,7 +208,7 @@ prepare_request_headers(headers: dict) → dict
 
 ---
 
-<a href="../../../src/switch/base/switch_client.py#L40"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/base/switch_client.py#L40"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `put`
 

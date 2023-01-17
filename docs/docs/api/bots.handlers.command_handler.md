@@ -1,6 +1,6 @@
 <!-- markdownlint-disable -->
 
-<a href="../../../src/switch/bots/handlers/command_handler.py#L0"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/bots/handlers/command_handler.py#L0"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 # <kbd>module</kbd> `bots.handlers.command_handler`
 
@@ -15,14 +15,14 @@
 
 ---
 
-<a href="../../../src/switch/bots/handlers/command_handler.py#L18"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/bots/handlers/command_handler.py#L18"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>class</kbd> `CommandHandler`
 
 
 
 
-<a href="../../../src/switch/bots/handlers/command_handler.py#L19"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/bots/handlers/command_handler.py#L19"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `__init__`
 
@@ -44,7 +44,7 @@ __init__(
 
 ---
 
-<a href="../../../src/switch/bots/handlers/command_handler.py#L36"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/bots/handlers/command_handler.py#L36"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `should_handle`
 

@@ -1,6 +1,6 @@
 <!-- markdownlint-disable -->
 
-<a href="../../../src/switch/bots/filters/filter.py#L0"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/bots/filters/filter.py#L0"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 # <kbd>module</kbd> `bots.filters.filter`
 
@@ -23,7 +23,7 @@
 
 ---
 
-<a href="../../../src/switch/bots/filters/filter.py#L66"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/bots/filters/filter.py#L66"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>function</kbd> `create`
 
@@ -42,7 +42,7 @@ create(
 
 ---
 
-<a href="../../../src/switch/bots/filters/filter.py#L72"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/bots/filters/filter.py#L72"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>function</kbd> `all_filter`
 
@@ -57,7 +57,7 @@ all_filter(ctx: BotContext)
 
 ---
 
-<a href="../../../src/switch/bots/filters/filter.py#L80"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/bots/filters/filter.py#L80"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>function</kbd> `self_filter`
 
@@ -72,7 +72,7 @@ self_filter(ctx: BotContext[MessageEvent])
 
 ---
 
-<a href="../../../src/switch/bots/filters/filter.py#L91"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/bots/filters/filter.py#L91"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>function</kbd> `bot_filter`
 
@@ -87,7 +87,7 @@ bot_filter(ctx: BotContext[MessageEvent])
 
 ---
 
-<a href="../../../src/switch/bots/filters/filter.py#L101"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/bots/filters/filter.py#L101"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>function</kbd> `me_filter`
 
@@ -102,7 +102,7 @@ me_filter(ctx: BotContext[MessageEvent])
 
 ---
 
-<a href="../../../src/switch/bots/filters/filter.py#L109"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/bots/filters/filter.py#L109"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>function</kbd> `incoming_filter`
 
@@ -117,7 +117,7 @@ incoming_filter(ctx: BotContext[MessageEvent])
 
 ---
 
-<a href="../../../src/switch/bots/filters/filter.py#L117"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/bots/filters/filter.py#L117"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>function</kbd> `outgoing_filter`
 
@@ -132,7 +132,7 @@ outgoing_filter(ctx: BotContext[MessageEvent])
 
 ---
 
-<a href="../../../src/switch/bots/filters/filter.py#L125"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/bots/filters/filter.py#L125"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>function</kbd> `community_filter`
 
@@ -150,7 +150,7 @@ community_filter(
 
 ---
 
-<a href="../../../src/switch/bots/filters/filter.py#L139"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/bots/filters/filter.py#L139"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>function</kbd> `channel_filter`
 
@@ -168,7 +168,7 @@ channel_filter(
 
 ---
 
-<a href="../../../src/switch/bots/filters/filter.py#L153"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/bots/filters/filter.py#L153"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>function</kbd> `group_filter`
 
@@ -183,7 +183,7 @@ group_filter(ctx: BotContext[Event], group_id: Optional[str, Collection[str]])
 
 ---
 
-<a href="../../../src/switch/bots/filters/filter.py#L167"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/bots/filters/filter.py#L167"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>function</kbd> `user_filter`
 
@@ -198,7 +198,7 @@ user_filter(ctx: BotContext[Event], user_id: Optional[str, Collection[str]])
 
 ---
 
-<a href="../../../src/switch/bots/filters/filter.py#L181"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/bots/filters/filter.py#L181"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>function</kbd> `text`
 
@@ -213,7 +213,7 @@ text(text: Optional[str, Collection[str]])
 
 ---
 
-<a href="../../../src/switch/bots/filters/filter.py#L214"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/bots/filters/filter.py#L214"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>function</kbd> `regex_filter`
 
@@ -228,7 +228,7 @@ regex_filter(regexp: Optional[str, Collection[str]])
 
 ---
 
-<a href="../../../src/switch/bots/filters/filter.py#L11"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/bots/filters/filter.py#L11"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>class</kbd> `Filter`
 
@@ -241,14 +241,14 @@ regex_filter(regexp: Optional[str, Collection[str]])
 
 ---
 
-<a href="../../../src/switch/bots/filters/filter.py#L25"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/bots/filters/filter.py#L25"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>class</kbd> `InvertFilter`
 
 
 
 
-<a href="../../../src/switch/bots/filters/filter.py#L26"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/bots/filters/filter.py#L26"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `__init__`
 
@@ -266,14 +266,14 @@ __init__(base)
 
 ---
 
-<a href="../../../src/switch/bots/filters/filter.py#L34"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/bots/filters/filter.py#L34"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>class</kbd> `AndFilter`
 
 
 
 
-<a href="../../../src/switch/bots/filters/filter.py#L35"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/bots/filters/filter.py#L35"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `__init__`
 
@@ -291,14 +291,14 @@ __init__(base, other)
 
 ---
 
-<a href="../../../src/switch/bots/filters/filter.py#L49"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/bots/filters/filter.py#L49"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>class</kbd> `OrFilter`
 
 
 
 
-<a href="../../../src/switch/bots/filters/filter.py#L50"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/bots/filters/filter.py#L50"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `__init__`
 

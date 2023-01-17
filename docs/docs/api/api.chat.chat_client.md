@@ -1,6 +1,6 @@
 <!-- markdownlint-disable -->
 
-<a href="../../../src/switch/api/chat/chat_client.py#L0"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/chat_client.py#L0"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 # <kbd>module</kbd> `api.chat.chat_client`
 
@@ -14,7 +14,7 @@
 
 ---
 
-<a href="../../../src/switch/api/chat/chat_client.py#L14"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/chat_client.py#L14"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>class</kbd> `ChatClient`
 Chat client 
@@ -28,7 +28,7 @@ Properties:
     - :attr:`user`: :obj:`~switch.api.auth.models.auth_user.AuthUser` : The current user 
     - :attr:`ws`: :obj:`~switch.base.SwitchWSAsyncClient` : The websocket client 
 
-<a href="../../../src/switch/api/chat/chat_client.py#L28"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/chat_client.py#L28"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `__init__`
 
@@ -91,7 +91,7 @@ Get the message controller
 
 ---
 
-<a href="../../../src/switch/api/chat/chat_client.py#L122"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/chat_client.py#L122"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `start`
 
@@ -107,7 +107,7 @@ Start the chat websocket client
 
 ---
 
-<a href="../../../src/switch/api/chat/chat_client.py#L132"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/chat_client.py#L132"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `stop`
 
@@ -119,7 +119,7 @@ Stop the chat websocket client
 
 ---
 
-<a href="../../../src/switch/api/chat/chat_client.py#L69"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/chat_client.py#L69"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `subscribe`
 
@@ -150,7 +150,7 @@ Subscribe to a websocket endpoint
 
 ---
 
-<a href="../../../src/switch/api/chat/chat_client.py#L88"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/chat_client.py#L88"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `subscribe_to_notifications`
 

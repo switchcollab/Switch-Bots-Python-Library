@@ -1,6 +1,6 @@
 <!-- markdownlint-disable -->
 
-<a href="../../../src/switch/api/bot/controllers/bot_controller.py#L0"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/bot/controllers/bot_controller.py#L0"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 # <kbd>module</kbd> `api.bot.controllers.bot_controller`
 
@@ -15,14 +15,14 @@
 
 ---
 
-<a href="../../../src/switch/api/bot/controllers/bot_controller.py#L16"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/bot/controllers/bot_controller.py#L16"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>class</kbd> `BotController`
 Bot controller 
 
 This controller is used to communicate with the bot endpoints. 
 
-<a href="../../../src/switch/api/bot/controllers/bot_controller.py#L22"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/bot/controllers/bot_controller.py#L22"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `__init__`
 
@@ -39,7 +39,7 @@ __init__(client: 'BotClient')
 
 ---
 
-<a href="../../../src/switch/api/bot/controllers/bot_controller.py#L52"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/bot/controllers/bot_controller.py#L52"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `delete_bot_info`
 
@@ -63,7 +63,7 @@ Delete bot info
 
 ---
 
-<a href="../../../src/switch/api/bot/controllers/bot_controller.py#L25"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/bot/controllers/bot_controller.py#L25"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `get_bot_info`
 
@@ -87,7 +87,7 @@ Get bot info
 
 ---
 
-<a href="../../../src/switch/api/bot/controllers/bot_controller.py#L39"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/bot/controllers/bot_controller.py#L39"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `update_bot_info`
 

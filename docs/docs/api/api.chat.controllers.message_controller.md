@@ -1,6 +1,6 @@
 <!-- markdownlint-disable -->
 
-<a href="../../../src/switch/api/chat/controllers/message_controller.py#L0"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/controllers/message_controller.py#L0"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 # <kbd>module</kbd> `api.chat.controllers.message_controller`
 
@@ -15,14 +15,14 @@
 
 ---
 
-<a href="../../../src/switch/api/chat/controllers/message_controller.py#L17"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/controllers/message_controller.py#L17"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>class</kbd> `MessageController`
 Message controller 
 
 This controller is used to communicate with the message endpoints. 
 
-<a href="../../../src/switch/api/chat/controllers/message_controller.py#L24"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/controllers/message_controller.py#L24"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `__init__`
 
@@ -39,7 +39,7 @@ __init__(client: 'ChatClient')
 
 ---
 
-<a href="../../../src/switch/api/chat/controllers/message_controller.py#L354"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/controllers/message_controller.py#L354"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `clear_conversation`
 
@@ -69,7 +69,7 @@ Clear a conversation
 
 ---
 
-<a href="../../../src/switch/api/chat/controllers/message_controller.py#L79"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/controllers/message_controller.py#L79"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `delete_message`
 
@@ -99,7 +99,7 @@ Delete a message
 
 ---
 
-<a href="../../../src/switch/api/chat/controllers/message_controller.py#L99"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/controllers/message_controller.py#L99"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `delete_messages_from_user`
 
@@ -130,7 +130,7 @@ Delete messages from a user
 
 ---
 
-<a href="../../../src/switch/api/chat/controllers/message_controller.py#L62"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/controllers/message_controller.py#L62"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `edit_message`
 
@@ -160,7 +160,7 @@ Edit a message
 
 ---
 
-<a href="../../../src/switch/api/chat/controllers/message_controller.py#L389"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/controllers/message_controller.py#L389"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `flag_message`
 
@@ -190,7 +190,7 @@ Flag a message
 
 ---
 
-<a href="../../../src/switch/api/chat/controllers/message_controller.py#L152"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/controllers/message_controller.py#L152"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `forward_message`
 
@@ -226,7 +226,7 @@ Forward a message to a group or user
 
 ---
 
-<a href="../../../src/switch/api/chat/controllers/message_controller.py#L256"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/controllers/message_controller.py#L256"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `get_channel_chat_history`
 
@@ -266,7 +266,7 @@ Get channel chat history
 
 ---
 
-<a href="../../../src/switch/api/chat/controllers/message_controller.py#L297"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/controllers/message_controller.py#L297"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `get_community_media_files`
 
@@ -296,7 +296,7 @@ Get community media files
 
 ---
 
-<a href="../../../src/switch/api/chat/controllers/message_controller.py#L313"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/controllers/message_controller.py#L313"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `get_community_media_files_by_status`
 
@@ -332,7 +332,7 @@ Get community media files by status
 
 ---
 
-<a href="../../../src/switch/api/chat/controllers/message_controller.py#L370"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/controllers/message_controller.py#L370"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `get_flag_messages`
 
@@ -362,7 +362,7 @@ Get flagged messages
 
 ---
 
-<a href="../../../src/switch/api/chat/controllers/message_controller.py#L215"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/controllers/message_controller.py#L215"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `get_group_chat_history`
 
@@ -402,7 +402,7 @@ Get group chat history
 
 ---
 
-<a href="../../../src/switch/api/chat/controllers/message_controller.py#L195"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/controllers/message_controller.py#L195"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `get_message`
 
@@ -432,7 +432,7 @@ Get a message by id
 
 ---
 
-<a href="../../../src/switch/api/chat/controllers/message_controller.py#L27"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/controllers/message_controller.py#L27"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `get_messages`
 
@@ -462,7 +462,7 @@ Get messages for a user
 
 ---
 
-<a href="../../../src/switch/api/chat/controllers/message_controller.py#L120"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/controllers/message_controller.py#L120"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `get_messages_between_users`
 
@@ -500,7 +500,7 @@ Get messages between two users
 
 ---
 
-<a href="../../../src/switch/api/chat/controllers/message_controller.py#L409"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/controllers/message_controller.py#L409"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `get_unread_messages_count`
 
@@ -524,7 +524,7 @@ Get unread messages
 
 ---
 
-<a href="../../../src/switch/api/chat/controllers/message_controller.py#L335"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/controllers/message_controller.py#L335"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `get_user_media_files`
 
@@ -556,7 +556,7 @@ Get user media files
 
 ---
 
-<a href="../../../src/switch/api/chat/controllers/message_controller.py#L45"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/api/chat/controllers/message_controller.py#L45"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `send_message`
 

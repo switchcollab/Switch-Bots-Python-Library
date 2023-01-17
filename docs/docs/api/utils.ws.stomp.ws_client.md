@@ -1,6 +1,6 @@
 <!-- markdownlint-disable -->
 
-<a href="../../../src/switch/utils/ws/stomp/ws_client.py#L0"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/ws/stomp/ws_client.py#L0"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 # <kbd>module</kbd> `utils.ws.stomp.ws_client`
 
@@ -14,14 +14,14 @@
 
 ---
 
-<a href="../../../src/switch/utils/ws/stomp/ws_client.py#L12"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/ws/stomp/ws_client.py#L12"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>class</kbd> `WsClient`
 
 
 
 
-<a href="../../../src/switch/utils/ws/stomp/ws_client.py#L14"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/ws/stomp/ws_client.py#L14"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `__init__`
 
@@ -38,7 +38,7 @@ __init__(url: str)
 
 ---
 
-<a href="../../../src/switch/utils/ws/stomp/ws_client.py#L203"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/ws/stomp/ws_client.py#L203"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `ack`
 
@@ -52,7 +52,7 @@ ack(message_id, subscription, headers)
 
 ---
 
-<a href="../../../src/switch/utils/ws/stomp/ws_client.py#L133"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/ws/stomp/ws_client.py#L133"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `connect`
 
@@ -74,7 +74,7 @@ connect(
 
 ---
 
-<a href="../../../src/switch/utils/ws/stomp/ws_client.py#L156"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/ws/stomp/ws_client.py#L156"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `disconnect`
 
@@ -88,7 +88,7 @@ disconnect(disconnectCallback=None, headers=None)
 
 ---
 
-<a href="../../../src/switch/utils/ws/stomp/ws_client.py#L210"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/ws/stomp/ws_client.py#L210"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `nack`
 
@@ -102,7 +102,7 @@ nack(message_id, subscription, headers)
 
 ---
 
-<a href="../../../src/switch/utils/ws/stomp/ws_client.py#L171"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/ws/stomp/ws_client.py#L171"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `send`
 
@@ -116,7 +116,7 @@ send(destination, headers=None, body=None)
 
 ---
 
-<a href="../../../src/switch/utils/ws/stomp/ws_client.py#L53"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/ws/stomp/ws_client.py#L53"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `start_heartbeat`
 
@@ -130,7 +130,7 @@ start_heartbeat()
 
 ---
 
-<a href="../../../src/switch/utils/ws/stomp/ws_client.py#L179"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/ws/stomp/ws_client.py#L179"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `subscribe`
 
@@ -144,7 +144,7 @@ subscribe(destination, callback=None, headers=None)
 
 ---
 
-<a href="../../../src/switch/utils/ws/stomp/ws_client.py#L197"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/ws/stomp/ws_client.py#L197"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `unsubscribe`
 

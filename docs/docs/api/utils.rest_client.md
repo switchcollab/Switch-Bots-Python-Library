@@ -1,6 +1,6 @@
 <!-- markdownlint-disable -->
 
-<a href="../../../src/switch/utils/rest_client.py#L0"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/rest_client.py#L0"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 # <kbd>module</kbd> `utils.rest_client`
 
@@ -14,14 +14,14 @@
 
 ---
 
-<a href="../../../src/switch/utils/rest_client.py#L17"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/rest_client.py#L17"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>class</kbd> `RestClient`
 
 
 
 
-<a href="../../../src/switch/utils/rest_client.py#L18"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/rest_client.py#L18"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `__init__`
 
@@ -45,7 +45,7 @@ __init__(
 
 ---
 
-<a href="../../../src/switch/utils/rest_client.py#L82"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/rest_client.py#L82"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `delete`
 
@@ -57,7 +57,7 @@ See :meth:`BaseRequest.delete`.
 
 ---
 
-<a href="../../../src/switch/utils/rest_client.py#L110"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/rest_client.py#L110"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `do_request`
 
@@ -76,7 +76,7 @@ do_request(
 
 ---
 
-<a href="../../../src/switch/utils/rest_client.py#L70"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/rest_client.py#L70"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `get`
 
@@ -88,7 +88,7 @@ See :meth:`BaseRequest.get`.
 
 ---
 
-<a href="../../../src/switch/utils/rest_client.py#L90"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/rest_client.py#L90"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `head`
 
@@ -100,7 +100,7 @@ See :meth:`BaseRequest.head`.
 
 ---
 
-<a href="../../../src/switch/utils/rest_client.py#L58"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/rest_client.py#L58"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `initialize`
 
@@ -114,7 +114,7 @@ initialize() → None
 
 ---
 
-<a href="../../../src/switch/utils/rest_client.py#L94"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/rest_client.py#L94"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `options`
 
@@ -126,7 +126,7 @@ See :meth:`BaseRequest.options`.
 
 ---
 
-<a href="../../../src/switch/utils/rest_client.py#L126"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/rest_client.py#L126"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `parse_json_payload`
 
@@ -150,7 +150,7 @@ Parse the JSON returned from Switch. Tip:  By default, this method uses the stan
 
 ---
 
-<a href="../../../src/switch/utils/rest_client.py#L86"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/rest_client.py#L86"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `patch`
 
@@ -162,7 +162,7 @@ See :meth:`BaseRequest.patch`.
 
 ---
 
-<a href="../../../src/switch/utils/rest_client.py#L74"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/rest_client.py#L74"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `post`
 
@@ -174,7 +174,7 @@ See :meth:`BaseRequest.post`.
 
 ---
 
-<a href="../../../src/switch/utils/rest_client.py#L100"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/rest_client.py#L100"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `prepare_request_data`
 
@@ -188,7 +188,7 @@ prepare_request_data(data: dict) → str | None
 
 ---
 
-<a href="../../../src/switch/utils/rest_client.py#L104"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/rest_client.py#L104"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `prepare_request_headers`
 
@@ -202,7 +202,7 @@ prepare_request_headers(headers: dict) → dict
 
 ---
 
-<a href="../../../src/switch/utils/rest_client.py#L78"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/rest_client.py#L78"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `put`
 
@@ -214,7 +214,7 @@ See :meth:`BaseRequest.put`.
 
 ---
 
-<a href="../../../src/switch/utils/rest_client.py#L63"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/rest_client.py#L63"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `shutdown`
 

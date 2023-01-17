@@ -1,6 +1,6 @@
 <!-- markdownlint-disable -->
 
-<a href="../../../src/switch/types.py#L0"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/types.py#L0"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 # <kbd>module</kbd> `types`
 Define names for built-in types that aren't directly accessible as a builtin. 
@@ -8,7 +8,7 @@ Define names for built-in types that aren't directly accessible as a builtin.
 
 ---
 
-<a href="../../../src/types/new_class#L67"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/types/new_class#L67"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>function</kbd> `new_class`
 
@@ -21,7 +21,7 @@ Create a class object dynamically using the appropriate metaclass.
 
 ---
 
-<a href="../../../src/types/resolve_bases#L77"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/types/resolve_bases#L77"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>function</kbd> `resolve_bases`
 
@@ -34,7 +34,7 @@ Resolve MRO entries dynamically as specified by PEP 560.
 
 ---
 
-<a href="../../../src/types/prepare_class#L98"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/types/prepare_class#L98"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>function</kbd> `prepare_class`
 
@@ -51,7 +51,7 @@ Returns (metaclass, namespace, kwds) as a 3-tuple
 
 ---
 
-<a href="../../../src/types/coroutine#L247"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/types/coroutine#L247"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>function</kbd> `coroutine`
 
@@ -64,7 +64,7 @@ Convert regular generator function to a coroutine.
 
 ---
 
-<a href="../../../src/switch/types.py"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/types.py"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>class</kbd> `DynamicClassAttribute`
 Route attribute access on a class to __getattr__. 
@@ -75,7 +75,7 @@ This allows one to have properties active on an instance, and have virtual attri
 
 Subclass from this to use a different method of accessing virtual attributes and still be treated properly by the inspect module. (Enum uses this since Python 3.10 .) 
 
-<a href="../../../src/types/__init__#L164"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/types/__init__#L164"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `__init__`
 
@@ -92,7 +92,7 @@ __init__(fget=None, fset=None, fdel=None, doc=None)
 
 ---
 
-<a href="../../../src/types/deleter#L204"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/types/deleter#L204"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `deleter`
 
@@ -106,7 +106,7 @@ deleter(fdel)
 
 ---
 
-<a href="../../../src/types/getter#L193"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/types/getter#L193"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `getter`
 
@@ -120,7 +120,7 @@ getter(fget)
 
 ---
 
-<a href="../../../src/types/setter#L199"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/types/setter#L199"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `setter`
 
@@ -135,7 +135,7 @@ setter(fset)
 
 ---
 
-<a href="../../../src/switch/types.py"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/types.py"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>class</kbd> `GenericAlias`
 Represent a PEP 585 generic type 
@@ -148,7 +148,7 @@ E.g. for t = list[int], t.__origin__ is list and t.__args__ is (int,).
 
 ---
 
-<a href="../../../src/switch/types.py"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/types.py"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>class</kbd> `SimpleNamespace`
 A simple attribute-based namespace. 
@@ -161,7 +161,7 @@ SimpleNamespace(**kwargs)
 
 ---
 
-<a href="../../../src/switch/types.py"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/types.py"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>class</kbd> `UnionType`
 Represent a PEP 604 union type 
@@ -174,7 +174,7 @@ E.g. for int | str
 
 ---
 
-<a href="../../../src/switch/types.py#L4"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/types.py#L4"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>class</kbd> `EventType`
 Represents the type of a event. 

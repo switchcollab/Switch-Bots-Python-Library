@@ -1,6 +1,6 @@
 <!-- markdownlint-disable -->
 
-<a href="../../../src/switch/utils/ws/asyncstomp/async_ws_subscription.py#L0"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/ws/asyncstomp/async_ws_subscription.py#L0"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 # <kbd>module</kbd> `utils.ws.asyncstomp.async_ws_subscription`
 
@@ -11,14 +11,14 @@
 
 ---
 
-<a href="../../../src/switch/utils/ws/asyncstomp/async_ws_subscription.py#L4"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/ws/asyncstomp/async_ws_subscription.py#L4"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ## <kbd>class</kbd> `AsyncWsSubscription`
 
 
 
 
-<a href="../../../src/switch/utils/ws/asyncstomp/async_ws_subscription.py#L5"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/ws/asyncstomp/async_ws_subscription.py#L5"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `__init__`
 
@@ -41,7 +41,7 @@ __init__(
 
 ---
 
-<a href="../../../src/switch/utils/ws/asyncstomp/async_ws_subscription.py#L18"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/ws/asyncstomp/async_ws_subscription.py#L18"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `receive`
 
@@ -55,7 +55,7 @@ receive(message)
 
 ---
 
-<a href="../../../src/switch/utils/ws/asyncstomp/async_ws_subscription.py#L22"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/ws/asyncstomp/async_ws_subscription.py#L22"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `send`
 
@@ -69,7 +69,7 @@ send(body: str, headers: dict[str, str] = None)
 
 ---
 
-<a href="../../../src/switch/utils/ws/asyncstomp/async_ws_subscription.py#L13"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/ws/asyncstomp/async_ws_subscription.py#L13"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `start`
 
@@ -83,7 +83,7 @@ start()
 
 ---
 
-<a href="../../../src/switch/utils/ws/asyncstomp/async_ws_subscription.py#L26"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
+<a href="https://github.com/switchcollab/Switch-Bots-Python-Library/tree/main/src/switch/utils/ws/asyncstomp/async_ws_subscription.py#L26"><img align="right" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"/></a>
 
 ### <kbd>method</kbd> `unsubscribe`
 
