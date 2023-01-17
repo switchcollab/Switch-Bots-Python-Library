@@ -11,6 +11,8 @@ from switch import (
     CommandEvent,
     InlineMarkup,
     InlineKeyboardButton,
+    CommunityUpdatedEvent,
+    MessageHandler,
 )
 
 
@@ -20,7 +22,7 @@ load_dotenv(env_file)
 
 TOKEN = os.getenv("TOKEN")
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 logger = logging.getLogger(__name__)
 
@@ -85,6 +87,11 @@ async def query_callback_handler(ctx: BotContext[CallbackQueryEvent]):
     m.message = f"Thank you! I received your callback: {ctx.event.callback_query.data}"
     m.inline_markup = None
     await ctx.edit_message(m)
+
+
+@app.on_community_update()
+async def community_update_handler(ctx: BotContext[CommunityUpdatedEvent]):
+    print(ctx.event.community_id + " was updated")
 
 
 app.run()

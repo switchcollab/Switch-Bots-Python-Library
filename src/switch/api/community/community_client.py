@@ -1,11 +1,12 @@
 import json
 from switch.api.auth.models.auth_user import AuthUser
-from switch.api.community.events.community_event import CommunityEvent
+from switch.api.community.events import *
 from switch.base import SwitchRestClient, SwitchWSAsyncClient
 from switch.config import APP_CONFIG
 from switch.error import SwitchError
 from switch.utils.ws.asyncstomp.async_ws_subscription import AsyncWsSubscription
 from switch.utils.ws.common.ws_message import WsMessage
+from switch.types import EventType
 
 
 class CommunityClient(SwitchRestClient):
@@ -52,8 +53,31 @@ class CommunityClient(SwitchRestClient):
         )
         return subscription
 
-    def _parse_event(self, raw_message: WsMessage):
+    def _parse_event(self, raw_message: WsMessage) -> CommunityEvent:
         json_data = json.loads(raw_message.body)
+        type = json_data.get("type", "COMMUNITY")
+
+        if type == EventType.CHANNEL_CREATE.value:
+            return ChannelCreatedEvent.build_from_json(json_data)
+        elif type == EventType.CHANNEL_UPDATE.value:
+            return ChannelUpdatedEvent.build_from_json(json_data)
+        elif type == EventType.CHANNEL_DELETE.value:
+            return ChannelDeletedEvent.build_from_json(json_data)
+        elif type == EventType.COMMUNITY_UPDATE.value:
+            return CommunityUpdatedEvent.build_from_json(json_data)
+        elif type == EventType.GROUP_CREATE.value:
+            return GroupCreatedEvent.build_from_json(json_data)
+        elif type == EventType.GROUP_UPDATE.value:
+            return GroupUpdatedEvent.build_from_json(json_data)
+        elif type == EventType.GROUP_DELETE.value:
+            return GroupDeletedEvent.build_from_json(json_data)
+        elif type == EventType.USER_BAN.value:
+            return UserBannedEvent.build_from_json(json_data)
+        elif type == EventType.MEMBER_JOIN.value:
+            return MemberJoinedEvent.build_from_json(json_data)
+        elif type == EventType.MEMBER_LEAVE.value:
+            return MemberLeftEvent.build_from_json(json_data)
+
         return CommunityEvent.build_from_json(json_data)
 
     async def start(self):

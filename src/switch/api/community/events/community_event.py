@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Generic, Optional, TypeVar
 from switch.api.common.events.event import Event
 from switch.api.community.models.channel import Channel
 from switch.api.community.models.community import Community
@@ -7,11 +7,13 @@ from switch.api.common.models.user import User
 from switch.types import EventType
 from switch.utils.types import JSONDict
 
+T = TypeVar("T", bound="CommunityEvent")
 
-class CommunityEvent(Event):
+
+class CommunityEvent(Event, Generic[T]):
     def __init__(
         self,
-        event_type: Optional[EventType] = None,
+        type: Optional[EventType] = None,
         community_id: Optional[str] = None,
         community: Optional[Community] = None,
         group_id: Optional[str] = None,
@@ -25,7 +27,7 @@ class CommunityEvent(Event):
         user: Optional[User] = None,
     ):
         super().__init__(
-            event_type=event_type,
+            type=type,
             data=data,
             action_by=action_by,
             action_by_id=action_by_id,
@@ -34,12 +36,6 @@ class CommunityEvent(Event):
             group=group,
             group_id=group_id,
         )
-        self.community_id = community_id
-        self.community = community
-        self.group_id = group_id
-        self.group = group
-        self.channel_id = channel_id
-        self.channel = channel
         self.user_id = user_id
         self.user = user
 
@@ -60,7 +56,7 @@ class CommunityEvent(Event):
         )
         return d
 
-    def from_json(self, data: JSONDict) -> "CommunityEvent":
+    def from_json(self, data: JSONDict) -> T:
         if data is not None:
             super().from_json(data)
             details = data.get("details") or {}

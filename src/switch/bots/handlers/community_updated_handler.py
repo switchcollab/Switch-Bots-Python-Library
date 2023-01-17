@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING, Optional, TypeVar
-from switch.api.community.events import CommunityEvent
+from switch.api.community.events import CommunityUpdatedEvent
 from switch.bots.filters.filter import Filter
 
 from switch.bots import BotContext
@@ -16,8 +16,8 @@ ResType = TypeVar("ResType")
 class CommunityUpdatedHandler(EventHandler):
     def __init__(
         self,
-        callback: HandlerCallback[BotContext[CommunityEvent], ResType],
+        callback: HandlerCallback[BotContext[CommunityUpdatedEvent], ResType],
         filter: Optional[Filter] = None,
         **kwargs,
     ):
-        super().__init__(EventType.UPDATE, callback, filter, **kwargs)
+        super().__init__(EventType.COMMUNITY_UPDATE, callback, filter, **kwargs)

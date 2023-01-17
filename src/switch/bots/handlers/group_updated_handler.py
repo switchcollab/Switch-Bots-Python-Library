@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Optional, TypeVar
 from switch.api.chat.events import MessageEvent
-from switch.api.community.events import CommunityEvent
+from switch.api.community.events import GroupUpdatedEvent
 from switch.bots.filters.filter import Filter
 
 from switch.bots.handlers import BaseHandler
@@ -18,7 +18,7 @@ ResType = TypeVar("ResType")
 class GroupUpdatedHandler(EventHandler):
     def __init__(
         self,
-        callback: HandlerCallback[BotContext[CommunityEvent], ResType],
+        callback: HandlerCallback[BotContext[GroupUpdatedEvent], ResType],
         filter: Optional[Filter] = None,
         **kwargs,
     ):

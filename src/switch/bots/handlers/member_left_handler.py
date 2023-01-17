@@ -1,9 +1,7 @@
 from typing import TYPE_CHECKING, Optional, TypeVar
-from switch.api.chat.events import MessageEvent
-from switch.api.community.events import CommunityEvent
+from switch.api.community.events import MemberLeftEvent
 from switch.bots.filters.filter import Filter
 
-from switch.bots.handlers import BaseHandler
 from switch.bots import BotContext
 from .event_handler import EventHandler
 from switch.types import EventType
@@ -18,7 +16,7 @@ ResType = TypeVar("ResType")
 class MemberLeftHandler(EventHandler):
     def __init__(
         self,
-        callback: HandlerCallback[BotContext[CommunityEvent], ResType],
+        callback: HandlerCallback[BotContext[MemberLeftEvent], ResType],
         filter: Optional[Filter] = None,
         **kwargs,
     ):

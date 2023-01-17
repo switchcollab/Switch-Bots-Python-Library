@@ -34,7 +34,8 @@ export default function Home() {
       description="Description will go into a meta tag in <head />">
       <HomepageHeader />
       <main>
-        <HomepageFeatures />
+        {/* <HomepageFeatures /> */}
+        {/* <h1>Easy to use python wrapper for switch</h1> */}
       </main>
     </Layout>
   );
