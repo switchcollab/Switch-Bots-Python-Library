@@ -7,7 +7,7 @@ from switch.utils.types import JSONDict
 class InlineKeyboardButton(SwitchObject):
     def __init__(
         self,
-        text: str,
+        text: Optional[str] = None,
         url: Optional[str] = None,
         callback_data: Optional[str] = None,
     ):

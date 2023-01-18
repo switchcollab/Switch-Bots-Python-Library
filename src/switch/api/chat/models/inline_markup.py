@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, List, Optional
 from .inline_keyboard_color import InlineKeyboardColor
 from .inline_keyboard_size import InlineKeyboardSize
+from .inline_keyboard_button import InlineKeyboardButton
 from switch.base import SwitchObject
 
 from switch.utils.types import JSONDict
@@ -42,12 +43,13 @@ class InlineMarkup(SwitchObject):
     def from_json(self, data: JSONDict) -> "InlineMarkup":
         if data is None or data.get("inlineKeyboard") is None:
             return None
-        self.inline_keyboard = (
+        self._color = InlineKeyboardColor(data.get("color") or "RANDOM")
+        self._size = InlineKeyboardSize(data.get("size") or "DEFAULT")
+        self._inline_keyboard = (
             [
                 [InlineKeyboardButton.build_from_json(x) for x in row]
                 for row in data.get("inlineKeyboard") or []
             ],
         )
-        self._color = InlineKeyboardColor(data.get("color") or "RANDOM")
-        self._size = InlineKeyboardSize(data.get("size") or "DEFAULT")
+
         return self
