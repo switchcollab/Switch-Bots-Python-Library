@@ -10,7 +10,7 @@ To listen to an event, you need to register [event handlers](../fundamentals/han
 
 Each handler deals with a specific event and once a matching update arrives from the app, your registered callback function will be called back by the framework and its body executed.
 
-## Regisering a handler
+## Registering a handler
 
 To explain how handlers work let’s examine the one which will be in charge for handling `Message` updates coming from all around your chats. Every other kind of handler shares the same setup logic and you should not have troubles settings them up once you learn from this section.
 

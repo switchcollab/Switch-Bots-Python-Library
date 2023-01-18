@@ -83,8 +83,13 @@ class BotApp(App, Decorators):
     async def process_event(self, ctx: BotContext):
         for handler in self.handlers:
             if await handler.should_handle(ctx):
-                await handler.handle(ctx)
-                break
+                try:
+                    await handler.handle(ctx)
+                except Exception as e:
+                    logger.exception(f"Error while processing event: {e}")
+                    raise e
+                finally:
+                    break
 
     async def on_community_event(self, evt: CommunityEvent):
         if evt is not None and isinstance(evt, Event):
