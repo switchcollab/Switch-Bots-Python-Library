@@ -74,7 +74,7 @@ class MessageController:
         data = message.to_json_request()
         _logger.debug("Editing message %s", json.dumps(data))
         response = await self.client.put(f"{BASE_PATH}?id={message.id}", data=data)
-        return Message.build_from_json(response.data["message"])
+        return message
 
     async def delete_message(self, message: int | Message) -> bool:
         """Delete a message

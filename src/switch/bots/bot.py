@@ -90,6 +90,10 @@ class Bot(AuthUser, ApiClient):
         Returns:
             :obj:`switch.api.chat.models.Message`: The prepared message.
         """
-        message = Message(receiver_id=message.user_id, message=message.message)
+
+        receiver_id = message.user_id if message.user_id != self.id else message.receiver_id
+        sender_id = self.id
+
+        message = Message(receiver_id=receiver_id, message=sender_id)
         message.user_id = self.id
         return message

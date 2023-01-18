@@ -29,7 +29,7 @@ class CallbackQueryEvent(CommandEvent):
         user: Optional[User] = None,
         message: Optional[Message] = None,
         command: Optional[str] = None,
-        args: Optional[str] = None,
+        params: Optional[str] = None,
         callback_data: Optional[JSONDict] = None,
     ):
         super().__init__(
@@ -47,12 +47,12 @@ class CallbackQueryEvent(CommandEvent):
             user=user,
             message=message,
             command=command,
-            args=args,
+            params=params,
         )
         self.callback_data = callback_data
 
     def from_json(self, data: JSONDict) -> "CallbackQueryEvent":
         super().from_json(data)
         if data is not None:
-            self.callback_data = data.get("callback_data")
+            self.callback_data = self.data.get("callbackData")
         return self

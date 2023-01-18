@@ -26,6 +26,6 @@ class CallbackQueryHandler(EventHandler):
     async def should_handle(self, context: BotContext[CallbackQueryEvent]) -> bool:
         return (
             await super().should_handle(context)
-            and context.event.callback_query is not None
+            and context.event.callback_data is not None
             and context.event.message is not None
         )

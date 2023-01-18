@@ -88,8 +88,8 @@ async def message_handler(ctx: BotContext[MessageEvent]):
 
 @app.on_callback_query()
 async def query_callback_handler(ctx: BotContext[CallbackQueryEvent]):
-    m = await ctx.prepare_response_message(ctx.event.callback_query.message)
-    m.message = f"Thank you! I received your callback: {ctx.event.callback_query.data}"
+    m = ctx.event.message
+    m.message = f"Thank you! I received your callback: {ctx.event.callback_data}"
     m.inline_markup = None
     await ctx.edit_message(m)
 
