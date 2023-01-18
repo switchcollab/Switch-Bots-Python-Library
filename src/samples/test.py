@@ -12,13 +12,8 @@ from switch import (
     InlineMarkup,
     InlineKeyboardButton,
     CommunityUpdatedEvent,
-    MessageHandler,
-    is_bot,
-    community,
-    channel,
-    user,
-    text,
-    regexp,
+    InlineKeyboardColor,
+    InlineKeyboardSize,
 )
 
 
@@ -45,7 +40,7 @@ app = BotApp(
 )
 
 
-@app.on_command("buttons", text("buttons") & (is_bot | user("admin")))
+@app.on_command("buttons")
 async def buttons_handler(ctx: BotContext[CommandEvent]):
     m = await ctx.bot.prepare_response_message(ctx.event.message)
     m.message = f"Please select an option:"
@@ -61,7 +56,11 @@ async def buttons_handler(ctx: BotContext[CommandEvent]):
         ],
     ]
 
-    m.inline_markup = InlineMarkup(inline_keyboard=inline_keyboard)
+    m.inline_markup = InlineMarkup(
+        inline_keyboard=inline_keyboard,
+        color=InlineKeyboardColor.RANDOM,
+        size=InlineKeyboardSize.DEFAULT,
+    )
     await ctx.bot.send_message(m)
 
 
