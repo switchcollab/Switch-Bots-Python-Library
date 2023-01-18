@@ -119,7 +119,7 @@ const config = {
               // },
               {
                 label: 'GitHub',
-                href: 'https://github.com/switchcollab/Switch-Bots-Python-Librarys',
+                href: 'https://github.com/switchcollab/Switch-Bots-Python-Library',
               },
             ],
           },
