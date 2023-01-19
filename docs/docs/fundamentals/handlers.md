@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Handlers
 
-Handlers are the way that PySwitch interacts with the outside world. Handlers are functions that are called when an event is triggered. Handlers are registered with the calling `add_hanlder` funciton of app or using [`decorators`](./decorators).
+Handlers are the way that SwiBots interacts with the outside world. Handlers are functions that are called when an event is triggered. Handlers are registered with the calling `add_hanlder` funciton of app or using [`decorators`](./decorators).
 
 ## Handler functions
 
@@ -40,7 +40,7 @@ Handlers are registered with the `add_handler` function of the app. The function
 This is an example of how to register a handler function:
 
 ```python
-from pyswitch import BotApp, MessageHandler
+from swibots import BotApp, MessageHandler
 
 app = BotApp("token", "your bot description")
 

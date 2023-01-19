@@ -29,7 +29,7 @@ To add a filter to a handler, add the filter as a parameter to the handler class
 ## Filter examples
 
 ```python
-from pyswitch import BotApp, MessageHandler, is_bot, community, channel, user, text, regex
+from swibots import BotApp, MessageHandler, is_bot, community, channel, user, text, regex
 
 app = BotApp("token", "your bot description")
 

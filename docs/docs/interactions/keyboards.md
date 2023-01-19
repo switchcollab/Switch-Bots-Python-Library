@@ -32,7 +32,7 @@ Here is an example of how to create an inline keyboard, add it to a message and 
 
 ```python
 
-from pyswitch import (
+from swibots import (
     BotApp,
     BotContext,
     CallbackQueryEvent,

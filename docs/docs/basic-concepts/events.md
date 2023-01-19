@@ -19,7 +19,7 @@ To explain how handlers work let’s examine the one which will be in charge for
 The most elegant way to register a message handler is by using the `on_message()` decorator:
 
 ```python
-from pyswitch import BotApp, BotContext,  MessageEvent
+from swibots import BotApp, BotContext,  MessageEvent
 
 app = BotApp("TOKEN")
 
@@ -41,7 +41,7 @@ In the last line we see again the `run()` method, this time used without any arg
 If you prefer to use the `add_handler()` method instead of the decorator, you can do so by calling `add_hanlder` of the app with an instance of `MessageHandler` object:
 
 ```python
-from pyswitch import BotApp, BotContext, MessageEvent, MessageHandler
+from swibots import BotApp, BotContext, MessageEvent, MessageHandler
 
 app = BotApp("TOKEN")
 

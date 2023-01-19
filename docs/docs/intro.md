@@ -4,18 +4,16 @@ sidebar_position: 1
 
 # Quick start
 
-Let's discover **PySwitch in less than 5 minutes**.
+Let's discover **SwiBots in less than 5 minutes**.
 
 ## Getting Started
 
-You can start building your first app with PySwitch in less than 5 minutes.
+You can start building your first app with SwiBots in less than 5 minutes.
 
-1. Clone the PySwitch repository and install the requirements
+1. Install swibots library
 
 ```bash
-git clone https://github.com/switchcollab/Switch-Bots-Python-Library
-cd Switch-Bots-Python-Library/src
-python install -r requirements.txt
+pip install swibots
 ```
 
 
@@ -24,7 +22,7 @@ python install -r requirements.txt
 2. Open the editor of your choice and create a python file echobot.py (or whatever name you want!), and paste the following code:
 
 ```python title="echobot.py"
-from pyswitch import (
+from swibots import (
     BotApp,
     BotContext,
     MessageEvent
