@@ -10,7 +10,7 @@ except (IOError, ImportError):
 
 setup(
     name="swibots",
-    version="1.0.1",
+    version="1.0.0",
     packages=find_packages(),
     long_description=long_description,
     description="Switch bot api",

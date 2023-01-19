@@ -1,4 +1,4 @@
-![Logo](https://raw.githubusercontent.com/switchcollab/Switch-Bots-Python-Library/main/docs/static/img/switch-logo.png "Swibots")
+![Logo](https://raw.githubusercontent.com/switchcollab/Switch-Bots-Python-Library/main/docs/static/img/switch-logo.png)
 # SwiBots
 
 Python library for switch app
