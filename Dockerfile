@@ -27,6 +27,6 @@ RUN pip install wheel && \
     pip install setuptools && \
     pip install twine
 
-RUN pip install -Ur $WORKDIR/src/requirements.txt
+RUN pip install -Ur $WORKDIR/src/requirements-dev.txt
 
 CMD [ "/bin/sh", "-c", "while sleep 1000; do :; done"]
