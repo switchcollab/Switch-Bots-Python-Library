@@ -16,6 +16,17 @@ You can start building your first app with SwiBots in less than 5 minutes.
 pip install swibots
 ```
 
+:::caution
+This library requires Python 3.10 or higher.
+Please make sure you have the latest version of Python installed.
+Check your Python version with the following command:
+
+```bash
+python --version
+```
+
+If you don't have Python 3.10 or higher, you can download it from [here](https://www.python.org/downloads/). (Follow the instructions for your operating system)
+:::
 
 
 
