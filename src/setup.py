@@ -13,14 +13,14 @@ except (IOError, ImportError):
 
 setup(
     name="swibots",
-    version="1.0.1",
+    version="1.0.2",
     packages=find_packages(),
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/switchcollab/Switch-Bots-Python-Library",
     description="Switch bot api",
-    author="pablor21",
-    author_email="pablo@pramirez.dev",
+    author="switchadmin",
+    author_email="support@switch.pe",
     license="LGPLv3",
     install_requires=requires,
 )
