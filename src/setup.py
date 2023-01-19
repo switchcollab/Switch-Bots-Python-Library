@@ -13,7 +13,7 @@ except (IOError, ImportError):
 
 setup(
     name="swibots",
-    version="1.0.4",
+    version="1.0.6",
     packages=find_packages(),
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -22,5 +22,6 @@ setup(
     author="switchadmin",
     author_email="support@switch.pe",
     license="LGPLv3",
+    python_requires=">=3.10",
     install_requires=requires,
 )
