@@ -24,7 +24,7 @@ python install -r requirements.txt
 2. Open the editor of your choice and create a python file echobot.py (or whatever name you want!), and paste the following code:
 
 ```python title="echobot.py"
-from switch import (
+from pyswitch import (
     BotApp,
     BotContext,
     MessageEvent

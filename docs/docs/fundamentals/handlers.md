@@ -40,7 +40,7 @@ Handlers are registered with the `add_handler` function of the app. The function
 This is an example of how to register a handler function:
 
 ```python
-from switch import BotApp, MessageHandler
+from pyswitch import BotApp, MessageHandler
 
 app = BotApp("token", "your bot description")
 

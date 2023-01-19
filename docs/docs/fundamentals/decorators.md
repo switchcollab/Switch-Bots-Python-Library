@@ -31,7 +31,7 @@ Let's say that you have defined your app as `app`, then you can use the followin
 
 
 ```python
-from switch import BotApp, MessageHandler
+from pyswitch import BotApp, MessageHandler
 
 app = BotApp("token", "your bot description")
 

@@ -12,7 +12,7 @@ and calling the API methods
 Making API calls with PySwitch is very simple. Here’s a basic example we are going to examine step by step:
 
 ```python
-from switch import BotApp
+from pyswitch import BotApp
 
 app = BotApp("TOKEN")
 
@@ -26,10 +26,10 @@ app.run(main())
 
 ## Step by step
 
-1. Import the BotApp from switch, you will import all your classes from this package
+1. Import the BotApp from pyswitch, you will import all your classes from this package
 
 ```python
-from switch import BotApp
+from pyswitch import BotApp
 ```
 
 2. Instantiate the class with your TOKEN
@@ -60,7 +60,7 @@ The async with statement starts a context manager, which is used as a shortcut f
 Below there’s the same example as above, but without the use of the context manager:
 
 ```python
-from switch import BotApp
+from pyswitch import BotApp
 
 app = BotApp("TOKEN")
 
@@ -81,7 +81,7 @@ Alternatively to the run() method, you can use Python’s asyncio.run() to execu
 
 ```python
 import asyncio
-from switch import BotApp
+from pyswitch import BotApp
 
 async def main():
     app = BotApp("TOKEN")

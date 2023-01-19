@@ -20,7 +20,7 @@ Never share your AuthKey or commit it to any source code versioning system!
 Having the API key from the previous step, we can now begin to configure a PySwitch project: pass your API key to PySwitch by using the token parameter of the BotApp class:
 
 ```python
-from switch import BotApp
+from pyswitch import BotApp
 
 TOKEN = "MY SUPER SECRET TOKEN"
 

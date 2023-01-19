@@ -2,7 +2,7 @@ import logging
 import os
 from dotenv import load_dotenv
 
-from switch import BotApp, RegisterCommand, BotContext, MessageEvent, CallbackQueryEvent
+from pyswitch import BotApp, RegisterCommand, BotContext, MessageEvent, CallbackQueryEvent
 
 
 env_file = os.path.join(os.path.dirname(__file__), "..", "..", ".env")

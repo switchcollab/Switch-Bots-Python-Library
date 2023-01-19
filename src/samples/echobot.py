@@ -3,14 +3,14 @@ import logging
 import os
 from dotenv import load_dotenv
 
-from switch import SwitchApp
-from switch.api.bot.models.bot_command_info import BotCommandInfo
-from switch.api.chat.events import CallbackQueryEvent, CommandEvent, MessageEvent
-from switch.api.chat.models import InlineKeyboardButton, InlineMarkup
-from switch.bots import BotContext
-from switch.bots import filters, Decorators
+from pyswitch import SwitchApp
+from pyswitch.api.bot.models.bot_command_info import BotCommandInfo
+from pyswitch.api.chat.events import CallbackQueryEvent, CommandEvent, MessageEvent
+from pyswitch.api.chat.models import InlineKeyboardButton, InlineMarkup
+from pyswitch.bots import BotContext
+from pyswitch.bots import filters, Decorators
 
-from switch.bots.handlers import (
+from pyswitch.bots.handlers import (
     MessageHandler,
     UnknownCommandHandler,
     CallbackQueryHandler,

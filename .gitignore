@@ -5,7 +5,7 @@ __pycache__
 .private
 dist
 src/venv
-switch.egg-info
+*.egg-info
 build
 tests
 .DS_Store

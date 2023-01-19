@@ -6,7 +6,7 @@ sidebar_position: 1
 Every bot is an instance of the `BotApp` class. You can create a new bot by calling the `BotApp` constructor and passing it the bot token and the bot description.
 
 ```python
-from switch import BotApp
+from pyswitch import BotApp
 
 app = BotApp("token", "your bot description")
 
@@ -19,7 +19,7 @@ app.run()
 **In order to be able to use the bot commands, you need to register them with the `register_command` method of the app.** This method accepts a list of `BotCommand` objects.
 
 ```python
-from switch import BotApp, RegiterCommand
+from pyswitch import BotApp, RegiterCommand
 
 app = BotApp("token", "your bot description")
 

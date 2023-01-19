@@ -21,7 +21,7 @@ The `RegisterCommand` class takes 2 parameters:
 - `channel:bool`: Whether the command can be used in a channel or not. Defaults to `False`.
 
 ```python
-from switch import (
+from pyswitch import (
     BotApp,
     RegisterCommand)
 
@@ -53,7 +53,7 @@ To handle the command, you must create a handler function and register it using 
 The handler function must accept a `BotContext[CommandEvent]` as its only argument.
 
 ```python
-from switch import (
+from pyswitch import (
     BotApp,
     BotContext,
     CommandEvent)

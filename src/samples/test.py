@@ -2,7 +2,7 @@ import logging
 import os
 from dotenv import load_dotenv
 
-from switch import (
+from pyswitch import (
     BotApp,
     RegisterCommand,
     BotContext,

@@ -8,7 +8,17 @@ The `Message` class contains a property called `inline_markup` where you can add
 
 ## Creating an inline keyboard
 
-You can create an inline keyboard using the `InlineKeyboard` class. This class contains a method called `add_button` that allows you to add buttons to the keyboard. This method takes 3 parameters:
+You can create an inline keyboard using the `InlineKeyboard` class. 
+
+The `InlineKeyboard` class has 3 properties:
+
+- `inline_keyboard`: A list of lists (each list is an `inline_markup` row, containing another list with one or more `InlineKeyboardButton`) of `InlineKeyboardButton` objects.
+- `size: InlikeKeyboardSize`: The size of the keyboard. It can be `InlineKeyboardSize.DEFAULT` (default value) or `InlineKeyboardSize.LARGE`.
+- `color: InlineKeyboardColor`: The color of the keyboard. It can be `InlineKeyboardColor.DEFAULT` (default value), `InlineKeyboardColor.RED`, `InlineKeyboardColor.GREEN` or `InlineKeyboardColor.Blue`.
+
+This class contains a method called `add_button` that allows you to add buttons to the keyboard. This method accepts a `InlineKeyboardButton` object as a parameter.
+
+The `InlineKeyboardButton` class has 3 properties:
 
 - `text`: The text that will be shown on the button.
 - `callback_data`: The data that will be sent to the bot when the button is pressed.
@@ -22,7 +32,7 @@ Here is an example of how to create an inline keyboard, add it to a message and 
 
 ```python
 
-from switch import (
+from pyswitch import (
     BotApp,
     BotContext,
     CallbackQueryEvent,
