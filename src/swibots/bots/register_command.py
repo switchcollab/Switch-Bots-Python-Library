@@ -1,7 +1,10 @@
+from swibots.utils.types import SCT
+
+
 class RegisterCommand:
     def __init__(
         self,
-        command: str,
+        command: SCT[str],
         description: str,
         channel: bool = False,
     ):

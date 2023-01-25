@@ -12,6 +12,7 @@ from swibots.base.switch_object import SwitchObject
 class Event(SwitchObject):
     def __init__(
         self,
+        app: "swibots.App" = None,
         type: Optional["swibots.EventType"] = None,
         data: Optional[dict] = None,
         community_id: Optional[str] = None,
@@ -23,6 +24,7 @@ class Event(SwitchObject):
         action_by_id: Optional[str] = None,
         action_by: Optional["swibots.User"] = None,
     ):
+        super().__init__(app)
         self.type = type
         self.data = data
         self.action_by_id = action_by_id
@@ -38,14 +40,18 @@ class Event(SwitchObject):
         if data is not None:
             details = data.get("details") or {}
             self.type = swibots.EventType(data.get("type"))
-            self.action_by_id = details.get("actionById")
-            self.action_by = swibots.User.build_from_json(details.get("actionBy"))
+            self.action_by_id = data.get("actionById")
+            self.action_by = swibots.User.build_from_json(
+                data.get("actionBy"), self.app)
             self.community_id = details.get("communityId")
-            self.community = swibots.Community.build_from_json(details.get("community"))
+            self.community = swibots.Community.build_from_json(
+                details.get("community"), self.app)
             self.group_id = details.get("groupId")
-            self.group = swibots.Group.build_from_json(details.get("group"))
+            self.group = swibots.Group.build_from_json(
+                details.get("group"), self.app)
             self.channel_id = details.get("channelId")
-            self.channel = swibots.Channel.build_from_json(details.get("channel"))
+            self.channel = swibots.Channel.build_from_json(
+                details.get("channel"), self.app)
             self.data = details
         return self
 

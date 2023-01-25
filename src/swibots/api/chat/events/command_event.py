@@ -1,4 +1,5 @@
 from typing import Optional
+import swibots
 from swibots.api.common.events.event import Event
 from swibots.api.community.models.channel import Channel
 from swibots.api.community.models.community import Community
@@ -15,6 +16,7 @@ class CommandEvent(MessageEvent):
 
     def __init__(
         self,
+        app: "swibots.App" = None,
         type: Optional[EventType] = None,
         community_id: Optional[str] = None,
         community: Optional[Community] = None,
@@ -32,6 +34,7 @@ class CommandEvent(MessageEvent):
         params: Optional[str] = None,
     ):
         super().__init__(
+            app=app,
             type=type or EventType.COMMAND,
             community_id=community_id,
             community=community,

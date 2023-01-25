@@ -1,14 +1,18 @@
 import json
+import logging
 from typing import Tuple
 from swibots.api.auth.models.auth_user import AuthUser
 from swibots.api.chat.controllers import MessageController
 from swibots.api.chat.events import ChatEvent, CallbackQueryEvent, MessageEvent, CommandEvent
 from swibots.base import SwitchRestClient, SwitchWSAsyncClient
-from swibots.config import APP_CONFIG
+from swibots.config import get_config
 from swibots.error import SwitchError
 from swibots.types import EventType
 from swibots.utils.ws.asyncstomp.async_ws_subscription import AsyncWsSubscription
 from swibots.utils.ws.common.ws_message import WsMessage
+import swibots
+
+logger = logging.getLogger(__name__)
 
 
 class ChatClient(SwitchRestClient):
@@ -27,8 +31,9 @@ class ChatClient(SwitchRestClient):
 
     def __init__(
         self,
-        base_url: str = APP_CONFIG["CHAT_SERVICE"]["BASE_URL"],
-        ws_url: str = APP_CONFIG["CHAT_SERVICE"]["WS_URL"],
+        app: "swibots.App" = None,
+        base_url: str = None,
+        ws_url: str = None,
     ):
         """Initialize the chat client
 
@@ -36,27 +41,17 @@ class ChatClient(SwitchRestClient):
             base_url (``str``): The base url of the chat service. Defaults to the value in the config.
             ws_url (``str``): The websocket url of the chat service. Defaults to the value in the config.
         """
-        super().__init__(base_url)
+        base_url = base_url or get_config()["CHAT_SERVICE"]["BASE_URL"]
+        self._ws_url = ws_url or get_config()["CHAT_SERVICE"]["WS_URL"]
+        super().__init__(app, base_url)
         self._messages: MessageController = None
-        self._authorization = None
-        self._user: AuthUser = None
         self._ws: SwitchWSAsyncClient = None
-        self._ws_url = ws_url
         self._started = False
-
-    @property
-    def user(self) -> AuthUser:
-        return self._user
-
-    @user.setter
-    def user(self, value: AuthUser):
-        self._user = value
 
     @property
     def ws(self) -> SwitchWSAsyncClient:
         if self._ws is None:
-            self._ws = SwitchWSAsyncClient(self._ws_url)
-            self._ws.token = self._auth_token
+            self._ws = SwitchWSAsyncClient(self._ws_url, self.token)
         return self._ws
 
     @property
@@ -106,18 +101,25 @@ class ChatClient(SwitchRestClient):
         return subscription
 
     def _parse_event(self, raw_message: WsMessage) -> ChatEvent:
-        json_data = json.loads(raw_message.body)
-        type = json_data.get("type", "MESSAGE")
-        evt: ChatEvent = None
-        if type == EventType.MESSAGE.value:
-            evt = MessageEvent.build_from_json(json_data)
-        elif type == EventType.COMMAND.value:
-            evt = CommandEvent.build_from_json(json_data)
-        elif type == EventType.CALLBACK_QUERY.value:
-            evt = CallbackQueryEvent.build_from_json(json_data)
-        else:
-            evt = ChatEvent.build_from_json(json_data)
-        return evt
+        try:
+            json_data = json.loads(raw_message.body)
+            type = json_data.get("type", "MESSAGE")
+            evt: ChatEvent = None
+            if type == EventType.MESSAGE.value:
+                evt = self.build_object(MessageEvent, json_data)
+                #evt = MessageEvent.build_from_json(json_data)
+            elif type == EventType.COMMAND.value:
+                evt = self.build_object(CommandEvent, json_data)
+                #evt = CommandEvent.build_from_json(json_data)
+            elif type == EventType.CALLBACK_QUERY.value:
+                evt = self.build_object(CallbackQueryEvent, json_data)
+                #evt = CallbackQueryEvent.build_from_json(json_data)
+            else:
+                evt = self.build_object(ChatEvent, json_data)
+                #evt = ChatEvent.build_from_json(json_data)
+            return evt
+        except Exception as e:
+            logger.exception(e)
 
     async def start(self):
         """Start the chat websocket client

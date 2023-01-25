@@ -1,4 +1,5 @@
 from typing import Optional
+import swibots
 from .community_event import CommunityEvent
 from swibots.api.community.models.channel import Channel
 from swibots.api.community.models.community import Community
@@ -10,6 +11,7 @@ from swibots.types import EventType
 class GroupDeletedEvent(CommunityEvent["GroupDeletedEvent"]):
     def __init__(
         self,
+        app: "swibots.App" = None,
         community_id: Optional[str] = None,
         community: Optional[Community] = None,
         group_id: Optional[str] = None,
@@ -23,6 +25,7 @@ class GroupDeletedEvent(CommunityEvent["GroupDeletedEvent"]):
         user: Optional[User] = None,
     ):
         super().__init__(
+            app=app,
             type=EventType.GROUP_DELETE,
             data=data,
             action_by=action_by,

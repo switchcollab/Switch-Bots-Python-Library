@@ -1,25 +1,35 @@
 import json
-from typing import Tuple
-
+from typing import List, Tuple, Type, TypeVar
+import swibots
 from swibots.error import NetworkError
 from swibots.utils import RestClient
 from swibots.utils.types import JSONDict
 from swibots.base import RestResponse
 
+T = TypeVar("T", bound="swibots.SwitchObject")
 
 class SwitchRestClient(RestClient):
-    def __init__(self, base_url: str = None, token: str = None):
+    def __init__(self, app:"swibots.App" =None, base_url: str = None, token: str = None):
         super().__init__()
+        self._app = app
         self._auth_token = token
         self._base_url = base_url
 
     @property
-    def token(self):
-        return self._auth_token
+    def app(self)->"swibots.App":
+        return self._app
+    
+    @app.setter
+    def app(self, app: "swibots.App"):
+        self._app = app
 
-    @token.setter
-    def token(self, token: str):
-        self._auth_token = token
+    @property
+    def token(self):
+        return self._app.token
+    
+    @property
+    def user(self) -> "swibots.AuthUser":
+        return self._app.user
 
     @property
     def base_url(self, url: str):
@@ -28,6 +38,12 @@ class SwitchRestClient(RestClient):
     @base_url.setter
     def base_url(self, url: str):
         self._base_url = url
+
+    def build_object(self, obj_type: Type[T],  data: JSONDict) -> T:
+        return obj_type.build_from_json(data, self.app)
+    
+    def build_list(self, obj_type: Type[T], data: JSONDict) -> List[T]:
+        return obj_type.build_from_json_list(data, self.app)
 
     async def get(
         self, url: str, data: dict = None, headers: dict = None
@@ -88,8 +104,8 @@ class SwitchRestClient(RestClient):
 
     def prepare_request_headers(self, headers: dict) -> dict:
         headers = super().prepare_request_headers(headers)
-        if self._auth_token is not None:
-            headers["Authorization"] = f"Bearer {self._auth_token}"
+        if self.token is not None:
+            headers["Authorization"] = f"Bearer {self.token}"
         return headers
 
     async def do_request(

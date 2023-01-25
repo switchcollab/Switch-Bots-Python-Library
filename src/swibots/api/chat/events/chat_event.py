@@ -1,4 +1,5 @@
 from typing import Optional
+import swibots
 from swibots.api.common.events.event import Event
 from swibots.api.community.models.channel import Channel
 from swibots.api.community.models.community import Community
@@ -12,6 +13,7 @@ from swibots.utils.types import JSONDict
 class ChatEvent(Event):
     def __init__(
         self,
+        app: "swibots.App" = None,
         type: Optional[EventType] = None,
         community_id: Optional[str] = None,
         community: Optional[Community] = None,
@@ -28,6 +30,7 @@ class ChatEvent(Event):
         message_id: Optional[str] = None,
     ):
         super().__init__(
+            app=app,
             type=type,
             data=data,
             action_by=action_by,
@@ -59,15 +62,10 @@ class ChatEvent(Event):
         if data is not None:
             super().from_json(data)
             details = data.get("details") or {}
-            self.community_id = data.get("communityId")
-            self.community = Community.build_from_json(details.get("community"))
-            self.group_id = data.get("groupId")
-            self.group = Group.build_from_json(details.get("group"))
-            self.channel_id = (data.get("channelId"),)
-            self.channel = Channel.build_from_json(details.get("channel"))
             self.user_id = data.get("userId") or data.get("senderId")
-            self.user = User.build_from_json(details.get("user") or details.get("sender"))
-            self.data = details
+            self.user = User.build_from_json(
+                details.get("user") or details.get("sender"), self.app)
             self.message_id = data.get("messageId")
-            self.message = Message.build_from_json(details.get("message"))
+            self.message = Message.build_from_json(
+                details.get("message"), self.app)
         return self

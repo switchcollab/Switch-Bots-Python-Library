@@ -1,7 +1,8 @@
 import json
 import logging
-from typing import TYPE_CHECKING, List
-from swibots.api.chat.models import Message, GroupChatHistory
+from typing import TYPE_CHECKING, List, Optional
+from swibots.api.common.models import User
+from swibots.api.chat.models import Message, GroupChatHistory, InlineMarkup
 from swibots.error import SwitchError
 from swibots.utils.types import JSONDict
 from swibots.api.community.models import Channel, Community, Group
@@ -9,7 +10,7 @@ from swibots.api.community.models import Channel, Community, Group
 if TYPE_CHECKING:
     from swibots.api.chat import ChatClient
 
-_logger = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 BASE_PATH = "/v1/message"
 
@@ -23,6 +24,25 @@ class MessageController:
 
     def __init__(self, client: "ChatClient"):
         self.client = client
+
+    async def new_message(self, to: Optional[int | User] = None, channel: Optional[Channel | str] = None, group: Optional[Group | str] = None) -> Message:
+        """Create a new message"""
+        if isinstance(to, User):
+            to = to.id
+
+        if isinstance(channel, Channel):
+            channel = channel.id
+
+        if isinstance(group, Group):
+            group = group.id
+
+        return Message(
+            user_id=self.client.user.id,
+            receiver_id=to,
+            channel_id=channel,
+            group_id=group,
+            app=self.client.app,
+        )
 
     async def get_messages(self, user_id: int = None) -> List[Message]:
         """Get messages for a user
@@ -38,9 +58,9 @@ class MessageController:
         """
         if user_id is None:
             user_id = self.client.user.id
-        _logger.debug("Getting messages for user %s", user_id)
+        log.debug("Getting messages for user %s", user_id)
         response = await self.client.get(f"{BASE_PATH}/{user_id}")
-        return Message.build_from_json_list(response.data)
+        return self.client.build_list(Message, response.data)
 
     async def send_message(self, message: Message) -> Message:
         """Send a message
@@ -55,9 +75,50 @@ class MessageController:
             ``~switch.error.SwitchError``: If the message could not be sent
         """
         data = message.to_json_request()
-        _logger.debug("Sending message %s", json.dumps(data))
+        log.debug("Sending message %s", json.dumps(data))
         response = await self.client.post(f"{BASE_PATH}/create", data=data)
-        return Message.build_from_json(response.data["message"])
+        return self.client.build_object(Message, response.data["message"])
+
+    async def send_text(self, text: str, to: Optional[int | User] = None, channel: Optional[Channel | str] = None, group: Optional[Group | str] = None,  inline_markup: InlineMarkup = None) -> Message:
+        """Send a message with text
+
+        Parameters:
+            to (``int`` | ``~switch.api.common.models.User``, *optional*): The user id to send the message to. Defaults to the current user id.
+            text (``str``): The text to send
+
+        Returns:
+            ``~switch.api.chat.models.Message``: The message
+
+        Raises:
+            ``~switch.error.SwitchError``: If the message could not be sent
+        """
+        message = await self.new_message(to, channel, group)
+        message.message = text
+        message.inline_markup = inline_markup
+        return await self.send_message(message)
+
+    async def reply(self, message: int | Message, reply: Message) -> Message:
+        if isinstance(message, Message):
+            id = message.id
+        else:
+            id = message
+        reply.replied_to = id
+        return await self.send_message(reply)
+
+    async def reply_text(self, message: int | Message, text: str, inline_markup: InlineMarkup = None) -> Message:
+        """Reply to a message with text
+
+        Parameters:
+            message (``~switch.api.chat.models.Message``): The message to reply to
+            text (``str``): The text to reply with
+
+        Returns:
+            ``~switch.api.chat.models.Message``: The message
+
+        Raises:
+            ``~switch.error.SwitchError``: If the message could not be sent
+        """
+        return await self.reply(message, Message(message=text, inline_markup=inline_markup, user_id=self.client.user.id, receiver_id=message.user_id, channel_id=message.channel_id, group_id=message.group_id))
 
     async def edit_message(self, message: Message) -> Message:
         """Edit a message
@@ -72,9 +133,28 @@ class MessageController:
             ``~switch.error.SwitchError``: If the message could not be edited
         """
         data = message.to_json_request()
-        _logger.debug("Editing message %s", json.dumps(data))
+        log.debug("Editing message %s", json.dumps(data))
         response = await self.client.put(f"{BASE_PATH}?id={message.id}", data=data)
         return message
+
+    async def edit_message_text(self, message: int | Message, text: str, inline_markup: InlineMarkup = None) -> Message:
+        """Edit a message with text
+
+        Parameters:
+            message (``~switch.api.chat.models.Message``): The message to edit
+            text (``str``): The text to edit with
+
+        Returns:
+            ``~switch.api.chat.models.Message``: The message
+
+        Raises:
+            ``~switch.error.SwitchError``: If the message could not be edited
+        """
+        if isinstance(message, Message):
+            id = message.id
+        else:
+            id = message
+        return await self.edit_message(Message(id=id, message=text, inline_markup=inline_markup))
 
     async def delete_message(self, message: int | Message) -> bool:
         """Delete a message
@@ -92,7 +172,7 @@ class MessageController:
             id = message.id
         else:
             id = message
-        _logger.debug("Deleting message %s", id)
+        log.debug("Deleting message %s", id)
         response = await self.client.delete(f"{BASE_PATH}/{id}")
         return True
 
@@ -110,7 +190,7 @@ class MessageController:
             ``~switch.error.SwitchError``: If the messages could not be deleted
 
         """
-        _logger.debug("Deleting messages for user %s", recipient_id)
+        log.debug("Deleting messages for user %s", recipient_id)
         if user_id is None:
             user_id = self.client.user.id
 
@@ -145,9 +225,9 @@ class MessageController:
         if user_id is None:
             user_id = self.client.user.id
 
-        _logger.debug("Getting messages for user %s", recipient_id)
+        log.debug("Getting messages for user %s", recipient_id)
         response = await self.client.get(f"{BASE_PATH}/{user_id}/{recipient_id}?{str_q}")
-        return Message.build_from_json_list(response.data)
+        return self.client.build_list(Message, response.data["messages"])
 
     async def forward_message(
         self,
@@ -188,9 +268,10 @@ class MessageController:
 
         strQuery = q.join("&")
 
-        _logger.debug("Forwarding message %s", id)
+        log.debug("Forwarding message %s", id)
         response = await self.client.post(f"{BASE_PATH}/forward/{id}?{strQuery}")
-        return Message.build_from_json(response.data["message"])
+        return self.client.build_object(Message, response.data["message"])
+        # return Message.build_from_json(response.data["message"])
 
     async def get_message(self, message: int | Message) -> Message:
         """Get a message by id
@@ -208,9 +289,10 @@ class MessageController:
             id = message.id
         else:
             id = message
-        _logger.debug("Getting message %s", id)
+        log.debug("Getting message %s", id)
         response = await self.client.get(f"{BASE_PATH}/{id}")
-        return Message.build_from_json(response.data["message"])
+        return self.client.build_object(Message, response.data["message"])
+        # return Message.build_from_json(response.data["message"])
 
     async def get_group_chat_history(
         self,
@@ -236,7 +318,7 @@ class MessageController:
             ``~switch.error.SwitchError``: If the group chat history could not be retrieved
 
         """
-        _logger.debug("Getting group chat history for group %s", group_id)
+        log.debug("Getting group chat history for group %s", group_id)
         q = ["isChannel=false"]
         if page_limit:
             q.append(f"pageLimit={page_limit}")
@@ -251,7 +333,8 @@ class MessageController:
             user_id = self.client.user.id
 
         response = await self.client.get(f"{BASE_PATH}/group/{user_id}/{group_id}?{str_q}")
-        return GroupChatHistory.build_from_json(response.data)
+        return self.client.build_object(GroupChatHistory, response.data)
+        # return GroupChatHistory.build_from_json(response.data)
 
     async def get_channel_chat_history(
         self,
@@ -277,7 +360,7 @@ class MessageController:
             ``~switch.error.SwitchError``: If the channel chat history could not be retrieved
 
         """
-        _logger.debug("Getting channel chat history for channel %s", channel_id)
+        log.debug("Getting channel chat history for channel %s", channel_id)
         q = ["isChannel=true"]
         if page_limit:
             q.append(f"pageLimit={page_limit}")
@@ -292,7 +375,8 @@ class MessageController:
             user_id = self.client.user.id
 
         response = await self.client.get(f"{BASE_PATH}/group/{user_id}/{channel_id}?{str_q}")
-        return GroupChatHistory.build_from_json(response.data)
+        return self.client.build_object(GroupChatHistory, response.data)
+        # return GroupChatHistory.build_from_json(response.data)
 
     async def get_community_media_files(self, community_id: str) -> List[Message]:
         """Get community media files
@@ -306,9 +390,10 @@ class MessageController:
         Raises:
             ``~switch.error.SwitchError``: If the community media files could not be retrieved
         """
-        _logger.debug("Getting community media files for community %s", community_id)
+        log.debug("Getting community media files for community %s", community_id)
         response = await self.client.get(f"{BASE_PATH}/media?communityId={community_id}")
-        return Message.build_from_json_list(response.data)
+        return self.client.build_list(Message, response.data)
+        # return Message.build_from_json_list(response.data)
 
     async def get_community_media_files_by_status(
         self, community_id: str, status: str
@@ -326,11 +411,12 @@ class MessageController:
         Raises:
             ``~switch.error.SwitchError``: If the community media files could not be retrieved
         """
-        _logger.debug("Getting community media files for community %s", community_id)
+        log.debug("Getting community media files for community %s", community_id)
         response = await self.client.get(
             f"{BASE_PATH}/media?communityId={community_id}&status={status}"
         )
-        return Message.build_from_json_list(response.data)
+        return self.client.build_list(Message, response.data)
+        # return Message.build_from_json_list(response.data)
 
     async def get_user_media_files(self, user_id: int = None) -> List[Message]:
         """Get user media files
@@ -347,9 +433,10 @@ class MessageController:
         """
         if user_id is None:
             user_id = self.client.user.id
-        _logger.debug("Getting user media files for user %s", user_id)
+        log.debug("Getting user media files for user %s", user_id)
         response = await self.client.get(f"{BASE_PATH}/media/{user_id}")
-        return Message.build_from_json_list(response.data)
+        return self.client.build_list(Message, response.data)
+        # return Message.build_from_json_list(response.data)
 
     async def clear_conversation(self, receiver_id: int) -> bool:
         """Clear a conversation
@@ -363,7 +450,7 @@ class MessageController:
         Raises:
             ``~switch.error.SwitchError``: If the conversation could not be cleared
         """
-        _logger.debug("Clearing conversation %s", receiver_id)
+        log.debug("Clearing conversation %s", receiver_id)
         response = await self.client.get(f"{BASE_PATH}/clearconversationwith/{receiver_id}")
         return True
 
@@ -382,9 +469,10 @@ class MessageController:
         if user_id is None:
             user_id = self.client.user.id
 
-        _logger.debug("Get flag messages for %s", user_id)
+        log.debug("Get flag messages for %s", user_id)
         response = await self.client.get(f"{BASE_PATH}/flag?userId={user_id}")
-        return Message.build_from_json_list(response.data)
+        return self.client.build_list(Message, response.data)
+        # return Message.build_from_json_list(response.data)
 
     async def flag_message(self, message: Message | int) -> bool:
         """Flag a message
@@ -402,7 +490,7 @@ class MessageController:
             message_id = message.id
         else:
             message_id = message
-        _logger.debug("Flagging message %s", message_id)
+        log.debug("Flagging message %s", message_id)
         response = await self.client.post(f"{BASE_PATH}/flag?messageId={message_id}")
         return True
 
@@ -418,6 +506,6 @@ class MessageController:
         if user_id is None:
             user_id = self.client.user.id
 
-        _logger.debug("Get unread messages count for %s", user_id)
+        log.debug("Get unread messages count for %s", user_id)
         response = await self.client.get(f"{BASE_PATH}/unread-messages?userId={user_id}")
         return response.data

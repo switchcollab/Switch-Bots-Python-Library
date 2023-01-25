@@ -1,4 +1,5 @@
 from typing import Optional
+import swibots
 from swibots.api.common.events.event import Event
 from swibots.api.community.models.channel import Channel
 from swibots.api.community.models.community import Community
@@ -15,6 +16,7 @@ class MessageEvent(ChatEvent):
 
     def __init__(
         self,
+        app: "swibots.App" = None,
         type: Optional[EventType] = None,
         community_id: Optional[str] = None,
         community: Optional[Community] = None,
@@ -30,6 +32,7 @@ class MessageEvent(ChatEvent):
         message: Optional[Message] = None,
     ):
         super().__init__(
+            app=app,
             type=type or EventType.MESSAGE,
             community_id=community_id,
             community=community,
@@ -44,10 +47,3 @@ class MessageEvent(ChatEvent):
             user=user,
         )
         self.message = message
-
-    def from_json(self, data: JSONDict) -> "MessageEvent":
-        super().from_json(data)
-        if self.data is not None and self.data.get("message"):
-            self.message = Message.build_from_json(self.data.get("message", None))
-            self.message_id = self.message.id if self.message else None
-        return self

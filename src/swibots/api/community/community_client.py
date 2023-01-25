@@ -2,7 +2,7 @@ import json
 from swibots.api.auth.models.auth_user import AuthUser
 from swibots.api.community.events import *
 from swibots.base import SwitchRestClient, SwitchWSAsyncClient
-from swibots.config import APP_CONFIG
+from swibots.config import get_config
 from swibots.error import SwitchError
 from swibots.utils.ws.asyncstomp.async_ws_subscription import AsyncWsSubscription
 from swibots.utils.ws.common.ws_message import WsMessage
@@ -12,30 +12,20 @@ from swibots.types import EventType
 class CommunityClient(SwitchRestClient):
     def __init__(
         self,
-        base_url: str = APP_CONFIG["COMMUNITY_SERVICE"]["BASE_URL"],
-        ws_url: str = APP_CONFIG["COMMUNITY_SERVICE"]["WS_URL"],
+        base_url: str = None,
+        ws_url: str = None,
     ):
+        base_url = base_url or get_config()["COMMUNITY_SERVICE"]["BASE_URL"]
+        self._ws_url = ws_url or get_config()["COMMUNITY_SERVICE"]["WS_URL"]
         super().__init__(base_url)
         self._messages = None
-        self._authorization = None
-        self._user: AuthUser = None
         self._ws: SwitchWSAsyncClient = None
-        self._ws_url = ws_url
         self._started = False
-
-    @property
-    def user(self) -> AuthUser:
-        return self._user
-
-    @user.setter
-    def user(self, value: AuthUser):
-        self._user = value
 
     @property
     def ws(self) -> SwitchWSAsyncClient:
         if self._ws is None:
-            self._ws = SwitchWSAsyncClient(self._ws_url)
-            self._ws.token = self._auth_token
+            self._ws = SwitchWSAsyncClient(self._ws_url, self.token)
         return self._ws
 
     @property
@@ -56,29 +46,41 @@ class CommunityClient(SwitchRestClient):
     def _parse_event(self, raw_message: WsMessage) -> CommunityEvent:
         json_data = json.loads(raw_message.body)
         type = json_data.get("type", "COMMUNITY")
-
+        evt = None
         if type == EventType.CHANNEL_CREATE.value:
-            return ChannelCreatedEvent.build_from_json(json_data)
+            evt = self.build_object(ChannelCreatedEvent, json_data)
+            # return ChannelCreatedEvent.build_from_json(json_data)
         elif type == EventType.CHANNEL_UPDATE.value:
-            return ChannelUpdatedEvent.build_from_json(json_data)
+            evt = self.build_object(ChannelUpdatedEvent, json_data)
+            # return ChannelUpdatedEvent.build_from_json(json_data)
         elif type == EventType.CHANNEL_DELETE.value:
-            return ChannelDeletedEvent.build_from_json(json_data)
+            evt = self.build_object(ChannelDeletedEvent, json_data)
+            # return ChannelDeletedEvent.build_from_json(json_data)
         elif type == EventType.COMMUNITY_UPDATE.value:
-            return CommunityUpdatedEvent.build_from_json(json_data)
+            evt = self.build_object(CommunityUpdatedEvent, json_data)
+            # return CommunityUpdatedEvent.build_from_json(json_data)
         elif type == EventType.GROUP_CREATE.value:
-            return GroupCreatedEvent.build_from_json(json_data)
+            evt = self.build_object(GroupCreatedEvent, json_data)
+            # return GroupCreatedEvent.build_from_json(json_data)
         elif type == EventType.GROUP_UPDATE.value:
-            return GroupUpdatedEvent.build_from_json(json_data)
+            evt = self.build_object(GroupUpdatedEvent, json_data)
+            # return GroupUpdatedEvent.build_from_json(json_data)
         elif type == EventType.GROUP_DELETE.value:
-            return GroupDeletedEvent.build_from_json(json_data)
+            evt = self.build_object(GroupDeletedEvent, json_data)
+            # return GroupDeletedEvent.build_from_json(json_data)
         elif type == EventType.USER_BAN.value:
-            return UserBannedEvent.build_from_json(json_data)
+            evt = self.build_object(UserBannedEvent, json_data)
+            # return UserBannedEvent.build_from_json(json_data)
         elif type == EventType.MEMBER_JOIN.value:
-            return MemberJoinedEvent.build_from_json(json_data)
+            evt = self.build_object(MemberJoinedEvent, json_data)
+            # return MemberJoinedEvent.build_from_json(json_data)
         elif type == EventType.MEMBER_LEAVE.value:
-            return MemberLeftEvent.build_from_json(json_data)
+            evt = self.build_object(MemberLeftEvent, json_data)
+            # return MemberLeftEvent.build_from_json(json_data)
+        else:
+            evt = self.build_object(CommunityEvent, json_data)
 
-        return CommunityEvent.build_from_json(json_data)
+        return evt
 
     async def start(self):
         """Start the community client"""

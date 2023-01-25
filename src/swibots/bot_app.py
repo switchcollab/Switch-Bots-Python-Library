@@ -8,7 +8,7 @@ from swibots.bots import BotContext, Decorators, BaseHandler
 from swibots.api.common.events import Event
 from .app import App
 
-logger = logging.getLogger(f"{__name__}")
+log = logging.getLogger(f"{__name__}")
 
 
 class BotApp(App, Decorators):
@@ -86,7 +86,7 @@ class BotApp(App, Decorators):
                 try:
                     await handler.handle(ctx)
                 except Exception as e:
-                    logger.exception(f"Error while processing event: {e}")
+                    log.exception(f"Error while processing event: {e}")
                     raise e
                 finally:
                     break

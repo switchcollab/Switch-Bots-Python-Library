@@ -1,11 +1,12 @@
 from typing import Optional
 from swibots.utils.types import JSONDict
 from swibots.base.switch_object import SwitchObject
-
+import swibots
 
 class Group(SwitchObject):
     def __init__(
         self,
+        app: "swibots.App" = None,
         id: Optional[str] = None,
         name: Optional[str] = None,
         community_id: Optional[str] = None,
@@ -20,6 +21,7 @@ class Group(SwitchObject):
         created_at: Optional[str] = None,
         updated_at: Optional[str] = None,
     ):
+        super().__init__(app)
         self.id = id
         self.name = name
         self.community_id = community_id

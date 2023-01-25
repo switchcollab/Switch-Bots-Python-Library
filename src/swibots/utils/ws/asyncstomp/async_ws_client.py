@@ -10,6 +10,7 @@ import logging
 
 VERSIONS = "1.1,1.0"
 
+log = logging.getLogger(__name__)
 
 class AsyncWsClient:
     def __init__(
@@ -31,7 +32,7 @@ class AsyncWsClient:
         self.errorCallback = None
         self._connectIntents = 0
         self._connectInterval = 1
-        self._maxConnectIntents = 30
+        self._maxConnectIntents = 0
         self._connecting = False
         self._gracefully_disconnect = False
 
@@ -43,7 +44,7 @@ class AsyncWsClient:
             if elapsed >= 5:
                 await self._transmit("\n", {})
                 elapsed = 0
-        logging.debug("Heartbeat stopped")
+        log.debug("Heartbeat stopped")
 
     async def _on_open(self, ws_app, *args):
         self.opened = True
@@ -52,10 +53,10 @@ class AsyncWsClient:
         self.connected = False
         if self._gracefully_disconnect:
             return
-        logging.error("Whoops! Lost connection to " + self.url)
+        log.error("Whoops! Lost connection to " + self.url)
         await self._clean_up()
-        if self._connectIntents >= self._maxConnectIntents:
-            logging.error("Max connection attempts reached. Aborting.")
+        if self._connectIntents >= self._maxConnectIntents and self._maxConnectIntents > 0:
+            log.error("Max connection attempts reached. Aborting.")
             raise SwitchError("Max connection attempts reached. Aborting.")
         await asyncio.sleep(self._connectInterval)
         self._connectIntents = self._connectIntents + 1
@@ -63,22 +64,22 @@ class AsyncWsClient:
 
     async def _on_error(self, ws_app, error, *args):
         await self._clean_up()
-        logging.error(error)
+        log.error(error)
 
     async def _on_message(self, ws_app, message, *args):
         frame = WsFrame.unmarshall_single(message)
 
         if frame.command != "PONG":
-            logging.debug("\n<<< " + str(message))
+            log.debug("\n<<< " + str(message))
         else:
-            logging.debug("\n<<< " + frame.command)
+            log.debug("\n<<< " + frame.command)
 
         _results = []
         if frame.command == "CONNECTED":
             self.connected = True
             self._connecting = False
             self._connectIntents = 0
-            logging.debug("connected to server " + self.url)
+            log.debug("connected to server " + self.url)
             self._heartbeatTask = self._loop.create_task(self._start_heartbeat())
             # resubscribe
             for sub in self.subscriptions.values():
@@ -110,7 +111,7 @@ class AsyncWsClient:
                 _results.append(self._loop.create_task(sub.receive(frame)))
             else:
                 info = "Unhandled received MESSAGE: " + str(frame)
-                logging.debug(info)
+                log.debug(info)
                 _results.append(info)
         elif frame.command == "RECEIPT":
             pass
@@ -121,7 +122,7 @@ class AsyncWsClient:
             pass
         else:
             info = "Unhandled received MESSAGE: " + frame.command
-            logging.debug(info)
+            log.debug(info)
             _results.append(info)
 
         return _results
@@ -134,7 +135,7 @@ class AsyncWsClient:
             if command == "\n":
                 l = "PING"
                 out = command
-            logging.debug("\n>>> " + l)
+            log.debug("\n>>> " + l)
             await self.ws.send(out)
         except (websockets.exceptions.WebSocketException):
             await self._on_close(self.ws)
@@ -167,19 +168,19 @@ class AsyncWsClient:
         **kwargs,
     ):
         if self.connected:
-            logging.debug("Already connected to " + self.url)
+            log.debug("Already connected to " + self.url)
             return
 
         if self._connecting:
-            logging.debug("Already connecting to " + self.url)
+            log.debug("Already connecting to " + self.url)
             return
 
         try:
             self._connecting = True
             self._connect_args = kwargs
-            logging.debug("Opening web socket...")
+            log.debug("Opening web socket...")
             self.ws = await websockets.connect(self.url)
-            logging.debug("Web socket opened.")
+            log.debug("Web socket opened.")
             self._loop.create_task(self.read_messages())
             headers = headers if headers is not None else {}
             # headers['host'] = self.url
@@ -235,7 +236,7 @@ class AsyncWsClient:
             # self.ws = None
             self.tasks = []
         except Exception as e:
-            logging.debug("Error cleaning up: " + str(e))
+            log.debug("Error cleaning up: " + str(e))
 
     async def send(self, destination, headers=None, body=None):
         headers = self._set_default_headers(headers)

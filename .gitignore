@@ -9,3 +9,5 @@ src/venv
 build
 tests
 .DS_Store
+**/bots_impl
+**.log

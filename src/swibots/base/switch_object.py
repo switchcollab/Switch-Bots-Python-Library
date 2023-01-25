@@ -1,4 +1,5 @@
 from typing import Generic, List, Optional, TypeVar
+import swibots
 from swibots.utils.types import JSONDict
 
 
@@ -6,15 +7,24 @@ T = TypeVar("T")
 
 
 class SwitchObject(Generic[T]):
-    @classmethod
-    def build_from_json(cls, data: Optional[JSONDict] = None) -> Optional[T]:
-        if data is None:
-            return None
-        return cls().from_json(data)
+    def __init__(self, app:"swibots.App"=None, **kwargs):
+        self._app = app
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+    @property
+    def app(self) -> "swibots.App":
+        return self._app
 
     @classmethod
-    def build_from_json_list(cls, data: Optional[JSONDict]) -> List[T]:
-        return [cls(**item) for item in data]
+    def build_from_json(cls, data: Optional[JSONDict] = None, app: Optional["swibots.App"] = None) -> Optional[T]:
+        if data is None:
+            return None
+        return cls(app).from_json(data)
+
+    @classmethod
+    def build_from_json_list(cls, data: Optional[JSONDict], app: Optional["swibots.App"] = None) -> List[T]:
+        return [cls.build_from_json(item, app) for item in data]
 
     def to_json_request(self) -> JSONDict:
         return self.to_json()

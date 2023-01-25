@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from swibots.api.api_client import ApiClient
 from swibots.api.auth.models.auth_user import AuthUser
 from swibots.api.bot.models import BotInfo, BotCommandInfo
@@ -9,10 +9,9 @@ if TYPE_CHECKING:
 
 
 class Bot(AuthUser, ApiClient):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, app: Optional["BotApp"] = None):
+        super().__init__(app)
         self._info: BotInfo = None
-        self._app: "BotApp" = None
 
     @property
     def app(self) -> "BotApp":
@@ -38,13 +37,21 @@ class Bot(AuthUser, ApiClient):
             # register the commands
             self._info = BotInfo(description=description, id=self.id)
             for command in commands:
-                self.info.commands.append(
-                    BotCommandInfo(
-                        command=command.command,
-                        description=command.description,
-                        channel=command.channel,
+                command_name = command.command
+                if isinstance(command_name, str):
+                    command_names = command_name.split(",")
+                else:
+                    command_names = command_name
+
+                for c_name in command_names:
+                    self.info.commands.append(
+                        BotCommandInfo(
+                            command=c_name,
+                            description=command.description,
+                            channel=command.channel,
+                        )
                     )
-                )
+
             self.info = await self.update_bot_info(self.info)
 
         pass

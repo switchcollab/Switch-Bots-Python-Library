@@ -1,13 +1,16 @@
 from typing import TYPE_CHECKING, List, Optional
+import swibots
 from swibots.base import SwitchObject
-
 from swibots.utils.types import JSONDict
 from .inline_markup import InlineMarkup
 
 
-class Message(SwitchObject):
+class Message(
+    SwitchObject,
+):
     def __init__(
         self,
+        app: "swibots.App" = None,
         id: int = None,
         user_id: int = None,
         receiver_id: int = None,
@@ -41,6 +44,7 @@ class Message(SwitchObject):
         reply_count: int = None,
         **kwargs,
     ):
+        super().__init__(app=app)
         self.id = id
         self.user_id = user_id
         self.receiver_id = receiver_id
@@ -83,6 +87,8 @@ class Message(SwitchObject):
             "userId": self.user_id,
             "inline_markup": self.inline_markup.to_json_request() if self.inline_markup else None,
             "callback_data": self.callback_data,
+            "repliedTo": self.replied_to,
+            "status": self.status,
         }
 
     def to_json(self) -> JSONDict:
@@ -136,7 +142,8 @@ class Message(SwitchObject):
             self.group_id = data.get("groupId")
             self.id = data.get("id")
             self.information = data.get("information")
-            self.inline_markup = InlineMarkup.build_from_json(data.get("inline_markup"))
+            self.inline_markup = InlineMarkup.build_from_json(
+                data.get("inline_markup"))
             self.is_read = data.get("isRead")
             self.media_link = data.get("mediaLink")
             self.mentioned_ids = data.get("mentionedIds")
@@ -154,3 +161,20 @@ class Message(SwitchObject):
             self.status = data.get("status")
             self.user_id = data.get("userId")
         return self
+
+    async def send(self) -> "Message":
+        if self.id is not None:
+            return await self.app.edit_message(self)
+        return await self.app.send_message(self)
+
+    async def delete(self) -> None:
+        await self.app.delete_message(self)
+
+    async def reply(self, reply: "Message") -> "Message":
+        return await self.app.reply_message(self, reply)
+
+    async def reply_text(self, text: str, inline_markup: Optional[InlineMarkup] = None) -> "Message":
+        return await self.app.reply_message_text(self, text, inline_markup)
+
+    async def edit_text(self, text: str,  inline_markup: Optional[InlineMarkup] = None) -> "Message":
+        return await self.app.edit_message_text(self, text, inline_markup)

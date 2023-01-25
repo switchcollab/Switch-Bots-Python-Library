@@ -16,6 +16,10 @@ from .get_messages import GetMessages
 from .get_unread_messages_count import GetUnreadMessagesCount
 from .get_user_media_files import GetUserMediaFiles
 from .send_message import SendMessage
+from .send_text import SendText
+from .reply_message_text import ReplyMessageText
+from .reply_message import ReplyMessage
+from .edit_message_text import EditMessageText
 
 
 class ChatMethods(
@@ -36,5 +40,9 @@ class ChatMethods(
     GetUnreadMessagesCount,
     GetUserMediaFiles,
     SendMessage,
+    SendText,
+    ReplyMessageText,
+    ReplyMessage,
+    EditMessageText,
 ):
     pass

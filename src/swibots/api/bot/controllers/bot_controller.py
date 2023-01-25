@@ -8,7 +8,7 @@ from swibots.utils.types import JSONDict
 if TYPE_CHECKING:
     from swibots.api.bot import BotClient
 
-_logger = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 BASE_PATH = "/v1/bots"
 

@@ -6,7 +6,7 @@ from ..models import AuthUser
 if TYPE_CHECKING:
     from swibots.api.auth import AuthClient
 
-_logger = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 BASE_PATH = "/user"
 T = TypeVar("T", bound="AuthUser")
@@ -33,4 +33,4 @@ class UserController:
 
         """
         response = await self.client.get(f"{BASE_PATH}")
-        return user_type.build_from_json(response.data)
+        return self.client.build_object(user_type, response.data)

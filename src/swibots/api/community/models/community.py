@@ -1,11 +1,12 @@
 from typing import Optional
 from swibots.utils.types import JSONDict
 from swibots.base.switch_object import SwitchObject
-
+import swibots
 
 class Community(SwitchObject):
     def __init__(
         self,
+        app: "swibots.App" = None,
         id: Optional[str] = None,
         name: Optional[str] = None,
         username: Optional[str] = None,
@@ -22,6 +23,7 @@ class Community(SwitchObject):
         link: Optional[str] = None,
         icon: Optional[str] = None,
     ):
+        super().__init__(app)
         self.id = id
         self.name = name
         self.username = username

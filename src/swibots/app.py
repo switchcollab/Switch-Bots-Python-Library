@@ -9,9 +9,6 @@ from swibots.api import ApiClient
 from swibots.api.auth.models import AuthUser
 from swibots.error import SwitchError
 
-logger = logging.getLogger(f"{__name__}")
-
-
 log = logging.getLogger(__name__)
 
 # Signal number to name
@@ -43,11 +40,12 @@ class App(AbstractContextManager, ApiClient):
             raise SwitchError("Token is not set")
 
         try:
-            logger.debug("checking token...")
+            log.debug("checking token...")
             user = await self.get_me(user_type=self._user_type)
             self.user = user
-            logger.info("Logged in as %s", user.user_name)
+            log.info("Logged in as %s", user.user_name)
         except Exception as e:
+            log.exception(e)
             await self.stop()
             raise SwitchError("Invalid token")
 
@@ -73,7 +71,7 @@ class App(AbstractContextManager, ApiClient):
                 raise SwitchError("App is already running")
             self._running = True
             """Starts the app"""
-            logger.info("🚀 Starting app...")
+            log.info("🚀 Starting app...")
 
             await self._validate_run()
 
@@ -82,18 +80,18 @@ class App(AbstractContextManager, ApiClient):
                 if self.on_chat_service_start is not None:
                     await self.on_chat_service_start(self)
             except Exception as e:
-                logger.exception(e)
+                log.exception(e)
 
             try:
                 await (self.community_service.start())
                 if self.on_community_service_start is not None:
                     await self.on_community_service_start(self)
             except Exception as e:
-                logger.exception(e)
+                log.exception(e)
 
             await self._on_app_start()
 
-            logger.info("🚀 App started!")
+            log.info("🚀 App started!")
 
             # # run forever
             # while self._running:
@@ -103,7 +101,7 @@ class App(AbstractContextManager, ApiClient):
             # await self._do_stop()
 
     async def _do_stop(self):
-        logger.info("🛑 Stopping app...")
+        log.info("🛑 Stopping app...")
         await self._on_app_stop()
         self._running = False
 
@@ -161,5 +159,5 @@ class App(AbstractContextManager, ApiClient):
             except KeyboardInterrupt:
                 run(self.stop())
             except Exception as e:
-                logger.exception(e)
+                log.exception(e)
                 run(self.stop())

@@ -9,7 +9,7 @@ import httpx
 from swibots.error import NetworkError, SwitchError
 from swibots.utils.types import JSONDict
 
-_logger = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 DEFAULT_HEADERS = {"Content-Type": "application/json", "Accept": "application/json"}
 
@@ -56,14 +56,14 @@ class RestClient:
         return httpx.AsyncClient(**self._client_kwargs)
 
     def initialize(self) -> None:
-        _logger.debug("Initializing HTTPXRequest")
+        log.debug("Initializing HTTPXRequest")
         if self._client.is_closed:
             self._client = self._build_client()
 
     async def shutdown(self) -> None:
         """See :meth:`BaseRequest.shutdown`."""
         if self._client.is_closed:
-            _logger.debug("This HTTPXRequest is already shut down. Returning.")
+            log.debug("This HTTPXRequest is already shut down. Returning.")
             return
         await self._client.aclose()
 

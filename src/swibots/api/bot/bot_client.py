@@ -1,7 +1,8 @@
 from swibots.api.auth.models.auth_user import AuthUser
 from swibots.api.bot.controllers import BotController
 from swibots.base import SwitchRestClient
-from swibots.config import APP_CONFIG
+from swibots.config import get_config
+import swibots
 
 
 class BotClient(SwitchRestClient):
@@ -17,24 +18,15 @@ class BotClient(SwitchRestClient):
 
     """
 
-    def __init__(self, base_url: str = APP_CONFIG["BOT_SERVICE"]["BASE_URL"]):
+    def __init__(self, app: "swibots.App" = None, base_url: str = None):
         """Initialize the bot client
 
         Parameters:
             base_url (``str``): The base url of the bot service. Defaults to the value in the config.
         """
-        super().__init__(base_url)
+        base_url = base_url or get_config()["BOT_SERVICE"]["BASE_URL"]
+        super().__init__(app, base_url)
         self._bots: BotController = None
-        self._authorization = None
-        self._user: AuthUser = None
-
-    @property
-    def user(self) -> AuthUser:
-        return self._user
-
-    @user.setter
-    def user(self, value: AuthUser):
-        self._user = value
 
     @property
     def bots(self) -> BotController:
