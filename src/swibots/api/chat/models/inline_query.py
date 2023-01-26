@@ -1,12 +1,11 @@
 from typing import List, Optional
-
 import swibots
 from swibots.base import SwitchObject
 
 from swibots.utils.types import JSONDict
 
 
-class InlineKeyboardButton(SwitchObject):
+class InlineQuery(SwitchObject):
     def __init__(
         self,
         app: "swibots.App" = None,
@@ -26,7 +25,7 @@ class InlineKeyboardButton(SwitchObject):
             "callbackData": self.callback_data,
         }
 
-    def from_json(self, data: JSONDict) -> "InlineKeyboardButton":
+    def from_json(self, data: JSONDict) -> "InlineQuery":
         if data is not None:
             self.text = (data.get("text"),)
             self.url = (data.get("url"),)

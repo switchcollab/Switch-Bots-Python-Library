@@ -102,7 +102,7 @@ class MessageController:
             id = message.id
         else:
             id = message
-        reply.replied_to = id
+        reply._replied_to = id
         return await self.send_message(reply)
 
     async def reply_text(self, message: int | Message, text: str, inline_markup: InlineMarkup = None) -> Message:
@@ -277,7 +277,7 @@ class MessageController:
         """Get a message by id
 
         Parameters:
-            message (``int`` | ``~switch.api.chat.models.Message``): The message id or message to get
+            message (``int`` | ``~switch.api.chat.models.Message``): The message id or message to get, if a message is passed, the id will be extracted from it.
 
         Returns:
             ``~switch.api.chat.models.Message``: The message

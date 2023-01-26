@@ -12,7 +12,11 @@ log = logging.getLogger(f"{__name__}")
 
 
 class BotApp(App, Decorators):
-    """Bot client"""
+    """Bot client
+    
+    This is the main class for interacting with the Switch BOT API.
+    
+    """
 
     def __init__(
         self,
@@ -21,7 +25,16 @@ class BotApp(App, Decorators):
         auto_update_bot: Optional[bool] = True,
         loop: asyncio.AbstractEventLoop = None,
     ):
-        """Initialize the client"""
+        """
+        Initialize the client
+
+        Args:
+            token (:obj:`str`): The bot token.
+            bot_description(:obj:`str`): The bot description.
+            auto_update_bot(:obj:`bool`): Whether to automatically update the bot description and the regitered commands.
+            loop (:obj:`asyncio.AbstractEventLoop`): The asyncio loop to use (default: asyncio.get_event_loop()).
+        
+        """
         super().__init__(token, loop)
         self._user_type = swibots.bots.Bot
         self.on_chat_service_start = self._on_chat_service_start
@@ -33,10 +46,22 @@ class BotApp(App, Decorators):
 
     @property
     def bot(self) -> "swibots.bots.Bot":
+        """
+        The bot user.
+        
+            Returns:
+                :obj:`swibots.bots.Bot`: The bot user.
+        """
         return self.user
 
     @property
     def handlers(self) -> List[BaseHandler]:
+        """
+        Get the list of handlers.
+
+        Returns:
+            :obj:`List[BaseHandler]`: The list of handlers.
+        """
         if self._handlers is None:
             self._handlers = []
         return self._handlers
