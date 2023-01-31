@@ -13,15 +13,15 @@ log = logging.getLogger(f"{__name__}")
 
 class BotApp(App, Decorators):
     """Bot client
-    
+
     This is the main class for interacting with the Switch BOT API.
-    
+
     """
 
     def __init__(
         self,
-        username: Optional[str] = None,
-        password: Optional[str] = None,
+        # username: Optional[str] = None,
+        # password: Optional[str] = None,
         token: Optional[str] = None,
         bot_description: Optional[str] = None,
         auto_update_bot: Optional[bool] = True,
@@ -35,9 +35,9 @@ class BotApp(App, Decorators):
             bot_description(:obj:`str`): The bot description.
             auto_update_bot(:obj:`bool`): Whether to automatically update the bot description and the regitered commands.
             loop (:obj:`asyncio.AbstractEventLoop`): The asyncio loop to use (default: asyncio.get_event_loop()).
-        
+
         """
-        super().__init__(username, password, token, loop)
+        super().__init__(token, loop)
         self._user_type = swibots.bots.Bot
         self.on_chat_service_start = self._on_chat_service_start
         self.on_community_service_start = self._on_community_service_start
@@ -50,7 +50,7 @@ class BotApp(App, Decorators):
     def bot(self) -> "swibots.bots.Bot":
         """
         The bot user.
-        
+
             Returns:
                 :obj:`swibots.bots.Bot`: The bot user.
         """
@@ -72,7 +72,8 @@ class BotApp(App, Decorators):
         self, command: swibots.bots.RegisterCommand | List[swibots.bots.RegisterCommand]
     ) -> "BotApp":
         if self._running:
-            raise swibots.SwitchError("Cannot register commands after the app has started")
+            raise swibots.SwitchError(
+                "Cannot register commands after the app has started")
         if isinstance(command, list):
             self._register_commands.extend(command)
         else:

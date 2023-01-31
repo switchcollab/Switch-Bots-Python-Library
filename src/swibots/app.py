@@ -20,8 +20,8 @@ signals = {
 class App(AbstractContextManager, ApiClient):
     def __init__(
         self,
-        username: Optional[str] = None,
-        password: Optional[str] = None,
+        # username: Optional[str] = None,
+        # password: Optional[str] = None,
         token: Optional[str] = None,
         loop: asyncio.AbstractEventLoop = None,
     ):
