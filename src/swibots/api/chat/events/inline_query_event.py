@@ -6,12 +6,13 @@ from swibots.api.community.models.community import Community
 from swibots.api.community.models.group import Group
 from swibots.api.common.models.user import User
 from swibots.api.chat.models.message import Message
+from swibots.api.chat.models.inline.inline_query import InlineQuery
 from swibots.types import EventType
 from swibots.utils.types import JSONDict
 from .chat_event import ChatEvent
 
 
-class MessageEvent(ChatEvent):
+class InlineQueryEvent(ChatEvent):
     """Message event"""
 
     def __init__(
@@ -24,13 +25,12 @@ class MessageEvent(ChatEvent):
         group: Optional[Group] = None,
         channel_id: Optional[str] = None,
         channel: Optional[Channel] = None,
-        action_by_id: Optional[str] = None,
+        action_by_id: Optional[int] = None,
         action_by: Optional[User] = None,
         data: Optional[dict] = None,
-        user_id: Optional[str] = None,
+        user_id: Optional[int] = None,
         user: Optional[User] = None,
-        message: Optional[Message] = None,
-        message_id: Optional[int] = None,
+        query: Optional[str] = None,
     ):
         super().__init__(
             app=app,
@@ -47,22 +47,17 @@ class MessageEvent(ChatEvent):
             user_id=user_id,
             user=user,
         )
-        self.message_id = message_id
-        self.message = message
+        self.query = query
 
-    def from_json(self, data: JSONDict) -> "MessageEvent":
+    def from_json(self, data: JSONDict) -> "InlineQueryEvent":
         super().from_json(data)
         if self.data is not None:
-            self.message_id = data.get("messageId") or 0
-            self.message: Message = Message.build_from_json(
-                self.data.get("message"), self.app)
+            self.query = InlineQuery.build_from_json(
+                self.data.get("inlineQuery"), self.app)
+            self.user = self.action_by
+            self.user_id = self.action_by_id
 
-            self.message.user = self.user
-            self.message.community = self.community
-            self.message.group = self.group
-            self.message.channel = self.channel
-            self.message.receiver_id = self.data.get("receiverId") or 0
-            self.message.receiver = User.build_from_json(
-                self.data.get("receiver") or {}, self.app)
+        self.query.user = self.user
+        self.query.user_id = self.user_id
 
         return self

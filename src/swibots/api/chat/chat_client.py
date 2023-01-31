@@ -3,7 +3,7 @@ import logging
 from typing import Tuple
 from swibots.api.auth.models.auth_user import AuthUser
 from swibots.api.chat.controllers import MessageController
-from swibots.api.chat.events import ChatEvent, CallbackQueryEvent, MessageEvent, CommandEvent
+from swibots.api.chat.events import ChatEvent, CallbackQueryEvent, MessageEvent, CommandEvent, InlineQueryEvent
 from swibots.base import SwitchRestClient, SwitchWSAsyncClient
 from swibots.config import get_config
 from swibots.error import SwitchError
@@ -107,16 +107,18 @@ class ChatClient(SwitchRestClient):
             evt: ChatEvent = None
             if type == EventType.MESSAGE.value:
                 evt = self.build_object(MessageEvent, json_data)
-                #evt = MessageEvent.build_from_json(json_data)
+                # evt = MessageEvent.build_from_json(json_data)
             elif type == EventType.COMMAND.value:
                 evt = self.build_object(CommandEvent, json_data)
-                #evt = CommandEvent.build_from_json(json_data)
+                # evt = CommandEvent.build_from_json(json_data)
             elif type == EventType.CALLBACK_QUERY.value:
                 evt = self.build_object(CallbackQueryEvent, json_data)
-                #evt = CallbackQueryEvent.build_from_json(json_data)
+                # evt = CallbackQueryEvent.build_from_json(json_data)
+            elif type == EventType.INLINE_QUERY.value:
+                evt = self.build_object(InlineQueryEvent, json_data)
             else:
                 evt = self.build_object(ChatEvent, json_data)
-                #evt = ChatEvent.build_from_json(json_data)
+                # evt = ChatEvent.build_from_json(json_data)
             return evt
         except Exception as e:
             logger.exception(e)

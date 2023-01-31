@@ -14,6 +14,7 @@ from .member_left_handler import MemberLeftHandler
 from .user_banned_handler import UserBannedHandler
 from .community_updated_handler import CommunityUpdatedHandler
 from .unknown_command_handler import UnknownCommandHandler
+from .inline_query_handler import InlineQueryHandler
 
 
 class Handlers(
@@ -31,5 +32,6 @@ class Handlers(
     MemberLeftHandler,
     UserBannedHandler,
     CommunityUpdatedHandler,
+    InlineQueryHandler,
 ):
     pass

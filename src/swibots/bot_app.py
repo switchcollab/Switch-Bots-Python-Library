@@ -20,7 +20,9 @@ class BotApp(App, Decorators):
 
     def __init__(
         self,
-        token: str,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        token: Optional[str] = None,
         bot_description: Optional[str] = None,
         auto_update_bot: Optional[bool] = True,
         loop: asyncio.AbstractEventLoop = None,
@@ -35,7 +37,7 @@ class BotApp(App, Decorators):
             loop (:obj:`asyncio.AbstractEventLoop`): The asyncio loop to use (default: asyncio.get_event_loop()).
         
         """
-        super().__init__(token, loop)
+        super().__init__(username, password, token, loop)
         self._user_type = swibots.bots.Bot
         self.on_chat_service_start = self._on_chat_service_start
         self.on_community_service_start = self._on_community_service_start

@@ -20,6 +20,7 @@ from .send_text import SendText
 from .reply_message_text import ReplyMessageText
 from .reply_message import ReplyMessage
 from .edit_message_text import EditMessageText
+from .answer_inline_query import AnswerInlineQuery
 
 
 class ChatMethods(
@@ -44,5 +45,6 @@ class ChatMethods(
     ReplyMessageText,
     ReplyMessage,
     EditMessageText,
+    AnswerInlineQuery,
 ):
     pass

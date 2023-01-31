@@ -12,6 +12,7 @@ from .on_member_joined import OnMemberJoined
 from .on_member_left import OnMemberLeft
 from .on_user_banned import OnUserBanned
 from .on_unknown_command import OnUnknownCommand
+from .on_inline_query import OnInlineQuery
 
 
 class Decorators(
@@ -29,5 +30,6 @@ class Decorators(
     OnMemberLeft,
     OnUserBanned,
     OnUnknownCommand,
+    OnInlineQuery,
 ):
     pass

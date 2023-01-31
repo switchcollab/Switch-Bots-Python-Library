@@ -2,7 +2,7 @@ from typing import Type, TypeVar
 import swibots
 from swibots.api.auth.models import AuthUser
 
-T = TypeVar("T", bound="switch.AuthUser")
+T = TypeVar("T", bound="swibots.AuthUser")
 
 
 class GetMe:

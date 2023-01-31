@@ -2,7 +2,7 @@ import json
 import logging
 from typing import TYPE_CHECKING, List, Optional
 from swibots.api.common.models import User
-from swibots.api.chat.models import Message, GroupChatHistory, InlineMarkup
+from swibots.api.chat.models import Message, GroupChatHistory, InlineMarkup, InlineQuery, InlineQueryAnswer
 from swibots.error import SwitchError
 from swibots.utils.types import JSONDict
 from swibots.api.community.models import Channel, Community, Group
@@ -508,4 +508,32 @@ class MessageController:
 
         log.debug("Get unread messages count for %s", user_id)
         response = await self.client.get(f"{BASE_PATH}/unread-messages?userId={user_id}")
+        return response.data
+
+    async def answer_inline_query(self, query: InlineQuery, answer: InlineQueryAnswer) -> bool:
+        """Answer an inline query
+
+        Parameters:
+            query (``~switch.api.chat.models.InlineQuery``): The inline query
+            answer (``~switch.api.chat.models.InlineQueryAnser``): The answer
+
+        Returns:
+            ``bool``: True if the query was answered
+
+        Raises:
+            ``~switch.error.SwitchError``: If the query could not be answered
+        """
+        if not isinstance(query, InlineQuery):
+            raise TypeError("query must be an InlineQuery instance")
+
+        if isinstance(answer, str):
+            answer = InlineQueryAnswer(query_id=query.query_id, title=answer, results=[
+            ], cache_time=0, is_personal=True, next_offset=None, pm_text=None, pm_parameter=None, user_id=query.user_id)
+
+        if isinstance(answer, List):
+            answer = InlineQueryAnswer(query_id=query.query_id, title=None, results=answer, cache_time=0,
+                                       is_personal=True, next_offset=None, pm_text=None, pm_parameter=None, user_id=query.user_id)
+
+        log.debug("Answering inline query %s", query.query_id)
+        response = await self.client.post(f"{BASE_PATH}/inline/answer", answer.to_json_request())
         return response.data

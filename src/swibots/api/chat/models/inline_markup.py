@@ -50,7 +50,8 @@ class InlineMarkup(SwitchObject):
         self._size = InlineKeyboardSize(data.get("size") or "DEFAULT")
         self._inline_keyboard = (
             [
-                [InlineKeyboardButton.build_from_json(x, self.app) for x in row]
+                [InlineKeyboardButton.build_from_json(
+                    x, self.app) for x in row]
                 for row in data.get("inlineKeyboard") or []
             ],
         )

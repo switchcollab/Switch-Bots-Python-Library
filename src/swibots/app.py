@@ -20,7 +20,9 @@ signals = {
 class App(AbstractContextManager, ApiClient):
     def __init__(
         self,
-        token: str,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        token: Optional[str] = None,
         loop: asyncio.AbstractEventLoop = None,
     ):
         """Initialize the client"""
@@ -34,6 +36,15 @@ class App(AbstractContextManager, ApiClient):
         self.on_app_stop: Callable = None
         self.on_app_start: Callable = None
 
+    async def _validate_credentials(self):
+        if self.token is not None:
+            return await self._validate_token()
+        if self.username is None or self.password is None:
+            raise SwitchError(
+                "Username and password are required when token is not set")
+        user = await self.login(user_type=self._user_type)
+        self.user = user
+
     async def _validate_token(self):
         # check if token is valid
         if self.token is None:
@@ -43,7 +54,7 @@ class App(AbstractContextManager, ApiClient):
             log.debug("checking token...")
             user = await self.get_me(user_type=self._user_type)
             self.user = user
-            log.info("Logged in as %s", user.user_name)
+            log.info("Logged in as [%s][%d]", user.user_name, user.id)
         except Exception as e:
             log.exception(e)
             await self.stop()
@@ -53,7 +64,7 @@ class App(AbstractContextManager, ApiClient):
             raise SwitchError("Invalid token")
 
     async def _validate_run(self):
-        await self._validate_token()
+        await self._validate_credentials()
 
     async def _on_app_stop(self):
         await self.chat_service.stop()
@@ -132,7 +143,8 @@ class App(AbstractContextManager, ApiClient):
         task = None
 
         def signal_handler(signum, __):
-            logging.info(f"Stop signal received ({signals[signum]}). Exiting...")
+            logging.info(
+                f"Stop signal received ({signals[signum]}). Exiting...")
             task.cancel()
 
         for s in (SIGINT, SIGTERM, SIGABRT):

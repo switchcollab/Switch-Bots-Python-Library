@@ -55,9 +55,9 @@ class Message(
         super().__init__(app=app)
         self.id = id
         self.user_id = user_id
-        self._user = user
+        self.user = user
         self.receiver_id = receiver_id
-        self._receiver = receiver
+        self.receiver = receiver
         self.message = message
         self.sent_date = sent_date
         self.status = status
@@ -67,10 +67,10 @@ class Message(
         self.callback_data = callback_data
         self.channel_chat = channel_chat
         self.channel_id = channel_id
-        self._channel = channel
+        self.channel = channel
         self.command_name = command_name
         self.community_id = community_id
-        self._community = community
+        self.community = community
         self.edit = edit
         self.flag = flag
         self.forward = forward
@@ -87,8 +87,8 @@ class Message(
         self.reactions = reactions
         self.replied_message = replied_message
         self.replied_to_id = replied_to_id
-        self._replied_to = replied_to
-        self._replies = replies
+        self.replied_to = replied_to
+        self.replies = replies
         self.reply_count = reply_count
         self.__dict__.update(**kwargs)
 
@@ -147,13 +147,18 @@ class Message(
             self.callback_data = data.get("callback_data")
             self.channel_chat = data.get("channelChat")
             self.channel_id = data.get("channelId")
+            self.channel = Channel.build_from_json(
+                data.get("channel"), self.app)
             self.command_name = data.get("commandName")
             self.community_id = data.get("communityId")
+            self.community = Community.build_from_json(
+                data.get("community"), self.app)
             self.edit = data.get("edit")
             self.flag = data.get("flag")
             self.forward = data.get("forward")
             self.group_chat = data.get("groupChat")
             self.group_id = data.get("groupId")
+            self.group = Group.build_from_json(data.get("group"), self.app)
             self.id = data.get("id")
             self.information = data.get("information")
             self.inline_markup = InlineMarkup.build_from_json(
@@ -166,7 +171,7 @@ class Message(
             self.pinned = data.get("pinned")
             self.reactions = data.get("reactions")
             self.receiver_id = data.get("receiverId")
-            self.replied_message = data.get("repliedMessage")
+            self.replied_to = data.get("repliedMessage")
             self.replied_to_id = data.get("repliedToId")
             self.replies = data.get("replies")
             self.reply_count = data.get("replyCount")
@@ -176,61 +181,47 @@ class Message(
             self.user_id = data.get("userId")
         return self
 
-    @property
-    async def sender(self) -> "User":
-        if self.user_id is None:
-            return None
-        if self._user is None:
-            self._user = await self.app.get_user(self.user_id)
-        return self._user
+    # async def get_receiver(self) -> "User":
+    #     if self.receiver_id is None:
+    #         return None
+    #     if self._receiver is None:
+    #         self._receiver = await self.app.get_user(self.receiver_id)
+    #     return self._receiver
 
-    @property
-    async def _receiver(self) -> "User":
-        if self.receiver_id is None:
-            return None
-        if self._receiver is None:
-            self._receiver = await self.app.get_user(self.receiver_id)
-        return self._receiver
+    # async def get_group(self) -> "Group":
+    #     if self.group_id is None:
+    #         return None
+    #     if self.group is None:
+    #         self.group = await self.app.getgroup(self.group_id)
+    #     return self.group
 
-    @property
-    async def group(self) -> "Group":
-        if self.group_id is None:
-            return None
-        if self.group is None:
-            self.group = await self.app.get_group(self.group_id)
-        return self.group
+    # async def get_channel(self) -> "Channel":
+    #     if self.channel_id is None:
+    #         return None
+    #     if self.channel is None:
+    #         self.channel = await self.app.get_channel(self.channel_id)
+    #     return self.channel
 
-    @property
-    async def _channel(self) -> "Channel":
-        if self.channel_id is None:
-            return None
-        if self._channel is None:
-            self._channel = await self.app.get_channel(self.channel_id)
-        return self._channel
+    # async def get_community(self) -> "Community":
+    #     if self.community_id is None:
+    #         return None
+    #     if self.community is None:
+    #         self.community = await self.app.get_community(self.community_id)
+    #     return self.community
 
-    @property
-    async def _community(self) -> "Community":
-        if self.community_id is None:
-            return None
-        if self._community is None:
-            self._community = await self.app.get_community(self.community_id)
-        return self._community
+    # async def get_replied_to(self) -> "Message":
+    #     if self.replied_to_id is None or self.replied_to_id <= 0:
+    #         return None
+    #     if self.replied_to is None:
+    #         self.replied_to = await self.app.get_message(self.replied_to_id)
+    #     return self.replied_to
 
-    @property
-    async def _replied_to(self) -> "Message":
-        if self.replied_to_id is None or self.replied_to_id <= 0:
-            return None
-        if self._replied_to is None:
-            self._replied_to = await self.app.get_message(self.replied_to_id)
-        return self._replied_to
-
-    @property
-    async def replies(self) -> List["Message"]:
+    async def get_replies(self) -> List["Message"]:
         if self.reply_count <= 0:
             return []
-        if self._replies is None:
-            self._replies = await self.app.get_message_replies(self.id)
-        return self._replies
+        if self.replies is None:
+            self.replies = await self.app.get_message_replies(self.id)
+        return self.replies
 
     ### API Methods ###
 
@@ -243,6 +234,8 @@ class Message(
         await self.app.delete_message(self)
 
     async def reply(self, reply: "Message") -> "Message":
+        if isinstance(reply, str):
+            return await self.app.reply_message_text(self, reply)
         return await self.app.reply_message(self, reply)
 
     async def reply_text(self, text: str, inline_markup: Optional[InlineMarkup] = None) -> "Message":

@@ -11,7 +11,8 @@ from swibots.utils.types import JSONDict
 
 log = logging.getLogger(__name__)
 
-DEFAULT_HEADERS = {"Content-Type": "application/json", "Accept": "application/json"}
+DEFAULT_HEADERS = {"Content-Type": "application/json",
+                   "Accept": "application/json"}
 
 
 class RestClient:
