@@ -65,7 +65,8 @@ CUSTOM_FILTER_NAME = "CustomFilter"
 
 def create(func: FilterCallback, name: str = None, **kwargs) -> Filter:
     return type(
-        name or func.__name__ or CUSTOM_FILTER_NAME, (Filter,), {"__call__": func, **kwargs}
+        name or func.__name__ or CUSTOM_FILTER_NAME, (Filter,), {
+            "__call__": func, **kwargs}
     )()
 
 
@@ -188,18 +189,20 @@ def text(text: Optional[SCT[str]]):
         else:
             text = frozenset(text)
 
-        if ctx.event.message is None:
-            return False
-        if ctx.event.message.message is None:
-            return False
+        if ctx.event.type == EventType.MESSAGE:
+            value = ctx.event.message.message
+        elif ctx.event.type == EventType.COMMAND:
+            value = ctx.event.command
+        elif ctx.event.type == EventType.CALLBACK_QUERY:
+            value = ctx.event.callback_data
 
         for t in text:
-            if t in ctx.event.message.message:
+            if t in value:
                 return True
             else:
                 try:
                     regexp = re.compile(t)
-                    if regexp.search(ctx.event.message.message):
+                    if regexp.search(value):
                         return True
                 except re.error:
                     pass
@@ -226,13 +229,14 @@ def regexp(regexp: Optional[SCT[str]]):
         elif ctx.event.type == EventType.COMMAND:
             value = ctx.event.command
         elif ctx.event.type == EventType.CALLBACK_QUERY:
-            value = ctx.event.callback_query
+            value = ctx.event.callback_data
 
         if value is None:
             return False
 
         for r in regexp:
             try:
+
                 cr = re.compile(r)
                 if cr.match(value):
                     return True

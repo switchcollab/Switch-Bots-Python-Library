@@ -1,7 +1,7 @@
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, BinaryIO, Callable, List, Optional, Union
 import swibots
 from swibots.base import SwitchObject
-from swibots.api.common import User
+from swibots.api.common import User, MediaUploadRequest
 from swibots.api.community import Community, Channel, Group
 from swibots.utils.types import JSONDict
 from .inline_markup import InlineMarkup
@@ -94,15 +94,16 @@ class Message(
 
     def to_json_request(self) -> JSONDict:
         return {
-            "id": self.id,
+            # "id": self.id,
             "message": self.message,
-            "receiverId": self.receiver_id,
-            "requestId": self.request_id,
-            "userId": self.user_id,
-            "inline_markup": self.inline_markup.to_json_request() if self.inline_markup else None,
-            "callback_data": self.callback_data,
-            "repliedToId": self.replied_to_id,
-            "status": self.status,
+            # "receiverId": self.receiver_id,
+            # "requestId": self.request_id,
+            # "userId": self.user_id,
+            # "inline_markup": self.inline_markup.to_json_request() if self.inline_markup else None,
+            # "callback_data": self.callback_data,
+            "repliedTo": self.replied_to_id,
+            # "mediaLink": self.media_link,
+            # "status": self.status,
         }
 
     def to_json(self) -> JSONDict:
@@ -131,7 +132,7 @@ class Message(
             "reactions": self.reactions,
             "receiverId": self.receiver_id,
             "repliedMessage": self.replied_message,
-            "repliedToId": self.replied_to_id,
+            "repliedTo": self.replied_to_id,
             "replies": self.replies,
             "replyCount": self.reply_count,
             "requestId": self.request_id,
@@ -172,7 +173,7 @@ class Message(
             self.reactions = data.get("reactions")
             self.receiver_id = data.get("receiverId")
             self.replied_to = data.get("repliedMessage")
-            self.replied_to_id = data.get("repliedToId")
+            self.replied_to_id = data.get("repliedTo")
             self.replies = data.get("replies")
             self.reply_count = data.get("replyCount")
             self.request_id = data.get("requestId")
@@ -223,23 +224,33 @@ class Message(
             self.replies = await self.app.get_message_replies(self.id)
         return self.replies
 
+    async def get_replied_message(self) -> "Message":
+        if self.replied_to_id is None or self.replied_to_id <= 0:
+            return None
+        if self.replied_to is None:
+            self.replied_to = await self.app.get_message(self.replied_to_id)
+        return self.replied_to
+
     ### API Methods ###
 
-    async def send(self) -> "Message":
+    async def send(self,  media: MediaUploadRequest = None) -> "Message":
         if self.id is not None:
             return await self.app.edit_message(self)
-        return await self.app.send_message(self)
+        return await self.app.send_message(self, media)
 
     async def delete(self) -> None:
         await self.app.delete_message(self)
 
-    async def reply(self, reply: "Message") -> "Message":
+    async def reply(self, reply: "Message", media: MediaUploadRequest = None) -> "Message":
         if isinstance(reply, str):
-            return await self.app.reply_message_text(self, reply)
-        return await self.app.reply_message(self, reply)
+            return await self.app.reply_message_text(self, reply, media)
+        return await self.app.reply_message(self, reply, media)
 
-    async def reply_text(self, text: str, inline_markup: Optional[InlineMarkup] = None) -> "Message":
-        return await self.app.reply_message_text(self, text, inline_markup)
+    async def reply_text(self, text: str, inline_markup: Optional[InlineMarkup] = None,  media: MediaUploadRequest = None) -> "Message":
+        return await self.app.reply_message_text(self, text, inline_markup, media)
 
     async def edit_text(self, text: str,  inline_markup: Optional[InlineMarkup] = None) -> "Message":
         return await self.app.edit_message_text(self, text, inline_markup)
+
+    async def download(self, file_name: str = None, in_memory: bool = False, block: bool = True, progress: Callable = None, progress_args: tuple = ()) -> Optional[Union[BinaryIO, bytes]]:
+        await self.app.download_media(self, file_name, in_memory, block, progress, progress_args)

@@ -1,10 +1,13 @@
-from typing import Type, TypeVar
+from typing import TYPE_CHECKING, Type, TypeVar
 import swibots
 from swibots.api.chat.models import Message, InlineMarkup
 
+if TYPE_CHECKING:
+    from swibots.api import ApiClient
+
 
 class EditMessageText:
-    async def edit_message_text(self: "swibots.ApiClient", message: int | Message, text: str, inline_markup: InlineMarkup = None) -> Message:
+    async def edit_message_text(self: "ApiClient", message: int | Message, text: str, inline_markup: InlineMarkup = None) -> Message:
         """Send a message
 
         Parameters:

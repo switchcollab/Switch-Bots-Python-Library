@@ -8,17 +8,18 @@ from swibots.base import RestResponse
 
 T = TypeVar("T", bound="swibots.SwitchObject")
 
+
 class SwitchRestClient(RestClient):
-    def __init__(self, app:"swibots.App" =None, base_url: str = None, token: str = None):
+    def __init__(self, app: "swibots.App" = None, base_url: str = None, token: str = None):
         super().__init__()
         self._app = app
         self._auth_token = token
         self._base_url = base_url
 
     @property
-    def app(self)->"swibots.App":
+    def app(self) -> "swibots.App":
         return self._app
-    
+
     @app.setter
     def app(self, app: "swibots.App"):
         self._app = app
@@ -26,7 +27,7 @@ class SwitchRestClient(RestClient):
     @property
     def token(self):
         return self._app.token
-    
+
     @property
     def user(self) -> "swibots.AuthUser":
         return self._app.user
@@ -41,7 +42,7 @@ class SwitchRestClient(RestClient):
 
     def build_object(self, obj_type: Type[T],  data: JSONDict) -> T:
         return obj_type.build_from_json(data, self.app)
-    
+
     def build_list(self, obj_type: Type[T], data: JSONDict) -> List[T]:
         return obj_type.build_from_json_list(data, self.app)
 
@@ -49,31 +50,31 @@ class SwitchRestClient(RestClient):
         self, url: str, data: dict = None, headers: dict = None
     ) -> RestResponse[JSONDict]:
         """See :meth:`BaseRequest.get`."""
-        return await self.do_request(url, "GET", data, headers)
+        return await self.do_request(url, "GET", data, headers=headers)
 
     async def post(
-        self, url: str, data: dict = None, headers: dict = None
+        self, url: str, data: dict = None, form_data=None, files=None, headers: dict = None
     ) -> RestResponse[JSONDict]:
         """See :meth:`BaseRequest.post`."""
-        return await self.do_request(url, "POST", data, headers)
+        return await self.do_request(url, "POST", data, form_data, files, headers)
 
     async def put(
-        self, url: str, data: dict = None, headers: dict = None
+        self, url: str, data: dict = None, form_data=None, files=None, headers: dict = None
     ) -> RestResponse[JSONDict]:
         """See :meth:`BaseRequest.put`."""
-        return await self.do_request(url, "PUT", data, headers)
+        return await self.do_request(url, "PUT", data, form_data, files, headers)
 
     async def delete(
         self, url: str, data: dict = None, headers: dict = None
     ) -> RestResponse[JSONDict]:
         """See :meth:`BaseRequest.delete`."""
-        return await self.do_request(url, "DELETE", data, headers)
+        return await self.do_request(url, "DELETE", data, headers=headers)
 
     async def patch(
-        self, url: str, data: dict = None, headers: dict = None
+        self, url: str, data: dict = None, form_data=None, files=None, headers: dict = None
     ) -> RestResponse[JSONDict]:
         """See :meth:`BaseRequest.patch`."""
-        return await self.do_request(url, "PATCH", data, headers)
+        return await self.do_request(url, "PATCH", data, form_data, files, headers)
 
     async def head(
         self, url: str, data: dict = None, headers: dict = None
@@ -109,10 +110,10 @@ class SwitchRestClient(RestClient):
         return headers
 
     async def do_request(
-        self, path: str, method: str, data: dict = None, headers: dict = None
+        self, path: str, method: str, data: dict = None, form_data=None, files=None, headers: dict = None
     ) -> RestResponse[JSONDict]:
         data = self.prepare_request_data(data)
         headers = self.prepare_request_headers(headers)
         return self.parse_response(
-            await RestClient.do_request(self, self._base_url + path, method, data, headers)
+            await RestClient.do_request(self, self._base_url + path, method, data, form_data, files, headers)
         )

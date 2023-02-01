@@ -21,6 +21,7 @@ from .reply_message_text import ReplyMessageText
 from .reply_message import ReplyMessage
 from .edit_message_text import EditMessageText
 from .answer_inline_query import AnswerInlineQuery
+from .download_media import DownloadMedia
 
 
 class ChatMethods(
@@ -46,5 +47,6 @@ class ChatMethods(
     ReplyMessage,
     EditMessageText,
     AnswerInlineQuery,
+    DownloadMedia,
 ):
     pass
