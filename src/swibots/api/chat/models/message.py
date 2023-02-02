@@ -94,16 +94,19 @@ class Message(
 
     def to_json_request(self) -> JSONDict:
         return {
-            # "id": self.id,
+            "id": self.id,
             "message": self.message,
-            # "receiverId": self.receiver_id,
-            # "requestId": self.request_id,
-            # "userId": self.user_id,
-            # "inline_markup": self.inline_markup.to_json_request() if self.inline_markup else None,
-            # "callback_data": self.callback_data,
+            "receiverId": self.receiver_id,
+            "requestId": self.request_id,
+            "userId": self.user_id,
+            "communityId": self.community_id,
+            "groupId": self.group_id,
+            "channelId": self.channel_id,
+            "inline_markup": self.inline_markup.to_json_request() if self.inline_markup else None,
+            "callback_data": self.callback_data,
             "repliedTo": self.replied_to_id,
-            # "mediaLink": self.media_link,
-            # "status": self.status,
+            "mediaLink": self.media_link,
+            "status": self.status,
         }
 
     def to_json(self) -> JSONDict:

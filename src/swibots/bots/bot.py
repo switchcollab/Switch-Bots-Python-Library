@@ -102,7 +102,11 @@ class Bot(AuthUser, ApiClient):
         receiver_id = message.user_id if message.user_id != self.id else message.receiver_id
         sender_id = self.id
         m = Message.build_from_json(message.to_json(), self.app)
+        m.id = None
+        m.message = ""
 
-        m.receiver_id = receiver_id
+        if message.community_id is None or message.community_id == "":
+            m.receiver_id = receiver_id
+
         m.user_id = sender_id
         return m

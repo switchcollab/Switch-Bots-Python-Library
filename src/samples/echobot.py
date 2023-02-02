@@ -3,12 +3,7 @@ import logging
 import os
 from dotenv import load_dotenv
 
-from swibots import SwitchApp
-from swibots.api.bot.models.bot_command_info import BotCommandInfo
-from swibots.api.chat.events import CallbackQueryEvent, CommandEvent, MessageEvent
-from swibots.api.chat.models import InlineKeyboardButton, InlineMarkup
-from swibots.bots import BotContext
-from swibots.bots import filters, Decorators
+from swibots import BotApp, BotContext, CommandEvent, MessageEvent, CallbackQueryEvent, filters, InlineKeyboardButton, InlineMarkup, BotCommandInfo
 
 from swibots.bots.handlers import (
     MessageHandler,
@@ -72,45 +67,29 @@ async def query_callback_handler(ctx: BotContext[CallbackQueryEvent]):
     m.inline_markup = None
     await ctx.bot.edit_message(m)
 
+app = BotApp(token=TOKEN).register_command([
+    BotCommandInfo("echo", "Echoes back the message", True),
+    BotCommandInfo("buttons", "Shows buttons", True),
+    BotCommandInfo("help", "Shows help", True),
+])
 
-async def main():
-    app = (
-        SwitchApp.builder()
-        .token(TOKEN)
-        .commands(
-            [
-                BotCommandInfo("echo", "Echoes back the message", True),
-                BotCommandInfo("buttons", "Shows buttons", True),
-                BotCommandInfo("help", "Shows help", True),
-            ]
-        )
-        .description("Super cool!")
-        .build()
+
+app.add_handler(
+    CommandHandler(
+        command="echo",
+        callback=echo_handler,
     )
-
-    try:
-        app.add_handler(
-            CommandHandler(
-                command="echo",
-                callback=echo_handler,
-            )
-        )
-        app.add_handler(CommandHandler(command="buttons", callback=buttons_handler))
-        app.add_handler(CallbackQueryHandler(callback=query_callback_handler))
-        app.add_handler(
-            MessageHandler(
-                callback=message_handler, filter=filters.text("hello") | filters.text("hi")
-            )
-        )
-        app.add_handler(UnknownCommandHandler(callback=unkown_command_handler))
-
-        await app.start()
-    finally:
-        await app.__aexit__()
+)
+app.add_handler(CommandHandler(
+    command="buttons", callback=buttons_handler))
+app.add_handler(CallbackQueryHandler(callback=query_callback_handler))
+app.add_handler(
+    MessageHandler(
+        callback=message_handler, filter=filters.text(
+            "hello") | filters.text("hi")
+    )
+)
+app.add_handler(UnknownCommandHandler(callback=unkown_command_handler))
 
 
-if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        pass
+app.run()
