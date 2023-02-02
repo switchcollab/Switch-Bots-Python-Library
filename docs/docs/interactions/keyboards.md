@@ -14,7 +14,7 @@ The `InlineKeyboard` class has 3 properties:
 
 - `inline_keyboard`: A list of lists (each list is an `inline_markup` row, containing another list with one or more `InlineKeyboardButton`) of `InlineKeyboardButton` objects.
 - `size: InlikeKeyboardSize`: The size of the keyboard. It can be `InlineKeyboardSize.DEFAULT` (default value) or `InlineKeyboardSize.FULL_WIDTH`.
-- `color: InlineKeyboardColor`: The color of the keyboard. It can be `InlineKeyboardColor.DEFAULT` (default value), `InlineKeyboardColor.RED`, `InlineKeyboardColor.GREEN` or `InlineKeyboardColor.BLUE`.
+- `color: InlineKeyboardColor`: The color of the keyboard. It can be `InlineKeyboardColor.RANDOM` (default value), `InlineKeyboardColor.RED`, `InlineKeyboardColor.GREEN` or `InlineKeyboardColor.BLUE`.
 
 This class contains a method called `add_button` that allows you to add buttons to the keyboard. This method accepts a `InlineKeyboardButton` object as a parameter.
 

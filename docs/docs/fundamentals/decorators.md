@@ -26,6 +26,7 @@ Let's say that you have defined your app as `app`, then you can use the followin
 - `@app.on_member_left`
 - `@app.on_user_banned`
 - `@app.on_unknown_command`
+- `@app.on_inline_query`
 
 ### Example
 
@@ -37,9 +38,7 @@ app = BotApp("token", "your bot description")
 
 @app.on_message()
 async def message_handler(ctx: BotContext[MessageEvent]):
-    m = await ctx.prepare_response_message(ctx.event.message)
-    m.message = f"Thank you! I received your message: {ctx.event.message.message}"
-    await ctx.send_message(m)
+   await m.reply_text(f"Thank you! I received your message: {ctx.event.message.message}")
 
 app.run()
 ```

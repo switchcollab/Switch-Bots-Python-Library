@@ -52,7 +52,7 @@ class App(AbstractContextManager, ApiClient):
             client=IOClient(),
             url=file_name,
             callback=progress,
-            args=progress_args
+            callback_args=progress_args
         )
         file = open(file_name, "rb")
         reader = ReadCallbackStream(

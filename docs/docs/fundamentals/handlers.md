@@ -19,6 +19,7 @@ There are one handler class for each event type. The handler class name is the s
 - `ComandHandler` - A command was sent to a chat.
 - `CallbackQueryHandler` - A query callback was sent (user pressed a button, for example).
 - `UnknownCommandHandler` - A registered was found but there are no handlers that can process it. (This can be used to create a default handler for commands.)
+- `InlineQueryHandler` - An inline query was sent.
 
 ### Community handlers
 
@@ -45,9 +46,7 @@ from swibots import BotApp, MessageHandler
 app = BotApp("token", "your bot description")
 
 async def message_handler(ctx: BotContext[MessageEvent]):
-    m = await ctx.prepare_response_message(ctx.event.message)
-    m.message = f"Thank you! I received your message: {ctx.event.message.message}"
-    await ctx.send_message(m)
+    await m.reply_text(f"Thank you! I received your message: {ctx.event.message.message}")
 
 app.add_handler(MessageHandler(message_handler))
 

@@ -35,9 +35,7 @@ app = BotApp("token", "your bot description")
 
 @app.on_message(is_bot & (community("123456789") | channel("123456")))
 async def message_handler(ctx: BotContext[MessageEvent]):
-    m = await ctx.prepare_response_message(ctx.event.message)
-    m.message = f"Thank you! I received your message: {ctx.event.message.message}"
-    await ctx.send_message(m)
-
+    await m.reply_text(f"Thank you! I received your message: {ctx.event.message.message}")
+    
 app.run()
 ```

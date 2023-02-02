@@ -10,7 +10,7 @@ class IOClient:
 
 
 class DownloadProgress:
-    def __init__(self, downloaded: int, total: int, url: str, client: IOClient, file_name: str) -> None:
+    def __init__(self, downloaded: int, total: int, url: str, client: IOClient, file_name: str):
         self.downloaded = downloaded
         self.total = total
         self.url = url
@@ -20,7 +20,7 @@ class DownloadProgress:
 
 
 class UploadProgress:
-    def __init__(self, current: int, readed: int, url: str, client: IOClient, file_name: str, callback, args) -> None:
+    def __init__(self, current: int, readed: int, url: str, client: IOClient, file_name: str, callback, callback_args):
         self.current = current
         self.readed = readed
         self.url = url
@@ -28,13 +28,13 @@ class UploadProgress:
         self.file_name = file_name
         self.started = False
         self.callback = callback
-        self.args = args
+        self.callback_args = callback_args
 
     def update(self, current: int) -> None:
         self.current = current
         self.readed += current
         if self.callback:
-            self.callback(self, *self.args)
+            self.callback(self, *self.callback_args)
 
 
 CtxType = TypeVar("CtxType")
