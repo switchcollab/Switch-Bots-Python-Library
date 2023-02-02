@@ -1,6 +1,6 @@
 # get_messages
 
-Get a list of messages by user ID.
+Get a list of [messages](../types/message) by user ID.
 
 ## Signature
 

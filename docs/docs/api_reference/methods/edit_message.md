@@ -8,4 +8,4 @@ Edits a message
 
 # Parameters
 
-- `message` ([Message](/docs/api_reference/types/message)): The message to edit (if the message has not ID, it will be sent as a new message)
+- `message` ([Message](../types/message)): The message to edit (if the message has not ID, it will be sent as a new message)

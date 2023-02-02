@@ -10,4 +10,4 @@ Usually you will call this method using the `delete` method of the message objec
 
 ## Parameters
 
-- `message` (int | [Message](/docs/types/message)): The message to delete (either the message ID or the message object itself)
+- `message` (int | [Message](../types/message)): The message to delete (either the message ID or the message object itself)

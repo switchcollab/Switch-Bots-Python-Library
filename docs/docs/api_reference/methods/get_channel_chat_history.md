@@ -17,7 +17,7 @@ Get the chat history of a channel or group.
 
 
 :::tip
-There is an analogous method for getting the chat history of a group: [get_group_chat_history](/docs/api_reference/methods/get_group_chat_history).
+There is an analogous method for getting the chat history of a group: [get_group_chat_history](../methods/get_group_chat_history).
 :::
 
 

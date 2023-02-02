@@ -8,13 +8,13 @@ The InlineQuery object represents an incoming inline query. When the user sends 
 
 - `id` (`str`): Unique identifier for this query
 - `user_id` (`int`): The ID of the user who sent the query
-- `user` ([User](/docs/api_reference/types/user)): The user who sent the query
+- `user` ([User](../user)): The user who sent the query
 - `community_id` (`int`): The ID of the community where the query was sent
-- `community` ([Community](/docs/api_reference/types/community)): The community where the query was sent
+- `community` ([Community](../community)): The community where the query was sent
 - `group_id` (`int`): The ID of the group where the query was sent
-- `group` ([Group](/docs/api_reference/types/group)): The group where the query was sent
+- `group` ([Group](../group)): The group where the query was sent
 - `channel_id` (`int`): The ID of the channel where the query was sent
-- `channel` ([Channel](/adocs/pi_reference/types/channel)): The channel where the query was sent
+- `channel` ([Channel](../channel)): The channel where the query was sent
 - `query_id` (`str`): Unique identifier for this query
 - `offset` (`str`): Offset of the results to be returned, can be controlled by the bot
 - `query` (`str`): Text of the query (up to 256 characters)

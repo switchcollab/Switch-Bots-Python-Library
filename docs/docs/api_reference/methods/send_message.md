@@ -8,5 +8,5 @@ Send a text message to a user, channel or group.
 
 ## Parameters
 
-- `message` ([Message](/docs/api_reference/types/message)): The message to send
-- `media` ([MediaUploadRequest](/docs/api_reference/types/media_upload_request)): The media to send with the message
+- `message` ([Message](../types/message)): The message to send
+- `media` ([MediaUploadRequest](../types/media_upload_request)): The media to send with the message

@@ -1,6 +1,6 @@
 # get_channel
 
-Gets a [Channel](/docs/api_reference/types/channel) by its ID.
+Gets a [Channel](../types/channel) by its ID.
 
 ## Signature
 

@@ -8,15 +8,15 @@ Edits the text of a message.
 
 ## Parameters
 
-- `message` (int | [Message](/docs/api_reference/types/message)): The ID of the message to edit or the message itself
+- `message` (int | [Message](../types/message)): The ID of the message to edit or the message itself
 - `text` (str): The new text of the message
-- `inline_markup` ([InlineMarkup](/docs/api_reference/types/inline_markup)): The new inline markup of the message
+- `inline_markup` ([InlineMarkup](../types/inline_markup)): The new inline markup of the message
 
 
 :::tip
-This method does the same thing as [edit_message](/docs/api_reference/methods/edit_message), but it only edits the text of the message.
+This method does the same thing as [edit_message](../methods/edit_message), but it only edits the text of the message.
 :::
 
 :::tip
-This method does the same thing as the `edit_text` method of the [Message](/docs/api_reference/types/message) class.
+This method does the same thing as the `edit_text` method of the [Message](../types/message) class.
 :::

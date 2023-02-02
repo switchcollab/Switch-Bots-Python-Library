@@ -1,6 +1,6 @@
 # get_message
 
-Gets a message by its ID.
+Gets a [Message](../types/message) by its ID.
 
 ## Signature
 

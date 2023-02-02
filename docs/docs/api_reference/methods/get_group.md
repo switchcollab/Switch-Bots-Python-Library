@@ -1,6 +1,6 @@
 # get_group
 
-Gets a [Group](/docs/api_reference/types/group) by its ID.
+Gets a [Group](../types/group) by its ID.
 
 ## Signature
 
