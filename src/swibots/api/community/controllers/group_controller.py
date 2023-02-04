@@ -13,3 +13,8 @@ BASE_PATH = "/v1/community/groups"
 class GroupController:
     def __init__(self, client: "CommunityClient"):
         self.client = client
+
+    async def get_group(self, group_id: str):
+        """Get a channel by id"""
+        response = await self.client.get(f"{BASE_PATH}?groupId={group_id}")
+        return self.client.build_object(Group, response["result"])

@@ -18,4 +18,4 @@ class GetGroup:
 
         This method does the same as :meth:`switch.api.community.controllers.GroupController.get_group`.
         """
-        return await self.community_service.groups.get_community(id)
+        return await self.community_service.groups.get_group(id)
