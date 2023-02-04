@@ -34,3 +34,18 @@ class UserController:
         """
         response = await self.client.get(f"{BASE_PATH}")
         return self.client.build_object(user_type, response.data)
+    
+    async def login(self, username: str, password: str, user_type: Type[T] = AuthUser) -> T:
+        """Login with username and password
+
+        Parameters:
+            username (``str``): The username
+            password (``str``): The password
+            user_type (``Type[T]``, *optional*): The user type to return. Defaults to :obj:`~switch.api.auth.models.AuthUser`.
+
+        Returns:
+            ``T``: The user
+
+        """
+        response = await self.client.post(f"{BASE_PATH}/login", json={"username": username, "password": password})
+        return self.client.build_object(user_type, response.data)

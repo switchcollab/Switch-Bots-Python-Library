@@ -1,0 +1,8 @@
+{
+  "label": "Inline Types",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "Inline query types. These are used as a result of an inline query."
+  }
+}

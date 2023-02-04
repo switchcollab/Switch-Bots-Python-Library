@@ -25,9 +25,7 @@ app = BotApp("TOKEN")
 
 @app.on_message()
 async def message_handler(ctx: BotContext[MessageEvent]):
-    m = await ctx.prepare_response_message(ctx.event.message)
-    m.message = f"Thank you! I received your message: {ctx.event.message.message}"
-    await ctx.send_message(m)
+   await m.reply_text(f"Thank you! I received your message: {ctx.event.message.message}")
 
 app.run()
 ```
@@ -46,9 +44,7 @@ from swibots import BotApp, BotContext, MessageEvent, MessageHandler
 app = BotApp("TOKEN")
 
 async def handle_message(ctx: BotContext[MessageEvent]):
-    m = await ctx.prepare_response_message(ctx.event.message)
-    m.message = f"Thank you! I received your message: {ctx.event.message.message}"
-    await ctx.send_message(m)
+    await m.reply_text(f"Thank you! I received your message: {ctx.event.message.message}")
 
 app.add_handler(MessageHandler(handle_message))
 

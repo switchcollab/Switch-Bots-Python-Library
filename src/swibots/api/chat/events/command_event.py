@@ -30,6 +30,7 @@ class CommandEvent(MessageEvent):
         user_id: Optional[str] = None,
         user: Optional[User] = None,
         message: Optional[Message] = None,
+        message_id: Optional[int] = None,
         command: Optional[str] = None,
         params: Optional[str] = None,
     ):
@@ -47,6 +48,7 @@ class CommandEvent(MessageEvent):
             data=data,
             user_id=user_id,
             user=user,
+            message_id = message_id,
             message=message,
         )
         self.command = command

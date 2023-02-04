@@ -21,13 +21,12 @@ class ChatEvent(Event):
         group: Optional[Group] = None,
         channel_id: Optional[str] = None,
         channel: Optional[Channel] = None,
-        action_by_id: Optional[str] = None,
+        action_by_id: Optional[int] = None,
         action_by: Optional[User] = None,
         data: Optional[dict] = None,
-        user_id: Optional[str] = None,
+        user_id: Optional[int] = None,
         user: Optional[User] = None,
-        message: Optional[Message] = None,
-        message_id: Optional[str] = None,
+
     ):
         super().__init__(
             app=app,
@@ -44,8 +43,6 @@ class ChatEvent(Event):
         )
         self.user_id = user_id
         self.user = user
-        self.message = message
-        self.message_id = message_id
 
     def to_json(self) -> JSONDict:
         d = super().to_json()
@@ -62,10 +59,20 @@ class ChatEvent(Event):
         if data is not None:
             super().from_json(data)
             details = data.get("details") or {}
-            self.user_id = data.get("userId") or data.get("senderId")
+            self.user_id = data.get("userId") or data.get(
+                "senderId") or data.get("actionById")
             self.user = User.build_from_json(
-                details.get("user") or details.get("sender"), self.app)
-            self.message_id = data.get("messageId")
-            self.message = Message.build_from_json(
-                details.get("message"), self.app)
+                details.get("user") or details.get("sender") or data.get("actionBy"), self.app)
+            self.community_id = data.get("communityId")
+            self.community = Community.build_from_json(
+                details.get("community"), self.app)
+            self.group_id = data.get("groupId")
+            self.group = Group.build_from_json(details.get("group"), self.app)
+            self.channel_id = data.get("channelId")
+            self.channel = Channel.build_from_json(
+                details.get("channel"), self.app)
+            self.action_by_id = data.get("actionById")
+            self.action_by = User.build_from_json(
+                data.get("actionBy"), self.app)
+
         return self

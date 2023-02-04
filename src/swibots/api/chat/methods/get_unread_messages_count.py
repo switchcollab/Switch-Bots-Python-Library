@@ -1,6 +1,4 @@
-from typing import Type, TypeVar
 import swibots
-from swibots.api.chat.models import Message
 
 
 class GetUnreadMessagesCount:

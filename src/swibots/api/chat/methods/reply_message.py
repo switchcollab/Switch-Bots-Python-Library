@@ -1,10 +1,14 @@
-from typing import Type, TypeVar
+from typing import TYPE_CHECKING, Type, TypeVar
 import swibots
 from swibots.api.chat.models import Message
+from swibots.api.common.models import MediaUploadRequest
+
+if TYPE_CHECKING:
+    from swibots.api import ApiClient
 
 
 class ReplyMessage:
-    async def reply_message(self: "swibots.ApiClient", message: int | Message, reply: Message) -> Message:
+    async def reply_message(self: "swibots.ApiClient", message: int | Message, reply: Message, media: MediaUploadRequest = None) -> Message:
         """Send a message
 
         Parameters:
@@ -18,4 +22,4 @@ class ReplyMessage:
 
         This functions does the same as :meth:`~switch.api.chat.controllers.MessageController.send_message`.
         """
-        return await self.chat_service.messages.reply(message, reply)
+        return await self.chat_service.messages.reply(message, reply, media)

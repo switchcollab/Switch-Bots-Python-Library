@@ -63,6 +63,12 @@ A query callback was sent (user pressed a button, for example).
 - `receiver_id:str` - The ID of the user that received the message.
 - `receiver:User` - The user that received the message.
 
+#### `InlineQueryEvent`
+An inline query was sent. This event is triggered when a user starts typing '@botname' in a chat.
+- `query_id:str` - The unique identifier of this query.
+- `query:str` - The text of the query.
+- `offset:str` - The offset of the results to be returned, can be controlled by the bot (when you handle this event and set the next_offset value, the value will be returned in this field).
+
 ### Community events
 
 These events inherit from the `Event` class. **And none of them have additional properties.**

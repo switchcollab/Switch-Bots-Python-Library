@@ -10,7 +10,7 @@ def _lstrip_str(in_s: str, lstr: str) -> str:
         :obj:`str`: The stripped string.
     """
     if in_s.startswith(lstr):
-        res = in_s[len(lstr) :]
+        res = in_s[len(lstr):]
     else:
         res = in_s
     return res
@@ -48,3 +48,7 @@ class NetworkError(SwitchError):
     Examples:
         :any:`Raw API Bot <examples.rawapibot>`
     """
+
+
+class CancelError(SwitchError):
+    pass

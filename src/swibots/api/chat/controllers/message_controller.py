@@ -1,8 +1,9 @@
+import asyncio
 import json
 import logging
 from typing import TYPE_CHECKING, List, Optional
-from swibots.api.common.models import User
-from swibots.api.chat.models import Message, GroupChatHistory, InlineMarkup
+from swibots.api.common.models import User, MediaUploadRequest
+from swibots.api.chat.models import Message, GroupChatHistory, InlineMarkup, InlineQuery, InlineQueryAnswer
 from swibots.error import SwitchError
 from swibots.utils.types import JSONDict
 from swibots.api.community.models import Channel, Community, Group
@@ -62,11 +63,12 @@ class MessageController:
         response = await self.client.get(f"{BASE_PATH}/{user_id}")
         return self.client.build_list(Message, response.data)
 
-    async def send_message(self, message: Message) -> Message:
+    async def send_message(self, message: Message, media: MediaUploadRequest = None) -> Message:
         """Send a message
 
         Parameters:
             message (``~switch.api.chat.models.Message``): The message to send
+            media (``~switch.api.common.models.MediaUploadRequest``, *optional*): The media to send with the message
 
         Returns:
             ``~switch.api.chat.models.Message``: The message
@@ -76,15 +78,31 @@ class MessageController:
         """
         data = message.to_json_request()
         log.debug("Sending message %s", json.dumps(data))
-        response = await self.client.post(f"{BASE_PATH}/create", data=data)
+
+        if media:
+            url = f"{BASE_PATH}/create-with-media"
+            data.update(media.data_to_request())
+            upload_fn = self.client.post(
+                url, form_data=data, files=media.file_to_request(url))
+            if media.block:
+                response = await upload_fn
+            else:
+                asyncio.get_event_loop().create_task(upload_fn)
+                return
+        else:
+            response = await self.client.post(f"{BASE_PATH}/create", data=data)
         return self.client.build_object(Message, response.data["message"])
 
-    async def send_text(self, text: str, to: Optional[int | User] = None, channel: Optional[Channel | str] = None, group: Optional[Group | str] = None,  inline_markup: InlineMarkup = None) -> Message:
+    async def send_text(self, text: str, to: Optional[int | User] = None, channel: Optional[Channel | str] = None, group: Optional[Group | str] = None,  inline_markup: InlineMarkup = None, media: MediaUploadRequest = None) -> Message:
         """Send a message with text
 
         Parameters:
             to (``int`` | ``~switch.api.common.models.User``, *optional*): The user id to send the message to. Defaults to the current user id.
             text (``str``): The text to send
+            channel (``~switch.api.community.models.Channel``, *optional*): The channel to send the message to
+            group (``~switch.api.community.models.Group``, *optional*): The group to send the message to
+            inline_markup (``~switch.api.chat.models.InlineMarkup``, *optional*): The inline markup to send with the message
+            media (``~switch.api.common.models.MediaUploadRequest``, *optional*): The media to send with the message
 
         Returns:
             ``~switch.api.chat.models.Message``: The message
@@ -95,17 +113,17 @@ class MessageController:
         message = await self.new_message(to, channel, group)
         message.message = text
         message.inline_markup = inline_markup
-        return await self.send_message(message)
+        return await self.send_message(message, media)
 
-    async def reply(self, message: int | Message, reply: Message) -> Message:
+    async def reply(self, message: int | Message, reply: Message, media: MediaUploadRequest = None) -> Message:
         if isinstance(message, Message):
             id = message.id
         else:
             id = message
-        reply.replied_to = id
-        return await self.send_message(reply)
+        reply.replied_to_id = id
+        return await self.send_message(reply, media)
 
-    async def reply_text(self, message: int | Message, text: str, inline_markup: InlineMarkup = None) -> Message:
+    async def reply_text(self, message: int | Message, text: str, inline_markup: InlineMarkup = None, media: MediaUploadRequest = None) -> Message:
         """Reply to a message with text
 
         Parameters:
@@ -118,7 +136,14 @@ class MessageController:
         Raises:
             ``~switch.error.SwitchError``: If the message could not be sent
         """
-        return await self.reply(message, Message(message=text, inline_markup=inline_markup, user_id=self.client.user.id, receiver_id=message.user_id, channel_id=message.channel_id, group_id=message.group_id))
+        if isinstance(message, Message):
+            id = message.id
+        else:
+            id = message
+
+        m = Message(message=text, inline_markup=inline_markup)
+
+        return await self.reply(id, m, media)
 
     async def edit_message(self, message: Message) -> Message:
         """Edit a message
@@ -277,7 +302,7 @@ class MessageController:
         """Get a message by id
 
         Parameters:
-            message (``int`` | ``~switch.api.chat.models.Message``): The message id or message to get
+            message (``int`` | ``~switch.api.chat.models.Message``): The message id or message to get, if a message is passed, the id will be extracted from it.
 
         Returns:
             ``~switch.api.chat.models.Message``: The message
@@ -508,4 +533,32 @@ class MessageController:
 
         log.debug("Get unread messages count for %s", user_id)
         response = await self.client.get(f"{BASE_PATH}/unread-messages?userId={user_id}")
+        return response.data
+
+    async def answer_inline_query(self, query: InlineQuery, answer: InlineQueryAnswer) -> bool:
+        """Answer an inline query
+
+        Parameters:
+            query (``~switch.api.chat.models.InlineQuery``): The inline query
+            answer (``~switch.api.chat.models.InlineQueryAnser``): The answer
+
+        Returns:
+            ``bool``: True if the query was answered
+
+        Raises:
+            ``~switch.error.SwitchError``: If the query could not be answered
+        """
+        if not isinstance(query, InlineQuery):
+            raise TypeError("query must be an InlineQuery instance")
+
+        if isinstance(answer, str):
+            answer = InlineQueryAnswer(query_id=query.query_id, title=answer, results=[
+            ], cache_time=0, is_personal=True, next_offset=None, pm_text=None, pm_parameter=None, user_id=query.user_id)
+
+        if isinstance(answer, List):
+            answer = InlineQueryAnswer(query_id=query.query_id, title=None, results=answer, cache_time=0,
+                                       is_personal=True, next_offset=None, pm_text=None, pm_parameter=None, user_id=query.user_id)
+
+        log.debug("Answering inline query %s", query.query_id)
+        response = await self.client.post(f"{BASE_PATH}/inline/answer", answer.to_json_request())
         return response.data

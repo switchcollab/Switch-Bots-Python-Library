@@ -6,7 +6,7 @@ from swibots.base.switch_object import SwitchObject
 class User(SwitchObject):
     def __init__(
         self,
-        id: Optional[str] = None,
+        id: Optional[int] = None,
         name: Optional[str] = None,
         username: Optional[str] = None,
         image_url: Optional[str] = None,

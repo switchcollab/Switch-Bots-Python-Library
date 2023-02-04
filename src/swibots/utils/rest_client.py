@@ -11,7 +11,7 @@ from swibots.utils.types import JSONDict
 
 log = logging.getLogger(__name__)
 
-DEFAULT_HEADERS = {"Content-Type": "application/json", "Accept": "application/json"}
+DEFAULT_HEADERS = {"Accept": "application/json"}
 
 
 class RestClient:
@@ -19,9 +19,9 @@ class RestClient:
         self,
         connection_pool_size: int = 1,
         proxy_url: str = None,
-        read_timeout: Optional[float] = 5.0,
-        write_timeout: Optional[float] = 5.0,
-        connect_timeout: Optional[float] = 5.0,
+        read_timeout: Optional[float] = None,
+        write_timeout: Optional[float] = None,
+        connect_timeout: Optional[float] = None,
         pool_timeout: Optional[float] = 1.0,
     ):
         timeout = httpx.Timeout(
@@ -69,23 +69,23 @@ class RestClient:
 
     async def get(self, url: str, data: dict = None, headers: dict = None) -> Tuple[int, bytes]:
         """See :meth:`BaseRequest.get`."""
-        return await self.do_request(url, "GET", data, headers)
+        return await self.do_request(url, "GET", data, headers=headers)
 
-    async def post(self, url: str, data: dict = None, headers: dict = None) -> Tuple[int, bytes]:
+    async def post(self, url: str, data: dict = None, form_data=None, files=None, headers: dict = None) -> Tuple[int, bytes]:
         """See :meth:`BaseRequest.post`."""
-        return await self.do_request(url, "POST", data, headers)
+        return await self.do_request(url, "POST", data, form_data, files, headers)
 
-    async def put(self, url: str, data: dict = None, headers: dict = None) -> Tuple[int, bytes]:
+    async def put(self, url: str, data: dict = None, form_data=None, files=None, headers: dict = None) -> Tuple[int, bytes]:
         """See :meth:`BaseRequest.put`."""
-        return await self.do_request(url, "PUT", data, headers)
+        return await self.do_request(url, "PUT", data, form_data, files, headers)
 
     async def delete(self, url: str, data: dict = None, headers: dict = None) -> Tuple[int, bytes]:
         """See :meth:`BaseRequest.delete`."""
-        return await self.do_request(url, "DELETE", data, headers)
+        return await self.do_request(url, "DELETE", data, headers=headers)
 
-    async def patch(self, url: str, data: dict = None, headers: dict = None) -> Tuple[int, bytes]:
+    async def patch(self, url: str, data: dict = None, form_data=None, files=None, headers: dict = None) -> Tuple[int, bytes]:
         """See :meth:`BaseRequest.patch`."""
-        return await self.do_request(url, "PATCH", data, headers)
+        return await self.do_request(url, "PATCH", data, form_data, files, headers)
 
     async def head(self, url: str, data: dict = None, headers: dict = None) -> Tuple[int, bytes]:
         """See :meth:`BaseRequest.head`."""
@@ -98,24 +98,29 @@ class RestClient:
         return await self.do_request(url, "OPTIONS", data, headers)
 
     def prepare_request_data(self, data: dict) -> str | None:
-        data = {**data} if data else {}
+        data = {**data} if data else None
         return data
 
     def prepare_request_headers(self, headers: dict) -> dict:
         if headers is None:
             headers = {}
-        reqHeaders = {**DEFAULT_HEADERS, **headers}
+        reqHeaders = {**headers}
         return reqHeaders
 
     async def do_request(
-        self, url: str, method: str, data: dict = None, headers: dict = None
+        self, url: str, method: str, data: dict = None, form_data=None, files=None, headers: dict = None
     ) -> Tuple[int, bytes]:
         if self._client.is_closed:
             raise RuntimeError("This RestClient is not initialized!")
         try:
             data = self.prepare_request_data(data)
             reqHeaders = self.prepare_request_headers(headers)
-            response = await self._client.request(method, url, json=data, headers=reqHeaders)
+            if (form_data is not None):
+                # reqHeaders["Content-Type"] = "multipart/form-data"
+                # reqHeaders["Accept"] = "application/json"
+                response = await self._client.request(method, url, data=form_data, files=files, headers=reqHeaders)
+            else:
+                response = await self._client.request(method, url, json=data, headers=reqHeaders)
         except httpx.HTTPError as err:
             # HTTPError must come last as its the base httpx exception class
             # TODO p4: do something smart here; for now just raise NetworkError

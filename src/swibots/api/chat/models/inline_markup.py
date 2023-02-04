@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING, List, Optional
+import swibots
 from .inline_keyboard_color import InlineKeyboardColor
 from .inline_keyboard_size import InlineKeyboardSize
 from .inline_keyboard_button import InlineKeyboardButton
@@ -13,10 +14,12 @@ if TYPE_CHECKING:
 class InlineMarkup(SwitchObject):
     def __init__(
         self,
+        app: "swibots.App" = None,
         inline_keyboard: List[List["InlineKeyboardButton"]] = None,
         color: Optional[InlineKeyboardColor] = InlineKeyboardColor.RANDOM,
         size: Optional[InlineKeyboardSize] = InlineKeyboardSize.DEFAULT,
     ):
+        super().__init__(app)
         self._inline_keyboard = inline_keyboard
         self._color = color or InlineKeyboardColor.RANDOM
         self._size = size or InlineKeyboardSize.DEFAULT
@@ -47,7 +50,8 @@ class InlineMarkup(SwitchObject):
         self._size = InlineKeyboardSize(data.get("size") or "DEFAULT")
         self._inline_keyboard = (
             [
-                [InlineKeyboardButton.build_from_json(x) for x in row]
+                [InlineKeyboardButton.build_from_json(
+                    x, self.app) for x in row]
                 for row in data.get("inlineKeyboard") or []
             ],
         )
