@@ -26,7 +26,7 @@ def parse_response(response: Tuple[int, bytes]) -> RestResponse[JSONDict]:
     return response
 
 
-TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzA1LCJpc19ib3QiOnRydWUsImFjdGl2ZSI6dHJ1ZSwiaWF0IjoxNjc0MTc2MTA5LCJleHAiOjE2NzUzODU3MDl9.9Za0MMW9rTLEyplDO9hAAgoT330Xl0DjvGb9xl2-Lo4"
+TOKEN = "TOKEN"
 
 app = BotApp(TOKEN, "This is an inline query bot").register_command([
     # RegisterCommand("json", "Prints the message json", True),
