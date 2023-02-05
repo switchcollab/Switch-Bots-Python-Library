@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 
 log = logging.getLogger(__name__)
 
-BASE_PATH = "/v1/community/groups"
+BASE_PATH = "/v1/community/group"
 
 
 class GroupController:
@@ -17,4 +17,4 @@ class GroupController:
     async def get_group(self, group_id: str):
         """Get a channel by id"""
         response = await self.client.get(f"{BASE_PATH}?groupId={group_id}")
-        return self.client.build_object(Group, response["result"])
+        return self.client.build_object(Group, response.data.get("result"))

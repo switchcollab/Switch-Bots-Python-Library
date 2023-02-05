@@ -8,17 +8,19 @@ from swibots.utils.ws.asyncstomp.async_ws_subscription import AsyncWsSubscriptio
 from swibots.utils.ws.common.ws_message import WsMessage
 from swibots.types import EventType
 from .controllers import ChannelController, GroupController, CommunityController
+import swibots
 
 
 class CommunityClient(SwitchRestClient):
     def __init__(
         self,
+        app: "swibots.App" = None,
         base_url: str = None,
         ws_url: str = None,
     ):
         base_url = base_url or get_config()["COMMUNITY_SERVICE"]["BASE_URL"]
         self._ws_url = ws_url or get_config()["COMMUNITY_SERVICE"]["WS_URL"]
-        super().__init__(base_url)
+        super().__init__(app, base_url)
         self._channels = None
         self._groups = None
         self._communities = None

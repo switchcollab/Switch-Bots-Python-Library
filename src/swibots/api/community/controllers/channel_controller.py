@@ -20,4 +20,4 @@ class ChannelController:
     async def get_channel(self, channel_id: str):
         """Get a channel by id"""
         response = await self.client.get(f"{BASE_PATH}?channelId={channel_id}")
-        return self.client.build_object(Channel, response["result"])
+        return self.client.build_object(Channel, response.data.get("result"))

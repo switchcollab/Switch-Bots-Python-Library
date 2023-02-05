@@ -17,4 +17,4 @@ class CommunityController:
     async def get_community(self, community_id: str):
         """Get a community by id"""
         response = await self.client.get(f"{BASE_PATH}?communityId={community_id}")
-        return self.client.build_object(Community, response["result"])
+        return self.client.build_object(Community, response.data.get("result"))
