@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, BinaryIO, Callable, List, Optional, Union
 import swibots
 from swibots.base import SwitchObject
-from swibots.api.common import User, MediaUploadRequest
+from swibots.api.common import User, MediaUploadRequest, Media
 from swibots.api.community import Community, Channel, Group
 from swibots.utils.types import JSONDict
 from .inline_markup import InlineMarkup
@@ -50,6 +50,8 @@ class Message(
         replied_to: "Message" = None,
         replies: List["Message"] = None,
         reply_count: int = None,
+        media_id: int = None,
+        media_info: Media = None,
         **kwargs,
     ):
         super().__init__(app=app)
@@ -81,6 +83,8 @@ class Message(
         self.inline_markup = inline_markup
         self.is_read = is_read
         self.media_link = media_link
+        self.media_id = media_id
+        self.media_info = media_info
         self.mentioned_ids = mentioned_ids
         self.personal_chat = personal_chat
         self.pinned = pinned
@@ -169,6 +173,8 @@ class Message(
                 data.get("inline_markup"), self.app)
             self.is_read = data.get("isRead")
             self.media_link = data.get("mediaLink")
+            self.media_id = data.get("mediaId")
+            self.media_info = data.get("mediaInfo")
             self.mentioned_ids = data.get("mentionedIds")
             self.message = data.get("message")
             self.personal_chat = data.get("personalChat")
