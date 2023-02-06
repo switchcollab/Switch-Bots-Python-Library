@@ -18,4 +18,4 @@ class GetChannel:
 
         This method does the same as :meth:`switch.api.community.controllers.ChannelController.get_channel`.
         """
-        return await self.community_service.channels.get_community(id)
+        return await self.community_service.channels.get_channel(id)

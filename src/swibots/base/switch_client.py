@@ -115,5 +115,5 @@ class SwitchRestClient(RestClient):
         data = self.prepare_request_data(data)
         headers = self.prepare_request_headers(headers)
         return self.parse_response(
-            await RestClient.do_request(self, self._base_url + path, method, data, form_data, files, headers)
+            await RestClient.do_request(self, self._base_url + (path if path is not None else ""), method, data, form_data, files, headers)
         )

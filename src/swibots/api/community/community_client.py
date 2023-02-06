@@ -7,20 +7,46 @@ from swibots.error import SwitchError
 from swibots.utils.ws.asyncstomp.async_ws_subscription import AsyncWsSubscription
 from swibots.utils.ws.common.ws_message import WsMessage
 from swibots.types import EventType
+from .controllers import ChannelController, GroupController, CommunityController
+import swibots
 
 
 class CommunityClient(SwitchRestClient):
     def __init__(
         self,
+        app: "swibots.App" = None,
         base_url: str = None,
         ws_url: str = None,
     ):
         base_url = base_url or get_config()["COMMUNITY_SERVICE"]["BASE_URL"]
         self._ws_url = ws_url or get_config()["COMMUNITY_SERVICE"]["WS_URL"]
-        super().__init__(base_url)
-        self._messages = None
+        super().__init__(app, base_url)
+        self._channels = None
+        self._groups = None
+        self._communities = None
         self._ws: SwitchWSAsyncClient = None
         self._started = False
+
+    @property
+    def channels(self) -> ChannelController:
+        """Get the channels controller"""
+        if self._channels is None:
+            self._channels = ChannelController(self)
+        return self._channels
+
+    @property
+    def groups(self) -> GroupController:
+        """Get the channels controller"""
+        if self._groups is None:
+            self._groups = GroupController(self)
+        return self._groups
+
+    @property
+    def communities(self) -> CommunityController:
+        """Get the channels controller"""
+        if self._communities is None:
+            self._communities = CommunityController(self)
+        return self._communities
 
     @property
     def ws(self) -> SwitchWSAsyncClient:

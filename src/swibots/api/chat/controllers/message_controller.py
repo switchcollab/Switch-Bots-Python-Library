@@ -347,8 +347,12 @@ class MessageController:
         q = ["isChannel=false"]
         if page_limit:
             q.append(f"pageLimit={page_limit}")
+        else:
+            q.append(f"pageLimit=0")
         if page_offset:
             q.append(f"pageOffset={page_offset}")
+        else:
+            q.append(f"pageOffset=0")
         if community_id:
             q.append(f"communityId={community_id}")
 
@@ -389,8 +393,12 @@ class MessageController:
         q = ["isChannel=true"]
         if page_limit:
             q.append(f"pageLimit={page_limit}")
+        else:
+            q.append(f"pageLimit=0")
         if page_offset:
             q.append(f"pageOffset={page_offset}")
+        else:
+            q.append(f"pageOffset=0")
         if community_id:
             q.append(f"communityId={community_id}")
 
