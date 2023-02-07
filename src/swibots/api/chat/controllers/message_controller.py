@@ -567,6 +567,9 @@ class MessageController:
             answer = InlineQueryAnswer(query_id=query.query_id, title=None, results=answer, cache_time=0,
                                        is_personal=True, next_offset=None, pm_text=None, pm_parameter=None, user_id=query.user_id)
 
+        if not answer.user_id:
+            answer.user_id = query.user_id
+
         log.debug("Answering inline query %s", query.query_id)
         response = await self.client.post(f"{BASE_PATH}/inline/answer", answer.to_json_request())
         return response.data

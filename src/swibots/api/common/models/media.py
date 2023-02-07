@@ -39,7 +39,7 @@ class Media(SwitchObject):
             "mimeType": self.mime_type,
             "fileName": self.file_name,
             "fileSize": self.file_size,
-            "url": self.url,
+            "downloadUrl": self.url,
         }
 
     def from_json(self, data: Optional[JSONDict] = None) -> "Media":
@@ -53,5 +53,5 @@ class Media(SwitchObject):
             self.mime_type = data.get("mimeType")
             self.file_name = data.get("fileName")
             self.file_size = data.get("fileSize")
-            self.url = data.get("url")
+            self.url = data.get("downloadUrl")
         return self

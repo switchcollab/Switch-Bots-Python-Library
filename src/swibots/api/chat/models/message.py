@@ -174,7 +174,8 @@ class Message(
             self.is_read = data.get("isRead")
             self.media_link = data.get("mediaLink")
             self.media_id = data.get("mediaId")
-            self.media_info = data.get("mediaInfo")
+            self.media_info = Media.build_from_json(
+                data.get("mediaInfo"), self.app)
             self.mentioned_ids = data.get("mentionedIds")
             self.message = data.get("message")
             self.personal_chat = data.get("personalChat")
