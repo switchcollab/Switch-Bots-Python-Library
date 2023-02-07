@@ -61,7 +61,8 @@ class MessageEvent(ChatEvent):
             self.message.community = self.community
             self.message.group = self.group
             self.message.channel = self.channel
-            self.message.receiver_id = self.data.get("receiverId") or 0
+            self.message.receiver_id = self.message.receiver_id or self.data.get(
+                "receiverId") or 0
             self.message.receiver = User.build_from_json(
                 self.data.get("receiver") or {}, self.app)
 

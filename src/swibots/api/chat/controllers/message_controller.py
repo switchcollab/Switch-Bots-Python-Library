@@ -160,7 +160,7 @@ class MessageController:
         data = message.to_json_request()
         log.debug("Editing message %s", json.dumps(data))
         response = await self.client.put(f"{BASE_PATH}?id={message.id}", data=data)
-        return message
+        return self.client.build_object(Message, response.data["message"])
 
     async def edit_message_text(self, message: int | Message, text: str, inline_markup: InlineMarkup = None) -> Message:
         """Edit a message with text
