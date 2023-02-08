@@ -2,7 +2,7 @@ import asyncio
 import json
 import logging
 from typing import TYPE_CHECKING, List, Optional
-from swibots.api.common.models import User, MediaUploadRequest
+from swibots.api.common.models import User, MediaUploadRequest, Media
 from swibots.api.chat.models import Message, GroupChatHistory, InlineMarkup, InlineQuery, InlineQueryAnswer
 from swibots.error import SwitchError
 from swibots.utils.types import JSONDict
@@ -123,7 +123,7 @@ class MessageController:
         reply.replied_to_id = id
         return await self.send_message(reply, media)
 
-    async def reply_text(self, message: int | Message, text: str, inline_markup: InlineMarkup = None, media: MediaUploadRequest = None) -> Message:
+    async def reply_text(self, message: int | Message, text: str, inline_markup: InlineMarkup = None, media: MediaUploadRequest = None, cached_media: Media = None) -> Message:
         """Reply to a message with text
 
         Parameters:
@@ -141,7 +141,8 @@ class MessageController:
         else:
             id = message
 
-        m = Message(message=text, inline_markup=inline_markup)
+        m = Message(message=text, inline_markup=inline_markup,
+                    cached_media=cached_media)
 
         return await self.reply(id, m, media)
 

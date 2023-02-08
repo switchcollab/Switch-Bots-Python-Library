@@ -52,6 +52,7 @@ class Message(
         reply_count: int = None,
         media_id: int = None,
         media_info: Media = None,
+        cached_media: Media = None,
         **kwargs,
     ):
         super().__init__(app=app)
@@ -94,6 +95,7 @@ class Message(
         self.replied_to = replied_to
         self.replies = replies
         self.reply_count = reply_count
+        self.cached_media = cached_media
         self.__dict__.update(**kwargs)
 
     def to_json_request(self) -> JSONDict:
@@ -111,6 +113,7 @@ class Message(
             "repliedTo": self.replied_to_id,
             "mediaLink": self.media_link,
             "status": self.status,
+            "cachedMedia": self.cached_media.to_json() if self.cached_media else None,
         }
 
     def to_json(self) -> JSONDict:

@@ -28,6 +28,10 @@ Let's say that you have defined your app as `app`, then you can use the followin
 - `@app.on_unknown_command`
 - `@app.on_inline_query`
 
+The decorators are functions that take a function as an argument and return a function. The function that is returned is the handler that is registered to the app as a callback.
+
+All of the decorators take the same arguments as the corresponding handler method. For example, the `@app.on_message` decorator takes the same arguments as the `app.add_handler(MessageHandler(...))` method, with the exception of the `callback` argument, which is the function that is decorated.
+
 ### Example
 
 

@@ -38,6 +38,9 @@ The `Message` class represents a message sent to a chat.
 - `personal_chat` (`bool`): Whether the message is a personal chat.
 - `pinned` (`bool`): Whether the message is pinned.
 - `reactions` (`List[str]`): The message's reactions.
+- `media_id` (`int`): The message's media id. (for media messages)
+- `media_info` ([Media](./media)): The message's media. (for media messages)
+- `cached_media` ([Media](./media)): When sending a message, you can use this to send media that has already been uploaded to the server. (for media messages)
 
 
 ## Api Methods
