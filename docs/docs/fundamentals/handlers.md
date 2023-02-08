@@ -64,16 +64,16 @@ app.run()
 
 ## Chat handlers
 
-#### Message Handler
+### Message Handler
 
 The `MessageHandler` is a handler for the `MessageEvent`. It is called when a message is sent to a chat.
 
-##### Properties
+#### Properties
 
 - `callback` (`Callable[[BotContext[MessageEvent]], Awaitable]`): The callback function that will be called when the event is triggered.
 - `filter` (`Filter`, optional): The filter that will be used to filter the event. (Default: `None`)
 
-##### Example
+#### Example
 ```python
 from swibots import MessageHandler, MessageEvent
 
@@ -88,17 +88,17 @@ async def message_handler(context: BotContext[MessageEvent]):
 app.add_handler(MessageHandler(message_handler))
 ```
 
-#### Command Handler
+### Command Handler
 
 The `CommandHandler` is a handler for the `CommandEvent`. It is called when a command is sent to a chat.
 
-##### Properties
+#### Properties
 
 - `command` (`str` | `List[str]`): The command that will be used to filter the event. If a list is passed, the handler will be called if any of the commands is found.
 - `callback` (`Callable[[BotContext[CommandEvent]], Awaitable]`): The callback function that will be called when the event is triggered.
 - `filter` (`Filter`, optional): The filter that will be used to filter the event. (Default: `None`)
 
-##### Example
+#### Example
 ```python
 
 from swibots import CommandHandler, CommandEvent
@@ -115,16 +115,16 @@ app.add_handler(CommandHandler("hello", command_handler))
 ```
 
 
-#### Callback Query Handler
+### Callback Query Handler
 
 The `CallbackQueryHandler` is a handler for the `CallbackQueryEvent`. It is called when a callback query is sent to a chat (the user pressed a button of the reply markup for example).
 
-##### Properties
+#### Properties
 
 - `callback` (`Callable[[BotContext[CallbackQueryEvent]], Awaitable]`): The callback function that will be called when the event is triggered.
 - `filter` (`Filter`, optional): The filter that will be used to filter the event. (Default: `None`)
 
-##### Example
+#### Example
 ```python
 
 from swibots import CallbackQueryHandler, CallbackQueryEvent
@@ -140,16 +140,16 @@ async def callback_query_handler(context: BotContext[CallbackQueryEvent]):
 app.add_handler(CallbackQueryHandler(callback_query_handler))
 ```
 
-#### Inline Query Handler
+### Inline Query Handler
 
 The `InlineQueryHandler` is a handler for the `InlineQueryEvent`. It is called when an inline query is sent to a chat.
 
-##### Properties
+#### Properties
 
 - `callback` (`Callable[[BotContext[InlineQueryEvent]], Awaitable]`): The callback function that will be called when the event is triggered.
 - `filter` (`Filter`, optional): The filter that will be used to filter the event. (Default: `None`)
 
-##### Example
+#### Example
 
 ```python
 
@@ -170,16 +170,16 @@ app.add_handler(InlineQueryHandler(inline_query_handler))
 
 ## Community handlers
 
-#### Community Updated Handler
+### Community Updated Handler
 
 The `CommunityUpdatedHandler` is a handler for the `CommunityUpdatedEvent`. It is called when a community is updated.
 
-##### Properties
+#### Properties
 
 - `callback` (`Callable[[BotContext[CommunityUpdatedEvent]], Awaitable]`): The callback function that will be called when the event is triggered.
 - `filter` (`Filter`, optional): The filter that will be used to filter the event. (Default: `None`)
 
-##### Example
+#### Example
 
 ```python
 
@@ -197,16 +197,16 @@ app.add_handler(CommunityUpdatedHandler(community_updated_handler))
 ```
 
 
-#### Member Joined Handler
+### Member Joined Handler
 
 The `MemberJoinedHandler` is a handler for the `MemberJoinedEvent`. It is called when a member joins a community.
 
-##### Properties
+#### Properties
 
 - `callback` (`Callable[[BotContext[MemberJoinedEvent]], Awaitable]`): The callback function that will be called when the event is triggered.
 - `filter` (`Filter`, optional): The filter that will be used to filter the event. (Default: `None`)
 
-##### Example
+#### Example
 
 ```python
 
@@ -224,16 +224,16 @@ app.add_handler(MemberJoinedHandler(member_joined_handler))
 ```
 
 
-#### Member Left Handler
+### Member Left Handler
 
 The `MemberLeftHandler` is a handler for the `MemberLeftEvent`. It is called when a member leaves a community.
 
-##### Properties
+#### Properties
 
 - `callback` (`Callable[[BotContext[MemberLeftEvent]], Awaitable]`): The callback function that will be called when the event is triggered.
 - `filter` (`Filter`, optional): The filter that will be used to filter the event. (Default: `None`)
 
-##### Example
+#### Example
 
 ```python
 
@@ -250,16 +250,16 @@ async def member_left_handler(context: BotContext[MemberLeftEvent]):
 app.add_handler(MemberLeftHandler(member_left_handler))
 ```
 
-#### Channel Updated Handler
+### Channel Updated Handler
 
 The `ChannelUpdatedHandler` is a handler for the `ChannelUpdatedEvent`. It is called when a channel is updated.
 
-##### Properties
+#### Properties
 
 - `callback` (`Callable[[BotContext[ChannelUpdatedEvent]], Awaitable]`): The callback function that will be called when the event is triggered.
 - `filter` (`Filter`, optional): The filter that will be used to filter the event. (Default: `None`)
 
-##### Example
+#### Example
 
 ```python
 
@@ -277,16 +277,16 @@ app.add_handler(ChannelUpdatedHandler(channel_updated_handler))
 ```
 
 
-#### Channel Created Handler
+### Channel Created Handler
 
 The `ChannelCreatedHandler` is a handler for the `ChannelCreatedEvent`. It is called when a channel is created.
 
-##### Properties
+#### Properties
 
 - `callback` (`Callable[[BotContext[ChannelCreatedEvent]], Awaitable]`): The callback function that will be called when the event is triggered.
 - `filter` (`Filter`, optional): The filter that will be used to filter the event. (Default: `None`)
 
-##### Example
+#### Example
 
 ```python
 
@@ -303,16 +303,16 @@ async def channel_created_handler(context: BotContext[ChannelCreatedEvent]):
 app.add_handler(ChannelCreatedHandler(channel_created_handler))
 ```
 
-#### Channel Deleted Handler
+### Channel Deleted Handler
 
 The `ChannelDeletedHandler` is a handler for the `ChannelDeletedEvent`. It is called when a channel is deleted.
 
-##### Properties
+#### Properties
 
 - `callback` (`Callable[[BotContext[ChannelDeletedEvent]], Awaitable]`): The callback function that will be called when the event is triggered.
 - `filter` (`Filter`, optional): The filter that will be used to filter the event. (Default: `None`)
 
-##### Example
+#### Example
 
 ```python
 
@@ -334,12 +334,12 @@ app.add_handler(ChannelDeletedHandler(channel_deleted_handler))
 
 The `GroupUpdatedHandler` is a handler for the `GroupUpdatedEvent`. It is called when a group is updated.
 
-##### Properties
+#### Properties
 
 - `callback` (`Callable[[BotContext[GroupUpdatedEvent]], Awaitable]`): The callback function that will be called when the event is triggered.
 - `filter` (`Filter`, optional): The filter that will be used to filter the event. (Default: `None`)
 
-##### Example
+#### Example
 
 ```python
 
@@ -365,7 +365,7 @@ The `GroupCreatedHandler` is a handler for the `GroupCreatedEvent`. It is called
 - `callback` (`Callable[[BotContext[GroupCreatedEvent]], Awaitable]`): The callback function that will be called when the event is triggered.
 - `filter` (`Filter`, optional): The filter that will be used to filter the event. (Default: `None`)
 
-##### Example
+#### Example
 
 ```python
 
@@ -388,12 +388,12 @@ app.add_handler(GroupCreatedHandler(group_created_handler))
 
 The `GroupDeletedHandler` is a handler for the `GroupDeletedEvent`. It is called when a group is deleted.
 
-##### Properties
+#### Properties
 
 - `callback` (`Callable[[BotContext[GroupDeletedEvent]], Awaitable]`): The callback function that will be called when the event is triggered.
 - `filter` (`Filter`, optional): The filter that will be used to filter the event. (Default: `None`)
 
-##### Example
+#### Example
 
 ```python
 
@@ -414,12 +414,12 @@ app.add_handler(GroupDeletedHandler(group_deleted_handler))
 
 The `UserBannedHandler` is a handler for the `UserBannedEvent`. It is called when a user is banned from a group.
 
-##### Properties
+#### Properties
 
 - `callback` (`Callable[[BotContext[UserBannedEvent]], Awaitable]`): The callback function that will be called when the event is triggered.
 - `filter` (`Filter`, optional): The filter that will be used to filter the event. (Default: `None`)
 
-##### Example
+#### Example
 
 ```python
 
