@@ -14,12 +14,11 @@ if TYPE_CHECKING:
 class InlineMarkup(SwitchObject):
     def __init__(
         self,
-        app: "swibots.App" = None,
         inline_keyboard: List[List["InlineKeyboardButton"]] = None,
         color: Optional[InlineKeyboardColor] = InlineKeyboardColor.RANDOM,
         size: Optional[InlineKeyboardSize] = InlineKeyboardSize.DEFAULT,
     ):
-        super().__init__(app)
+        super().__init__()
         self._inline_keyboard = inline_keyboard
         self._color = color or InlineKeyboardColor.RANDOM
         self._size = size or InlineKeyboardSize.DEFAULT
