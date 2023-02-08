@@ -259,8 +259,8 @@ class Message(
             return await self.app.reply_message_text(self, reply, media)
         return await self.app.reply_message(self, reply, media)
 
-    async def reply_text(self, text: str, inline_markup: Optional[InlineMarkup] = None,  media: MediaUploadRequest = None) -> "Message":
-        return await self.app.reply_message_text(self, text, inline_markup, media)
+    async def reply_text(self, text: str, inline_markup: Optional[InlineMarkup] = None,  media: MediaUploadRequest = None, cached_media: Media = None) -> "Message":
+        return await self.app.reply_message_text(self, text, inline_markup, media, cached_media)
 
     async def edit_text(self, text: str,  inline_markup: Optional[InlineMarkup] = None) -> "Message":
         return await self.app.edit_message_text(self, text, inline_markup)
