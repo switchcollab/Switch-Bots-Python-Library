@@ -123,60 +123,58 @@ outgoing = create(outgoing_filter)
 """Filter outgoing messages. Messages that are sent by the user."""
 
 
-async def community_filter(self, ctx: BotContext[Event], community_id: Optional[SCT[str]]):
-    if community_id is None:
-        return bool(ctx.event.community_id is not None)
-    if isinstance(community_id, str):
-        community_id = frozenset({community_id})
-    else:
-        community_id = frozenset(community_id)
-    return bool(ctx.event.community_id in community_id)
+async def community(community_id: Optional[SCT[str]]):
+    """Filter messages coming from a specific community."""
+    async def func(self, ctx: BotContext[Event]):
+        community_id = self.community_id
+        if community_id is None:
+            return bool(ctx.event.community_id is not None)
+        if isinstance(community_id, str):
+            community_id = frozenset({community_id})
+        else:
+            community_id = frozenset(community_id)
+        return bool(ctx.event.community_id in community_id)
+    return create(func, name="CommunityFilter", community_id=community_id)
 
 
-community = create(community_filter)
-"""Filter messages coming from a specific community."""
+async def channel(channel_id: Optional[SCT[str]]):
+    """Filter messages coming from a specific channel."""
+    async def func(self, ctx: BotContext[Event]):
+        channel_id = self.channel_id
+        if channel_id is None:
+            return bool(ctx.event.channel_id is not None)
+        if isinstance(channel_id, str):
+            channel_id = frozenset({channel_id})
+        else:
+            channel_id = frozenset(channel_id)
+        return bool(ctx.event.channel_id in channel_id)
+    return create(func, name="ChannelFilter", channel_id=channel_id)
 
 
-async def channel_filter(self, ctx: BotContext[Event], channel_id: Optional[SCT[str]]):
-    if channel_id is None:
-        return bool(ctx.event.channel_id is not None)
-    if isinstance(channel_id, str):
-        channel_id = frozenset({channel_id})
-    else:
-        channel_id = frozenset(channel_id)
-    return bool(ctx.event.channel_id in channel_id)
+async def group(group_id: Optional[SCT[str]]):
+    async def func(self, ctx: BotContext[Event]):
+        group_id = self.group_id
+        if group_id is None:
+            return bool(ctx.event.group_id is not None)
+        if isinstance(group_id, str):
+            group_id = frozenset({group_id})
+        else:
+            group_id = frozenset(group_id)
+        return bool(ctx.event.group_id in group_id)
+    return create(func, name="GroupFilter", group_id=group_id)
 
 
-channel = create(channel_filter)
-"""Filter messages coming from a specific channel."""
-
-
-async def group_filter(self, ctx: BotContext[Event], group_id: Optional[SCT[str]]):
-    if group_id is None:
-        return bool(ctx.event.group_id is not None)
-    if isinstance(group_id, str):
-        group_id = frozenset({group_id})
-    else:
-        group_id = frozenset(group_id)
-    return bool(ctx.event.group_id in group_id)
-
-
-group = create(group_filter)
-"""Filter messages coming from a specific group."""
-
-
-async def user_filter(self, ctx: BotContext[Event], user_id: Optional[SCT[str]]):
-    if user_id is None:
-        return bool(ctx.event.action_by_id is not None)
-    if isinstance(user_id, str):
-        user_id = frozenset({user_id})
-    else:
-        user_id = frozenset(user_id)
-    return bool(ctx.event.action_by_id in user_id)
-
-
-user = create(user_filter)
-"""Filter actions coming from a specific user."""
+async def user(user_id: Optional[SCT[str]]):
+    async def func(self, ctx: BotContext[Event]):
+        user_id = self.user_id
+        if user_id is None:
+            return bool(ctx.event.action_by_id is not None)
+        if isinstance(user_id, str):
+            user_id = frozenset({user_id})
+        else:
+            user_id = frozenset(user_id)
+        return bool(ctx.event.action_by_id in user_id)
+    return create(func, name="UserFilter", user_id=user_id)
 
 
 def text(text: Optional[SCT[str]]):
@@ -248,3 +246,16 @@ def regexp(regexp: Optional[SCT[str]]):
 
 
 """ Filter messages by regexp. """
+
+
+async def message_type(types: Optional[SCT[int]]):
+    async def func(self, ctx: BotContext[MessageEvent]):
+        types = self.types
+        if types is None:
+            return bool(ctx.event.message.status is not None)
+        if isinstance(types, int):
+            types = frozenset({types})
+        else:
+            types = frozenset(types)
+        return bool(ctx.event.message.status in types)
+    return create(func, name="MessageType", types=types)
