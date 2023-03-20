@@ -20,4 +20,4 @@ class UserBannedHandler(EventHandler):
         filter: Optional[Filter] = None,
         **kwargs,
     ):
-        super().__init__(EventType.USER_BAN, callback, filter, **kwargs)
+        super().__init__(EventType.COMMUNITY_USER_BAN, callback, filter, **kwargs)

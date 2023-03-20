@@ -20,4 +20,4 @@ class MemberLeftHandler(EventHandler):
         filter: Optional[Filter] = None,
         **kwargs,
     ):
-        super().__init__(EventType.MEMBER_LEAVE, callback, filter, **kwargs)
+        super().__init__(EventType.COMMUNITY_MEMBER_LEAVE, callback, filter, **kwargs)

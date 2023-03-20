@@ -26,7 +26,7 @@ class MemberLeftEvent(CommunityEvent["MemberLeftEvent"]):
     ):
         super().__init__(
             app=app,
-            type=EventType.MEMBER_LEAVE,
+            type=EventType.COMMUNITY_MEMBER_LEAVE,
             data=data,
             action_by=action_by,
             action_by_id=action_by_id,

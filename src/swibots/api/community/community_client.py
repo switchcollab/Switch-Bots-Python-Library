@@ -73,34 +73,34 @@ class CommunityClient(SwitchRestClient):
         json_data = json.loads(raw_message.body)
         type = json_data.get("type", "COMMUNITY")
         evt = None
-        if type == EventType.CHANNEL_CREATE.value:
+        if type == EventType.COMMUNITY_CHANNEL_CREATE.value:
             evt = self.build_object(ChannelCreatedEvent, json_data)
             # return ChannelCreatedEvent.build_from_json(json_data)
-        elif type == EventType.CHANNEL_UPDATE.value:
+        elif type == EventType.COMMUNITY_CHANNEL_UPDATE.value:
             evt = self.build_object(ChannelUpdatedEvent, json_data)
             # return ChannelUpdatedEvent.build_from_json(json_data)
-        elif type == EventType.CHANNEL_DELETE.value:
+        elif type == EventType.COMMUNITY_CHANNEL_DELETE.value:
             evt = self.build_object(ChannelDeletedEvent, json_data)
             # return ChannelDeletedEvent.build_from_json(json_data)
         elif type == EventType.COMMUNITY_UPDATE.value:
             evt = self.build_object(CommunityUpdatedEvent, json_data)
             # return CommunityUpdatedEvent.build_from_json(json_data)
-        elif type == EventType.GROUP_CREATE.value:
+        elif type == EventType.COMMUNITY_GROUP_CREATE.value:
             evt = self.build_object(GroupCreatedEvent, json_data)
             # return GroupCreatedEvent.build_from_json(json_data)
-        elif type == EventType.GROUP_UPDATE.value:
+        elif type == EventType.COMMUNITY_GROUP_UPDATE.value:
             evt = self.build_object(GroupUpdatedEvent, json_data)
             # return GroupUpdatedEvent.build_from_json(json_data)
-        elif type == EventType.GROUP_DELETE.value:
+        elif type == EventType.COMMUNITY_GROUP_DELETE.value:
             evt = self.build_object(GroupDeletedEvent, json_data)
             # return GroupDeletedEvent.build_from_json(json_data)
-        elif type == EventType.USER_BAN.value:
+        elif type == EventType.COMMUNITY_USER_BAN.value:
             evt = self.build_object(UserBannedEvent, json_data)
             # return UserBannedEvent.build_from_json(json_data)
-        elif type == EventType.MEMBER_JOIN.value:
+        elif type == EventType.COMMUNITY_MEMBER_JOIN.value:
             evt = self.build_object(MemberJoinedEvent, json_data)
             # return MemberJoinedEvent.build_from_json(json_data)
-        elif type == EventType.MEMBER_LEAVE.value:
+        elif type == EventType.COMMUNITY_MEMBER_LEAVE.value:
             evt = self.build_object(MemberLeftEvent, json_data)
             # return MemberLeftEvent.build_from_json(json_data)
         else:

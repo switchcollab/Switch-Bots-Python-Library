@@ -26,7 +26,7 @@ class ChannelCreatedEvent(CommunityEvent["ChannelCreatedEvent"]):
     ):
         super().__init__(
             app=app,
-            type=EventType.CHANNEL_CREATE,
+            type=EventType.COMMUNITY_CHANNEL_CREATE,
             data=data,
             action_by=action_by,
             action_by_id=action_by_id,

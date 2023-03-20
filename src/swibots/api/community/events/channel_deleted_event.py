@@ -26,7 +26,7 @@ class ChannelDeletedEvent(CommunityEvent["ChannelDeletedEvent"]):
     ):
         super().__init__(
             app=app,
-            type=EventType.CHANNEL_DELETE,
+            type=EventType.COMMUNITY_CHANNEL_DELETE,
             data=data,
             action_by=action_by,
             action_by_id=action_by_id,

@@ -26,7 +26,7 @@ class GroupUpdatedEvent(CommunityEvent["GroupUpdatedEvent"]):
     ):
         super().__init__(
             app=app,
-            type=EventType.GROUP_UPDATE,
+            type=EventType.COMMUNITY_GROUP_UPDATE,
             data=data,
             action_by=action_by,
             action_by_id=action_by_id,

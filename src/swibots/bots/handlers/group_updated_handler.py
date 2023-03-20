@@ -22,4 +22,4 @@ class GroupUpdatedHandler(EventHandler):
         filter: Optional[Filter] = None,
         **kwargs,
     ):
-        super().__init__(EventType.GROUP_UPDATE, callback, filter, **kwargs)
+        super().__init__(EventType.COMMUNITY_GROUP_UPDATE, callback, filter, **kwargs)

@@ -26,7 +26,7 @@ class UserBannedEvent(CommunityEvent["UserBannedEvent"]):
     ):
         super().__init__(
             app=app,
-            type=EventType.USER_BAN,
+            type=EventType.COMMUNITY_USER_BAN,
             data=data,
             action_by=action_by,
             action_by_id=action_by_id,

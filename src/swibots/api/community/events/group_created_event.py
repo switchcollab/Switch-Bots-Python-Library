@@ -26,7 +26,7 @@ class GroupCreatedEvent(CommunityEvent["GroupCreatedEvent"]):
     ):
         super().__init__(
             app=app,
-            type=EventType.GROUP_CREATE,
+            type=EventType.COMMUNITY_GROUP_CREATE,
             data=data,
             action_by=action_by,
             action_by_id=action_by_id,

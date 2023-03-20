@@ -17,7 +17,7 @@ class ChannelCreatedHandler(EventHandler):
     def __init__(
         self,
         callback: HandlerCallback[BotContext[ChannelCreatedEvent], ResType],
-        filter: Optional[Filter],
+        filter: Optional[Filter] = None,
         **kwargs,
     ):
-        super().__init__(EventType.CHANNEL_CREATE, callback, filter, **kwargs)
+        super().__init__(EventType.COMMUNITY_CHANNEL_CREATE, callback, filter, **kwargs)

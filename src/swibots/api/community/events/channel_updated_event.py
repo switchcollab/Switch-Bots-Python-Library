@@ -26,7 +26,7 @@ class ChannelUpdatedEvent(CommunityEvent["ChannelUpdatedEvent"]):
     ):
         super().__init__(
             app=app,
-            type=EventType.CHANNEL_UPDATE,
+            type=EventType.COMMUNITY_CHANNEL_UPDATE,
             data=data,
             action_by=action_by,
             action_by_id=action_by_id,

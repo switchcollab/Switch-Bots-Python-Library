@@ -21,4 +21,4 @@ class ChannelUpdatedHandler(EventHandler):
         filter: Optional[Filter] = None,
         **kwargs,
     ):
-        super().__init__(EventType.CHANNEL_UPDATE, callback, filter, **kwargs)
+        super().__init__(EventType.COMMUNITY_CHANNEL_UPDATE, callback, filter, **kwargs)

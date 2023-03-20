@@ -13,7 +13,7 @@ except (IOError, ImportError):
 
 setup(
     name="swibots",
-    version="1.1.3",
+    version="1.1.4",
     packages=find_packages(),
     long_description=long_description,
     long_description_content_type="text/markdown",

@@ -26,7 +26,7 @@ class MemberJoinedEvent(CommunityEvent["MemberJoinedEvent"]):
     ):
         super().__init__(
             app=app,
-            type=EventType.MEMBER_JOIN,
+            type=EventType.COMMUNITY_MEMBER_JOIN,
             data=data,
             action_by=action_by,
             action_by_id=action_by_id,

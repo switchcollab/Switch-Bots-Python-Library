@@ -20,4 +20,4 @@ class ChannelDeletedHandler(EventHandler):
         filter: Optional[Filter] = None,
         **kwargs,
     ):
-        super().__init__(EventType.CHANNEL_DELETE, callback, filter, **kwargs)
+        super().__init__(EventType.COMMUNITY_CHANNEL_DELETE, callback, filter, **kwargs)
