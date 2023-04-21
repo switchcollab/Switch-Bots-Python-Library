@@ -6,6 +6,7 @@ from swibots.api.common.events import Event
 from swibots.bots.bot_context import BotContext
 from swibots.utils.types import SCT, FilterCallback
 from swibots.types import EventType
+from typing import Callable, Union, List, Pattern
 
 
 class Filter:
@@ -123,9 +124,13 @@ outgoing = create(outgoing_filter)
 """Filter outgoing messages. Messages that are sent by the user."""
 
 
-async def community(community_id: Optional[SCT[str]]):
-    """Filter messages coming from a specific community."""
-    async def func(self, ctx: BotContext[Event]):
+class community(Filter, set):
+    """Filter events comming from a specific community or communities"""
+
+    def __init__(self, community_id: Optional[SCT[str]]):
+        community_id = community_id
+
+    async def __call__(self, ctx: BotContext[Event]):
         community_id = self.community_id
         if community_id is None:
             return bool(ctx.event.community_id is not None)
@@ -134,12 +139,15 @@ async def community(community_id: Optional[SCT[str]]):
         else:
             community_id = frozenset(community_id)
         return bool(ctx.event.community_id in community_id)
-    return create(func, name="CommunityFilter", community_id=community_id)
 
 
-async def channel(channel_id: Optional[SCT[str]]):
-    """Filter messages coming from a specific channel."""
-    async def func(self, ctx: BotContext[Event]):
+class channel(Filter, set):
+    """Filter events comming from a specific channel or channels"""
+
+    def __init__(self, channel_id: Optional[SCT[str]]):
+        channel_id = channel_id
+
+    async def __call__(self, ctx: BotContext[Event]):
         channel_id = self.channel_id
         if channel_id is None:
             return bool(ctx.event.channel_id is not None)
@@ -148,11 +156,13 @@ async def channel(channel_id: Optional[SCT[str]]):
         else:
             channel_id = frozenset(channel_id)
         return bool(ctx.event.channel_id in channel_id)
-    return create(func, name="ChannelFilter", channel_id=channel_id)
 
 
-async def group(group_id: Optional[SCT[str]]):
-    async def func(self, ctx: BotContext[Event]):
+class group(Filter, set):
+    def __init__(self, group_id: Optional[SCT[str]]):
+        group_id = group_id
+
+    async def __call__(self, ctx: BotContext[Event]):
         group_id = self.group_id
         if group_id is None:
             return bool(ctx.event.group_id is not None)
@@ -161,20 +171,21 @@ async def group(group_id: Optional[SCT[str]]):
         else:
             group_id = frozenset(group_id)
         return bool(ctx.event.group_id in group_id)
-    return create(func, name="GroupFilter", group_id=group_id)
 
 
-async def user(user_id: Optional[SCT[str]]):
-    async def func(self, ctx: BotContext[Event]):
+class user(Filter, set):
+    def __init__(self, user_id: Optional[SCT[int]]):
+        user_id = user_id
+
+    async def __call__(self, ctx: BotContext[Event]):
         user_id = self.user_id
         if user_id is None:
             return bool(ctx.event.action_by_id is not None)
-        if isinstance(user_id, str):
+        if isinstance(user_id, int):
             user_id = frozenset({user_id})
         else:
             user_id = frozenset(user_id)
         return bool(ctx.event.action_by_id in user_id)
-    return create(func, name="UserFilter", user_id=user_id)
 
 
 def text(text: Optional[SCT[str]]):
