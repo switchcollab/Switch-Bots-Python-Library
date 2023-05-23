@@ -18,7 +18,7 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
-TOKEN = "YOUR_TOKEN_HERE"
+TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDY1LCJpc19ib3QiOnRydWUsImFjdGl2ZSI6dHJ1ZSwiaWF0IjoxNjgxMzY0NjYyLCJleHAiOjIzMTI1MTY2NjJ9.fd2K2BtDvPXxGDCy5sQQPAs1tTlShtpg946ZikNOXvM"
 
 
 app = BotApp(
