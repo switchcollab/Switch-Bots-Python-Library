@@ -1,4 +1,4 @@
-# add_handler
+# remove_handler
 
 Remove a handler from the bot.
 
