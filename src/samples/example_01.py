@@ -1,3 +1,14 @@
+import os  # noqa
+import sys  # noqa
+import inspect  # noqa
+currentdir = os.path.dirname(os.path.abspath(
+    inspect.getfile(inspect.currentframe())))  # noqa
+parentdir = os.path.dirname(currentdir)  # noqa
+sys.path.insert(0, parentdir)  # noqa
+from dotenv import load_dotenv
+env_file = os.path.join(os.path.dirname(__file__), "..", "..", ".env")  # noqa
+load_dotenv(env_file)  # noqa
+
 from swibots import (
     BotApp,
     RegisterCommand,
@@ -18,7 +29,7 @@ from swibots import (
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
-TOKEN = "YOUR_TOKEN_HERE"
+TOKEN = os.getenv("TOKEN")
 
 app = BotApp(
     TOKEN,

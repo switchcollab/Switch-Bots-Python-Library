@@ -87,6 +87,14 @@ class BotApp(App, Decorators):
             self.handlers.append(handler)
         return self
 
+    def remove_handler(self, handler: BaseHandler | List[BaseHandler]) -> "BotApp":
+        if isinstance(handler, list):
+            for h in handler:
+                self.handlers.remove(h)
+        else:
+            self.handlers.remove(handler)
+        return self
+
     async def _validate_token(self):
         await super()._validate_token()
         if not isinstance(self.user, swibots.Bot):

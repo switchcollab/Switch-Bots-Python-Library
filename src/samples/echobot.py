@@ -1,7 +1,13 @@
-import asyncio
-import logging
-import os
+import os  # noqa
+import sys  # noqa
+import inspect  # noqa
+currentdir = os.path.dirname(os.path.abspath(
+    inspect.getfile(inspect.currentframe())))  # noqa
+parentdir = os.path.dirname(currentdir)  # noqa
+sys.path.insert(0, parentdir)  # noqa
 from dotenv import load_dotenv
+env_file = os.path.join(os.path.dirname(__file__), "..", "..", ".env")  # noqa
+load_dotenv(env_file)  # noqa
 
 from swibots import BotApp, BotContext, CommandEvent, MessageEvent, CallbackQueryEvent, filters, InlineKeyboardButton, InlineMarkup, BotCommandInfo
 
@@ -11,6 +17,7 @@ from swibots.bots.handlers import (
     CallbackQueryHandler,
     CommandHandler,
 )
+import logging
 
 env_file = os.path.join(os.path.dirname(__file__), "..", "..", ".env")
 load_dotenv(env_file)

@@ -18,7 +18,11 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
-TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDY1LCJpc19ib3QiOnRydWUsImFjdGl2ZSI6dHJ1ZSwiaWF0IjoxNjgxMzY0NjYyLCJleHAiOjIzMTI1MTY2NjJ9.fd2K2BtDvPXxGDCy5sQQPAs1tTlShtpg946ZikNOXvM"
+env_file = os.path.join(os.path.dirname(__file__), "..", "..", ".env")
+load_dotenv(env_file)
+
+
+TOKEN = os.getenv("TOKEN")
 
 
 app = BotApp(
