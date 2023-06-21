@@ -114,6 +114,8 @@ class Message(
             "mediaLink": self.media_link,
             "status": self.status,
             "cachedMedia": self.cached_media.to_json() if self.cached_media else None,
+            "mediaId": self.media_id,
+            "mediaInfo": self.media_info.to_json() if self.media_info else None,
         }
 
     def to_json(self) -> JSONDict:

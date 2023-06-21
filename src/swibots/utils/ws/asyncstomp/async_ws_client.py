@@ -64,6 +64,7 @@ class AsyncWsClient:
 
     async def _on_error(self, ws_app, error, *args):
         await self._clean_up()
+        await self._on_close(ws_app, *args)
         log.error(error)
 
     async def _on_message(self, ws_app, message, *args):

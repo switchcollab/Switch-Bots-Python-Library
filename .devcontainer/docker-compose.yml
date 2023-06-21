@@ -8,3 +8,10 @@ services:
       - ..:/workspace
       - /workspace/src/venv
       - /workspace/docs/node_modules
+    networks:
+      - switch-network
+networks:
+  switch-network:
+    external:
+      name:
+        dev-network
