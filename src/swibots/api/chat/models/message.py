@@ -118,6 +118,30 @@ class Message(
             "mediaInfo": self.media_info.to_json() if self.media_info else None,
         }
 
+    def to_form_data(self):
+        form_data = {}
+        if self.user_id is not None:
+            form_data["userId"] = self.user_id
+        if self.receiver_id is not None:
+            form_data["receiverId"] = self.receiver_id
+        if self.request_id is not None:
+            form_data["requestId"] = self.request_id
+        if self.community_id is not None:
+            form_data["communityId"] = self.community_id
+        if self.channel_id is not None:
+            form_data["channelId"] = self.channel_id
+        if self.group_id is not None:
+            form_data["groupId"] = self.group_id
+        if self.replied_to_id is not None:
+            form_data["repliedTo"] = self.replied_to_id
+        if self.message is not None:
+            form_data["message"] = self.message
+        if self.media_link is not None:
+            form_data["mediaLink"] = self.media_link
+        if self.status is not None:
+            form_data["status"] = self.status
+        return form_data
+
     def to_json(self) -> JSONDict:
         return {
             "buttonName": self.button_name,

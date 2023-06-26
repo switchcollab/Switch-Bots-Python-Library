@@ -114,13 +114,13 @@ class RestClient:
             raise RuntimeError("This RestClient is not initialized!")
         try:
             data = self.prepare_request_data(data)
-            reqHeaders = self.prepare_request_headers(headers)
-            if (form_data is not None):
+            req_headers = self.prepare_request_headers(headers)
+            if form_data is not None:
                 # reqHeaders["Content-Type"] = "multipart/form-data"
                 # reqHeaders["Accept"] = "application/json"
-                response = await self._client.request(method, url, data=form_data, files=files, headers=reqHeaders)
+                response = await self._client.request(method, url, data=form_data, files=files, headers=req_headers)
             else:
-                response = await self._client.request(method, url, json=data, headers=reqHeaders)
+                response = await self._client.request(method, url, json=data, headers=req_headers)
         except httpx.HTTPError as err:
             # HTTPError must come last as its the base httpx exception class
             # TODO p4: do something smart here; for now just raise NetworkError

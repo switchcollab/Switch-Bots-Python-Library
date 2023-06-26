@@ -2,11 +2,10 @@ import asyncio
 import json
 import logging
 from typing import TYPE_CHECKING, List, Optional
-from swibots.api.common.models import User, MediaUploadRequest, Media
+
 from swibots.api.chat.models import Message, GroupChatHistory, InlineMarkup, InlineQuery, InlineQueryAnswer
-from swibots.error import SwitchError
-from swibots.utils.types import JSONDict
-from swibots.api.community.models import Channel, Community, Group
+from swibots.api.common.models import User, MediaUploadRequest, Media
+from swibots.api.community.models import Channel, Group
 
 if TYPE_CHECKING:
     from swibots.api.chat import ChatClient
@@ -81,9 +80,9 @@ class MessageController:
 
         if media:
             url = f"{BASE_PATH}/create-with-media"
-            data.update(media.data_to_request())
-            upload_fn = self.client.post(
-                url, form_data=data, files=media.file_to_request(url))
+            form_data = message.to_form_data()
+            form_data.update(media.data_to_request())
+            upload_fn = self.client.post(url, form_data=form_data, files=media.file_to_request(url))
             if media.block:
                 response = await upload_fn
             else:

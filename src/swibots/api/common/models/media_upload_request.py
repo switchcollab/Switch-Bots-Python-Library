@@ -28,18 +28,18 @@ class MediaUploadRequest:
         }
 
     def file_to_request(self, url):
-        dProgress = UploadProgress(
+        d_progress = UploadProgress(
             current=0,
             readed=0,
             file_name=self.file_name,
             client=IOClient(),
             url=url,
             callback=self.callback,
-            args=self.upload_args
+            callback_args=self.upload_args
         )
         file = open(self.path, "rb")
         reader = ReadCallbackStream(
-            file, dProgress.update
+            file, d_progress.update
         )
         mime = self.mime_type or mimetypes.guess_type(
             self.path)[0] or "application/octet-stream"
