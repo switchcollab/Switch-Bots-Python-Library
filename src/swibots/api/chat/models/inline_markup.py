@@ -42,6 +42,25 @@ class InlineMarkup(SwitchObject):
             "size": self._size.value,
         }
 
+    def to_form_data(self):
+        form_data = {}
+        if self._size is not None:
+            form_data["inlineKeyboard.size"] = self._size.value
+        if self._color is not None:
+            form_data["inlineKeyboard.color"] = self._color.value
+        for i, kb in enumerate(self._inline_keyboard):
+            for j, b in enumerate(kb):
+                text_key = 'inlineKeyboard.inlineKeyboard[{0}][{1}].text'\
+                    .format(i, j)
+                form_data[text_key] = b.text
+                url_key = 'inlineKeyboard.inlineKeyboard[{0}][{1}].url'\
+                    .format(i, j)
+                form_data[url_key] = b.url
+                callback_data_key = 'inlineKeyboard.inlineKeyboard[{0}][{1}].callbackData'\
+                    .format(i, j)
+                form_data[callback_data_key] = b.callback_data
+        return form_data
+
     def from_json(self, data: JSONDict) -> "InlineMarkup":
         if data is None or data.get("inlineKeyboard") is None:
             return None

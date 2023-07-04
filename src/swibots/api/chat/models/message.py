@@ -40,6 +40,7 @@ class Message(
         information: str = None,
         inline_markup: "InlineMarkup" = None,
         is_read: bool = None,
+        is_document: bool = None,
         media_link: str = None,
         mentioned_ids: List[int] = None,
         personal_chat: bool = None,
@@ -83,6 +84,7 @@ class Message(
         self.information = information
         self.inline_markup = inline_markup
         self.is_read = is_read
+        self.is_document = is_document
         self.media_link = media_link
         self.media_id = media_id
         self.media_info = media_info
@@ -140,6 +142,10 @@ class Message(
             form_data["mediaLink"] = self.media_link
         if self.status is not None:
             form_data["status"] = self.status
+        if self.is_document is not None:
+            form_data["isDocument"] = self.is_document
+        if self.inline_markup is not None:
+            form_data.update(self.inline_markup.to_form_data())
         return form_data
 
     def to_json(self) -> JSONDict:
@@ -160,6 +166,7 @@ class Message(
             "information": self.information,
             "inline_markup": self.inline_markup.to_json() if self.inline_markup else None,
             "isRead": self.is_read,
+            "isDocument": self.is_document,
             "mediaLink": self.media_link,
             "mentionedIds": self.mentioned_ids,
             "message": self.message,
@@ -201,6 +208,7 @@ class Message(
             self.inline_markup = InlineMarkup.build_from_json(
                 data.get("inline_markup"), self.app)
             self.is_read = data.get("isRead")
+            self.is_document = data.get("isDocument")
             self.media_link = data.get("mediaLink")
             self.media_id = data.get("mediaId")
             self.media_info = Media.build_from_json(
