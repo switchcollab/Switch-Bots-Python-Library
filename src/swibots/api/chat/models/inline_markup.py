@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING, List, Optional
-import swibots
+
+from swibots.base import SwitchObject
+from swibots.utils.types import JSONDict
+
+from .inline_keyboard_button import InlineKeyboardButton
 from .inline_keyboard_color import InlineKeyboardColor
 from .inline_keyboard_size import InlineKeyboardSize
-from .inline_keyboard_button import InlineKeyboardButton
-from swibots.base import SwitchObject
-
-from swibots.utils.types import JSONDict
 
 if TYPE_CHECKING:
     from .inline_keyboard_button import InlineKeyboardButton
@@ -33,7 +33,7 @@ class InlineMarkup(SwitchObject):
         if len(buttons) > 0:
             self.inline_keyboard.append(list(buttons))
 
-    def to_json(self) -> JSONDict:
+    def to_json(self) -> JSONDict | None:
         if self._inline_keyboard is None:
             return None
         return {
@@ -62,16 +62,9 @@ class InlineMarkup(SwitchObject):
         return form_data
 
     def from_json(self, data: JSONDict) -> "InlineMarkup":
-        if data is None or data.get("inlineKeyboard") is None:
-            return None
-        self._color = InlineKeyboardColor(data.get("color") or "RANDOM")
-        self._size = InlineKeyboardSize(data.get("size") or "DEFAULT")
-        self._inline_keyboard = (
-            [
-                [InlineKeyboardButton.build_from_json(
-                    x, self.app) for x in row]
-                for row in data.get("inlineKeyboard") or []
-            ],
-        )
-
+        if data is not None and data.get("inlineKeyboard") is not None:
+            self._color = InlineKeyboardColor(data.get("color") or "RANDOM")
+            self._size = InlineKeyboardSize(data.get("size") or "DEFAULT")
+            self._inline_keyboard = [[InlineKeyboardButton.build_from_json(x, self.app) for x in row]
+                                     for row in data.get("inlineKeyboard") or []]
         return self

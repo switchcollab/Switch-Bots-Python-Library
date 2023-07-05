@@ -1,8 +1,6 @@
-from typing import List, Optional
+from typing import Optional
 
-import swibots
 from swibots.base import SwitchObject
-
 from swibots.utils.types import JSONDict
 
 
@@ -11,7 +9,7 @@ class InlineKeyboardButton(SwitchObject):
         self,
         text: Optional[str] = None,
         url: Optional[str] = None,
-        callback_data: Optional[str] = None,
+        callback_data: Optional[str] = None
     ):
         super().__init__(None)
         self.text = text
@@ -22,12 +20,12 @@ class InlineKeyboardButton(SwitchObject):
         return {
             "text": self.text,
             "url": self.url,
-            "callbackData": self.callback_data,
+            "callbackData": self.callback_data
         }
 
     def from_json(self, data: JSONDict) -> "InlineKeyboardButton":
         if data is not None:
-            self.text = (data.get("text"),)
-            self.url = (data.get("url"),)
-            self.callback_data = (data.get("callbackData"),)
+            self.text = data.get("text")
+            self.url = data.get("url")
+            self.callback_data = data.get("callbackData")
         return self
