@@ -17,7 +17,7 @@ DEFAULT_HEADERS = {"Accept": "application/json"}
 class RestClient:
     def __init__(
         self,
-        connection_pool_size: int = 1,
+        connection_pool_size: int = 100,
         proxy_url: str = None,
         read_timeout: Optional[float] = None,
         write_timeout: Optional[float] = None,
