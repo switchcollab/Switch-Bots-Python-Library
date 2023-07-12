@@ -7,7 +7,7 @@ from swibots.error import SwitchError
 from swibots.utils.ws.asyncstomp.async_ws_subscription import AsyncWsSubscription
 from swibots.utils.ws.common.ws_message import WsMessage
 from swibots.types import EventType
-from .controllers import ChannelController, GroupController, CommunityController
+from .controllers import ChannelController, GroupController, CommunityController, RolesController
 import swibots
 
 
@@ -24,6 +24,7 @@ class CommunityClient(SwitchRestClient):
         self._channels = None
         self._groups = None
         self._communities = None
+        self._roles = None
         self._ws: SwitchWSAsyncClient = None
         self._started = False
 
@@ -47,6 +48,13 @@ class CommunityClient(SwitchRestClient):
         if self._communities is None:
             self._communities = CommunityController(self)
         return self._communities
+
+    @property
+    def roles(self) -> RolesController:
+        """Gets the roles controller"""
+        if self._roles is None:
+            self._roles = RolesController(self)
+        return self._roles
 
     @property
     def ws(self) -> SwitchWSAsyncClient:
