@@ -14,7 +14,16 @@ class CommunityController:
     def __init__(self, client: "CommunityClient"):
         self.client = client
 
-    async def get_community(self, community_id: str):
-        """Get a community by id"""
-        response = await self.client.get(f"{BASE_PATH}?communityId={community_id}")
+    async def get_community(self, community_id: str = '', username: str = ''):
+        """Get a community by id or username"""
+        if not (community_id or username):
+            raise ValueError('community_id or username must be provided.')
+
+        if community_id and username:
+            raise ValueError("community_id and username can't be provided together.")
+        if username:
+            request_url = f"{BASE_PATH}/communityusername?communityId={community_id}"
+        else:
+            request_url = f"{BASE_PATH}?communityId={community_id}"
+        response = await self.client.get(request_url)
         return self.client.build_object(Community, response.data.get("result"))
