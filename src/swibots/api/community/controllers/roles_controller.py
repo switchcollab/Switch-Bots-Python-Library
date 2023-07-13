@@ -62,4 +62,4 @@ class RolesController:
     async def delete_role(self, roleId: int):
         """delete role by id"""
         response = await self.client.delete(f"{BASE_PATH}/delete/{roleId}")
-        return response.data.get("status")
+        return response.data.get("success")

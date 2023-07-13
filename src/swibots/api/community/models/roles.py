@@ -9,9 +9,9 @@ class Role(SwitchObject):
         self,
         app: "swibots.App" = None,
         id: Optional[int] = 0,
-        community_id: Optional[str] = '',
-        colour: Optional[str] = '',
-        name: Optional[str] = '',
+        community_id: Optional[str] = "",
+        colour: Optional[str] = "",
+        name: Optional[str] = "",
         members_count: Optional[int] = 0,
     ):
         super().__init__(app)
@@ -46,15 +46,19 @@ class RolePermission(SwitchObject):
     def __init__(
         self,
         app: "swibots.App" = None,
-        add_members: bool = None,
-        add_roles: bool = None,
-        send_messages: bool = None,
-        ban_users: bool = None,
-        change_info: bool = None,
-        delete_messages: bool = None,
-        dm_permission: bool = None,
-        pin_messages: bool = None,
-        restrict_messaging: bool = None,
+        id: Optional[int] = None,
+        add_members: Optional[bool] = None,
+        add_roles: Optional[bool] = None,
+        send_messages: Optional[bool] = None,
+        ban_users: Optional[bool] = None,
+        change_info: Optional[bool] = None,
+        delete_messages: Optional[bool] = None,
+        dm_permission: Optional[bool] = None,
+        pin_messages: Optional[bool] = None,
+        restrict_messaging: Optional[bool] = None,
+        role_id: Optional[int] = None,
+        created_at: Optional[str] = None,
+        updated_at: Optional[str] = None,
     ):
         super().__init__(app)
         self.id = id
@@ -67,23 +71,38 @@ class RolePermission(SwitchObject):
         self.dm_permission = dm_permission
         self.pin_messages = pin_messages
         self.restrict_messaging = restrict_messaging
+        self.role_id = role_id
+        self.created_at = created_at
+        self.updated_at = updated_at
 
     def to_json(self) -> JSONDict:
         return {
-            "addNewMembers": self.add_members,
-            "addNewRoles": self.add_roles,
-            "allowedToSendMessageInChannels": self.send_messages,
-            "banUsers": self.ban_users,
-            "changeCommunityInfo": self.change_info,
-            "deletePostsAndMessages": self.delete_messages,
-            "hasDMPermission": self.delete_messages,
-            "pinMessages": self.pin_messages,
-            "restrictMessaging": self.restrict_messaging,
+            "id": self.id,
+            "roleId": self.role_id,
+            "createdAt": self.created_at,
+            "updatedAt": self.updated_at,
+            "rolePermission": {
+                "addNewMembers": self.add_members,
+                "addNewRoles": self.add_roles,
+                "allowedToSendMessageInChannels": self.send_messages,
+                "banUsers": self.ban_users,
+                "changeCommunityInfo": self.change_info,
+                "deletePostsAndMessages": self.delete_messages,
+                "hasDMPermission": self.delete_messages,
+                "pinMessages": self.pin_messages,
+                "restrictMessaging": self.restrict_messaging,
+            },
         }
-
+    
     @classmethod
     def from_json(self, data: JSONDict) -> "RolePermission":
         if data is not None:
+            self.created_at = data.get("createdAt")
+            self.updated_at = data.get("updatedAt")
+
+            if data.get("rolePermission"):
+                data = data["rolePermission"]
+
             self.add_members = data.get("addNewMembers")
             self.send_messages = data.get("allowedToSendMessageInChannels")
             self.delete_messages = data.get("deletePostsAndMessages")
