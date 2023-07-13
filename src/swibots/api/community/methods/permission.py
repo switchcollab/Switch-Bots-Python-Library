@@ -11,7 +11,7 @@ class PermissionMethods:
         client (swibots.ApiClient): The API client.
     """
 
-    def get_permission(
+    async def get_permission(
         self: "swibots.ApiClient", role_id: str
     ) -> RolePermission | None:
         """
