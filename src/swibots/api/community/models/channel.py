@@ -20,6 +20,10 @@ class Channel(SwitchObject):
         allowed_content: Optional[str] = None,
         created_at: Optional[str] = None,
         updated_at: Optional[str] = None,
+        twitter: Optional[str] = None,
+        link: Optional[str] = None,
+        muted: Optional[bool] = None,
+        bot_id: Optional[str] = None,
     ):
         super().__init__(app)
         self.id = id
@@ -35,9 +39,16 @@ class Channel(SwitchObject):
         self.allowed_content = allowed_content
         self.created_at = created_at
         self.updated_at = updated_at
+        self.link = link
+        self.twitter = twitter
+        self.is_twitter = bool(self.twitter)
+        self.link_based = bool(self.link)
+        self.muted = muted
+        self.bot_id = bot_id
 
     def to_json(self) -> JSONDict:
         return {
+            "botId": self.bot_id,
             "channelId": self.id,
             "channelName": self.name,
             "communityId": self.community_id,
@@ -51,6 +62,11 @@ class Channel(SwitchObject):
             "allowedContent": self.allowed_content,
             "createdAt": self.created_at,
             "updatedAt": self.updated_at,
+            "link": self.link,
+            "isTwitter": self.is_twitter,
+            "twitterUsername": self.twitter,
+            "muted": self.muted,
+            "linkBased": self.link_based,
         }
 
     def from_json(self, data: JSONDict) -> "Channel":
@@ -68,4 +84,9 @@ class Channel(SwitchObject):
             self.allowed_content = data.get("allowedContent")
             self.created_at = data.get("createdAt")
             self.updated_at = data.get("updatedAt")
+            self.link = data.get("link")
+            self.link_based = data.get("linkBased")
+            self.muted = data.get("muted")
+            self.is_twitter = data.get("isTwitter")
+            self.twitter = data.get("twitterUsername")
         return self

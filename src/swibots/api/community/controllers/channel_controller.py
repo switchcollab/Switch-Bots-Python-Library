@@ -1,4 +1,3 @@
-
 import logging
 from typing import TYPE_CHECKING
 
@@ -21,3 +20,11 @@ class ChannelController:
         """Get a channel by id"""
         response = await self.client.get(f"{BASE_PATH}?channelId={channel_id}")
         return self.client.build_object(Channel, response.data.get("result"))
+
+    async def create_channel(self, channel: Channel) -> str:
+        response = await self.client.post(BASE_PATH, data=channel.to_json_request())
+        return response.data.get("channelId")
+
+    async def update_channel(self, channel: Channel) -> str:
+        response = await self.client.put(BASE_PATH, data=channel.to_json_request())
+        return response.data.get("channelId")

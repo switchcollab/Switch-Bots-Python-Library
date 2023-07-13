@@ -4,3 +4,5 @@ from .group_controller import *
 from .roles_controller import *
 from .permissions_controller import *
 from .rolemember_controller import *
+from .restrict_controller import *
+from .ban_controller import *
