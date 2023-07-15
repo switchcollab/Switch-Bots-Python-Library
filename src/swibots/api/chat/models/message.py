@@ -276,6 +276,8 @@ class Message(
             return None
         if self.replied_to is None:
             self.replied_to = await self.app.get_message(self.replied_to_id)
+        else:
+            self.replied_to = self.app._bot_client.build_object(Message, self.replied_to)
         return self.replied_to
 
     ### API Methods ###

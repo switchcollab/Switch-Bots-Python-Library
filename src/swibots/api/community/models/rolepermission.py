@@ -18,6 +18,7 @@ class RolePermission(SwitchObject):
         dm_permission: Optional[bool] = None,
         pin_messages: Optional[bool] = None,
         restrict_messaging: Optional[bool] = None,
+        can_deduct_xp: Optional[bool] = None,
         role_id: Optional[int] = None,
         created_at: Optional[str] = None,
         updated_at: Optional[str] = None,
@@ -33,6 +34,7 @@ class RolePermission(SwitchObject):
         self.dm_permission = dm_permission
         self.pin_messages = pin_messages
         self.restrict_messaging = restrict_messaging
+        self.can_deduct_xp = can_deduct_xp
         self.role_id = role_id
         self.created_at = created_at
         self.updated_at = updated_at
@@ -52,6 +54,7 @@ class RolePermission(SwitchObject):
                 "deletePostsAndMessages": self.delete_messages,
                 "hasDMPermission": self.delete_messages,
                 "pinMessages": self.pin_messages,
+                "canDeductXPFromUser": self.can_deduct_xp,
                 "restrictMessaging": self.restrict_messaging,
             },
         }
@@ -70,6 +73,7 @@ class RolePermission(SwitchObject):
             self.pin_messages = data.get("pinMessages")
             self.change_info = data.get("changeCommunityInfo")
             self.add_roles = data.get("addNewRoles")
+            self.can_deduct_xp = data.get("canDeductXPFromUser")
             self.ban_users = data.get("banUsers")
             self.dm_permission = data.get("hasDMPermission")
             self.restrict_messaging = data.get("restrictMessaging")
