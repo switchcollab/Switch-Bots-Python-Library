@@ -50,13 +50,13 @@ class CommunityEvent(Event, Generic[T]):
         d.update(
             {
                 "communityId": self.community_id,
-                "community": self.community.to_json(),
+                "community": self.community.to_json() if self.community else None,
                 "groupId": self.group_id,
-                "group": self.group.to_json(),
+                "group": self.group.to_json() if self.group else None,
                 "channelId": self.channel_id,
-                "channel": self.channel.to_json(),
+                "channel": self.channel.to_json() if self.channel else None,
                 "userId": self.user_id,
-                "user": self.user.to_json(),
+                "user": self.user.to_json() if self.user else None,
             }
         )
         return d
