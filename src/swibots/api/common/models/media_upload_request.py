@@ -1,4 +1,5 @@
 import mimetypes
+from io import BytesIO
 from swibots.utils.types import (
     IOClient,
     ReadCallbackStream,
@@ -10,7 +11,7 @@ from swibots.utils.types import (
 class MediaUploadRequest:
     def __init__(
         self,
-        path: str,
+        path: str | BytesIO,
         file_name: str = None,
         mime_type: str = None,
         caption: str = None,
@@ -45,9 +46,10 @@ class MediaUploadRequest:
             callback_args=self.upload_args,
         )
         reader = ReadCallbackStream(self.path, d_progress.update)
+        path = self.path.name if isinstance(self.path, BytesIO) else self.path
         mime = (
             self.mime_type
-            or mimetypes.guess_type(self.path)[0]
+            or mimetypes.guess_type(path)[0]
             or "application/octet-stream"
         )
-        return {"uploadMediaRequest.file": (self.file_name or self.path, reader, mime)}
+        return {"uploadMediaRequest.file": (self.file_name or path, reader, mime)}
