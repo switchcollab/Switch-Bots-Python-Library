@@ -1,17 +1,24 @@
 import mimetypes
-from swibots.utils.types import IOClient, ReadCallbackStream, UploadProgress, UploadProgressCallback
+from swibots.utils.types import (
+    IOClient,
+    ReadCallbackStream,
+    UploadProgress,
+    UploadProgressCallback,
+)
 
 
 class MediaUploadRequest:
-    def __init__(self,
-                 path: str,
-                 file_name: str = None,
-                 mime_type: str = None,
-                 caption: str = None,
-                 description: str = None,
-                 block: bool = True,
-                 callback: UploadProgressCallback = None,
-                 upload_args: tuple = ()):
+    def __init__(
+        self,
+        path: str,
+        file_name: str = None,
+        mime_type: str = None,
+        caption: str = None,
+        description: str = None,
+        block: bool = True,
+        callback: UploadProgressCallback = None,
+        upload_args: tuple = (),
+    ):
         self.path = path
         self.file_name = file_name
         self.mime_type = mime_type
@@ -24,7 +31,7 @@ class MediaUploadRequest:
     def data_to_request(self):
         return {
             "uploadMediaRequest.caption": self.caption,
-            "uploadMediaRequest.description": self.description
+            "uploadMediaRequest.description": self.description,
         }
 
     def file_to_request(self, url):
@@ -35,14 +42,12 @@ class MediaUploadRequest:
             client=IOClient(),
             url=url,
             callback=self.callback,
-            callback_args=self.upload_args
+            callback_args=self.upload_args,
         )
-        file = open(self.path, "rb")
-        reader = ReadCallbackStream(
-            file, d_progress.update
+        reader = ReadCallbackStream(self.path, d_progress.update)
+        mime = (
+            self.mime_type
+            or mimetypes.guess_type(self.path)[0]
+            or "application/octet-stream"
         )
-        mime = self.mime_type or mimetypes.guess_type(
-            self.path)[0] or "application/octet-stream"
-        return {
-            "uploadMediaRequest.file": (self.file_name or self.path, reader, mime)
-        }
+        return {"uploadMediaRequest.file": (self.file_name or self.path, reader, mime)}

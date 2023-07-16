@@ -62,7 +62,10 @@ class ReadCallbackStream(object):
     """
 
     def __init__(self, file_like, callback):
-        self.file_like = file_like
+        if isinstance(file_like, str):
+            self.file_like = open(file_like, "rb")
+        else:
+            self.file_like = file_like
         self.callback = callback
 
     def __len__(self):
@@ -74,6 +77,9 @@ class ReadCallbackStream(object):
             self.callback(len(chunk))
         return chunk
 
+    def close(self):
+        if hasattr(self.file_like, "close"):
+            self.file_like.close()
 
 class RequestMethod(Enum):
     GET = "GET"

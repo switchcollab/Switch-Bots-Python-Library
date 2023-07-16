@@ -3,7 +3,13 @@ import json
 import logging
 from typing import TYPE_CHECKING, List, Optional
 
-from swibots.api.chat.models import Message, GroupChatHistory, InlineMarkup, InlineQuery, InlineQueryAnswer
+from swibots.api.chat.models import (
+    Message,
+    GroupChatHistory,
+    InlineMarkup,
+    InlineQuery,
+    InlineQueryAnswer,
+)
 from swibots.api.common.models import User, MediaUploadRequest, Media
 from swibots.api.community.models import Channel, Group
 
@@ -25,7 +31,12 @@ class MessageController:
     def __init__(self, client: "ChatClient"):
         self.client = client
 
-    async def new_message(self, to: Optional[int | User] = None, channel: Optional[Channel | str] = None, group: Optional[Group | str] = None) -> Message:
+    async def new_message(
+        self,
+        to: Optional[int | User] = None,
+        channel: Optional[Channel | str] = None,
+        group: Optional[Group | str] = None,
+    ) -> Message:
         """Create a new message"""
         if isinstance(to, User):
             to = to.id
@@ -62,7 +73,15 @@ class MessageController:
         response = await self.client.get(f"{BASE_PATH}/{user_id}")
         return self.client.build_list(Message, response.data)
 
-    async def send_message(self, message: Message, media: MediaUploadRequest = None) -> Message:
+    async def _send_file(self, url, form_data, media: MediaUploadRequest):
+        files = media.file_to_request(url)
+        response = await self.client.post(url, form_data=form_data, files=files)
+        files["uploadMediaRequest.file"][1].close()
+        return response
+
+    async def send_message(
+        self, message: Message, media: MediaUploadRequest = None
+    ) -> Message:
         """Send a message
 
         Parameters:
@@ -82,7 +101,7 @@ class MessageController:
             url = f"{BASE_PATH}/create-with-media"
             form_data = message.to_form_data()
             form_data.update(media.data_to_request())
-            upload_fn = self.client.post(url, form_data=form_data, files=media.file_to_request(url))
+            upload_fn = self._send_file(url, form_data, media)
             if media.block:
                 response = await upload_fn
             else:
@@ -92,7 +111,15 @@ class MessageController:
             response = await self.client.post(f"{BASE_PATH}/create", data=data)
         return self.client.build_object(Message, response.data["message"])
 
-    async def send_text(self, text: str, to: Optional[int | User] = None, channel: Optional[Channel | str] = None, group: Optional[Group | str] = None,  inline_markup: InlineMarkup = None, media: MediaUploadRequest = None) -> Message:
+    async def send_text(
+        self,
+        text: str,
+        to: Optional[int | User] = None,
+        channel: Optional[Channel | str] = None,
+        group: Optional[Group | str] = None,
+        inline_markup: InlineMarkup = None,
+        media: MediaUploadRequest = None,
+    ) -> Message:
         """Send a message with text
 
         Parameters:
@@ -114,7 +141,9 @@ class MessageController:
         message.inline_markup = inline_markup
         return await self.send_message(message, media)
 
-    async def reply(self, message: int | Message, reply: Message, media: MediaUploadRequest = None) -> Message:
+    async def reply(
+        self, message: int | Message, reply: Message, media: MediaUploadRequest = None
+    ) -> Message:
         if isinstance(message, Message):
             id = message.id
         else:
@@ -122,7 +151,14 @@ class MessageController:
         reply.replied_to_id = id
         return await self.send_message(reply, media)
 
-    async def reply_text(self, message: int | Message, text: str, inline_markup: InlineMarkup = None, media: MediaUploadRequest = None, cached_media: Media = None) -> Message:
+    async def reply_text(
+        self,
+        message: int | Message,
+        text: str,
+        inline_markup: InlineMarkup = None,
+        media: MediaUploadRequest = None,
+        cached_media: Media = None,
+    ) -> Message:
         """Reply to a message with text
 
         Parameters:
@@ -140,8 +176,9 @@ class MessageController:
         else:
             id = message
 
-        m = Message(message=text, inline_markup=inline_markup,
-                    cached_media=cached_media)
+        m = Message(
+            message=text, inline_markup=inline_markup, cached_media=cached_media
+        )
 
         return await self.reply(id, m, media)
 
@@ -162,7 +199,9 @@ class MessageController:
         response = await self.client.put(f"{BASE_PATH}?id={message.id}", data=data)
         return self.client.build_object(Message, response.data["message"])
 
-    async def edit_message_text(self, message: int | Message, text: str, inline_markup: InlineMarkup = None) -> Message:
+    async def edit_message_text(
+        self, message: int | Message, text: str, inline_markup: InlineMarkup = None
+    ) -> Message:
         """Edit a message with text
 
         Parameters:
@@ -179,7 +218,9 @@ class MessageController:
             id = message.id
         else:
             id = message
-        return await self.edit_message(Message(id=id, message=text, inline_markup=inline_markup))
+        return await self.edit_message(
+            Message(id=id, message=text, inline_markup=inline_markup)
+        )
 
     async def delete_message(self, message: int | Message) -> bool:
         """Delete a message
@@ -201,7 +242,9 @@ class MessageController:
         response = await self.client.delete(f"{BASE_PATH}/{id}")
         return True
 
-    async def delete_messages_from_user(self, recipient_id: int, user_id: int = None) -> bool:
+    async def delete_messages_from_user(
+        self, recipient_id: int, user_id: int = None
+    ) -> bool:
         """Delete messages from a user
 
         Parameters:
@@ -223,7 +266,11 @@ class MessageController:
         return True
 
     async def get_messages_between_users(
-        self, recipient_id: int, user_id: int = None, page_limit: int = 100, page_offset: int = 0
+        self,
+        recipient_id: int,
+        user_id: int = None,
+        page_limit: int = 100,
+        page_offset: int = 0,
     ) -> List[Message]:
         """Get messages between two users
 
@@ -251,7 +298,9 @@ class MessageController:
             user_id = self.client.user.id
 
         log.debug("Getting messages for user %s", recipient_id)
-        response = await self.client.get(f"{BASE_PATH}/{user_id}/{recipient_id}?{str_q}")
+        response = await self.client.get(
+            f"{BASE_PATH}/{user_id}/{recipient_id}?{str_q}"
+        )
         return self.client.build_list(Message, response.data["messages"])
 
     async def forward_message(
@@ -361,7 +410,9 @@ class MessageController:
         if user_id is None:
             user_id = self.client.user.id
 
-        response = await self.client.get(f"{BASE_PATH}/group/{user_id}/{group_id}?{str_q}")
+        response = await self.client.get(
+            f"{BASE_PATH}/group/{user_id}/{group_id}?{str_q}"
+        )
         return self.client.build_object(GroupChatHistory, response.data)
         # return GroupChatHistory.build_from_json(response.data)
 
@@ -407,7 +458,9 @@ class MessageController:
         if user_id is None:
             user_id = self.client.user.id
 
-        response = await self.client.get(f"{BASE_PATH}/group/{user_id}/{channel_id}?{str_q}")
+        response = await self.client.get(
+            f"{BASE_PATH}/group/{user_id}/{channel_id}?{str_q}"
+        )
         return self.client.build_object(GroupChatHistory, response.data)
         # return GroupChatHistory.build_from_json(response.data)
 
@@ -424,7 +477,9 @@ class MessageController:
             ``~switch.error.SwitchError``: If the community media files could not be retrieved
         """
         log.debug("Getting community media files for community %s", community_id)
-        response = await self.client.get(f"{BASE_PATH}/media?communityId={community_id}")
+        response = await self.client.get(
+            f"{BASE_PATH}/media?communityId={community_id}"
+        )
         return self.client.build_list(Message, response.data)
         # return Message.build_from_json_list(response.data)
 
@@ -484,7 +539,9 @@ class MessageController:
             ``~switch.error.SwitchError``: If the conversation could not be cleared
         """
         log.debug("Clearing conversation %s", receiver_id)
-        response = await self.client.get(f"{BASE_PATH}/clearconversationwith/{receiver_id}")
+        response = await self.client.get(
+            f"{BASE_PATH}/clearconversationwith/{receiver_id}"
+        )
         return True
 
     async def get_flag_messages(self, user_id: int = None) -> List[Message]:
@@ -540,10 +597,14 @@ class MessageController:
             user_id = self.client.user.id
 
         log.debug("Get unread messages count for %s", user_id)
-        response = await self.client.get(f"{BASE_PATH}/unread-messages?userId={user_id}")
+        response = await self.client.get(
+            f"{BASE_PATH}/unread-messages?userId={user_id}"
+        )
         return response.data
 
-    async def answer_inline_query(self, query: InlineQuery, answer: InlineQueryAnswer) -> bool:
+    async def answer_inline_query(
+        self, query: InlineQuery, answer: InlineQueryAnswer
+    ) -> bool:
         """Answer an inline query
 
         Parameters:
@@ -560,16 +621,36 @@ class MessageController:
             raise TypeError("query must be an InlineQuery instance")
 
         if isinstance(answer, str):
-            answer = InlineQueryAnswer(query_id=query.query_id, title=answer, results=[
-            ], cache_time=0, is_personal=True, next_offset=None, pm_text=None, pm_parameter=None, user_id=query.user_id)
+            answer = InlineQueryAnswer(
+                query_id=query.query_id,
+                title=answer,
+                results=[],
+                cache_time=0,
+                is_personal=True,
+                next_offset=None,
+                pm_text=None,
+                pm_parameter=None,
+                user_id=query.user_id,
+            )
 
         if isinstance(answer, List):
-            answer = InlineQueryAnswer(query_id=query.query_id, title=None, results=answer, cache_time=0,
-                                       is_personal=True, next_offset=None, pm_text=None, pm_parameter=None, user_id=query.user_id)
+            answer = InlineQueryAnswer(
+                query_id=query.query_id,
+                title=None,
+                results=answer,
+                cache_time=0,
+                is_personal=True,
+                next_offset=None,
+                pm_text=None,
+                pm_parameter=None,
+                user_id=query.user_id,
+            )
 
         if not answer.user_id:
             answer.user_id = query.user_id
 
         log.debug("Answering inline query %s", query.query_id)
-        response = await self.client.post(f"{BASE_PATH}/inline/answer", answer.to_json_request())
+        response = await self.client.post(
+            f"{BASE_PATH}/inline/answer", answer.to_json_request()
+        )
         return response.data
