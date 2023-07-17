@@ -19,52 +19,33 @@ class RestrictController:
         community_id: str,
         restricted: bool,
         user_id: int,
-        until_date: datetime | float | dict,
+        until_date: int = 0,
     ) -> bool:
-        if isinstance(until_date, float):
-            until_date = datetime.fromtimestamp(until_date)
-        c_timestamp = isinstance(until_date, dict)
-
-        response = await self.client.post(
+        await self.client.post(
             f"{BASE_PATH}/user",
             data={
                 "communityId": community_id,
                 "restricted": restricted,
-                "restrictedTillTimestamp": until_date
-                if c_timestamp
-                else {
-                    "day": until_date.day,
-                    "month": until_date.month,
-                    "year": until_date.year,
-                },
+                "restrictedTillTimestamp": until_date,
                 "userId": user_id,
             },
         )
-        return response.data.get("success", False)
+        return True
 
     async def update_restricted_user(
         self,
         community_id: str,
         restricted: bool,
         user_id: int,
-        until_date: datetime | float | dict,
+        until_date: int = 0,
     ) -> bool:
-        if isinstance(until_date, float):
-            until_date = datetime.fromtimestamp(until_date)
-        c_timestamp = isinstance(until_date, dict)
-        response = await self.client.put(
+        await self.client.put(
             f"{BASE_PATH}/user",
             data={
                 "communityId": community_id,
                 "restricted": restricted,
-                "restrictedTillTimestamp": until_date
-                if c_timestamp
-                else {
-                    "day": until_date.day,
-                    "month": until_date.month,
-                    "year": until_date.year,
-                },
+                "restrictedTillTimestamp": until_date,
                 "userId": user_id,
             },
         )
-        return response.data.get("success", False)
+        return True

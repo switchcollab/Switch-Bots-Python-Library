@@ -23,7 +23,7 @@ class RestrictUser:
         community_id: str,
         restricted: bool,
         user_id: int,
-        until_date: float | datetime,
+        until_date: int = 0,
     ) -> bool:
         """
         Restricts a user in a community.
@@ -32,7 +32,7 @@ class RestrictUser:
             community_id (str): The ID of the community.
             restricted (bool): Whether the user should be restricted.
             user_id (int): The ID of the user to restrict.
-            until_date (float | datetime): The date until which the user should be restricted.
+            until_date (int): The timestamp until which the user should be restricted.
 
         Returns:
             bool: Whether the restriction was successful.
@@ -50,7 +50,7 @@ class RestrictUser:
         community_id: str,
         restricted: bool,
         user_id: int,
-        until_date: datetime | float,
+        until_date: int = 0,
     ) -> bool:
         """
         Updates the restriction status of a user in a community.
@@ -59,7 +59,7 @@ class RestrictUser:
             community_id (str): The ID of the community.
             restricted (bool): Whether the user should be restricted.
             user_id (int): The ID of the user to restrict.
-            until_date (datetime | float): The date until which the user should be restricted.
+            until_date (float | int): The date until which the user should be restricted.
 
         Returns:
             bool: Whether the restriction update was successful.
