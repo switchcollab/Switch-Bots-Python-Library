@@ -110,7 +110,9 @@ class Message(
             "communityId": self.community_id,
             "groupId": self.group_id,
             "channelId": self.channel_id,
-            "inline_markup": self.inline_markup.to_json_request() if self.inline_markup else None,
+            "inline_markup": self.inline_markup.to_json_request()
+            if self.inline_markup
+            else None,
             "callback_data": self.callback_data,
             "repliedTo": self.replied_to_id,
             "mediaLink": self.media_link,
@@ -164,7 +166,9 @@ class Message(
             "groupId": self.group_id,
             "id": self.id,
             "information": self.information,
-            "inline_markup": self.inline_markup.to_json() if self.inline_markup else None,
+            "inline_markup": self.inline_markup.to_json()
+            if self.inline_markup
+            else None,
             "isRead": self.is_read,
             "isDocument": self.is_document,
             "mediaLink": self.media_link,
@@ -191,12 +195,10 @@ class Message(
             self.callback_data = data.get("callback_data")
             self.channel_chat = data.get("channelChat")
             self.channel_id = data.get("channelId")
-            self.channel = Channel.build_from_json(
-                data.get("channel"), self.app)
+            self.channel = Channel.build_from_json(data.get("channel"), self.app)
             self.command_name = data.get("commandName")
             self.community_id = data.get("communityId")
-            self.community = Community.build_from_json(
-                data.get("community"), self.app)
+            self.community = Community.build_from_json(data.get("community"), self.app)
             self.edit = data.get("edit")
             self.flag = data.get("flag")
             self.forward = data.get("forward")
@@ -206,13 +208,13 @@ class Message(
             self.id = data.get("id")
             self.information = data.get("information")
             self.inline_markup = InlineMarkup.build_from_json(
-                data.get("inline_markup"), self.app)
+                data.get("inline_markup"), self.app
+            )
             self.is_read = data.get("isRead")
             self.is_document = data.get("isDocument")
             self.media_link = data.get("mediaLink")
             self.media_id = data.get("mediaId")
-            self.media_info = Media.build_from_json(
-                data.get("mediaInfo"), self.app)
+            self.media_info = Media.build_from_json(data.get("mediaInfo"), self.app)
             self.mentioned_ids = data.get("mentionedIds")
             self.message = data.get("message")
             self.personal_chat = data.get("personalChat")
@@ -277,12 +279,14 @@ class Message(
         if self.replied_to is None:
             self.replied_to = await self.app.get_message(self.replied_to_id)
         else:
-            self.replied_to = self.app._bot_client.build_object(Message, self.replied_to)
+            self.replied_to = self.app._bot_client.build_object(
+                Message, self.replied_to
+            )
         return self.replied_to
 
     ### API Methods ###
 
-    async def send(self,  media: MediaUploadRequest = None) -> "Message":
+    async def send(self, media: MediaUploadRequest = None) -> "Message":
         if self.id is not None:
             return await self.app.edit_message(self)
         return await self.app.send_message(self, media)
@@ -290,16 +294,44 @@ class Message(
     async def delete(self) -> None:
         await self.app.delete_message(self)
 
-    async def reply(self, reply: "Message", media: MediaUploadRequest = None) -> "Message":
+    async def reply(
+        self, reply: "Message", media: MediaUploadRequest = None
+    ) -> "Message":
         if isinstance(reply, str):
             return await self.app.reply_message_text(self, reply, media)
         return await self.app.reply_message(self, reply, media)
 
-    async def reply_text(self, text: str, inline_markup: Optional[InlineMarkup] = None,  media: MediaUploadRequest = None, cached_media: Media = None) -> "Message":
-        return await self.app.reply_message_text(self, text, inline_markup, media, cached_media)
+    async def reply_text(
+        self,
+        text: str,
+        inline_markup: Optional[InlineMarkup] = None,
+        media: MediaUploadRequest = None,
+        cached_media: Media = None,
+    ) -> "Message":
+        return await self.app.reply_message_text(
+            self, text, inline_markup, media, cached_media
+        )
 
-    async def edit_text(self, text: str,  inline_markup: Optional[InlineMarkup] = None) -> "Message":
+    async def edit_text(
+        self, text: str, inline_markup: Optional[InlineMarkup] = None
+    ) -> "Message":
         return await self.app.edit_message_text(self, text, inline_markup)
 
-    async def download(self, file_name: str = None, in_memory: bool = False, block: bool = True, progress: Callable = None, progress_args: tuple = ()) -> Optional[Union[BinaryIO, bytes]]:
-        await self.app.download_media(self, file_name, in_memory, block, progress, progress_args)
+    async def forward_to(
+        self,
+        group_channel: Optional[Group | Channel | str] = None,
+        receiver_id: Optional[str] = None,
+    ):
+        return await self.app.forward_message(self, group_channel, receiver_id)
+
+    async def download(
+        self,
+        file_name: str = None,
+        in_memory: bool = False,
+        block: bool = True,
+        progress: Callable = None,
+        progress_args: tuple = (),
+    ) -> Optional[Union[BinaryIO, bytes]]:
+        return await self.app.download_media(
+            self, file_name, in_memory, block, progress, progress_args
+        )

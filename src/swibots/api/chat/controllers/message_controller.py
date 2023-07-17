@@ -306,8 +306,8 @@ class MessageController:
     async def forward_message(
         self,
         message: Message | int,
-        group_channel: Group | Channel | str = None,
-        receiver_id: str = None,
+        group_channel: Optional[Group | Channel | str] = None,
+        receiver_id: Optional[str] = None,
     ) -> Message:
         """Forward a message to a group or user
 
@@ -327,9 +327,7 @@ class MessageController:
         else:
             id = message
 
-        if isinstance(group_channel, Group):
-            group_channel = group_channel.id
-        elif isinstance(group_channel, Channel):
+        if isinstance(group_channel, (Group, Channel)):
             group_channel = group_channel.id
         elif group_channel is not None:
             group_channel = group_channel
@@ -340,12 +338,12 @@ class MessageController:
         if receiver_id is not None:
             q.append(f"receiverId={receiver_id}")
 
-        strQuery = q.join("&")
+        strQuery = "&".join(q)
 
         log.debug("Forwarding message %s", id)
-        response = await self.client.post(f"{BASE_PATH}/forward/{id}?{strQuery}")
+        response = await self.client.put(f"{BASE_PATH}/forward/{id}?{strQuery}")
         return self.client.build_object(Message, response.data["message"])
-        # return Message.build_from_json(response.data["message"])
+
 
     async def get_message(self, message: int | Message) -> Message:
         """Get a message by id

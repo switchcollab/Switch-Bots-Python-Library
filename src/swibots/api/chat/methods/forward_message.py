@@ -1,4 +1,4 @@
-from typing import Type, TypeVar
+from typing import Type, TypeVar, Optional
 import swibots
 from swibots.api.chat.models import Message
 from swibots.api.community.models import Group, Channel
@@ -8,8 +8,8 @@ class ForwardMessage:
     async def forward_message(
         self: "swibots.ApiClient",
         message: Message | int,
-        group_channel: Group | Channel | str = None,
-        receiver_id: str = None
+        group_channel: Optional[Group | Channel | str] = None,
+        receiver_id: Optional[str] = None
     ) -> Message:
         """Forward a message
 
