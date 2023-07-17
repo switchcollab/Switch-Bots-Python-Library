@@ -10,7 +10,7 @@ from swibots.api.chat.models import (
     InlineQuery,
     InlineQueryAnswer,
 )
-from swibots.api.common.models import User, MediaUploadRequest, Media
+from swibots.api.common.models import User, MediaUploadRequest, Media, EmbeddedMedia
 from swibots.api.community.models import Channel, Group
 
 if TYPE_CHECKING:
@@ -80,7 +80,7 @@ class MessageController:
         return response
 
     async def send_message(
-        self, message: Message, media: MediaUploadRequest = None
+        self, message: Message, media: MediaUploadRequest | EmbeddedMedia = None
     ) -> Message:
         """Send a message
 
@@ -101,8 +101,10 @@ class MessageController:
             url = f"{BASE_PATH}/create-with-media"
             form_data = message.to_form_data()
             form_data.update(media.data_to_request())
-            upload_fn = self._send_file(url, form_data, media)
-            if media.block:
+            embedded = isinstance(media, EmbeddedMedia)
+            upload_fn = self._send_file(url, form_data, media.thumbnail if embedded else media)
+            block = media.thumbnail.block if embedded else media.block
+            if block:
                 response = await upload_fn
             else:
                 asyncio.get_event_loop().create_task(upload_fn)
@@ -142,7 +144,7 @@ class MessageController:
         return await self.send_message(message, media)
 
     async def reply(
-        self, message: int | Message, reply: Message, media: MediaUploadRequest = None
+        self, message: int | Message, reply: Message, media: MediaUploadRequest | EmbeddedMedia = None
     ) -> Message:
         if isinstance(message, Message):
             id = message.id
@@ -156,7 +158,7 @@ class MessageController:
         message: int | Message,
         text: str,
         inline_markup: InlineMarkup = None,
-        media: MediaUploadRequest = None,
+        media: MediaUploadRequest | EmbeddedMedia = None,
         cached_media: Media = None,
     ) -> Message:
         """Reply to a message with text

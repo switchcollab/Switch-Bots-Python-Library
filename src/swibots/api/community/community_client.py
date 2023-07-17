@@ -115,7 +115,7 @@ class CommunityClient(SwitchRestClient):
     async def subscribe_to_notifications(self, callback=None) -> AsyncWsSubscription:
         subscription = await self.ws.subscribe(
             "/user/queue/events",
-            callback=lambda event: callback(self._parse_event(event)),
+            callback=lambda event: callback(self._parse_event(event)) if callback else None,
         )
         return subscription
 

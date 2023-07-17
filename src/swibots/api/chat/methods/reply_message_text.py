@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Type, TypeVar
 import swibots
 from swibots.api.chat.models import Message, InlineMarkup
-from swibots.api.common.models import MediaUploadRequest
+from swibots.api.common.models import MediaUploadRequest, EmbeddedMedia
 from swibots.api.common.models import Media
 
 if TYPE_CHECKING:
@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 
 class ReplyMessageText:
-    async def reply_message_text(self: "ApiClient", message: int | Message, text: str, inline_markup: InlineMarkup = None, media: MediaUploadRequest = None, cached_media: Media = None) -> Message:
+    async def reply_message_text(self: "ApiClient", message: int | Message, text: str, inline_markup: InlineMarkup = None, media: MediaUploadRequest | EmbeddedMedia = None, cached_media: Media = None) -> Message:
         """Send a message
 
         Parameters:

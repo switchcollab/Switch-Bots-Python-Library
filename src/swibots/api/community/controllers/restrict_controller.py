@@ -19,54 +19,52 @@ class RestrictController:
         community_id: str,
         restricted: bool,
         user_id: int,
-        until_date: datetime | float,
+        until_date: datetime | float | dict,
     ) -> bool:
         if isinstance(until_date, float):
             until_date = datetime.fromtimestamp(until_date)
+        c_timestamp = isinstance(until_date, dict)
 
-        delta = datetime.now() - until_date
         response = await self.client.post(
             f"{BASE_PATH}/user",
             data={
                 "communityId": community_id,
                 "restricted": restricted,
-                "restrictedTillTimestamp": {
+                "restrictedTillTimestamp": until_date
+                if c_timestamp
+                else {
                     "day": until_date.day,
                     "month": until_date.month,
                     "year": until_date.year,
-                    "seconds": delta.seconds,
-                    "year": until_date.year,
                 },
-                "userId": user_id
+                "userId": user_id,
             },
         )
-        return response.data.get("status", False)
-
+        return response.data.get("success", False)
 
     async def update_restricted_user(
         self,
         community_id: str,
         restricted: bool,
         user_id: int,
-        until_date: datetime | float,
+        until_date: datetime | float | dict,
     ) -> bool:
         if isinstance(until_date, float):
             until_date = datetime.fromtimestamp(until_date)
-
-        delta = datetime.now() - until_date
+        c_timestamp = isinstance(until_date, dict)
         response = await self.client.put(
             f"{BASE_PATH}/user",
             data={
                 "communityId": community_id,
                 "restricted": restricted,
-                "restrictedTillTimestamp": {
+                "restrictedTillTimestamp": until_date
+                if c_timestamp
+                else {
                     "day": until_date.day,
                     "month": until_date.month,
                     "year": until_date.year,
-                    "seconds": delta.seconds,
-                    "year": until_date.year,
                 },
-                "userId": user_id
+                "userId": user_id,
             },
         )
-        return response.data.get("success")
+        return response.data.get("success", False)

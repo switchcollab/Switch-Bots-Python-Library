@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, BinaryIO, Callable, List, Optional, Union
 import swibots
 from swibots.base import SwitchObject
-from swibots.api.common import User, MediaUploadRequest, Media
+from swibots.api.common import User, MediaUploadRequest, Media, EmbeddedMedia
 from swibots.api.community import Community, Channel, Group
 from swibots.utils.types import JSONDict
 from .inline_markup import InlineMarkup
@@ -31,6 +31,8 @@ class Message(
         command_name: str = None,
         community_id: int = None,
         community: "Community" = None,
+        embed_message: "EmbeddedMedia" = None,
+        is_embed_message: str = None,
         edit: bool = None,
         flag: int = None,
         forward: bool = None,
@@ -98,6 +100,8 @@ class Message(
         self.replies = replies
         self.reply_count = reply_count
         self.cached_media = cached_media
+        self.embed_message = embed_message
+        self.is_embed_message = is_embed_message
         self.__dict__.update(**kwargs)
 
     def to_json_request(self) -> JSONDict:
@@ -117,6 +121,8 @@ class Message(
             "repliedTo": self.replied_to_id,
             "mediaLink": self.media_link,
             "status": self.status,
+            "embedMessage": self.embed_message.to_json() if self.embed_message else None,
+            "isEmbedMessage": self.is_embed_message,
             "cachedMedia": self.cached_media.to_json() if self.cached_media else None,
             "mediaId": self.media_id,
             "mediaInfo": self.media_info.to_json() if self.media_info else None,
@@ -166,6 +172,8 @@ class Message(
             "groupId": self.group_id,
             "id": self.id,
             "information": self.information,
+            "embedMessage": self.embed_message.to_json() if self.embed_message else None,
+            "isEmbedMessage": self.is_embed_message,
             "inline_markup": self.inline_markup.to_json()
             if self.inline_markup
             else None,
@@ -229,6 +237,8 @@ class Message(
             self.sent_date = data.get("sentDate")
             self.status = data.get("status")
             self.user_id = data.get("userId")
+            self.embed_message = EmbeddedMedia.build_from_json(data.get("embedMessage"))
+            self.is_embed_message = data.get("isEmbedMessage")
         return self
 
     # async def get_receiver(self) -> "User":
