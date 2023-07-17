@@ -1,6 +1,6 @@
 import logging
 from typing import TYPE_CHECKING, Optional
-from swibots.api.community.models import Channel, Community, Group
+from swibots.api.community.models import Community, CommunityMember
 
 if TYPE_CHECKING:
     from swibots.api.community import CommunityClient
@@ -45,3 +45,9 @@ class CommunityController:
             },
         )
         return response.data.get("success", False)
+
+    async def get_community_member(self, community_id: str, user_id: str) -> CommunityMember:
+        response = await self.client.get(
+            f"{BASE_PATH}/user?communityId={community_id}&userId={user_id}"
+        )
+        return self.client.build_object(CommunityMember, response.data.get("result"))

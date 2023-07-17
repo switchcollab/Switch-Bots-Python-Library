@@ -9,10 +9,12 @@ from .unban_user import UnbanUser
 from .create_channel import CreateChannel
 from .update_channel import UpdateChannel
 from .restrict_user import RestrictUser
+from .get_community_member import GetCommunityMember
 
 class CommunityMethods(
     GetChannel,
     GetCommunity,
+    GetCommunityMember,
     GetGroup,
     RoleMethods,
     PermissionMethods,

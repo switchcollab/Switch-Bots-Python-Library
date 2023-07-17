@@ -49,5 +49,5 @@ class User(SwitchObject):
             self.deleted = data.get("deleted")
             self.role_info = data.get("roleInfo")
             self.admin = data.get("admin")
-            self.is_bot = data.get("is_bot")
+            self.is_bot = data.get("is_bot") or data.get("bot")
         return self

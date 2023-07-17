@@ -5,5 +5,6 @@ from .role import Role
 from .rolepermission import RolePermission
 from .rolemember import RoleMember
 from .baninfo import BanInfo
+from .community_member import CommunityMember
 
-__all__ = ["Channel", "Community", "Group", "Role", "RolePermission", "RoleMember", "BanInfo"]
+__all__ = ["Channel", "Community", "Group", "Role", "RolePermission", "RoleMember", "BanInfo", "CommunityMember"]
