@@ -4,6 +4,7 @@ from swibots.api.community.events import *
 from swibots.base import SwitchRestClient, SwitchWSAsyncClient
 from swibots.config import get_config
 from swibots.error import SwitchError
+from logging import getLogger
 from swibots.utils.ws.asyncstomp.async_ws_subscription import AsyncWsSubscription
 from swibots.utils.ws.common.ws_message import WsMessage
 from swibots.types import EventType
@@ -18,6 +19,8 @@ from .controllers import (
     BanController
 )
 import swibots
+
+Logger = getLogger(__name__)
 
 
 class CommunityClient(SwitchRestClient):
@@ -115,9 +118,15 @@ class CommunityClient(SwitchRestClient):
     async def subscribe_to_notifications(self, callback=None) -> AsyncWsSubscription:
         subscription = await self.ws.subscribe(
             "/user/queue/events",
-            callback=lambda event: callback(self._parse_event(event)) if callback else None,
+            callback=lambda event: callback(self.__parseEvent(event)) if callback else None,
         )
         return subscription
+    
+    def __parseEvent(self, raw_message: WsMessage) -> CommunityEvent | None:
+        try:
+            self._parse_event(raw_message)
+        except Exception as er:
+            Logger.exception(er)
 
     def _parse_event(self, raw_message: WsMessage) -> CommunityEvent:
         json_data = json.loads(raw_message.body)

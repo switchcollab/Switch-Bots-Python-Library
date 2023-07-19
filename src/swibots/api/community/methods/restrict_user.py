@@ -68,3 +68,7 @@ class RestrictUser:
         return await self.community_service.restrict.update_restricted_user(
             community_id, restricted, user_id, until_date
         )
+
+    async def get_restricted_user(self: "swibots.ApiClient", community_id: str, user_id:int):
+        """get restricted user from community_id and user_id"""
+        return await self.community_service.restrict.get_restricted_user(community_id, user_id)

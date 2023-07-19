@@ -42,16 +42,20 @@ class Event(SwitchObject):
             self.type = swibots.EventType(data.get("type"))
             self.action_by_id = data.get("actionById")
             self.action_by = swibots.User.build_from_json(
-                data.get("actionBy"), self.app)
+                data.get("actionBy"), self.app
+            )
             self.community_id = details.get("communityId")
             self.community = swibots.Community.build_from_json(
-                details.get("community"), self.app)
+                details.get("community"), self.app
+            )
+            if not self.community_id and self.community:
+                self.community_id = self.community.id
             self.group_id = details.get("groupId")
-            self.group = swibots.Group.build_from_json(
-                details.get("group"), self.app)
+            self.group = swibots.Group.build_from_json(details.get("group"), self.app)
             self.channel_id = details.get("channelId")
             self.channel = swibots.Channel.build_from_json(
-                details.get("channel"), self.app)
+                details.get("channel"), self.app
+            )
             self.data = details
         return self
 
