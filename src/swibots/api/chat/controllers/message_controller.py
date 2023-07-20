@@ -94,22 +94,26 @@ class MessageController:
         Raises:
             ``~switch.error.SwitchError``: If the message could not be sent
         """
+        _embedded = isinstance(media, EmbeddedMedia)
+        if _embedded:
+            message.status = 4
         data = message.to_json_request()
         log.debug("Sending message %s", json.dumps(data))
 
-        if media:
+        if (_embedded and media.thumbnail) or isinstance(media, MediaUploadRequest):
             url = f"{BASE_PATH}/create-with-media"
             form_data = message.to_form_data()
             form_data.update(media.data_to_request())
-            embedded = isinstance(media, EmbeddedMedia)
-            upload_fn = self._send_file(url, form_data, media.thumbnail if embedded else media)
-            block = media.thumbnail.block if embedded else media.block
+            upload_fn = self._send_file(url, form_data, media.thumbnail if _embedded else media)
+            block = media.thumbnail.block if _embedded else media.block
             if block:
                 response = await upload_fn
             else:
                 asyncio.get_event_loop().create_task(upload_fn)
                 return
         else:
+            if _embedded:
+                data['embedMessage'] = media.to_json_request()
             response = await self.client.post(f"{BASE_PATH}/create", data=data)
         return self.client.build_object(Message, response.data["message"])
 

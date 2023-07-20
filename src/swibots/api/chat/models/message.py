@@ -296,7 +296,7 @@ class Message(
 
     ### API Methods ###
 
-    async def send(self, media: MediaUploadRequest = None) -> "Message":
+    async def send(self, media: MediaUploadRequest | EmbeddedMedia = None) -> "Message":
         if self.id is not None:
             return await self.app.edit_message(self)
         return await self.app.send_message(self, media)
@@ -305,7 +305,7 @@ class Message(
         await self.app.delete_message(self)
 
     async def reply(
-        self, reply: "Message", media: MediaUploadRequest = None
+        self, reply: "Message", media: MediaUploadRequest | EmbeddedMedia = None
     ) -> "Message":
         if isinstance(reply, str):
             return await self.app.reply_message_text(self, reply, media)
@@ -315,7 +315,7 @@ class Message(
         self,
         text: str,
         inline_markup: Optional[InlineMarkup] = None,
-        media: MediaUploadRequest = None,
+        media: MediaUploadRequest | EmbeddedMedia = None,
         cached_media: Media = None,
     ) -> "Message":
         return await self.app.reply_message_text(
