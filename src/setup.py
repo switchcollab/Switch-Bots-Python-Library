@@ -1,7 +1,10 @@
 from setuptools import setup, find_packages
 
-with open("requirements.txt", encoding="utf-8") as r:
-    requires = [i.strip() for i in r]
+try:
+    with open("requirements.txt", encoding="utf-8") as r:
+        requires = [i.strip() for i in r]
+except:
+        requires = ["httpx==0.23.3", "websockets==10.4"]
 
 try:
     import pypandoc
@@ -13,7 +16,7 @@ except (IOError, ImportError):
 
 setup(
     name="swibots",
-    version="1.3.5",
+    version="1.3.6",
     packages=find_packages(),
     long_description=long_description,
     long_description_content_type="text/markdown",
