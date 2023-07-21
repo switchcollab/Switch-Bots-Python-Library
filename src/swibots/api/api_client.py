@@ -4,18 +4,20 @@ from .chat import ChatClient
 from .community import CommunityClient
 from .bot import BotClient
 from .auth.models import AuthUser
+from .airdrop import AirdropClient
 
 from .auth.methods import AuthMethods
 from .bot.methods import BotMethods
 from .chat.methods import ChatMethods
 from .community.methods import CommunityMethods
-
+from .airdrop.methods import AirdropMethods
 
 class ApiClient(
     AuthMethods,
     BotMethods,
     ChatMethods,
     CommunityMethods,
+    AirdropMethods
 ):
     def __init__(self, **kwargs):
         """Initialize the client"""
@@ -26,6 +28,7 @@ class ApiClient(
         self._community_client: CommunityClient = None
         self._bot_client: BotClient = None
         self._user: AuthUser = None
+        self._airdrop_client: AirdropClient = None
         self.initialize()
 
     def initialize(self):
@@ -72,6 +75,13 @@ class ApiClient(
         if self._community_client is None:
             self._community_client = CommunityClient(self)
         return self._community_client
+
+    @property
+    def airdrop_service(self) -> AirdropClient:
+        """Get the airdrop client"""
+        if self._airdrop_client is None:
+            self._airdrop_client = AirdropClient(self)
+        return self._airdrop_client
 
     @property
     def bots_service(self) -> BotClient:
