@@ -7,7 +7,7 @@ class GetReferrals:
     async def get_referral(
         self: "swibots.ApiClient", tournament_id: str | int
     ) -> List[Referral]:
-        """Get referrals from user_id
+        """Get referrals from tournament_id
 
         Args:
             tournament_id: The Tournament ID to get referrals for.
