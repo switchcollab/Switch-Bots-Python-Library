@@ -45,7 +45,6 @@ class EmbeddedMedia(SwitchObject):
                 form_data[title_key] = b.title
                 icon_key = "embedMessage.inlineFields[{0}][{1}].icon".format(i, j)
                 form_data[icon_key] = b.icon
-        print(form_data)
         return form_data
 
     def from_json(self, data: JSONDict | None) -> "EmbeddedMedia":

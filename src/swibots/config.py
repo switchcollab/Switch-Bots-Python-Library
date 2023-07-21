@@ -12,6 +12,9 @@ APP_CONFIG = {
     "AUTH_SERVICE": {
         "BASE_URL": os.getenv("AUTH_SERVICE_BASE_URL") or "https://api-gateway.switch.pe/user-service",
     },
+    "AIRDROP_SERVICE": {
+        "BASE_URL": os.getenv("AIRDROP_SERVICE_BASE_URL") or "https://api-gateway.switch.pe/airdrop-service"
+    },
     "COMMUNITY_SERVICE": {
         "BASE_URL": os.getenv("COMMUNITY_SERVICE_BASE_URL") or "https://api-gateway.switch.pe/community-service",
         "WS_URL": os.getenv("COMMUNITY_SERVICE_WS_URL") or "wss://api-gateway.switch.pe/v1/websocket/community/ws",
@@ -36,6 +39,7 @@ def reload_config():
         "COMMUNITY_SERVICE_BASE_URL") or "https://api-gateway.switch.pe/community-service"
     APP_CONFIG["COMMUNITY_SERVICE"]['WS_URL'] = os.getenv(
         "COMMUNITY_SERVICE_WS_URL") or "wss://api-gateway.switch.pe/v1/websocket/community/ws"
+    APP_CONFIG['AIRDROP_SERVICE']['BASE_URL'] = os.getenv("AIRDROP_SERVICE_BASE_URL") or "https://api-gateway.switch.pe/airdrop-service"
 
 
 reload_config()
