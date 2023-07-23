@@ -22,9 +22,11 @@ class TournamentController:
     def __init__(self, client: "AirdropClient"):
         self.client = client
 
-    async def get_referrals(self, id: str | int) -> List[Referral]:
+    async def get_referrals(self, id: str | int, user_id: str | int) -> List[Referral]:
         """Get referrals"""
-        response = await self.client.get(f"{BASE_PATH}/getUserReferrals/{id}")
+        response = await self.client.get(
+            f"{BASE_PATH}/getUserReferrals/{id}?user_id={user_id}"
+        )
         return self.client.build_list(Referral, response.data)
 
     async def get_tournaments(self, community_id: str) -> List[Tournament]:
