@@ -1,5 +1,5 @@
 import swibots
-from typing import Optional
+from typing import Optional, Any
 from swibots.base import SwitchObject
 from swibots.api.common.models import User
 from swibots.utils.types import JSONDict

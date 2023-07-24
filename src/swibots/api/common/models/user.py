@@ -1,11 +1,13 @@
 from typing import Optional, List, Any
 from swibots.utils.types import JSONDict
 from swibots.base.switch_object import SwitchObject
+from .usertournament import UserTournament
 
 
 class User(SwitchObject):
     def __init__(
         self,
+        app: "swibots.App" = None,
         id: Optional[int] = None,
         name: Optional[str] = None,
         username: Optional[str] = None,
@@ -15,8 +17,9 @@ class User(SwitchObject):
         role_info: Optional[str] = None,
         admin: Optional[bool] = None,
         is_bot: Optional[bool] = None,
-        tournaments: Optional[List[Any]] = None
+        tournaments: Optional[List[Any]] = None,
     ):
+        super().__init__(app)
         self.id = id
         self.name = name
         self.username = username
@@ -39,7 +42,7 @@ class User(SwitchObject):
             "roleInfo": self.role_info,
             "admin": self.admin,
             "is_bot": self.is_bot,
-            "tournamentsParticipated": self.tournaments
+            "tournamentsParticipated": [x.to_json(x) for x in self.tournaments or []],
         }
 
     def from_json(self, data: Optional[JSONDict] = None) -> "User":
@@ -53,4 +56,7 @@ class User(SwitchObject):
             self.role_info = data.get("roleInfo")
             self.admin = data.get("admin")
             self.is_bot = data.get("is_bot") or data.get("bot")
+            self.tournaments = UserTournament.build_from_json_list(
+                data.get("tournamentsParticipated") or [], self.app
+            )
         return self
