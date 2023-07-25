@@ -23,8 +23,7 @@ class AsyncWsSubscription:
             await self.callback(WsMessage(message))
 
     async def send(self, body: str, headers: dict[str, str] = None):
-        headers = headers or {}
-        await self.client.send(self.destination, headers, body)
+        await self.client.send(self.destination, headers or {}, body)
 
     async def unsubscribe(self):
         await self.client.unsubscribe(self.id)
