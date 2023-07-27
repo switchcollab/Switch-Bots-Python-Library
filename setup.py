@@ -1,10 +1,7 @@
 from setuptools import setup, find_packages
 
-try:
-    with open("requirements.txt", encoding="utf-8") as r:
-        requires = [i.strip() for i in r]
-except:
-        requires = ["httpx==0.23.3", "websockets==10.4"]
+with open("requirements.txt", encoding="utf-8") as r:
+    requires = [i.strip() for i in r]
 
 try:
     import pypandoc
@@ -17,11 +14,11 @@ except (IOError, ImportError):
 setup(
     name="swibots",
     version="1.3.14",
-    packages=find_packages(),
+    packages=find_packages(exclude=["samples", "bots_impl", "docs"]),
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/switchcollab/Switch-Bots-Python-Library",
-    description="Switch bot api",
+    description="Bots Library for Switch",
     author="switchadmin",
     author_email="support@switch.pe",
     license="LGPLv3",
