@@ -20,8 +20,10 @@ You can start building your first app with SwiBots in less than 5 minutes.
 ```bash
 pip install swibots
 ```
-
-
+> OR build from source
+```
+pip install git+https://github.com/switchcollab/Switch-Bots-Python-Library.git
+```
 
 
 2. Open the editor of your choice and create a python file echobot.py (or whatever name you want!), and paste the following code:
@@ -62,3 +64,5 @@ python echobot.py
 4. Open your switch app and send a message to the bot ```Hello world!```
 
 5. You will receive a reply from your bot saying ```Thank you! I received your message: Hello world! ```
+
+#### [Checkout Bot samples](./samples)

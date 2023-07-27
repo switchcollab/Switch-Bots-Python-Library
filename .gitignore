@@ -8,8 +8,7 @@ dist
 src/venv
 *.egg-info
 build
-/tests*
 .DS_Store
 # **/bots_impl
 **.log
-src/test*
+test*
