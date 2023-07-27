@@ -6,6 +6,7 @@ from swibots.error import SwitchError
 from .async_ws_subscription import AsyncWsSubscription
 from swibots.utils.ws.common import WsFrame
 import websockets
+from websockets.exceptions import ConnectionClosedError
 import logging
 
 VERSIONS = "1.1,1.0"
@@ -68,7 +69,7 @@ class AsyncWsClient:
     async def _on_error(self, ws_app, error, *args):
         await self._clean_up()
         await self._on_close(ws_app, *args)
-        log.error(error)
+        log.exception(error)
 
     async def _on_message(self, ws_app, message, *args):
         frame = WsFrame.unmarshall_single(message)
@@ -145,7 +146,7 @@ class AsyncWsClient:
                 out = command
             log.debug("\n>>> " + l)
             await self.ws.send(out)
-        except websockets.exceptions.WebSocketException:
+        except ConnectionClosedError:
             await self._on_close(self.ws)
         except Exception as e:
             await self._on_error(self.ws, e)
@@ -211,8 +212,7 @@ class AsyncWsClient:
             if self._connectIntents > 0:
                 log.info(f"Retrying connection to {self.url}")
         # await self._start_heartbeat()
-        except (websockets.exceptions.WebSocketException,) as er:
-            log.exception(er)
+        except (ConnectionClosedError) as er:
             await self._on_close(self.ws)
         except Exception as e:
             await self._on_error(self.ws, e)
@@ -222,10 +222,10 @@ class AsyncWsClient:
             async for message in self.ws:
                 await self._on_message(self.ws, message)
             await self._on_close(self.ws)
-        except (websockets.exceptions.WebSocketException,) as er:
-            log.exception(er)
+        except (ConnectionClosedError) as er:
             await self._on_close(self.ws)
         except Exception as e:
+            log.exception(e)
             await self._on_error(self.ws, e)
 
     async def disconnect(self, disconnectCallback=None, headers=None):

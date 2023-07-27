@@ -121,7 +121,9 @@ class Message(
             "repliedTo": self.replied_to_id,
             "mediaLink": self.media_link,
             "status": self.status,
-            "embedMessage": self.embed_message.to_json() if self.embed_message else None,
+            "embedMessage": self.embed_message.to_json()
+            if self.embed_message
+            else None,
             "isEmbedMessage": self.is_embed_message,
             "cachedMedia": self.cached_media.to_json() if self.cached_media else None,
             "mediaId": self.media_id,
@@ -172,7 +174,9 @@ class Message(
             "groupId": self.group_id,
             "id": self.id,
             "information": self.information,
-            "embedMessage": self.embed_message.to_json() if self.embed_message else None,
+            "embedMessage": self.embed_message.to_json()
+            if self.embed_message
+            else None,
             "isEmbedMessage": self.is_embed_message,
             "inline_markup": self.inline_markup.to_json()
             if self.inline_markup
@@ -294,15 +298,41 @@ class Message(
             )
         return self.replied_to
 
+    def _prepare_response(self) -> "Message":
+        response = Message(self.app)
+        if self.community_id:
+            response.community_id = self.community_id
+            response.group_id = self.group_id
+            response.channel_id = self.channel_id
+        else:
+            receiver_id = self.user_id if self.user_id != self.id else self.receiver_id
+            response.receiver_id = receiver_id
+
+        response.user_id = self.id
+        return response
+
     ### API Methods ###
 
-    async def send(self, media: MediaUploadRequest | EmbeddedMedia = None) -> "Message":
+    async def respond(
+        self,
+        text: str = None,
+        media: MediaUploadRequest | EmbeddedMedia = None,
+        inline_markup: InlineMarkup = None,
+    ) -> "Message":
         if self.id is not None:
             return await self.app.edit_message(self)
-        return await self.app.send_message(self, media)
+
+        message = self._prepare_response()
+        if text:
+            message.message = text
+        if inline_markup:
+            message.inline_markup = inline_markup
+        return await self.app.send_message(message, media)
+
+    send = respond
 
     async def delete(self) -> None:
-        await self.app.delete_message(self)
+        return await self.app.delete_message(self)
 
     async def reply(
         self, reply: "Message", media: MediaUploadRequest | EmbeddedMedia = None
@@ -317,7 +347,10 @@ class Message(
         inline_markup: Optional[InlineMarkup] = None,
         media: MediaUploadRequest | EmbeddedMedia = None,
         cached_media: Media = None,
+        quote: bool = True,
     ) -> "Message":
+        if not quote:
+            return await self.respond(text, media, inline_markup)
         return await self.app.reply_message_text(
             self, text, inline_markup, media, cached_media
         )

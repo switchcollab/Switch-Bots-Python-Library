@@ -88,29 +88,6 @@ class Bot(AuthUser, ApiClient):
         message.user_id = self.id
         return message
 
-    # async def prepare_response_message(self, message: Message) -> Message:
-    #     """
-    #     Prepares a message to be sent as a response to the given message.
-
-    #     Parameters:
-    #         message (:obj:`switch.api.chat.models.Message`): The message to respond to.
-
-    #     Returns:
-    #         :obj:`switch.api.chat.models.Message`: The prepared message.
-    #     """
-
-    #     receiver_id = message.user_id if message.user_id != self.id else message.receiver_id
-    #     sender_id = self.id
-    #     m = Message.build_from_json(message.to_json(), self.app)
-    #     m.id = None
-    #     m.message = ""
-
-    #     if message.community_id is None or message.community_id == "":
-    #         m.receiver_id = receiver_id
-
-    #     m.user_id = sender_id
-    #     return m
-
     async def prepare_response_message(self, message: Message) -> Message:
         """
         Prepares a message to be sent as a response to the given message.
@@ -121,16 +98,4 @@ class Bot(AuthUser, ApiClient):
         Returns:
             :obj:`switch.api.chat.models.Message`: The prepared message.
         """
-
-        response = Message(self.app)
-
-        if message.community_id is not None and message.community_id != "":
-            response.community_id = message.community_id
-            response.group_id = message.group_id
-            response.channel_id = message.channel_id
-        else:
-            receiver_id = message.user_id if message.user_id != self.id else message.receiver_id
-            response.receiver_id = receiver_id
-
-        response.user_id = self.id
-        return response
+        return message._prepare_response()
