@@ -6,7 +6,11 @@ from swibots.error import SwitchError
 from .async_ws_subscription import AsyncWsSubscription
 from swibots.utils.ws.common import WsFrame
 import websockets
-from websockets.exceptions import ConnectionClosedError
+from websockets.exceptions import (
+    ConnectionClosedOK,
+    ConnectionClosed,
+    ConnectionClosedError,
+)
 import logging
 
 VERSIONS = "1.1,1.0"
@@ -136,17 +140,19 @@ class AsyncWsClient:
 
         return _results
 
-    async def _transmit(self, command, headers, body=None):
+    async def _transmit(self, command, headers, body=None, ws=None):
+        if not ws:
+            ws = self.ws
         try:
-            if self.ws is None:
+            if ws is None:
                 return
             out = l = WsFrame.marshall(command, headers, body)
             if command == "\n":
                 l = "PING"
                 out = command
             log.debug("\n>>> " + l)
-            await self.ws.send(out)
-        except ConnectionClosedError:
+            await ws.send(out)
+        except (ConnectionClosedOK, ConnectionClosedError):
             await self._on_close(self.ws)
         except Exception as e:
             await self._on_error(self.ws, e)
@@ -177,22 +183,20 @@ class AsyncWsClient:
         **kwargs,
     ):
         if self.connected:
-            log.debug("Already connected to " + self.url)
+            log.error("Already connected to " + self.url)
             return
 
         if self._connecting:
-            log.debug("Already connecting to " + self.url)
+            log.error("Already connecting to " + self.url)
             return
 
         try:
             self._connecting = True
             self._connect_args = kwargs
             log.debug("Opening web socket...")
-            self.ws = await websockets.connect(self.url)
-            log.debug("Web socket opened.")
-            self._loop.create_task(self.read_messages())
+            self.ws = websockets.connect(self.url)
             headers = headers if headers is not None else {}
-            # headers['host'] = self.url
+
             headers["accept-version"] = VERSIONS
             headers["heart-beat"] = "10000,10000"
             if login is not None:
@@ -201,7 +205,10 @@ class AsyncWsClient:
                 headers["passcode"] = passcode
             self._connectCallback = connectCallback
             self.errorCallback = errorCallback
-            await self._transmit("CONNECT", headers)
+
+            self._loop.create_task(self.read_messages(headers))
+            # headers['host'] = self.url
+
             # elapsed time
             elapsed = 0
             while not self.connected:
@@ -212,21 +219,27 @@ class AsyncWsClient:
             if self._connectIntents > 0:
                 log.info(f"Retrying connection to {self.url}")
         # await self._start_heartbeat()
-        except (ConnectionClosedError) as er:
+        except ConnectionClosedOK:
             await self._on_close(self.ws)
         except Exception as e:
             await self._on_error(self.ws, e)
 
-    async def read_messages(self):
+    async def read_messages(self, headers):
         try:
-            async for message in self.ws:
-                await self._on_message(self.ws, message)
-            await self._on_close(self.ws)
-        except (ConnectionClosedError) as er:
-            await self._on_close(self.ws)
+            async for websocket in self.ws:
+                self.ws = websocket
+                try:
+                    await self._transmit("CONNECT", headers)
+                    async for message in websocket:
+                        await self._on_message(self.ws, message)
+                except ConnectionClosedError as er:
+                    log.debug(f"recieved closed error: {er}")
+                    continue
         except Exception as e:
             log.exception(e)
             await self._on_error(self.ws, e)
+            return
+        await self._on_close(self.ws)
 
     async def disconnect(self, disconnectCallback=None, headers=None):
         headers = self._set_default_headers(headers)

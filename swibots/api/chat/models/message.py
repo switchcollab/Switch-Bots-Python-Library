@@ -273,12 +273,13 @@ class Message(
     #         self.community = await self.app.get_community(self.community_id)
     #     return self.community
 
-    # async def get_replied_to(self) -> "Message":
-    #     if self.replied_to_id is None or self.replied_to_id <= 0:
-    #         return None
-    #     if self.replied_to is None:
-    #         self.replied_to = await self.app.get_message(self.replied_to_id)
-    #     return self.replied_to
+    @property
+    def is_media(self):
+        # 1 = IMAGE
+        # 2 = Video
+        # 3 = AUDIO
+        # 7 = FILE
+        return self.status in [1, 2, 3, 7]
 
     async def get_replies(self) -> List["Message"]:
         if self.reply_count <= 0:

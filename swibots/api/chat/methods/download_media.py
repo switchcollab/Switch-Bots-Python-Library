@@ -15,8 +15,7 @@ class DownloadMedia:
         """
         """
 
-        # 1 = IMAGE, 2 = VIDEO, 3 = AUDIO, 7 = FILE
-        if message.status not in [1, 2, 3, 7]:
+        if not message.is_media:
             raise SwitchError("Message is not a media message")
 
         if message.media_link is None:
