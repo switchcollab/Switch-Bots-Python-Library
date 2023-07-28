@@ -1,6 +1,6 @@
 # User
 
-`Class pybots.api.common.models.User`
+`Class swibots.api.common.models.User`
 
 The `User` class represents a user.
 

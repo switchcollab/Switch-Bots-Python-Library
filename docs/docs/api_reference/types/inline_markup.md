@@ -1,6 +1,6 @@
 # InlineMarkup
 
-`Class pybots.api.chat.models.InlineMarkup`
+`Class swibots.api.chat.models.InlineMarkup`
 
 The `InlineMarkup` class represents a markup that can be added to a message (Only bots can add markup to the messages).
 
@@ -15,7 +15,7 @@ The `InlineMarkup` class represents a markup that can be added to a message (Onl
 ## Usage 
 
 ```python
-from pybots import InlineKeyboardButton, InlineMarkup
+from swibots import InlineKeyboardButton, InlineMarkup
 
 button1 = InlineKeyboardButton(
     text="Button Text",

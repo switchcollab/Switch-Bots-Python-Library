@@ -1,6 +1,6 @@
 # Media
 
-`Class pybots.api.common.models.Media`
+`Class swibots.api.common.models.Media`
 
 The `Media` class represents a media (file, audio, video, etc) that has been uploaded to the server.
 

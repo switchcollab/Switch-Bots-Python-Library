@@ -1,6 +1,6 @@
 # Group
 
-`Class pybots.api.community.models.Group`
+`Class swibots.api.community.models.Group`
 
 The `Group` class represents a group.
 

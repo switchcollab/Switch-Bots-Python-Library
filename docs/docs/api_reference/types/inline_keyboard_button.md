@@ -1,6 +1,6 @@
 # InlineKeyboardButton
 
-`Class pybots.api.chat.models.InlineKeyboardButton`
+`Class swibots.api.chat.models.InlineKeyboardButton`
 
 The `InlineKeyboardButton` class represents a button that can be added to an [inline keyboard](./inline_markup).
 
@@ -13,7 +13,7 @@ The `InlineKeyboardButton` class represents a button that can be added to an [in
 ## Usage 
 
 ```python
-from pybots import InlineKeyboardButton, InlineMarkup
+from swibots import InlineKeyboardButton, InlineMarkup
 
 button1 = InlineKeyboardButton(
     text="Button Text",

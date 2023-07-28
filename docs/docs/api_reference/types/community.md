@@ -1,6 +1,6 @@
 # Community
 
-`Class pybots.api.community.models.Community`
+`Class swibots.api.community.models.Community`
 
 The `Community` class represents a community.
 

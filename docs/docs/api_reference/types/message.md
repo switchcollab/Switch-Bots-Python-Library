@@ -1,6 +1,6 @@
 # Message
 
-`Class pybots.api.chat.models.User`
+`Class swibots.api.chat.models.User`
 
 The `Message` class represents a message sent to a chat.
 
