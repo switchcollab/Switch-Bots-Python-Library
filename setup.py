@@ -1,8 +1,10 @@
 from setuptools import setup, find_packages
 
-with open("requirements.txt", encoding="utf-8") as r:
-    requires = [i.strip() for i in r]
-
+try:
+    with open("requirements.txt", encoding="utf-8") as r:
+        requires = [i.strip() for i in r]
+except FileNotFoundError:
+    requires = ["httpx<=0.24.1", "websockets<=11.0.3"]
 try:
     import pypandoc
 
