@@ -306,7 +306,7 @@ class Message(
             response.group_id = self.group_id
             response.channel_id = self.channel_id
         else:
-            receiver_id = self.user_id if self.user_id != self.id else self.receiver_id
+            receiver_id = self.user_id if self.user_id != self.app.user.id else self.receiver_id
             response.receiver_id = receiver_id
 
         response.user_id = self.id

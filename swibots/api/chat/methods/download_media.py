@@ -22,7 +22,7 @@ class DownloadMedia:
             raise SwitchError("Message does not have a media link")
 
         media_file_name = message.media_link.split("/")[-1]
-        if os.path.isdir(file_name):
+        if file_name and os.path.isdir(file_name):
             directory = file_name
             file_name = media_file_name
         else:

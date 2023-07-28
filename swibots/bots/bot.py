@@ -83,8 +83,7 @@ class Bot(AuthUser, ApiClient):
         Returns:
             :obj:`switch.api.chat.models.Message`: The prepared message.
         """
-        message = Message(receiver_id=receiver_id,
-                          message=text, app=self.app, **kwargs)
+        message = Message(receiver_id=receiver_id, message=text, app=self.app, **kwargs)
         message.user_id = self.id
         return message
 
