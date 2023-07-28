@@ -8,7 +8,6 @@ from swibots.utils.ws.common import WsFrame
 import websockets
 from websockets.exceptions import (
     ConnectionClosedOK,
-    ConnectionClosed,
     ConnectionClosedError,
 )
 import logging
@@ -259,6 +258,12 @@ class AsyncWsClient:
             # [task.cancel() for task in self.tasks]
             # self.ws = None
             self.tasks = []
+            for id in list(self.subscriptions.keys()):
+                try:
+                    await self.subscriptions[id].unsubscribe()
+                    del self.subscriptions[id]
+                except KeyError:
+                    pass
         except Exception as e:
             log.exception(e)
             log.debug("Error cleaning up: " + str(e))

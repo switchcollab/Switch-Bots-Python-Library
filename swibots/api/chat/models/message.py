@@ -321,6 +321,10 @@ class Message(
         inline_markup: InlineMarkup = None,
     ) -> "Message":
         message = self._prepare_response()
+
+        if isinstance(text, (EmbeddedMedia, MediaUploadRequest)):
+            media = text
+            text = None
         if text:
             message.message = text
         if inline_markup:
