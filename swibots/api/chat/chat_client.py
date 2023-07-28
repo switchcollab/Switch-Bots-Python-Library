@@ -63,7 +63,7 @@ class ChatClient(SwitchRestClient):
         return self._messages
 
     @property
-    def post(self) -> PostController:
+    def posts(self) -> PostController:
         """Get the post controller"""
         if self._post is None:
             self._post = PostController(self)

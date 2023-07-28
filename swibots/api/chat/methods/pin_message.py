@@ -23,6 +23,6 @@ class PinMessage:
 
         This method does the same as :meth:`~switch.api.chat.controllers.PostController.pin_message`.
         """
-        return await self.chat_service.post.pin_message(
+        return await self.chat_service.posts.pin_message(
             message, detail=detail, message_type=message_type
         )
