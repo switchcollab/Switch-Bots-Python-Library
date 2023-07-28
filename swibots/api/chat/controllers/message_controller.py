@@ -104,7 +104,9 @@ class MessageController:
             url = f"{BASE_PATH}/create-with-media"
             form_data = message.to_form_data()
             form_data.update(media.data_to_request())
-            upload_fn = self._send_file(url, form_data, media.thumbnail if _embedded else media)
+            upload_fn = self._send_file(
+                url, form_data, media.thumbnail if _embedded else media
+            )
             block = media.thumbnail.block if _embedded else media.block
             if block:
                 response = await upload_fn
@@ -113,7 +115,7 @@ class MessageController:
                 return
         else:
             if _embedded:
-                data['embedMessage'] = media.to_json_request()
+                data["embedMessage"] = media.to_json_request()
             response = await self.client.post(f"{BASE_PATH}/create", data=data)
         return self.client.build_object(Message, response.data["message"])
 
@@ -148,7 +150,10 @@ class MessageController:
         return await self.send_message(message, media)
 
     async def reply(
-        self, message: int | Message, reply: Message, media: MediaUploadRequest | EmbeddedMedia = None
+        self,
+        message: int | Message,
+        reply: Message,
+        media: MediaUploadRequest | EmbeddedMedia = None,
     ) -> Message:
         if isinstance(message, Message):
             id = message.id
@@ -349,7 +354,6 @@ class MessageController:
         log.debug("Forwarding message %s", id)
         response = await self.client.put(f"{BASE_PATH}/forward/{id}?{strQuery}")
         return self.client.build_object(Message, response.data["message"])
-
 
     async def get_message(self, message: int | Message) -> Message:
         """Get a message by id
