@@ -89,7 +89,7 @@ class AsyncWsClient:
             self._connecting = False
 
             if self._connectIntents > 0:
-                log.info("Re-Established connection to the server", self.url)
+                log.info("Re-Established connection to the server " + self.url)
             else:
                 log.debug("connected to server " + self.url)
 
@@ -194,7 +194,6 @@ class AsyncWsClient:
             self._connecting = True
             self._connect_args = kwargs
             log.debug("Opening web socket...")
-            self.ws = websockets.connect(self.url)
             headers = headers if headers is not None else {}
 
             headers["accept-version"] = VERSIONS
@@ -226,7 +225,7 @@ class AsyncWsClient:
 
     async def read_messages(self, headers):
         try:
-            async for websocket in self.ws:
+            async for websocket in websockets.connect(self.url):
                 self.ws = websocket
                 try:
                     await self._transmit("CONNECT", headers)
@@ -257,7 +256,7 @@ class AsyncWsClient:
             self.opened = False
             # if self._heartbeatTask is not None:
             #     await asyncio.wait_for(self._heartbeatTask, 5)
-            [task.cancel() for task in self.tasks]
+            # [task.cancel() for task in self.tasks]
             # self.ws = None
             self.tasks = []
         except Exception as e:
