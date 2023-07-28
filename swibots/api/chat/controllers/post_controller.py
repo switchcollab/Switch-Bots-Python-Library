@@ -18,7 +18,6 @@ class PostController:
 
     def __init__(self, client: "ChatClient"):
         self.client = client
-        super().__init__(client)
 
     async def pin_message(
         self,
