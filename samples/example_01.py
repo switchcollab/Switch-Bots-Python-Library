@@ -29,7 +29,8 @@ from swibots import (
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
-TOKEN = os.getenv("TOKEN")
+TOKEN ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OTgyLCJpc19ib3QiOnRydWUsImFjdGl2ZSI6dHJ1ZSwiaWF0IjoxNjg5NDE0NTE3LCJleHAiOjIzMjA1NjY1MTd9.DNlqVeGHmlQIEKfj-H9SF9Hb654rMc48YLLWkc1fJoQ"
+ # os.getenv("TOKEN")
 
 app = BotApp(
     TOKEN,

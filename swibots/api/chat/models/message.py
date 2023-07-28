@@ -320,9 +320,6 @@ class Message(
         media: MediaUploadRequest | EmbeddedMedia = None,
         inline_markup: InlineMarkup = None,
     ) -> "Message":
-        if self.id is not None:
-            return await self.app.edit_message(self)
-
         message = self._prepare_response()
         if text:
             message.message = text
