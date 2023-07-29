@@ -8,13 +8,20 @@ Download a media file from a message.
 
 ## Parameters
 
-- `message` ([Message](../types/message)): The message to download the media from
-- `file_name` (str): The file name to save the media to. If `in_memory` is `True`, this parameter is ignored.
-- `in_memory` (bool): Whether to download the media to memory or to a file. Defaults to `False`.
-- `block` (bool): Whether to block the current thread until the download is complete. Defaults to `True`.
-- `progress` ([DownloadProgressCallback](../types/functions#downloadprocesscallback)): A callback function that is called when the download progress changes. Defaults to `None`.
-- `progress_args` (tuple): Additional arguments to pass to the `progress` callback function. Defaults to `()`.
-
+- `message` ([Message](../types/message)): The message to download the media
+  from
+- `file_name` (str): The file name to save the media to. If `in_memory` is
+  `True`, this parameter is ignored.
+- `in_memory` (bool): Whether to download the media to memory or to a file.
+  Defaults to `False`.
+- `block` (bool): Whether to block the current thread until the download is
+  complete. Defaults to `True`.
+- `progress`
+  ([DownloadProgressCallback](../types/functions#downloadprocesscallback)): A
+  callback function that is called when the download progress changes. Defaults
+  to `None`.
+- `progress_args` (tuple): Additional arguments to pass to the `progress`
+  callback function. Defaults to `()`.
 
 ## Example
 
@@ -63,5 +70,4 @@ async def on_message(message: Message):
 
 
 app.run()
-
 ```

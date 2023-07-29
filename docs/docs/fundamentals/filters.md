@@ -24,7 +24,7 @@ To add a filter to a handler, add the filter as a parameter to the handler class
 - `group` Filter events coming from a specific group or a list of groups. Accepts a single group_id or an array of ids. Example: @app.on_message(group("123456789")) or @app.on_message(group(["123456789", "987654321"]))
 - `user` Filter events coming from a specific user or a list of users. Accepts a single user_id or an array of ids. Example: @app.on_message(user("123456789")) or @app.on_message(user(["123456789", "987654321"]))
 - `text` Filter messages that contain a specific text. Example: @app.on_message(text("hello")) will match messages that contain the text "hello"
-- `regex` Filter messages that match a specific regex. Example: @app.on_message(regex(r"^hello")) will match messages that start with "hello"
+- `regexp` Filter messages that match a specific regex. Example: @app.on_message(regex(r"^hello")) will match messages that start with "hello"
 - `message_type` Filter messages that match a specific message type. Example: @app.on_message(message_type(0)) will match messages that are of type 0 (text), @app.on_message(message_type(1)) will match messages that are of type 1 (image), etc.
 (Available types are: 0 text, 1 image, 2 video, 3 audio, 7 document/file)
 

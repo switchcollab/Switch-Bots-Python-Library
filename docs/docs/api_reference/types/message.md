@@ -29,6 +29,9 @@ The `Message` class represents a message sent to a chat.
 - `information` (`str`): The message's information.
 - `inline_markup` ([InlineMarkup](./inline_markup)): The message's inline markup.
 - `is_read` (`bool`): Whether the message is read.
+- `is_media` (`bool`): Whether message includes media.
+- `is_embed_message` (`bool`): Whether message includes embedded.
+- `embed_message`: ([EmbeddedMedia](./embedded_media.md)): The embedded message. 
 - `media_link` (`str`): The message's media link.
 - `replied_message` (`str`): The message's replied message.
 - `replied_to_id` (`int`): The message's replied to id.
@@ -47,9 +50,9 @@ The `Message` class represents a message sent to a chat.
 
 Unlike other types, the `Message` class has a few api methods to make it easier to work with.
 
-- > ***async send(self,  media: [MediaUploadRequest](./media_upload_request) = None) -> Message *** 
+- > ***async respond(self,  text: str, media: [MediaUploadRequest](./media_upload_request) | [EmbeddedMedia](./embedded_media.md) = None, inline_markup: [InlineMarkup](./inline_markup.md)) -> Message *** 
 
-    Sends the message. If the message has an id, it will be edited instead.
+    Sends the message.
 
     You can also add media.
 

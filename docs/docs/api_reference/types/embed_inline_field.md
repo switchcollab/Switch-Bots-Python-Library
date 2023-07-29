@@ -7,5 +7,5 @@ The `EmbedInlineField` class represents a field that can be added to an [embedde
 ## Properties
 
 - `title` (`str`): The field's text.
-- `key` (`str`): The field's unique key.
-- `icon` (`str`): the field's icon/emoji.
+- `key` (`str`): The field's value.
+- `icon` (`str`): the field's icon (`URL`).

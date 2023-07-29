@@ -16,21 +16,20 @@ You can start building your first app with SwiBots in less than 5 minutes.
 pip install swibots
 ```
 
-:::caution
-This library requires Python 3.10 or higher.
-Please make sure you have the latest version of Python installed.
-Check your Python version with the following command:
+:::caution This library requires Python 3.10 or higher. Please make sure you
+have the latest version of Python installed. Check your Python version with the
+following command:
 
 ```bash
 python --version
 ```
 
-If you don't have Python 3.10 or higher, you can download it from [here](https://www.python.org/downloads/). (Follow the instructions for your operating system)
-:::
+If you don't have Python 3.10 or higher, you can download it from
+[here](https://www.python.org/downloads/). (Follow the instructions for your
+operating system) :::
 
-
-
-2. Open the editor of your choice and create a python file echobot.py (or whatever name you want!), and paste the following code:
+2. Open the editor of your choice and create a python file echobot.py (or
+   whatever name you want!), and paste the following code:
 
 ```python title="echobot.py"
 from swibots import (
@@ -50,10 +49,11 @@ app = BotApp(
 @app.on_message()
 async def message_handler(ctx: BotContext[MessageEvent]):
     # easy way to prepare a mesage that is a response of an incomming message
-    m = await ctx.prepare_response_message(ctx.event.message)
-    m.message = f"Thank you! I received your message: {ctx.event.message.message}"
+    message = ctx.event.message
     # send the message back to the user
-    await ctx.send_message(m)
+    await ctx.event.message.respond(
+        f"Thank you! I received your message: {message.message}"
+    )
 
 
 app.run()
@@ -65,6 +65,7 @@ app.run()
 python echobot.py
 ```
 
-4. Open your switch app and send a message to the bot ```Hello world!```
+4. Open your switch app and send a message to the bot `Hello world!`
 
-5. You will receive a reply from your bot saying ```Thank you! I received your message: Hello world! ```
+5. You will receive a message from your bot saying
+   `Thank you! I received your message: Hello world!`

@@ -10,8 +10,8 @@ const projectName = "Switch-Bots-Python-Library";
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'SwiBots',
-  tagline: 'Switch Python Api',
+  title: 'Swibots',
+  tagline: 'Switch Python API',
   url: `https://${organizationName}.github.io`,
   baseUrl: `/${projectName}/`,
   onBrokenLinks: 'throw',
@@ -79,6 +79,11 @@ const config = {
             label: 'GitHub',
             position: 'right',
           },
+          {
+            href: "https://pypi.org/project/swibots",
+            label: "PyPi",
+            "position": "right"
+          }
         ],
       },
       footer: {
@@ -121,6 +126,10 @@ const config = {
                 label: 'GitHub',
                 href: 'https://github.com/switchcollab/Switch-Bots-Python-Library',
               },
+              {
+                label: "PyPi",
+                href: "https://pypi.org/project/swibots/"
+              }
             ],
           },
         ],
