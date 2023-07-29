@@ -11,6 +11,7 @@ from .update_channel import UpdateChannel
 from .restrict_user import RestrictUser
 from .get_community_member import GetCommunityMember
 from .deduct_xp import DeductXP
+from .instant_messaging import InstantMessagingMethods
 
 class CommunityMethods(
     GetChannel,
@@ -25,6 +26,7 @@ class CommunityMethods(
     CreateChannel,
     UpdateChannel,
     RestrictUser,
-    DeductXP
+    DeductXP,
+    InstantMessagingMethods
 ):
     pass

@@ -7,8 +7,6 @@ from swibots import (
     CommandEvent,
     InlineMarkup,
     InlineKeyboardButton,
-    InlineKeyboardColor,
-    InlineKeyboardSize,
     regexp,
     CommunityUpdatedEvent,
     MessageEvent,
@@ -73,8 +71,6 @@ async def buttons_handler(ctx: BotContext[CommandEvent]):
 
     inline_markup = InlineMarkup(
         inline_keyboard=inline_keyboard,
-        color=InlineKeyboardColor.RED,
-        size=InlineKeyboardSize.DEFAULT,
     )
     await ctx.event.message.reply_text(f"Please select an option:",
                                        inline_markup)
@@ -121,8 +117,6 @@ async def buttons_handler(ctx: BotContext[CommandEvent]):
 
     m.inline_markup = InlineMarkup(
         inline_keyboard=inline_keyboard1,
-        color=InlineKeyboardColor.GREEN,
-        size=InlineKeyboardSize.FULL_WIDTH,
     )
     await ctx.bot.send_message(m)
 
@@ -147,8 +141,6 @@ async def buttons_handler(ctx: BotContext[CommandEvent]):
 
     m.inline_markup = InlineMarkup(
         inline_keyboard=inline_keyboard2,
-        color=InlineKeyboardColor.GREEN,
-        size=InlineKeyboardSize.FULL_WIDTH,
     )
     await ctx.bot.send_message(m)
 
@@ -165,8 +157,6 @@ async def query_callback_handler(ctx: BotContext[CallbackQueryEvent]):
     ]]
     m.inline_markup = InlineMarkup(
         inline_keyboard=inline_keyboard3,
-        color=InlineKeyboardColor.RANDOM,
-        size=InlineKeyboardSize.DEFAULT,
     )
     await ctx.bot.edit_message(m)
 

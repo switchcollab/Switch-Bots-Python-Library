@@ -4,7 +4,7 @@ from swibots.bots.filters.filter import Filter
 
 
 class OnMemberLeft:
-    def on_member_leaft(
+    def on_member_left(
         self: "swibots.BotApp" = None, filter: Optional[Filter] = None
     ) -> Callable:
         """Decorator for handling members joins."""
