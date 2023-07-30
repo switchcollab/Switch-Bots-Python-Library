@@ -181,15 +181,17 @@ class MessageController:
 
         Raises:
             ``~switch.error.SwitchError``: If the message could not be sent
-        """
+        """        
+        m = message._prepare_response()
+        if text:
+            m.message =text
+        m.inline_markup = inline_markup
+        m.cached_media = cached_media
+
         if isinstance(message, Message):
             id = message.id
         else:
             id = message
-
-        m = Message(
-            message=text, inline_markup=inline_markup, cached_media=cached_media
-        )
 
         return await self.reply(id, m, media)
 
