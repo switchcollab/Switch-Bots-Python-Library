@@ -266,10 +266,21 @@ class App(AbstractContextManager, ApiClient):
             except asyncio.CancelledError:
                 break
 
-    def run(self, task: Callable = None):
+    def run(self, task: Callable = None, run_forever: bool = None):
         loop = asyncio.get_event_loop()
         run = loop.run_until_complete
-        if task is not None:
+        if task is not None and run_forever is True:
+            try:
+                run(self.start())
+                run(task)
+                run(self.idle())
+                run(self.stop())
+            except KeyboardInterrupt:
+                run(self.stop())
+            except Exception as e:
+                log.exception(e)
+                run(self.stop())
+        elif task is not None:
             run(task)
         else:
             try:
