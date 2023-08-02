@@ -245,6 +245,7 @@ class Message(
             self.user_id = data.get("userId")
             self.embed_message = EmbeddedMedia.build_from_json(data.get("embedMessage"))
             self.is_embed_message = data.get("isEmbedMessage") or bool(self.embed_message)
+            self.user = User.build_from_json(data.get("senderInfo"))
         return self
 
     # async def get_receiver(self) -> "User":
