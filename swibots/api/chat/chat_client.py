@@ -2,7 +2,7 @@ import json
 import logging
 from typing import Tuple
 from swibots.api.auth.models.auth_user import AuthUser
-from swibots.api.chat.controllers import MessageController, PostController
+from swibots.api.chat.controllers import MessageController, PostController, MediaController
 from swibots.api.chat.events import ChatEvent, CallbackQueryEvent, MessageEvent, CommandEvent, InlineQueryEvent
 from swibots.base import SwitchRestClient, SwitchWSAsyncClient
 from swibots.config import get_config
@@ -46,6 +46,7 @@ class ChatClient(SwitchRestClient):
         super().__init__(app, base_url)
         self._messages: MessageController = None
         self._post: PostController = None
+        self._media: MediaController = None
         self._ws: SwitchWSAsyncClient = None
         self._started = False
 
@@ -68,6 +69,13 @@ class ChatClient(SwitchRestClient):
         if self._post is None:
             self._post = PostController(self)
         return self._post
+
+    @property
+    def media(self) -> MediaController:
+        """Gets the media controller"""
+        if self._media is None:
+            self._media = MediaController(self)
+        return self._media
 
     async def subscribe(self, endpoint: str, callback=None) -> AsyncWsSubscription:
         """Subscribe to a websocket endpoint

@@ -1,3 +1,4 @@
+import os
 from typing import Optional, List
 from swibots.utils.types import JSONDict
 from swibots.base.switch_object import SwitchObject
@@ -18,7 +19,12 @@ class EmbeddedMedia(SwitchObject):
         title: Optional[str] = None,
     ):
         super().__init__()
-        self.thumbnail = thumbnail
+        if isinstance(thumbnail, str) and os.path.exists(thumbnail):
+            self.thumbnail = MediaUploadRequest(
+                thumbnail
+            )
+        else:
+            self.thumbnail = thumbnail
         self.description = description
         self.footer_icon = footer_icon
         self.footer_title = footer_title
@@ -69,7 +75,7 @@ class EmbeddedMedia(SwitchObject):
 
     def to_json(self) -> JSONDict:
         return {
-            "coverPic": self.thumbnail,
+            "coverPic": self.thumbnail if isinstance(self.thumbnail, str) else None,
             "description": self.description,
             "footerIcon": self.footer_icon,
             "footerTitle": self.footer_title,

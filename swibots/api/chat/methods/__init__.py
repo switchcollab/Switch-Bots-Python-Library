@@ -22,7 +22,7 @@ from .reply_message import ReplyMessage
 from .edit_message_text import EditMessageText
 from .answer_inline_query import AnswerInlineQuery
 from .download_media import DownloadMedia
-
+from .upload_media import UploadMedia
 
 class ChatMethods(
     ClearConversation,
@@ -48,5 +48,6 @@ class ChatMethods(
     EditMessageText,
     AnswerInlineQuery,
     DownloadMedia,
+    UploadMedia
 ):
     pass

@@ -1,4 +1,5 @@
 import asyncio
+import os
 import json
 import logging
 from typing import TYPE_CHECKING, List, Optional
@@ -100,7 +101,9 @@ class MessageController:
         data = message.to_json_request()
         log.debug("Sending message %s", json.dumps(data))
 
-        if (_embedded and media.thumbnail) or isinstance(media, MediaUploadRequest):
+        if (
+            _embedded and isinstance(media.thumbnail, MediaUploadRequest)
+        ) or isinstance(media, MediaUploadRequest):
             url = f"{BASE_PATH}/create-with-media"
             form_data = message.to_form_data()
             form_data.update(media.data_to_request())
@@ -193,7 +196,9 @@ class MessageController:
 
         return await self.reply(id, m, media)
 
-    async def edit_message(self, message: Message) -> Message:
+    async def edit_message(
+        self, message: Message, media: EmbeddedMedia | MediaUploadRequest = None
+    ) -> Message:
         """Edit a message
 
         Parameters:
@@ -205,13 +210,27 @@ class MessageController:
         Raises:
             ``~switch.error.SwitchError``: If the message could not be edited
         """
+        embedded = isinstance(media, EmbeddedMedia)
+
+        if embedded:
+            if isinstance(media.thumbnail, MediaUploadRequest):
+                response_media = await self.client.app.upload_media(media.thumbnail)
+                media.thumbnail = response_media.url
+            message.embed_message = media
+    
         data = message.to_json_request()
         log.debug("Editing message %s", json.dumps(data))
+
         response = await self.client.put(f"{BASE_PATH}?id={message.id}", data=data)
+
         return self.client.build_object(Message, response.data["message"])
 
     async def edit_message_text(
-        self, message: int | Message, text: str, inline_markup: InlineMarkup = None
+        self,
+        message: int | Message,
+        text: str,
+        media: EmbeddedMedia = None,
+        inline_markup: InlineMarkup = None,
     ) -> Message:
         """Edit a message with text
 
@@ -229,8 +248,9 @@ class MessageController:
             id = message.id
         else:
             id = message
+
         return await self.edit_message(
-            Message(id=id, message=text, inline_markup=inline_markup)
+            Message(id=id, message=text, inline_markup=inline_markup), media
         )
 
     async def delete_message(self, message: int | Message) -> bool:

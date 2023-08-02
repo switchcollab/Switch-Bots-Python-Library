@@ -55,6 +55,7 @@ class AsyncWsClient:
 
     async def _on_close(self, ws_app, *args):
         self.connected = False
+        self._connecting = False
         if self._gracefully_disconnect:
             return
         log.error("Whoops! Lost connection to " + self.url)
@@ -243,7 +244,8 @@ class AsyncWsClient:
         headers = self._set_default_headers(headers)
         await self._transmit("DISCONNECT", headers)
         self._gracefully_disconnect = True
-        await self.ws.close()
+        if self.ws:
+            await self.ws.close()
         await self._clean_up()
         if disconnectCallback is not None:
             disconnectCallback()
@@ -253,6 +255,9 @@ class AsyncWsClient:
             self.connected = False
             self._connecting = False
             self.opened = False
+            if self._heartbeatTask:
+                self._heartbeatTask.cancel()
+                self._heartbeatTask = None
             # if self._heartbeatTask is not None:
             #     await asyncio.wait_for(self._heartbeatTask, 5)
             # [task.cancel() for task in self.tasks]
@@ -261,7 +266,6 @@ class AsyncWsClient:
             for id in list(self.subscriptions.keys()):
                 try:
                     await self.subscriptions[id].unsubscribe()
-                    del self.subscriptions[id]
                 except KeyError:
                     pass
         except Exception as e:

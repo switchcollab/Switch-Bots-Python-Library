@@ -120,11 +120,11 @@ class Message(
             "callback_data": self.callback_data,
             "repliedTo": self.replied_to_id,
             "mediaLink": self.media_link,
-            "status": self.status,
+            "status": 4 if self.embed_message else self.status,
             "embedMessage": self.embed_message.to_json()
             if self.embed_message
             else None,
-            "isEmbedMessage": self.is_embed_message,
+            "isEmbedMessage": self.is_embed_message or bool(self.embed_message),
             "cachedMedia": self.cached_media.to_json() if self.cached_media else None,
             "mediaId": self.media_id,
             "mediaInfo": self.media_info.to_json() if self.media_info else None,
@@ -240,9 +240,11 @@ class Message(
             self.request_id = data.get("requestId")
             self.sent_date = data.get("sentDate")
             self.status = data.get("status")
+            
+            self.user = User.build_from_json(data.get("senderInfo"))
             self.user_id = data.get("userId")
             self.embed_message = EmbeddedMedia.build_from_json(data.get("embedMessage"))
-            self.is_embed_message = data.get("isEmbedMessage")
+            self.is_embed_message = data.get("isEmbedMessage") or bool(self.embed_message)
         return self
 
     # async def get_receiver(self) -> "User":
@@ -306,7 +308,9 @@ class Message(
             response.group_id = self.group_id
             response.channel_id = self.channel_id
         else:
-            receiver_id = self.user_id if self.user_id != self.app.user.id else self.receiver_id
+            receiver_id = (
+                self.user_id if self.user_id != self.app.user.id else self.receiver_id
+            )
             response.receiver_id = receiver_id
 
         response.user_id = self.id
@@ -358,9 +362,12 @@ class Message(
         )
 
     async def edit_text(
-        self, text: str, inline_markup: Optional[InlineMarkup] = None
+        self,
+        text: str,
+        media: EmbeddedMedia = None,
+        inline_markup: Optional[InlineMarkup] = None,
     ) -> "Message":
-        return await self.app.edit_message_text(self, text, inline_markup)
+        return await self.app.edit_message_text(self, text, media, inline_markup)
 
     async def forward_to(
         self,

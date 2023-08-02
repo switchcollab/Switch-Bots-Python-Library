@@ -104,8 +104,7 @@ class RestClient:
     def prepare_request_headers(self, headers: dict) -> dict:
         if headers is None:
             headers = {}
-        reqHeaders = {**headers}
-        return reqHeaders
+        return headers
 
     async def do_request(
         self, url: str, method: str, data: dict = None, form_data=None, files=None, headers: dict = None

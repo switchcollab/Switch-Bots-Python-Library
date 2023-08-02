@@ -75,7 +75,6 @@ class BotApp(App, Decorators):
 
     def __loadModule(self, path):
         baseName = os.path.basename(path)
-        print(baseName)
         if baseName.startswith("__") or not baseName.endswith(".py"):
             return
         try:
