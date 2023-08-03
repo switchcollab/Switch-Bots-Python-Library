@@ -31,26 +31,32 @@ class InlineMarkup(SwitchObject):
         if self._inline_keyboard is None:
             return None
         return {
-            "inlineKeyboard": [[x.to_json() for x in row] for row in self._inline_keyboard],
+            "inlineKeyboard": [
+                [x.to_json() for x in row] for row in self._inline_keyboard
+            ],
         }
 
     def to_form_data(self):
         form_data = {}
         for i, kb in enumerate(self._inline_keyboard):
             for j, b in enumerate(kb):
-                text_key = 'inlineKeyboard.inlineKeyboard[{0}][{1}].text'\
-                    .format(i, j)
+                text_key = "inlineKeyboard.inlineKeyboard[{0}][{1}].text".format(i, j)
                 form_data[text_key] = b.text
-                url_key = 'inlineKeyboard.inlineKeyboard[{0}][{1}].url'\
-                    .format(i, j)
+                url_key = "inlineKeyboard.inlineKeyboard[{0}][{1}].url".format(i, j)
                 form_data[url_key] = b.url
-                callback_data_key = 'inlineKeyboard.inlineKeyboard[{0}][{1}].callbackData'\
-                    .format(i, j)
+                game_key = "inlineKeyboard.inlineKeyboard[{0}][{1}].game".format(i, j)
+                form_data[game_key] = b.game
+                callback_data_key = (
+                    "inlineKeyboard.inlineKeyboard[{0}][{1}].callbackData".format(i, j)
+                )
                 form_data[callback_data_key] = b.callback_data
+
         return form_data
 
     def from_json(self, data: JSONDict) -> "InlineMarkup":
         if data is not None and data.get("inlineKeyboard") is not None:
-            self._inline_keyboard = [[InlineKeyboardButton.build_from_json(x, self.app) for x in row]
-                                     for row in data.get("inlineKeyboard") or []]
+            self._inline_keyboard = [
+                [InlineKeyboardButton.build_from_json(x, self.app) for x in row]
+                for row in data.get("inlineKeyboard") or []
+            ]
         return self
