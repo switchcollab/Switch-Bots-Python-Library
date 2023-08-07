@@ -112,20 +112,26 @@ class ChatClient(SwitchRestClient):
         """
         subscription = await self.ws.subscribe(
             "/chat/queue/events",
-            callback=lambda event: callback(self._parse_event(event)),
+            callback=lambda event: self._parse_event(event, callback),
         )
         return subscription
 
-    def _parse_event(self, raw_message: WsMessage) -> ChatEvent:
+    async def _parse_event(self, raw_message: WsMessage, callback) -> ChatEvent:
         try:
             json_data = json.loads(raw_message.body)
             type = json_data.get("type", "MESSAGE")
             evt: ChatEvent = None
             if type == EventType.MESSAGE.value:
                 evt = self.build_object(MessageEvent, json_data)
+                if not (evt.message.community_id or evt.message.receiver_id != "null"):
+                    logger.debug(f"recieved message event with incorrect data: {evt.to_json()}")
+                    return
                 # evt = MessageEvent.build_from_json(json_data)
             elif type == EventType.COMMAND.value:
                 evt = self.build_object(CommandEvent, json_data)
+                if not (evt.message.community_id or evt.message.receiver_id != "null"):
+                    logger.debug(f"recieved command event with incorrect data: {evt.to_json()}")
+                    return
                 # evt = CommandEvent.build_from_json(json_data)
             elif type == EventType.CALLBACK_QUERY.value:
                 evt = self.build_object(CallbackQueryEvent, json_data)
@@ -135,9 +141,12 @@ class ChatClient(SwitchRestClient):
             else:
                 evt = self.build_object(ChatEvent, json_data)
                 # evt = ChatEvent.build_from_json(json_data)
-            return evt
         except Exception as e:
             logger.exception(e)
+            return
+
+        return await callback(evt)
+        
 
     async def start(self):
         """Start the chat websocket client
