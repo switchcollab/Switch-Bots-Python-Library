@@ -23,6 +23,7 @@ class MediaUploadRequest:
         callback: UploadProgressCallback = None,
         thumbnail: str = None,
         upload_args: tuple = (),
+        reduce_thumbnail: bool = True
     ):
         self.path = path
         self.file_name = file_name
@@ -33,6 +34,7 @@ class MediaUploadRequest:
         self.thumbnail = thumbnail
         self.callback = callback
         self.upload_args = upload_args
+        self._handle_thumb = reduce_thumbnail
 
     def data_to_request(self):
         return {
@@ -58,6 +60,23 @@ class MediaUploadRequest:
             or mimetypes.guess_type(path)[0]
             or "application/octet-stream"
         )
+    
+    def generate_thumbnail(self, path, radius: int = 5, resize: bool = False, quality: int = 80):
+        if self._handle_thumb:
+            try:
+                from PIL import Image, ImageFilter
+
+                img = Image.open(path)
+                if resize:
+                    img.thumbnail((img.width // 2, img.height // 2), Image.BILINEAR)
+                img = img.filter(ImageFilter.GaussianBlur(radius))
+                obj = BytesIO()
+                obj.name = os.path.basename(path)
+                img.save(obj, optimize=True, quality=quality)
+                return obj
+            except ImportError:
+                logger.debug("Pillow is not installed, Install it to add blur filter to thumbnail!")
+        return open(path, "rb")
 
     def file_to_request(self, url):
         d_progress = UploadProgress(
@@ -75,9 +94,10 @@ class MediaUploadRequest:
         result = {"uploadMediaRequest.file": (self.file_name or path, reader, mime)}
         if self.thumbnail:
             if os.path.exists(self.thumbnail):
+                thumb = self.generate_thumbnail(self.thumbnail)
                 result["uploadMediaRequest.thumbnail"] = (
                     self.thumbnail,
-                    open(self.thumbnail, "rb"),
+                    thumb,
                     mimetypes.guess_type(self.thumbnail)[0],
                 )
             else:
