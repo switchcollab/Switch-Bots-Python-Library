@@ -1,11 +1,14 @@
 import mimetypes, os
 from io import BytesIO
+from logging import getLogger
 from swibots.utils.types import (
     IOClient,
     ReadCallbackStream,
     UploadProgress,
     UploadProgressCallback,
 )
+
+logger = getLogger(__name__)
 
 
 class MediaUploadRequest:
@@ -18,7 +21,7 @@ class MediaUploadRequest:
         description: str = None,
         block: bool = True,
         callback: UploadProgressCallback = None,
-        #        thumbnail: str = None,
+        thumbnail: str = None,
         upload_args: tuple = (),
     ):
         self.path = path
@@ -27,7 +30,7 @@ class MediaUploadRequest:
         self.caption = caption
         self.description = description
         self.block = block
-        #       self.thumbnail = thumbnail
+        self.thumbnail = thumbnail
         self.callback = callback
         self.upload_args = upload_args
 
@@ -69,4 +72,16 @@ class MediaUploadRequest:
         reader = ReadCallbackStream(self.path, d_progress.update)
         path = self.path.name if isinstance(self.path, BytesIO) else self.path
         mime = self.get_mime_type()
-        return {"uploadMediaRequest.file": (self.file_name or path, reader, mime)}
+        result = {"uploadMediaRequest.file": (self.file_name or path, reader, mime)}
+        if self.thumbnail:
+            if os.path.exists(self.thumbnail):
+                result["uploadMediaRequest.thumbnail"] = (
+                    self.thumbnail,
+                    open(self.thumbnail, "rb"),
+                    mimetypes.guess_type(self.thumbnail)[0],
+                )
+            else:
+                logger.error(
+                    f"provided thumbnail: {self.thumbnail} is not a valid path!"
+                )
+        return result
