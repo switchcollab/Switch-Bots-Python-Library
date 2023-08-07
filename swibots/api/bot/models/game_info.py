@@ -12,7 +12,8 @@ class GameInfo(SwitchObject):
         user_id: Optional[str | int] = None,
         group_id: Optional[str] = None,
         bot_id: Optional[int] = None,
-        score: Optional[int] = None
+        score: Optional[int] = None,
+        level: Optional[int] = None
     ):
         self.id = id
         self.channel_id = channel_id
@@ -21,6 +22,7 @@ class GameInfo(SwitchObject):
         self.group_id = group_id
         self.bot_id = bot_id
         self.score = score
+        self.level = level
     
     def from_json(self, data: JSONDict | None) -> "GameInfo":
         if data is not None:
@@ -31,6 +33,7 @@ class GameInfo(SwitchObject):
             self.user_id = data.get("userId")
             self.bot_id = data.get("botId")
             self.score = data.get("score")
+            self.level = data.get("level")
         return self
     
     def to_json(self) -> JSONDict:
@@ -41,5 +44,6 @@ class GameInfo(SwitchObject):
             "communityId": self.community_id,
             "botId": self.bot_id,
             "score": self.score,
-            "userId": self.user_id
+            "userId": self.user_id,
+            "level": self.level
         }

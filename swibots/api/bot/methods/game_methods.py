@@ -8,19 +8,21 @@ class GameMethods:
         self: "swibots.ApiClient",
         user_id: str | int,
         score: int,
+        level: str | int = None,
         bot_id: str | int = None,
     ) -> GameInfo:
-        return await self.bots_service.games.create_leaderboard(user_id, score, bot_id)
+        return await self.bots_service.games.create_leaderboard(user_id, score, level=level, bot_id=bot_id)
 
     async def update_leaderboard(
         self: "swibots.ApiClient",
         id: str,
         user_id: str | int,
         score: int,
+        level: int | str = None,
         bot_id: str | int = None,
     ) -> GameInfo:
         return await self.bots_service.games.update_leaderboard(
-            id, user_id, score, bot_id
+            id, user_id, score, level=level, bot_id=bot_id
         )
 
     async def get_global_leaderboard(
