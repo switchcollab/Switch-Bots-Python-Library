@@ -7,9 +7,6 @@ The `InlineMarkup` class represents a markup that can be added to a message (Onl
 ## Properties
 
 - `inline_keyboard` (List[List[[InlineKeyboardButton](./inline_keyboard_button)]]): The markup's buttons.
-- `color` ([InlineKeyboardColor](./enums#inlinekeyboardcolor)): The markup's color.
-- `size` ([InlineKeyboardSize](./enums#inlinekeyboardsize)): The markup's size.
-
 
 
 ## Usage 
