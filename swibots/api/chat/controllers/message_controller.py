@@ -184,10 +184,10 @@ class MessageController:
 
         Raises:
             ``~switch.error.SwitchError``: If the message could not be sent
-        """        
+        """
         m = message._prepare_response()
         if text:
-            m.message =text
+            m.message = text
         m.inline_markup = inline_markup
         m.cached_media = cached_media
 
@@ -219,7 +219,7 @@ class MessageController:
                 response_media = await self.client.app.upload_media(media.thumbnail)
                 media.thumbnail = response_media.url
             message.embed_message = media
-    
+
         data = message.to_json_request()
         log.debug("Editing message %s", json.dumps(data))
 
@@ -684,3 +684,8 @@ class MessageController:
             f"{BASE_PATH}/inline/answer", answer.to_json_request()
         )
         return response.data
+
+    async def get_user(self, user_id: int | str = None) -> User:
+        """Get user from user id"""
+        response = await self.client.get(f"{BASE_PATH}/user/info?userId={user_id}")
+        return self.client.build_object(User, response.data)

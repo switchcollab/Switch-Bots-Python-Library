@@ -2,6 +2,7 @@ from .clear_conversation import ClearConversation
 from .delete_message import DeleteMessage
 from .delete_messages_from_user import DeleteMessagesFromUser
 from .edit_message import EditMessage
+from .get_user import GetUser
 from .flag_message import FlagMessage
 from .forward_message import ForwardMessage
 from .get_channel_chat_history import GetChannelChatHistory
@@ -48,6 +49,7 @@ class ChatMethods(
     EditMessageText,
     AnswerInlineQuery,
     DownloadMedia,
-    UploadMedia
+    UploadMedia,
+    GetUser
 ):
     pass
