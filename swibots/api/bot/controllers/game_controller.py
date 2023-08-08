@@ -18,13 +18,24 @@ class GameController:
         self.client = client
 
     async def create_leaderboard(
-        self, user_id: str | int, score: str | int = 0, level: str | int = None, bot_id: str | int = None
+        self,
+        user_id: str | int,
+        score: str | int = 0,
+        level: str | int = None,
+        community_id: str = None,
+        bot_id: str | int = None,
     ) -> GameInfo:
         if not bot_id:
             bot_id = self.client.user.id
         response = await self.client.post(
             f"{BASE_PATH}/leaderboard",
-            data={"botId": bot_id, "userId": user_id, "score": score, "level": level},
+            data={
+                "botId": bot_id,
+                "userId": user_id,
+                "score": score,
+                "level": level,
+                "communityId": community_id,
+            },
         )
         return self.client.build_object(GameInfo, response.data)
 
@@ -34,13 +45,21 @@ class GameController:
         user_id: str | int,
         score: str | int = 0,
         level: str | int = 0,
-        bot_id: str | int = None
+        community_id: str = None,
+        bot_id: str | int = None,
     ) -> None:
         if not bot_id:
             bot_id = self.client.user.id
         response = await self.client.put(
             f"{BASE_PATH}/leaderboard",
-            data={"botId": bot_id, "userId": user_id, "score": score, "id": id, "level": level},
+            data={
+                "botId": bot_id,
+                "userId": user_id,
+                "score": score,
+                "id": id,
+                "level": level,
+                "communityId": community_id,
+            },
         )
         return self.client.build_object(GameInfo, response.data)
 

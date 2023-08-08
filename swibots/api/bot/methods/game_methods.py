@@ -9,9 +9,10 @@ class GameMethods:
         user_id: str | int,
         score: int,
         level: str | int = None,
+        community_id: str = None,
         bot_id: str | int = None,
     ) -> GameInfo:
-        return await self.bots_service.games.create_leaderboard(user_id, score, level=level, bot_id=bot_id)
+        return await self.bots_service.games.create_leaderboard(user_id, score, level=level, community_id=community_id,bot_id=bot_id)
 
     async def update_leaderboard(
         self: "swibots.ApiClient",
