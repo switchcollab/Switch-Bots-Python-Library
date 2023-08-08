@@ -31,6 +31,7 @@ class App(AbstractContextManager, ApiClient):
         # password: Optional[str] = None,
         token: Optional[str] = None,
         loop: asyncio.AbstractEventLoop = None,
+        receive_updates: Optional[bool] = True
     ):
         """Initialize the client"""
         super().__init__()
@@ -43,6 +44,7 @@ class App(AbstractContextManager, ApiClient):
         self.on_app_stop: Callable = None
         self.on_app_start: Callable = None
         self.rest_client = RestClient()
+        self.receive_updates = receive_updates
 
     async def handle_upload(self, url, file_name, data=None, file_field="file", progress=None,  progress_args: tuple = ()):
         dProgress = UploadProgress(
@@ -194,19 +196,20 @@ class App(AbstractContextManager, ApiClient):
 
             await self._validate_run()
 
-            try:
-                await self.chat_service.start()
-                if self.on_chat_service_start is not None:
-                    await self.on_chat_service_start(self)
-            except Exception as e:
-                log.exception(e)
+            if self.receive_updates:
+                try:
+                    await self.chat_service.start()
+                    if self.on_chat_service_start is not None:
+                        await self.on_chat_service_start(self)
+                except Exception as e:
+                    log.exception(e)
 
-            try:
-                await (self.community_service.start())
-                if self.on_community_service_start is not None:
-                    await self.on_community_service_start(self)
-            except Exception as e:
-                log.exception(e)
+                try:
+                    await (self.community_service.start())
+                    if self.on_community_service_start is not None:
+                        await self.on_community_service_start(self)
+                except Exception as e:
+                    log.exception(e)
 
             await self._on_app_start()
 

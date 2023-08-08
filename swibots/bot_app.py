@@ -29,6 +29,7 @@ class BotApp(App, Decorators):
         bot_description: Optional[str] = None,
         auto_update_bot: Optional[bool] = True,
         loop: asyncio.AbstractEventLoop = None,
+        receive_updates: Optional[bool] = True
 #        plugins: Optional[List[str]] = None,
     ):
         """
@@ -41,7 +42,7 @@ class BotApp(App, Decorators):
             loop (:obj:`asyncio.AbstractEventLoop`): The asyncio loop to use (default: asyncio.get_event_loop()).
 
         """
-        super().__init__(token, loop)
+        super().__init__(token, loop, receive_updates)
         self._user_type = swibots.bots.Bot
         self.on_chat_service_start = self._on_chat_service_start
         self.on_community_service_start = self._on_community_service_start
