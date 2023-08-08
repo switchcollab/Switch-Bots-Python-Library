@@ -26,21 +26,14 @@ class RoleMemberController:
         self,
         community_id: str,
         member_id: int,
-        role_id: int,
-        user_id: int,
-        user: User,
-        id: Optional[int] = None,
+        role_ids: List[int],
     ) -> bool:
-        member = RoleMember(
-            app=self.client.app,
-            id=id,
-            member_id=member_id,
-            community_id=community_id,
-            user_id=user_id,
-            role_id=role_id,
-            user=user
-        )
-        response = await self.client.post(f"{BASE_PATH}/add", data=member.to_json_request())
+        data = {
+            "communityId": community_id,
+            "roleIds": role_ids,
+            "memberId": member_id
+        }
+        response = await self.client.post(f"{BASE_PATH}/add", data=data)
         return response.data.get("success", False)
 
 

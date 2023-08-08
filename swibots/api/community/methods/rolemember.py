@@ -32,10 +32,7 @@ class RoleMemberMethods:
             self: "swibots.ApiClient",
             community_id: str,
             member_id: int,
-            role_id: int,
-            user_id: int,
-            user: User,
-            id: Optional[int] = None,
+            role_ids: List[int],
         ) -> bool:
         """
         Add a member to the role with the specified role ID.
@@ -43,16 +40,13 @@ class RoleMemberMethods:
         Args:
             community_id: The ID of the community.
             member_id: The ID of the member.
-            role_id: The ID of the role.
-            user_id: The ID of the user who is adding the member to the role.
-            user: The user who is adding the member to the role.
-            id: The ID of the role member, if it already exists.
+            role_ids: The list of ID of the roles.
 
         Returns:
             True if the member was added successfully, False otherwise.
         """
 
-        return await self.community_service.rolemember.add_member_to_role(community_id, member_id, role_id, user_id, user, id)
+        return await self.community_service.rolemember.add_member_to_role(community_id, member_id, role_ids)
 
 
     async def delete_role_member(

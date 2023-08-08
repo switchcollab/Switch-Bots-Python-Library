@@ -72,3 +72,16 @@ class RestrictUser:
     async def get_restricted_user(self: "swibots.ApiClient", community_id: str, user_id:int):
         """get restricted user from community_id and user_id"""
         return await self.community_service.restrict.get_restricted_user(community_id, user_id)
+
+    async def list_restricted_users(self: "swibots.ApiClient", community_id: str):
+        """
+           list the restricted users in the community.
+           It include previously restricted and unrestricted user too
+
+        Args:
+            community_id (str): The ID of the community.
+
+        Returns:
+            List[RestrictedUser]: List of restricted users.
+        """
+        return await self.community_service.restrict.list_restricted_users(community_id)

@@ -1,5 +1,5 @@
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 from swibots.api.community.models import Group
 
 if TYPE_CHECKING:
@@ -18,3 +18,7 @@ class GroupController:
         """Get a channel by id"""
         response = await self.client.get(f"{BASE_PATH}?groupId={group_id}")
         return self.client.build_object(Group, response.data.get("result"))
+
+    async def get_all_groups(self, community_id: str) -> List[Group]:
+        response = await self.client.get(f"{BASE_PATH}/all?communityId={community_id}")
+        return self.client.build_list(Group, response.data)

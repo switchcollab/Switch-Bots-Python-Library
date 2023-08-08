@@ -12,3 +12,4 @@ build
 # **/bots_impl
 **.log
 test*
+*png
