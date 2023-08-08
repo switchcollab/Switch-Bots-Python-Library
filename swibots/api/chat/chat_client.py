@@ -160,6 +160,6 @@ class ChatClient(SwitchRestClient):
 
     async def stop(self):
         """Stop the chat websocket client"""
-        if self._started:
+        if self._started and self.ws:
             await self.ws.disconnect()
             self._started = False

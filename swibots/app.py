@@ -195,7 +195,7 @@ class App(AbstractContextManager, ApiClient):
             await self._validate_run()
 
             try:
-                await (self.chat_service.start())
+                await self.chat_service.start()
                 if self.on_chat_service_start is not None:
                     await self.on_chat_service_start(self)
             except Exception as e:
