@@ -377,11 +377,11 @@ class MessageController:
         response = await self.client.put(f"{BASE_PATH}/forward/{id}?{strQuery}")
         return self.client.build_object(Message, response.data["message"])
 
-    async def get_message(self, message: int | Message) -> Message:
+    async def get_message(self, message_id: int) -> Message:
         """Get a message by id
 
         Parameters:
-            message (``int`` | ``~switch.api.chat.models.Message``): The message id or message to get, if a message is passed, the id will be extracted from it.
+            message_id (``int``): The message id, if a Message is passed, the id will be extracted from it.
 
         Returns:
             ``~switch.api.chat.models.Message``: The message
@@ -389,14 +389,13 @@ class MessageController:
         Raises:
             ``~switch.error.SwitchError``: If the message could not be retrieved
         """
-        if isinstance(message, Message):
-            id = message.id
+        if isinstance(message_id, Message):
+            id = message_id.id
         else:
-            id = message
+            id = message_id
         log.debug("Getting message %s", id)
-        response = await self.client.get(f"{BASE_PATH}/{id}")
-        return self.client.build_object(Message, response.data["message"])
-        # return Message.build_from_json(response.data["message"])
+        response = await self.client.get(f"{BASE_PATH}/findOne/{id}")
+        return self.client.build_object(Message, response.data)
 
     async def get_group_chat_history(
         self,
