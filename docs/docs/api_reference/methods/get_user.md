@@ -1,6 +1,6 @@
 # get_user
 
- get the User info from user id.
+ get the [User](../types/user.md) info from user id.
 
 ## Signature
 

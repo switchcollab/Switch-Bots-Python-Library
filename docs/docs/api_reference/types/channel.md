@@ -1,6 +1,6 @@
 # Channel
 
-`Class pybots.api.community.models.Channel`
+`Class swibots.api.community.models.Channel`
 
 The `Channel` class represents a channel.
 
