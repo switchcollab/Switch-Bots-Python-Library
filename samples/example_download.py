@@ -6,8 +6,6 @@ from swibots import (
     CommandEvent,
     InlineMarkup,
     InlineKeyboardButton,
-    InlineKeyboardColor,
-    InlineKeyboardSize,
     regexp,
     CommunityUpdatedEvent,
     MessageEvent,
@@ -16,7 +14,7 @@ from swibots import (
     MediaUploadRequest,
 )
 import logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 TOKEN = "YOUR_TOKEN_HERE"
 
@@ -67,8 +65,6 @@ async def buttons_handler(ctx: BotContext[CommandEvent]):
 
     m.inline_markup = InlineMarkup(
         inline_keyboard=inline_keyboard,
-        color=InlineKeyboardColor.RED,
-        size=InlineKeyboardSize.DEFAULT,
     )
     await ctx.bot.send_message(m)
 
@@ -115,8 +111,6 @@ async def buttons_handler(ctx: BotContext[CommandEvent]):
 
     m.inline_markup = InlineMarkup(
         inline_keyboard=inline_keyboard1,
-        color=InlineKeyboardColor.GREEN,
-        size=InlineKeyboardSize.FULL_WIDTH,
     )
     await ctx.bot.send_message(m)
 
@@ -139,13 +133,9 @@ async def buttons_handler(ctx: BotContext[CommandEvent]):
 
     m.inline_markup = InlineMarkup(
         inline_keyboard=inline_keyboard1,
-        color=InlineKeyboardColor.RANDOM,
-        size=InlineKeyboardSize.DEFAULT,
     )
     await m.reply_text("Please select an option (echo):", InlineMarkup(
         inline_keyboard=inline_keyboard1,
-        color=InlineKeyboardColor.RANDOM,
-        size=InlineKeyboardSize.DEFAULT,
     ))
 
 
@@ -180,8 +170,7 @@ async def community_update_handler(ctx: BotContext[CommunityUpdatedEvent]):
 # app.run()
 
 
-@app.on_callback_query()
-def show_upload_progress(obj):
+async def show_upload_progress(obj):
     print(f"Uploaded {obj.current} of {obj.readed}")
     if obj == 0:
         return
@@ -191,7 +180,7 @@ def show_upload_progress(obj):
 async def upload_handler(ctx: BotContext[CommandEvent]):
     params = ctx.event.params
     media = MediaUploadRequest(
-        path=f"downloads/{params}",
+        path=params,
         callback=show_upload_progress,
     )
 

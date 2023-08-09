@@ -1,2 +1,2 @@
 httpx<=0.24.1
-websocket-client<=1.6.1
+websockets<=11.0.3
