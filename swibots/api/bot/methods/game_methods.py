@@ -41,6 +41,7 @@ class GameMethods:
     async def get_game_score(
         self: "swibots.ApiClient",
         user_id: str | int,
+        community_id: Optional[str] = None,
         bot_id: Optional[str | int] = None,
     ) -> GameInfo:
-        return await self.bots_service.games.get_game_score(user_id, bot_id)
+        return await self.bots_service.games.get_game_score(user_id, bot_id=bot_id, community_id=community_id)

@@ -84,11 +84,16 @@ class GameController:
         return self.client.build_list(GameInfo, response.data)
 
     async def get_game_score(
-        self, user_id: str | int, bot_id: Optional[str | int] = None
+        self, user_id: str | int, 
+        community_id: Optional[str] = None,
+        bot_id: Optional[str | int] = None
     ) -> GameInfo:
         if not bot_id:
             bot_id = self.client.user.id
+        query = f"?botId={bot_id}&userId={user_id}"
+        if community_id:
+            query += f"&communityId={community_id}"
         response = await self.client.get(
-            f"{BASE_PATH}/score?botId={bot_id}&userId={user_id}"
+            f"{BASE_PATH}/score{query}"
         )
         return self.client.build_object(GameInfo, response.data)
