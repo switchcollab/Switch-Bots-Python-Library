@@ -1,7 +1,7 @@
-from asyncio import get_event_loop
+from asyncio import create_task
 from enum import Enum
 from typing import Any, Callable, Collection, Coroutine, Dict, TypeVar, Union
-from inspect import isawaitable
+from inspect import iscoroutinefunction
 from swibots.error import CancelError
 
 
@@ -11,7 +11,9 @@ class IOClient:
 
 
 class DownloadProgress:
-    def __init__(self, downloaded: int, total: int, url: str, client: IOClient, file_name: str):
+    def __init__(
+        self, downloaded: int, total: int, url: str, client: IOClient, file_name: str
+    ):
         self.downloaded = downloaded
         self.total = total
         self.url = url
@@ -21,7 +23,16 @@ class DownloadProgress:
 
 
 class UploadProgress:
-    def __init__(self, current: int, readed: int, url: str, client: IOClient, file_name: str, callback, callback_args):
+    def __init__(
+        self,
+        current: int,
+        readed: int,
+        url: str,
+        client: IOClient,
+        file_name: str,
+        callback,
+        callback_args,
+    ):
         self.current = current
         self.readed = readed
         self.url = url
@@ -36,18 +47,16 @@ class UploadProgress:
         self.readed += current
         if self.callback:
             iscoro = self.callback(self, *self.callback_args)
-            if isawaitable(self.callback):
-                get_event_loop().run_until_complete(iscoro)
+            if iscoroutinefunction(self.callback):
+                create_task(iscoro)
 
 
 CtxType = TypeVar("CtxType")
 ResType = TypeVar("ResType")
 HandlerCallback = Callable[[CtxType], Coroutine[Any, Any, ResType]]
 FilterCallback = Callable[[CtxType], Coroutine[Any, Any, bool]]
-DownloadProgressCallback = Callable[[
-    DownloadProgress], Coroutine[Any, Any, None]]
-UploadProgressCallback = Callable[[
-    DownloadProgress], Coroutine[Any, Any, None]]
+DownloadProgressCallback = Callable[[DownloadProgress], Coroutine[Any, Any, None]]
+UploadProgressCallback = Callable[[DownloadProgress], Coroutine[Any, Any, None]]
 
 RT = TypeVar("RT")
 SCT = Union[RT, Collection[RT]]
@@ -77,7 +86,9 @@ class ReadCallbackStream(object):
     def read(self, *args):
         chunk = self.file_like.read(*args)
         if len(chunk) > 0:
-            self.callback(len(chunk))
+            iscoro = self.callback(len(chunk))
+            if iscoroutinefunction(self.callback):
+                create_task(iscoro)
         return chunk
 
     def close(self):
