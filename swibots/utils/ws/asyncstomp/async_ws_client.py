@@ -4,6 +4,7 @@ from typing import List
 from swibots.error import SwitchError
 
 from .async_ws_subscription import AsyncWsSubscription
+from concurrent.futures.thread import ThreadPoolExecutor
 from swibots.utils.ws.common import WsFrame
 from websocket import (
     create_connection,
@@ -40,6 +41,7 @@ class AsyncWsClient:
         self._connectIntents = 0
         self._connectInterval = 1
         self._maxConnectIntents = 0
+        self.executor = ThreadPoolExecutor(10)
         self._connecting = False
         self._gracefully_disconnect = False
 
@@ -81,7 +83,6 @@ class AsyncWsClient:
             log.debug("\n<<< " + str(message))
         else:
             log.debug("\n<<< " + frame.command)
-        print(message)
         _results = []
         if frame.command == "CONNECTED":
             self.connected = True
@@ -122,7 +123,7 @@ class AsyncWsClient:
                 _results.append(
                     # self._loop.create_task(sub.receive(frame))
                     self._loop.run_in_executor(
-                        None,
+                        self.executor,
                         lambda: asyncio.new_event_loop().run_until_complete(
                             sub.receive(frame)
                         ),
@@ -215,7 +216,7 @@ class AsyncWsClient:
             #            self.ws.connect(self.url, header=headers, timeout=120)
             #            await self._transmit("CONNECT", headers)
             self._loop.run_in_executor(
-                None,
+                self.executor,
                 lambda: asyncio.new_event_loop().run_until_complete(
                     self.read_messages(headers)
                 ),

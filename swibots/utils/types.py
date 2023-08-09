@@ -1,6 +1,7 @@
+from asyncio import get_event_loop
 from enum import Enum
 from typing import Any, Callable, Collection, Coroutine, Dict, TypeVar, Union
-
+from inspect import isawaitable
 from swibots.error import CancelError
 
 
@@ -34,7 +35,9 @@ class UploadProgress:
         self.current = current
         self.readed += current
         if self.callback:
-            self.callback(self, *self.callback_args)
+            iscoro = self.callback(self, *self.callback_args)
+            if isawaitable(self.callback):
+                get_event_loop().run_until_complete(iscoro)
 
 
 CtxType = TypeVar("CtxType")
