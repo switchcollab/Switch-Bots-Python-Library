@@ -10,7 +10,7 @@ class InlineKeyboardButton(SwitchObject):
         text: Optional[str] = None,
         url: Optional[str] = None,
         callback_data: Optional[str] = None,
-        game: Optional[bool] = None
+        game: Optional[bool] = False
     ):
         super().__init__(None)
         self.text = text
