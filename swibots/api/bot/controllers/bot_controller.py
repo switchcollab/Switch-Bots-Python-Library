@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Optional
 from swibots.api.bot.models import BotInfo, BotCommandInfo
 from swibots.error import SwitchError
 from swibots.utils.types import JSONDict
@@ -60,3 +60,23 @@ class BotController:
         """
         response = await self.client.delete(f"{BASE_PATH}/{bot_id}")
         return True
+
+    async def answer_callback_query(
+        self,
+        callback_id: str,
+        text: str,
+        url: Optional[str] = None,
+        show_alert: Optional[bool] = False,
+        cache_time: Optional[int] = None,
+    ) -> bool:
+        response = await self.client.post(
+            f"{BASE_PATH}/callback/answer",
+            data={
+                "callbackQueryId": callback_id,
+                "text": text,
+                "url": url,
+                "showAlerts": show_alert,
+                "cacheTime": cache_time,
+            },
+        )
+        return response.data
