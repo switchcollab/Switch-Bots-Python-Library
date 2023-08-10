@@ -233,19 +233,24 @@ class Message(
             self.pinned = data.get("pinned")
             self.reactions = data.get("reactions")
             self.receiver_id = data.get("receiverId")
-            self.replied_to = data.get("repliedMessage")
+            self.replied_to = Message.build_from_json(
+                data.get("repliedMessage"), self.app
+            )
             self.replied_to_id = data.get("repliedTo")
             self.replies = data.get("replies")
             self.reply_count = data.get("replyCount")
             self.request_id = data.get("requestId")
             self.sent_date = data.get("sentDate")
             self.status = data.get("status")
-            
-            self.user = User.build_from_json(data.get("senderInfo"))
+
+            self.user = User.build_from_json(data.get("senderInfo"), self.app)
             self.user_id = data.get("userId")
-            self.embed_message = EmbeddedMedia.build_from_json(data.get("embedMessage"))
-            self.is_embed_message = data.get("isEmbedMessage") or bool(self.embed_message)
-            self.user = User.build_from_json(data.get("senderInfo"))
+            self.embed_message = EmbeddedMedia.build_from_json(
+                data.get("embedMessage"), self.app
+            )
+            self.is_embed_message = data.get("isEmbedMessage") or bool(
+                self.embed_message
+            )
         return self
 
     # async def get_receiver(self) -> "User":
@@ -296,10 +301,6 @@ class Message(
             return None
         if self.replied_to is None:
             self.replied_to = await self.app.get_message(self.replied_to_id)
-        else:
-            self.replied_to = self.app._bot_client.build_object(
-                Message, self.replied_to
-            )
         return self.replied_to
 
     def _prepare_response(self) -> "Message":
