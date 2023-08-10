@@ -6,9 +6,13 @@ from swibots.error import SwitchError
 from .async_ws_subscription import AsyncWsSubscription
 from swibots.utils.ws.common import WsFrame
 import websockets
+import websockets.client
 from websockets.exceptions import (
     ConnectionClosedOK,
+    ConnectionClosed,
     ConnectionClosedError,
+    InvalidStatusCode,
+    WebSocketException,
 )
 import logging
 
@@ -18,10 +22,7 @@ log = logging.getLogger(__name__)
 
 
 class AsyncWsClient:
-    def __init__(
-        self,
-        url: str,
-    ):
+    def __init__(self, url: str, max_wait_time: str = 600):  # 10 mins
         self.url = url
         self.ws = None
         self._loop = asyncio.get_event_loop()
@@ -39,6 +40,7 @@ class AsyncWsClient:
         self._maxConnectIntents = 0
         self._connecting = False
         self._gracefully_disconnect = False
+        self.MAX_WAIT_TIME = max_wait_time
 
     async def _start_heartbeat(self):
         elapsed = 0
@@ -57,6 +59,7 @@ class AsyncWsClient:
         self.connected = False
         self._connecting = False
         if self._gracefully_disconnect:
+            log.debug("disconnecting...")
             return
         log.error("Whoops! Lost connection to " + self.url)
         await self._clean_up()
@@ -91,12 +94,14 @@ class AsyncWsClient:
             if self._connectIntents > 0:
                 log.info("Re-Established connection to the server " + self.url)
             else:
-                log.debug("connected to server " + self.url)
+                log.info("connected to server " + self.url)
 
             self._connectIntents = 0
-#            self._heartbeatTask = self._loop.create_task(self._start_heartbeat())
+            self._heartbeatTask = self._loop.create_task(self._start_heartbeat())
+
             # resubscribe
             for sub in self.subscriptions.values():
+                await sub.unsubscribe()
                 await self._start_subscription(sub)
 
             # if self._connectCallback is not None:
@@ -152,9 +157,11 @@ class AsyncWsClient:
                 out = command
             log.debug("\n>>> " + l)
             await ws.send(out)
-        except (ConnectionClosedOK, ConnectionClosedError):
+        except (ConnectionClosedOK, ConnectionClosedError) as er:
+            log.debug(f"closing: {er}")
             await self._on_close(self.ws)
         except Exception as e:
+            log.exception(e)
             await self._on_error(self.ws, e)
 
     async def connect(
@@ -217,7 +224,6 @@ class AsyncWsClient:
                     raise Exception("Connection timeout")
             if self._connectIntents > 0:
                 log.info(f"Retrying connection to {self.url}")
-        # await self._start_heartbeat()
         except ConnectionClosedOK:
             await self._on_close(self.ws)
         except Exception as e:
@@ -225,7 +231,10 @@ class AsyncWsClient:
 
     async def read_messages(self, headers):
         try:
-            async for websocket in websockets.connect(self.url):
+            con = websockets.client.connect(self.url)
+            con.BACKOFF_MAX = self.MAX_WAIT_TIME
+
+            async for websocket in con:
                 self.ws = websocket
                 try:
                     await self._transmit("CONNECT", headers)
@@ -235,6 +244,9 @@ class AsyncWsClient:
                 except ConnectionClosedError as er:
                     log.debug(f"recieved closed error: {er}")
                     continue
+                except (ConnectionClosedOK, ConnectionClosed) as er:
+                    log.info("received close connection")
+                    break
         except Exception as e:
             log.exception(e)
             await self._on_error(self.ws, e)
@@ -264,11 +276,6 @@ class AsyncWsClient:
             # [task.cancel() for task in self.tasks]
             # self.ws = None
             self.tasks = []
-            for id in list(self.subscriptions.keys()):
-                try:
-                    await self.subscriptions[id].unsubscribe()
-                except KeyError:
-                    pass
         except Exception as e:
             log.exception(e)
             log.debug("Error cleaning up: " + str(e))
