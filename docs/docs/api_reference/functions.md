@@ -1,4 +1,4 @@
-# Types - Functions
+# Progress Callbacks
 
 Swibots have a number of built-in functions that can be used in the code of your Swibot. These functions are available in the `swibot` module.
 

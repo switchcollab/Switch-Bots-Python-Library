@@ -63,6 +63,7 @@ A query callback was sent (user pressed a button, for example).
 - `receiver_id:str` - The ID of the user that received the message.
 - `receiver:User` - The user that received the message.
 
+
 #### `InlineQueryEvent`
 An inline query was sent. This event is triggered when a user starts typing '@botname' in a chat.
 - `query_id:str` - The unique identifier of this query.

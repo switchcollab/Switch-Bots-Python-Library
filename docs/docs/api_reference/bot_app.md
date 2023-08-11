@@ -14,6 +14,7 @@ This is the main class of the library. It is used to create a bot app and to cal
 - `token` (`str`): Bot token (This is the token you must use to authenticate the bot)
 - `bot_description` (`str`, Optional): Bot description (This is the description of the bot)
 - `auto_update_bot` (`bool`, Optional): Auto update bot (This is the flag to enable/disable the auto update of the bot into the database)
+- `receive_updates` (`bool`, Optional): Whether to receive event updates, defaults to `True`.
 - `loop` (`asyncio.AbstractEventLoop`, Optional): AsyncIO Event loop (This is used in case you want to use a custom event loop)
 
 

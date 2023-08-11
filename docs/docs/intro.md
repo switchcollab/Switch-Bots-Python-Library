@@ -51,7 +51,7 @@ async def message_handler(ctx: BotContext[MessageEvent]):
     # easy way to prepare a mesage that is a response of an incomming message
     message = ctx.event.message
     # send the message back to the user
-    await ctx.event.message.respond(
+    await message.respond(
         f"Thank you! I received your message: {message.message}"
     )
 
