@@ -12,6 +12,10 @@ class Bot(AuthUser, ApiClient):
     def __init__(self, app: Optional["BotApp"] = None):
         super().__init__(app)
         self._info: BotInfo = None
+        # copy methods
+        self.add_handler= app.add_handler
+        self.remove_handler = app.remove_handler
+        self.handlers = app.handlers
 
     @property
     def app(self) -> "BotApp":
@@ -54,7 +58,6 @@ class Bot(AuthUser, ApiClient):
 
             self.info = await self.update_bot_info(self.info)
 
-        pass
 
     @property
     def info(self) -> BotInfo:

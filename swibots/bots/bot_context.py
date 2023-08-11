@@ -11,11 +11,17 @@ class BotContext(Generic[EventType], ApiClient):
     def __init__(self, bot: "Bot", event: EventType):
         self.event = event
         self.bot = bot
+        self.app = bot.app
+    
         # copy the api client
         self._chat_client = bot.chat_service
         self._auth_client = bot.auth_service
         self._community_client = bot.community_service
         self._bot_client = bot.bots_service
+
+        self.add_handler = self.app.add_handler
+        self.remove_handler = self.app.remove_handler
+        self.handlers = self.app.handlers
 
     async def prepare_message(self, receiver_id: int, text: str, **kwargs) -> Message:
         """

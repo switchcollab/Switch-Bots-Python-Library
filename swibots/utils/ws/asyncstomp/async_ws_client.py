@@ -100,7 +100,7 @@ class AsyncWsClient:
             self._heartbeatTask = self._loop.create_task(self._start_heartbeat())
 
             # resubscribe
-            for sub in self.subscriptions.values():
+            for sub in list(self.subscriptions.values()):
                 await sub.unsubscribe()
                 await self._start_subscription(sub)
 
