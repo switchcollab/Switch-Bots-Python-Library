@@ -3,6 +3,7 @@ import os
 import json
 import logging
 from typing import TYPE_CHECKING, List, Optional
+from asyncio.tasks import Task
 
 from swibots.api.chat.models import (
     Message,
@@ -82,7 +83,7 @@ class MessageController:
 
     async def send_message(
         self, message: Message, media: MediaUploadRequest | EmbeddedMedia = None
-    ) -> Message:
+    ) -> Message | Task:
         """Send a message
 
         Parameters:
@@ -111,11 +112,11 @@ class MessageController:
                 url, form_data, media.thumbnail if _embedded else media
             )
             block = media.thumbnail.block if _embedded else media.block
+            task = asyncio.get_event_loop().create_task(upload_fn)
             if block:
-                response = await upload_fn
+                response = await task
             else:
-                asyncio.get_event_loop().create_task(upload_fn)
-                return
+                return task
         else:
             if _embedded:
                 data["embedMessage"] = media.to_json_request()
