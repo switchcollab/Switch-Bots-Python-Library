@@ -17,7 +17,7 @@ Download a media file from a message.
 - `block` (bool): Whether to block the current thread until the download is
   complete. Defaults to `True`.
 - `progress`
-  ([DownloadProgressCallback](../types/functions#downloadprocesscallback)): A
+  ([DownloadProgressCallback](../functions.md#downloadprogresscallback)): A
   callback function that is called when the download progress changes. Defaults
   to `None`.
 - `progress_args` (tuple): Additional arguments to pass to the `progress`
