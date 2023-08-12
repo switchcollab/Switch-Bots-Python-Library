@@ -162,7 +162,7 @@ class AsyncWsClient:
             await self._on_close(self.ws)
         except Exception as e:
             log.exception(e)
-            await self._on_error(self.ws, e)
+#            await self._on_error(self.ws, e)
 
     async def connect(
         self,
@@ -233,17 +233,16 @@ class AsyncWsClient:
         _retry_count = 0
         while True:
             try:
-                websocket = await websockets.client.connect(self.url)
-                websocket.BACKOFF_MAX = self.MAX_WAIT_TIME
+                self.ws = websocket = await websockets.client.connect(self.url)
+                # websocket.BACKOFF_MAX = self.MAX_WAIT_TIME
 
-                self.ws = websocket
                 try:
                     await self._transmit("CONNECT", headers)
                     async for message in websocket:
                         await self._on_message(self.ws, message)
                         await self._transmit("\n", headers)
                 except ConnectionClosedError as er:
-                    log.debug(f"recieved closed error: {er}")
+                    log.info(f"recieved closed error: {er}")
                 except (ConnectionClosedOK, ConnectionClosed) as er:
                     log.info("received close connection")
             except InvalidStatusCode as e:
