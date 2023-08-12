@@ -1,5 +1,6 @@
 import asyncio
 from typing import List
+from random import randint
 
 from swibots.error import SwitchError
 
@@ -101,7 +102,6 @@ class AsyncWsClient:
 
             # resubscribe
             for sub in list(self.subscriptions.values()):
-                await sub.unsubscribe()
                 await self._start_subscription(sub)
 
             # if self._connectCallback is not None:
@@ -158,7 +158,7 @@ class AsyncWsClient:
             log.debug("\n>>> " + l)
             await ws.send(out)
         except (ConnectionClosedOK, ConnectionClosedError) as er:
-            log.debug(f"closing: {er}")
+            log.info(f"closing: {er}")
             await self._on_close(self.ws)
         except Exception as e:
             log.exception(e)
@@ -230,27 +230,33 @@ class AsyncWsClient:
             await self._on_error(self.ws, e)
 
     async def read_messages(self, headers):
-        try:
-            con = websockets.client.connect(self.url)
-            con.BACKOFF_MAX = self.MAX_WAIT_TIME
+        _retry_count = 0
+        while True:
+            try:
+                websocket = await websockets.client.connect(self.url)
+                websocket.BACKOFF_MAX = self.MAX_WAIT_TIME
 
-            async for websocket in con:
                 self.ws = websocket
                 try:
                     await self._transmit("CONNECT", headers)
                     async for message in websocket:
                         await self._on_message(self.ws, message)
-                    await self._transmit("\n", headers)
+                        await self._transmit("\n", headers)
                 except ConnectionClosedError as er:
                     log.debug(f"recieved closed error: {er}")
-                    continue
                 except (ConnectionClosedOK, ConnectionClosed) as er:
                     log.info("received close connection")
+            except InvalidStatusCode as e:
+                log.info(f"received {e.status_code}: {e}")
+                time = randint(5, 20)
+                log.info(f"waiting for {time}")
+                await asyncio.sleep(time)
+            except Exception as e:
+                log.exception(e)
+                _retry_count += 1
+                if _retry_count > 20:
                     break
-        except Exception as e:
-            log.exception(e)
-            await self._on_error(self.ws, e)
-            return
+        #                await self._on_error(self.ws, e)
         await self._on_close(self.ws)
 
     async def disconnect(self, disconnectCallback=None, headers=None):
