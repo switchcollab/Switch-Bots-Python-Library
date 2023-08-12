@@ -53,6 +53,8 @@ class BotApp(App, Decorators):
         self._bot_description = bot_description
         #        self._plugins = plugins
         self.auto_update_bot = auto_update_bot
+        self._bot_id = (self._loop.run_until_complete(self.get_me())).id
+        print(self._bot_id)
 
     @property
     def bot(self) -> "swibots.bots.Bot":
@@ -103,6 +105,18 @@ class BotApp(App, Decorators):
             self._register_commands.extend(command)
         else:
             self._register_commands.append(command)
+        self._loop.create_task(self.update_bot_commands())
+        return self
+
+    def unregister_command(
+        self, command: swibots.bots.RegisterCommand | List[swibots.bots.RegisterCommand]
+    ) -> "BotApp":
+        if isinstance(command, list):
+            for cmd in command:
+                self._register_commands.remove(cmd)
+        else:
+            self._register_commands.remove(command)
+        self._loop.create_task(self.update_bot_commands())
         return self
 
     def add_handler(self, handler: BaseHandler | List[BaseHandler]) -> "BotApp":
@@ -124,12 +138,12 @@ class BotApp(App, Decorators):
         commands = self._register_commands or []
         description = self._bot_description or ""
         # register the commands
-        self._botinfo = BotInfo(description=description, id=self.bot.id)
+        self._botinfo = BotInfo(description=description, id=self._bot_id)
         for command in commands:
             command_name = command.command
             if isinstance(command_name, str):
                 command_names = command_name.split(",")
-            else:
+            else: 
                 command_names = command_name
 
             for c_name in command_names:

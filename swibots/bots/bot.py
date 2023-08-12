@@ -18,6 +18,8 @@ class Bot(AuthUser, ApiClient):
         self.remove_handler = app.remove_handler
         self.handlers = app.handlers
         self.update_bot_commands = self.app.update_bot_commands
+        self.register_command = self.app.register_command
+        self.unregister_command = self.app.unregister_command
 
     @property
     def app(self) -> "BotApp":
@@ -37,7 +39,7 @@ class Bot(AuthUser, ApiClient):
             """Called when app start
             This method registers the bot commands and updates the bot info
             """
-            await self.update_bot_commands()
+            # await self.update_bot_commands()
 
     @property
     def info(self) -> BotInfo:

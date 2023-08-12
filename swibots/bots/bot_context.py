@@ -23,6 +23,8 @@ class BotContext(Generic[EventType], ApiClient):
         self.remove_handler = self.app.remove_handler
         self.handlers = self.app.handlers
         self.update_bot_commands = self.app.update_bot_commands
+        self.register_command = self.app.register_command
+        self.unregister_command = self.app.unregister_command
 
     async def prepare_message(self, receiver_id: int, text: str, **kwargs) -> Message:
         """
