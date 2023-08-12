@@ -7,6 +7,7 @@ from importlib import import_module
 from swibots.api.community.events import CommunityEvent
 from swibots.api.chat.events import ChatEvent
 from swibots.bots import BotContext, Decorators, BaseHandler
+from swibots.api.bot.models import BotInfo, BotCommandInfo
 from swibots.api.common.events import Event
 from .app import App
 
@@ -30,7 +31,7 @@ class BotApp(App, Decorators):
         auto_update_bot: Optional[bool] = True,
         loop: asyncio.AbstractEventLoop = None,
         receive_updates: Optional[bool] = True
-#        plugins: Optional[List[str]] = None,
+        #        plugins: Optional[List[str]] = None,
     ):
         """
         Initialize the client
@@ -44,12 +45,13 @@ class BotApp(App, Decorators):
         """
         super().__init__(token, loop, receive_updates)
         self._user_type = swibots.bots.Bot
+        self._botinfo: BotInfo = None
         self.on_chat_service_start = self._on_chat_service_start
         self.on_community_service_start = self._on_community_service_start
         self._handlers: List[BaseHandler] = []
         self._register_commands: List[swibots.bots.RegisterCommand] = []
         self._bot_description = bot_description
-#        self._plugins = plugins
+        #        self._plugins = plugins
         self.auto_update_bot = auto_update_bot
 
     @property
@@ -97,10 +99,6 @@ class BotApp(App, Decorators):
     def register_command(
         self, command: swibots.bots.RegisterCommand | List[swibots.bots.RegisterCommand]
     ) -> "BotApp":
-        if self._running:
-            raise swibots.SwitchError(
-                "Cannot register commands after the app has started"
-            )
         if isinstance(command, list):
             self._register_commands.extend(command)
         else:
@@ -120,6 +118,30 @@ class BotApp(App, Decorators):
         for h in handler:
             self.handlers.remove(h)
         return self
+
+    async def update_bot_commands(self):
+        # get all app commands
+        commands = self._register_commands or []
+        description = self._bot_description or ""
+        # register the commands
+        self._botinfo = BotInfo(description=description, id=self.bot.id)
+        for command in commands:
+            command_name = command.command
+            if isinstance(command_name, str):
+                command_names = command_name.split(",")
+            else:
+                command_names = command_name
+
+            for c_name in command_names:
+                self._botinfo.commands.append(
+                    BotCommandInfo(
+                        command=c_name,
+                        description=command.description,
+                        channel=command.channel,
+                    )
+                )
+
+        self._botinfo = await self.update_bot_info(self._botinfo)
 
     async def _validate_token(self):
         await super()._validate_token()
