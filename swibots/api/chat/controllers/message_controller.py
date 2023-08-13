@@ -214,14 +214,15 @@ class MessageController:
             ``~switch.error.SwitchError``: If the message could not be edited
         """
         embedded = isinstance(media, EmbeddedMedia)
+        new_message = Message(self.client.app, message=message.message, inline_markup=message.inline_markup, embed_message=message.embed_message, id=message.id)
 
         if embedded:
             if isinstance(media.thumbnail, MediaUploadRequest):
                 response_media = await self.client.app.upload_media(media.thumbnail)
                 media.thumbnail = response_media.url
-            message.embed_message = media
+            new_message.embed_message = media
 
-        data = message.to_json_request()
+        data = new_message.to_json_request()
         log.debug("Editing message %s", json.dumps(data))
 
         response = await self.client.put(f"{BASE_PATH}?id={message.id}", data=data)
