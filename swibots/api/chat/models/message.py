@@ -232,7 +232,10 @@ class Message(
             self.personal_chat = data.get("personalChat")
             self.pinned = data.get("pinned")
             self.reactions = data.get("reactions")
-            self.receiver_id = data.get("receiverId")
+            receiver_id = data.get("receiverId")
+            if receiver_id == "null":
+                receiver_id = 0
+            self.receiver_id = receiver_id
             self.replied_to = Message.build_from_json(
                 data.get("repliedMessage"), self.app
             )
