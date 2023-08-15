@@ -1,29 +1,25 @@
 import asyncio
 from typing import List
-from random import randint
 
 from swibots.error import SwitchError
 
 from .async_ws_subscription import AsyncWsSubscription
 from swibots.utils.ws.common import WsFrame
 import websockets
-import websockets.client
-from websockets.exceptions import (
-    ConnectionClosedOK,
-    ConnectionClosed,
-    ConnectionClosedError,
-    InvalidStatusCode,
-    WebSocketException,
-)
+from websockets.client import connect
+from websockets import exceptions
 import logging
 
 VERSIONS = "1.1,1.0"
 
 log = logging.getLogger(__name__)
 
-
 class AsyncWsClient:
-    def __init__(self, url: str, max_wait_time: str = 600):  # 10 mins
+    def __init__(
+        self,
+        url: str,
+    ):
+
         self.url = url
         self.ws = None
         self._loop = asyncio.get_event_loop()
@@ -41,13 +37,12 @@ class AsyncWsClient:
         self._maxConnectIntents = 0
         self._connecting = False
         self._gracefully_disconnect = False
-        self.MAX_WAIT_TIME = max_wait_time
 
     async def _start_heartbeat(self):
         elapsed = 0
         while self.connected:
             await asyncio.sleep(0.1)
-            elapsed += 0.1
+            elapsed = elapsed + 0.1
             if elapsed >= 5:
                 await self._transmit("\n", {})
                 elapsed = 0
@@ -58,26 +53,21 @@ class AsyncWsClient:
 
     async def _on_close(self, ws_app, *args):
         self.connected = False
-        self._connecting = False
         if self._gracefully_disconnect:
-            log.debug("disconnecting...")
             return
         log.error("Whoops! Lost connection to " + self.url)
         await self._clean_up()
-        if (
-            self._maxConnectIntents > 0
-            and self._connectIntents >= self._maxConnectIntents
-        ):
+        if self._connectIntents >= self._maxConnectIntents and self._maxConnectIntents > 0:
             log.error("Max connection attempts reached. Aborting.")
             raise SwitchError("Max connection attempts reached. Aborting.")
         await asyncio.sleep(self._connectInterval)
-        self._connectIntents += 1
+        self._connectIntents = self._connectIntents + 1
         await self.connect(**self._connect_args)
 
     async def _on_error(self, ws_app, error, *args):
         await self._clean_up()
         await self._on_close(ws_app, *args)
-        log.exception(error)
+        log.error(error)
 
     async def _on_message(self, ws_app, message, *args):
         frame = WsFrame.unmarshall_single(message)
@@ -91,22 +81,17 @@ class AsyncWsClient:
         if frame.command == "CONNECTED":
             self.connected = True
             self._connecting = False
-
-            if self._connectIntents > 0:
-                log.info("Re-Established connection to the server " + self.url)
-            else:
-                log.info("connected to server " + self.url)
-
             self._connectIntents = 0
+            log.debug("connected to server " + self.url)
             self._heartbeatTask = self._loop.create_task(self._start_heartbeat())
-
             # resubscribe
-            for sub in list(self.subscriptions.values()):
+            for sub in self.subscriptions.values():
                 await self._start_subscription(sub)
 
             # if self._connectCallback is not None:
             #     _results.append(await self._send_heartbeat(frame))
         elif frame.command == "MESSAGE":
+
             subscription = frame.headers["subscription"]
 
             if subscription in self.subscriptions:
@@ -145,24 +130,20 @@ class AsyncWsClient:
 
         return _results
 
-    async def _transmit(self, command, headers, body=None, ws=None):
-        if not ws:
-            ws = self.ws
+    async def _transmit(self, command, headers, body=None):
         try:
-            if ws is None:
+            if self.ws is None:
                 return
             out = l = WsFrame.marshall(command, headers, body)
             if command == "\n":
                 l = "PING"
                 out = command
             log.debug("\n>>> " + l)
-            await ws.send(out)
-        except (ConnectionClosedOK, ConnectionClosedError) as er:
-            log.info(f"closing: {er}")
+            await self.ws.send(out)
+        except (exceptions.WebSocketException):
             await self._on_close(self.ws)
         except Exception as e:
-            log.exception(e)
-#            await self._on_error(self.ws, e)
+            await self._on_error(self.ws, e)
 
     async def connect(
         self,
@@ -190,19 +171,22 @@ class AsyncWsClient:
         **kwargs,
     ):
         if self.connected:
-            log.error("Already connected to " + self.url)
+            log.debug("Already connected to " + self.url)
             return
 
         if self._connecting:
-            log.error("Already connecting to " + self.url)
+            log.debug("Already connecting to " + self.url)
             return
 
         try:
             self._connecting = True
             self._connect_args = kwargs
             log.debug("Opening web socket...")
+            self.ws = await connect(self.url)
+            log.debug("Web socket opened.")
+            self._loop.create_task(self.read_messages())
             headers = headers if headers is not None else {}
-
+            # headers['host'] = self.url
             headers["accept-version"] = VERSIONS
             headers["heart-beat"] = "10000,10000"
             if login is not None:
@@ -211,59 +195,35 @@ class AsyncWsClient:
                 headers["passcode"] = passcode
             self._connectCallback = connectCallback
             self.errorCallback = errorCallback
-
-            self._loop.create_task(self.read_messages(headers))
-            # headers['host'] = self.url
-
+            await self._transmit("CONNECT", headers)
             # elapsed time
             elapsed = 0
             while not self.connected:
-                await asyncio.sleep(0.5)
-                elapsed += 0.5
+                await asyncio.sleep(1)
+                elapsed += 1
                 if timeout > 0 and elapsed > timeout:
                     raise Exception("Connection timeout")
-            if self._connectIntents > 0:
-                log.info(f"Retrying connection to {self.url}")
-        except ConnectionClosedOK:
+        # await self._start_heartbeat()
+        except (exceptions.WebSocketException,):
             await self._on_close(self.ws)
         except Exception as e:
             await self._on_error(self.ws, e)
 
-    async def read_messages(self, headers):
-        _retry_count = 0
-        while True:
-            try:
-                self.ws = websocket = await websockets.client.connect(self.url)
-                # websocket.BACKOFF_MAX = self.MAX_WAIT_TIME
-
-                try:
-                    await self._transmit("CONNECT", headers)
-                    async for message in websocket:
-                        await self._on_message(self.ws, message)
-                        await self._transmit("\n", headers)
-                except ConnectionClosedError as er:
-                    log.info(f"recieved closed error: {er}")
-                except (ConnectionClosedOK, ConnectionClosed) as er:
-                    log.info("received close connection")
-            except InvalidStatusCode as e:
-                log.info(f"received {e.status_code}: {e}")
-                time = randint(5, 20)
-                log.info(f"waiting for {time}")
-                await asyncio.sleep(time)
-            except Exception as e:
-                log.exception(e)
-                _retry_count += 1
-                if _retry_count > 20:
-                    break
-        #                await self._on_error(self.ws, e)
-        await self._on_close(self.ws)
+    async def read_messages(self):
+        try:
+            async for message in self.ws:
+                await self._on_message(self.ws, message)
+            await self._on_close(self.ws)
+        except (exceptions.WebSocketException,):
+            await self._on_close(self.ws)
+        except Exception as e:
+            await self._on_error(self.ws, e)
 
     async def disconnect(self, disconnectCallback=None, headers=None):
         headers = self._set_default_headers(headers)
         await self._transmit("DISCONNECT", headers)
         self._gracefully_disconnect = True
-        if self.ws:
-            await self.ws.close()
+        await self.ws.close()
         await self._clean_up()
         if disconnectCallback is not None:
             disconnectCallback()
@@ -273,16 +233,12 @@ class AsyncWsClient:
             self.connected = False
             self._connecting = False
             self.opened = False
-            if self._heartbeatTask:
-                self._heartbeatTask.cancel()
-                self._heartbeatTask = None
             # if self._heartbeatTask is not None:
             #     await asyncio.wait_for(self._heartbeatTask, 5)
             # [task.cancel() for task in self.tasks]
             # self.ws = None
             self.tasks = []
         except Exception as e:
-            log.exception(e)
             log.debug("Error cleaning up: " + str(e))
 
     async def send(self, destination, headers=None, body=None):
@@ -301,11 +257,7 @@ class AsyncWsClient:
             id = headers["id"]
 
         sub = AsyncWsSubscription(
-            client=self,
-            destination=destination,
-            callback=callback,
-            headers=headers,
-            id=id,
+            client=self, destination=destination, callback=callback, headers=headers, id=id
         )
         await self._start_subscription(sub)
         self.subscriptions[id] = sub
