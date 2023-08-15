@@ -24,7 +24,7 @@ class MessageEvent(ChatEvent):
         group: Optional[Group] = None,
         channel_id: Optional[str] = None,
         channel: Optional[Channel] = None,
-        action_by_id: Optional[str] = None,
+        action_by_id: Optional[int] = None,
         action_by: Optional[User] = None,
         data: Optional[dict] = None,
         user_id: Optional[str] = None,

@@ -21,7 +21,7 @@ class Event(SwitchObject):
         group: Optional["swibots.Group"] = None,
         channel_id: Optional[str] = None,
         channel: Optional["swibots.Channel"] = None,
-        action_by_id: Optional[str] = None,
+        action_by_id: Optional[int] = None,
         action_by: Optional["swibots.User"] = None,
     ):
         super().__init__(app)
@@ -40,7 +40,7 @@ class Event(SwitchObject):
         if data is not None:
             details = data.get("details") or {}
             self.type = swibots.EventType(data.get("type"))
-            self.action_by_id = data.get("actionById")
+            self.action_by_id = int(data.get("actionById"))
             self.action_by = swibots.User.build_from_json(
                 data.get("actionBy"), self.app
             )

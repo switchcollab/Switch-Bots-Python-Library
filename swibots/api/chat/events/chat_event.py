@@ -71,7 +71,7 @@ class ChatEvent(Event):
             self.channel_id = data.get("channelId")
             self.channel = Channel.build_from_json(
                 details.get("channel"), self.app)
-            self.action_by_id = data.get("actionById")
+            self.action_by_id = int(data.get("actionById"))
             self.action_by = User.build_from_json(
                 data.get("actionBy"), self.app)
 
