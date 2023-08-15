@@ -16,8 +16,7 @@ from .controllers import (
     PermissionController,
     RoleMemberController,
     RestrictController,
-    BanController,
-    InstantMessagingController
+    BanController
 )
 import swibots
 
@@ -42,7 +41,6 @@ class CommunityClient(SwitchRestClient):
         self._permission = None
         self._ban = None
         self._restrict = None
-        self._instant = None
         self._ws: SwitchWSAsyncClient = None
         self._started = False
 
@@ -94,13 +92,6 @@ class CommunityClient(SwitchRestClient):
         if self._rolemember is None:
             self._rolemember = RoleMemberController(self)
         return self._rolemember
-
-    @property
-    def instantmessaging(self) -> InstantMessagingController:
-        """Get instant messaging controller"""
-        if self._instant is None:
-            self._instant = InstantMessagingController(self)
-        return self._instant
 
     @property
     def ban(self) -> BanController:
