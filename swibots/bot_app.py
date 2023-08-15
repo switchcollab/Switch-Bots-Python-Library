@@ -54,7 +54,6 @@ class BotApp(App, Decorators):
         #        self._plugins = plugins
         self.auto_update_bot = auto_update_bot
         self._bot_id = (self._loop.run_until_complete(self.get_me())).id
-        print(self._bot_id)
 
     @property
     def bot(self) -> "swibots.bots.Bot":

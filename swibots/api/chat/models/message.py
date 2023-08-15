@@ -48,7 +48,7 @@ class Message(
         personal_chat: bool = None,
         pinned: bool = None,
         reactions: List[str] = None,
-        replied_message: str = None,
+        replied_message: "Message" = None,
         replied_to_id: int = None,
         replied_to: "Message" = None,
         replies: List["Message"] = None,
@@ -159,6 +159,7 @@ class Message(
         return form_data
 
     def to_json(self) -> JSONDict:
+        replied = self.replied_message or self.replied_to
         return {
             "buttonName": self.button_name,
             "buttonPressedId": self.button_pressed_id,
@@ -190,7 +191,7 @@ class Message(
             "pinned": self.pinned,
             "reactions": self.reactions,
             "receiverId": self.receiver_id,
-            "repliedMessage": self.replied_message,
+            "repliedMessage": replied.to_json() if replied else None,
             "repliedTo": self.replied_to_id,
             "replies": self.replies,
             "replyCount": self.reply_count,
