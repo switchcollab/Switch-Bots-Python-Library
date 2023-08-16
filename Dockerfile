@@ -26,7 +26,7 @@ ENV VIRTUAL_ENV=$WORKDIR/src/venv
 RUN python -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-RUN pip install -r $WORKDIR/src/requirements-dev.txt
+RUN pip install -r $WORKDIR/requirements-dev.txt
 
 
 CMD [ "/bin/sh", "-c", "while sleep 1000; do :; done"]
