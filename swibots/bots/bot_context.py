@@ -12,6 +12,7 @@ class BotContext(Generic[EventType], ApiClient):
         self.event = event
         self.bot = bot
         self.app = bot.app
+        self._user = bot.app._user
     
         # copy the api client
         self._chat_client = bot.chat_service

@@ -66,8 +66,9 @@ CUSTOM_FILTER_NAME = "CustomFilter"
 
 def create(func: FilterCallback, name: str = None, **kwargs) -> Filter:
     return type(
-        name or func.__name__ or CUSTOM_FILTER_NAME, (Filter,), {
-            "__call__": func, **kwargs}
+        name or func.__name__ or CUSTOM_FILTER_NAME,
+        (Filter,),
+        {"__call__": func, **kwargs},
     )()
 
 
@@ -92,7 +93,9 @@ self = create(self_filter)
 
 async def bot_filter(self, ctx: BotContext[MessageEvent]):
     return bool(
-        ctx.event.message is not None and ctx.event.user is not None and ctx.event.user.is_bot
+        ctx.event.message is not None
+        and ctx.event.user is not None
+        and ctx.event.user.is_bot
     )
 
 
@@ -101,7 +104,9 @@ is_bot = create(bot_filter)
 
 
 async def me_filter(self, ctx: BotContext[MessageEvent]):
-    return bool(ctx.event.message is not None and ctx.event.message.user_id == ctx.user.id)
+    return bool(
+        ctx.event.message is not None and ctx.event.message.user_id == ctx.user.id
+    )
 
 
 me = create(me_filter)
@@ -109,7 +114,9 @@ me = create(me_filter)
 
 
 async def incoming_filter(self, ctx: BotContext[MessageEvent]):
-    return bool(ctx.event.message is not None and ctx.event.message.receiver_id == ctx.user.id)
+    return bool(
+        ctx.event.message is not None and ctx.event.message.receiver_id == ctx.user.id
+    )
 
 
 incoming = create(incoming_filter)
@@ -128,7 +135,7 @@ class community(Filter, set):
     """Filter events comming from a specific community or communities"""
 
     def __init__(self, community_id: Optional[SCT[str]]):
-        community_id = community_id
+        self.community_id = community_id
 
     async def __call__(self, ctx: BotContext[Event]):
         community_id = self.community_id
@@ -145,7 +152,7 @@ class channel(Filter, set):
     """Filter events comming from a specific channel or channels"""
 
     def __init__(self, channel_id: Optional[SCT[str]]):
-        channel_id = channel_id
+        self.channel_id = channel_id
 
     async def __call__(self, ctx: BotContext[Event]):
         channel_id = self.channel_id
@@ -160,7 +167,7 @@ class channel(Filter, set):
 
 class group(Filter, set):
     def __init__(self, group_id: Optional[SCT[str]]):
-        group_id = group_id
+        self.group_id = group_id
 
     async def __call__(self, ctx: BotContext[Event]):
         group_id = self.group_id
@@ -175,7 +182,7 @@ class group(Filter, set):
 
 class user(Filter, set):
     def __init__(self, user_id: Optional[SCT[int]]):
-        user_id = user_id
+        self.user_id = user_id
 
     async def __call__(self, ctx: BotContext[Event]):
         user_id = self.user_id
@@ -192,7 +199,9 @@ def text(text: Optional[SCT[str]]):
     async def func(self, ctx: BotContext[MessageEvent]):
         text = self.text
         if text is None:
-            return bool(ctx.event.message is not None and ctx.event.message.message is not None)
+            return bool(
+                ctx.event.message is not None and ctx.event.message.message is not None
+            )
         if isinstance(text, str):
             text = frozenset({text})
         else:
@@ -227,7 +236,9 @@ def regexp(regexp: Optional[SCT[str]]):
     async def func(self, ctx: BotContext[MessageEvent]):
         regexp = self.regexp
         if regexp is None:
-            return bool(ctx.event.message is not None and ctx.event.message.message is not None)
+            return bool(
+                ctx.event.message is not None and ctx.event.message.message is not None
+            )
         if isinstance(regexp, str):
             regexp = frozenset({regexp})
         else:
@@ -245,7 +256,6 @@ def regexp(regexp: Optional[SCT[str]]):
 
         for r in regexp:
             try:
-
                 cr = re.compile(r)
                 if cr.match(value):
                     return True
@@ -269,4 +279,5 @@ async def message_type(types: Optional[SCT[int]]):
         else:
             types = frozenset(types)
         return bool(ctx.event.message.status in types)
+
     return create(func, name="MessageType", types=types)
