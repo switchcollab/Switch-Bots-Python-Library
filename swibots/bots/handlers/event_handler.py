@@ -35,6 +35,6 @@ class EventHandler(BaseHandler):
     async def should_handle(self, context: BotContext[Event]) -> bool:
         if (self.event_types is not None) and (not context.event.type in self.event_types):
             return False
-        if self.filter:
+        if self.filter is not None:
             return await self.filter(context)
         return True

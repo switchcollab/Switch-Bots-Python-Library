@@ -1,3 +1,4 @@
+import swibots
 from typing import Optional, List, Any
 from swibots.utils.types import JSONDict
 from swibots.base.switch_object import SwitchObject
