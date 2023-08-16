@@ -47,7 +47,7 @@ class User(SwitchObject):
 
     def from_json(self, data: Optional[JSONDict] = None) -> "User":
         if data is not None:
-            self.id = data.get("id")
+            self.id = int(data.get("id") or 0)
             self.name = data.get("name")
             self.username = data.get("username")
             self.image_url = data.get("imageUrl")
