@@ -106,9 +106,7 @@ class MessageController:
                 readed = upload_req.readed
                 if file_info.get("cancelled") or file_info.get("done"):
                     break
-                print(file_info)
                 if not file_info["readed"] == readed:
-                    await wrap_callback()
                     tasks.append(loop.create_task(wrap_callback()))
                 file_info["readed"] = readed
                 await asyncio.sleep(0.1)

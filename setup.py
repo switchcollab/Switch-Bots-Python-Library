@@ -15,7 +15,7 @@ except (IOError, ImportError):
 
 setup(
     name="swibots",
-    version="1.3.27",
+    version="1.3.28",
     packages=find_packages(exclude=["samples", "bots_impl", "docs"]),
     long_description=long_description,
     long_description_content_type="text/markdown",
