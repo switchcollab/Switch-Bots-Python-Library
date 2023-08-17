@@ -1,10 +1,11 @@
 import asyncio
 import os
 import json
+from inspect import iscoroutinefunction
 import logging
 from typing import TYPE_CHECKING, List, Optional
 from asyncio.tasks import Task
-
+from swibots.error import CancelError
 from swibots.api.chat.models import (
     Message,
     GroupChatHistory,
@@ -76,9 +77,41 @@ class MessageController:
         return self.client.build_list(Message, response.data)
 
     async def _send_file(self, url, form_data, media: MediaUploadRequest):
-        files = media.file_to_request(url)
-        response = await self.client.post(url, form_data=form_data, files=files)
+        upload_req, files = media.file_to_request(url)
+        file_info = {"readed": 0}
+        upload_task = asyncio.create_task(self.client.post(url, form_data=form_data, files=files))
+
+        async def callCallback():
+            while True:
+                readed = upload_req.readed
+                if not file_info['readed'] == readed:
+                    if upload_req.callback:
+                        try:
+                            maybe_coro = upload_req.callback(upload_req, *upload_req.callback_args)
+                            if iscoroutinefunction(upload_req.callback):
+                                await maybe_coro
+                                #loop.create_task(maybe_coro)
+                        except CancelError as exc:
+                            file_info["cancelled"] = True
+                            log.info(f"received cancel on {upload_req.file_name}")
+
+                            upload_task.cancel()
+                            files["uploadMediaRequest.file"][1].close()
+                            raise exc
+                        except Exception as er:
+                            log.exception(er)
+
+                file_info["readed"] = readed
+                await asyncio.sleep(0.3)
+
+        if upload_req.callback:
+            task = self.client.app._loop.create_task(callCallback())
+
+        response = await upload_task
         files["uploadMediaRequest.file"][1].close()
+    
+        if upload_req.callback:
+            task.cancel()
         return response
 
     async def send_message(

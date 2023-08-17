@@ -33,9 +33,24 @@ export default function Home() {
       title={`Hello from ${siteConfig.title}`}
       description="Description will go into a meta tag in <head />">
       <HomepageHeader />
-      <main>
+      <main style={{
+        padding: "1rem"
+      }}>
         {/* <HomepageFeatures /> */}
-        {/* <h1>Easy to use python wrapper for switch</h1> */}
+       <h3 style={{
+          marginTop: 10
+        }}># Installation</h3>
+        <code>
+          pip3 install swibots
+        </code>
+        <h3 style={{
+          marginTop: "8px"
+        }}>
+        # Installing from source
+        </h3>
+        <code>
+          pip3 install git+https://github.com/switchcollab/Switch-Bots-Python-Library.git
+        </code>
       </main>
     </Layout>
   );

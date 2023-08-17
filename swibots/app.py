@@ -162,9 +162,10 @@ class App(AbstractContextManager, ApiClient):
 
         try:
             log.debug("checking token...")
-            user = await self.get_me(user_type=self._user_type)
-            self.user = user
-            log.info("Logged in as [%s][%d]", user.user_name, user.id)
+            if not self.user:
+                user = await self.get_me(user_type=self._user_type)
+                self.user = user
+            log.info("Logged in as [%s][%d]", self.user.user_name, self.user.id)
         except Exception as e:
             log.exception(e)
             await self.stop()

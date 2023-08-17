@@ -1,4 +1,4 @@
-import mimetypes, os
+import mimetypes, os, asyncio
 from io import BytesIO
 from logging import getLogger
 from swibots.utils.types import (
@@ -104,4 +104,4 @@ class MediaUploadRequest:
                 logger.error(
                     f"provided thumbnail: {self.thumbnail} is not a valid path!"
                 )
-        return result
+        return d_progress, result

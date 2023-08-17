@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Handlers
 
-Handlers are the way that SwiBots interacts with the outside world. Handlers are functions that are called when an event is triggered. Handlers are registered with the calling `add_hanlder` funciton of app or using [`decorators`](./decorators).
+Handlers are functions that are called when an event is triggered. Handlers are registered with the calling `add_handler` funciton of app or using [`decorators`](./decorators).
 
 ## Handler functions
 
@@ -410,7 +410,7 @@ async def group_deleted_handler(context: BotContext[GroupDeletedEvent]):
 app.add_handler(GroupDeletedHandler(group_deleted_handler))
 ```
 
-### User Bannded Handler
+### User Banned Handler
 
 The `UserBannedHandler` is a handler for the `UserBannedEvent`. It is called when a user is banned from a group.
 

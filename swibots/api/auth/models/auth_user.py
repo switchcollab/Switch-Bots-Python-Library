@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from swibots.base.switch_object import SwitchObject
 from swibots.utils.types import JSONDict
 
@@ -22,11 +22,7 @@ class AuthUser(SwitchObject):
         private_imageurl: Optional[str] = None,
         gender: Optional[str] = None,
         date_of_birth: Optional[str] = None,
-        media1: Optional[str] = None,
-        media2: Optional[str] = None,
-        media3: Optional[str] = None,
-        media4: Optional[str] = None,
-        media5: Optional[str] = None,
+        medias: Optional[List[str]] = None,
         more_about_this: Optional[str] = None,
         active: Optional[bool] = None,
         parent_id: Optional[int] = None,
@@ -49,11 +45,7 @@ class AuthUser(SwitchObject):
         self.private_imageurl = private_imageurl
         self.gender = gender
         self.date_of_birth = date_of_birth
-        self.media1 = media1
-        self.media2 = media2
-        self.media3 = media3
-        self.media4 = media4
-        self.media5 = media5
+        self.medias = medias
         self.more_about_this = more_about_this
         self.active = active
         self.parent_id = parent_id
@@ -79,11 +71,10 @@ class AuthUser(SwitchObject):
             self.private_imageurl = data.get("private_imageurl")
             self.gender = data.get("gender")
             self.date_of_birth = data.get("date_of_birth")
-            self.media1 = data.get("media1")
-            self.media2 = data.get("media2")
-            self.media3 = data.get("media3")
-            self.media4 = data.get("media4")
-            self.media5 = data.get("media5")
+            self.medias = []
+            for _ in range(1, 6):
+                if media:= data.get(f"media{_}"):
+                    self.medias.append(media)
             self.more_about_this = data.get("more_about_this")
             self.active = data.get("active")
             self.parent_id = data.get("parent_id")

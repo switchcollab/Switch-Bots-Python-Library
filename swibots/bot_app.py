@@ -53,7 +53,7 @@ class BotApp(App, Decorators):
         self._bot_description = bot_description
         #        self._plugins = plugins
         self.auto_update_bot = auto_update_bot
-        self.user = self._loop.run_until_complete(self.get_me())
+        self.user = self._loop.run_until_complete(self.get_me(user_type=self._user_type))
         self._bot_id = self.user.id
 
     @property
@@ -159,7 +159,7 @@ class BotApp(App, Decorators):
 
     async def _validate_token(self):
         await super()._validate_token()
-        if not isinstance(self.user, swibots.Bot):
+        if not isinstance(self.user, self._user_type):
             raise swibots.SwitchError("Invalid token")
 
         if not self.user.is_bot:

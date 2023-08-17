@@ -7,7 +7,7 @@ from swibots.error import CancelError
 
 class IOClient:
     def cancel(self) -> None:
-        raise CancelError()
+        raise CancelError("called cancel()")
 
 
 class DownloadProgress:
@@ -45,10 +45,6 @@ class UploadProgress:
     def update(self, current: int) -> None:
         self.current = current
         self.readed += current
-        if self.callback:
-            iscoro = self.callback(self, *self.callback_args)
-            if iscoroutinefunction(self.callback):
-                create_task(iscoro)
 
 
 CtxType = TypeVar("CtxType")
@@ -86,9 +82,7 @@ class ReadCallbackStream(object):
     def read(self, *args):
         chunk = self.file_like.read(*args)
         if len(chunk) > 0:
-            iscoro = self.callback(len(chunk))
-            if iscoroutinefunction(self.callback):
-                create_task(iscoro)
+            self.callback(len(chunk))
         return chunk
 
     def close(self):
