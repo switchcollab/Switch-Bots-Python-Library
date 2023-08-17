@@ -182,6 +182,8 @@ class App(AbstractContextManager, ApiClient):
         await self.community_service.stop()
         if self.on_app_stop is not None:
             await self.on_app_stop(self)
+        for task in asyncio.all_tasks():
+            task.cancel()
 
     async def _on_app_start(self):
         if self.on_app_start is not None:
