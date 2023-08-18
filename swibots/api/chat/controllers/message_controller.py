@@ -78,77 +78,9 @@ class MessageController:
 
     async def _send_file(self, url, form_data, media: MediaUploadRequest):
         upload_req, files = media.file_to_request(url)
-        file_info = {"readed": 0}
-
-        loop = asyncio.get_event_loop()
-        upload_task = loop.create_task(
-            self.client.post(url, form_data=form_data, files=files)
-        )
-        tasks = []
-
-        async def wrap_callback():
-            if upload_req.callback:
-                try:
-                    maybe_coro = upload_req.callback(
-                        upload_req, *upload_req.callback_args
-                    )
-                    if iscoroutinefunction(upload_req.callback):
-                        await maybe_coro
-                except CancelError as exc:
-                    file_info["cancelled"] = True
-                    log.info(f"received cancel on {upload_req.file_name}")
-                    raise exc
-                except Exception as er:
-                    log.exception(er)
-
-        async def callCallback():
-            while True:
-                readed = upload_req.readed
-                if file_info.get("cancelled") or file_info.get("done"):
-                    break
-                if not file_info["readed"] == readed:
-                    tasks.append(loop.create_task(wrap_callback()))
-                file_info["readed"] = readed
-                await asyncio.sleep(0.1)
-
-        if upload_req.callback:
-            task = loop.create_task(callCallback())
-
-        def upload_callback(ctask):
-            file_info["done"] = True
-            task.cancel()
-            upload_task.cancel()
-
-        def wrap_cancel():
-            file_info["cancelled"] = True
-            raise CancelError("User cancelled upload!")
-
-        upload_req.client.cancel = wrap_cancel
-
-        upload_task.add_done_callback(upload_callback)
-
-        async def wait_check():
-            while not (file_info.get("done") or file_info.get("cancelled")):
-                await asyncio.sleep(1)
-            upload_callback(None)
-
-        wait_task = asyncio.create_task(wait_check())
-        try:
-            await asyncio.wait_for(wait_task, timeout=3600 * 24)
-        except TimeoutError:
-            pass
+        response = await self.client.post(url, form_data=form_data, files=files)
         files["uploadMediaRequest.file"][1].close()
-
-        if upload_req.callback:
-            task.cancel()
-
-        for task in tasks:
-            task.cancel()
-
-        if file_info.get("cancelled"):
-            raise CancelError("User cancelled task!")
-
-        return upload_task.result()
+        return response
 
     async def send_message(
         self, message: Message, media: MediaUploadRequest | EmbeddedMedia = None

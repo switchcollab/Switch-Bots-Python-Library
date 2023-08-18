@@ -89,6 +89,7 @@ class MediaUploadRequest:
             callback_args=self.upload_args,
         )
         reader = ReadCallbackStream(self.path, d_progress.update)
+        d_progress._readable_file = reader
         path = self.path.name if isinstance(self.path, BytesIO) else self.path
         mime = self.get_mime_type()
         result = {"uploadMediaRequest.file": (self.file_name or path, reader, mime)}

@@ -1,4 +1,5 @@
-from asyncio import create_task
+from asyncio import create_task, run_coroutine_threadsafe, get_event_loop
+from asyncio.exceptions import InvalidStateError
 from enum import Enum
 from typing import Any, Callable, Collection, Coroutine, Dict, TypeVar, Union
 from inspect import iscoroutinefunction
@@ -39,13 +40,39 @@ class UploadProgress:
         self.client = client
         self.file_name = file_name
         self.started = False
+        self.cancelled = False
         self.callback = callback
         self.callback_args = callback_args
+        self._readable_file: ReadCallbackStream = None
+        self._tasks = []
 
     def update(self, current: int) -> None:
+        if self.cancelled:
+            return
         self.current = current
         self.readed += current
+        if self.callback:
+            async def task():
+                try:
+                    iscoro = self.callback(self, *self.callback_args)
+                    if iscoroutinefunction(self.callback):
+                        await iscoro
+                except CancelError as er:
+                    self.cancelled = True
+                    if self._readable_file:
+                        self._readable_file.cancelled = True
+                    return False
+                return True
+            loop = get_event_loop()
+            _task = loop.create_task(task())
+            self._tasks.append(_task)
 
+            def onDone(task):
+                if _task.exception():
+                    if self._readable_file:
+                        self._readable_file.cancelled = True
+
+            _task.add_done_callback(onDone)
 
 CtxType = TypeVar("CtxType")
 ResType = TypeVar("ResType")
@@ -75,11 +102,12 @@ class ReadCallbackStream(object):
         else:
             self.file_like = file_like
         self.callback = callback
-
-    def __len__(self):
-        raise NotImplementedError()
+        self.cancelled = False
 
     def read(self, *args):
+        if self.cancelled:
+            raise CancelError("Task has been cancelled!")
+
         chunk = self.file_like.read(*args)
         if len(chunk) > 0:
             self.callback(len(chunk))
