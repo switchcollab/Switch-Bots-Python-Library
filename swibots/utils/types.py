@@ -1,5 +1,5 @@
-from asyncio import create_task, run_coroutine_threadsafe, get_event_loop
-from asyncio.exceptions import InvalidStateError
+import os
+from asyncio import get_event_loop
 from enum import Enum
 from typing import Any, Callable, Collection, Coroutine, Dict, TypeVar, Union
 from inspect import iscoroutinefunction
@@ -36,6 +36,7 @@ class UploadProgress:
     ):
         self.current = current
         self.readed = readed
+        self.total = os.path.getsize(file_name)
         self.url = url
         self.client = client
         self.file_name = file_name
@@ -68,9 +69,8 @@ class UploadProgress:
             self._tasks.append(_task)
 
             def onDone(task):
-                if _task.exception():
-                    if self._readable_file:
-                        self._readable_file.cancelled = True
+                if _task.exception() and self._readable_file:
+                    self._readable_file.cancelled = True
 
             _task.add_done_callback(onDone)
 
@@ -109,7 +109,7 @@ class ReadCallbackStream(object):
             raise CancelError("Task has been cancelled!")
 
         chunk = self.file_like.read(*args)
-        if len(chunk) > 0:
+        if self.callback and len(chunk) > 0:
             self.callback(len(chunk))
         return chunk
 

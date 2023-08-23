@@ -1,7 +1,7 @@
 from swibots.utils.types import SCT
 
 
-class RegisterCommand:
+class BotCommand:
     def __init__(
         self,
         command: SCT[str],
@@ -11,3 +11,5 @@ class RegisterCommand:
         self.command = command
         self.description = description
         self.channel = channel
+
+RegisterCommand = BotCommand
