@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Type, TypeVar
+from typing import TYPE_CHECKING, Type, TypeVar, Optional
 import swibots
 from swibots.api.common.models import Media
 from swibots.api.common.models import MediaUploadRequest
@@ -8,7 +8,15 @@ if TYPE_CHECKING:
 
 
 class UploadMedia:
-    async def upload_media(self: "ApiClient", path: str | MediaUploadRequest) -> Media:
+    async def upload_media(
+        self: "ApiClient",
+        path: str,
+        caption: Optional[str] = None,
+        description: Optional[str] = None,
+        mime_type: Optional[str] = None,
+        callback: callable = None,
+        callback_args: tuple = None,
+    ) -> Media:
         """upload a file to get `Media` object.
 
         Arguments:
@@ -17,4 +25,11 @@ class UploadMedia:
         Returns:
         A Media object representing the uploaded file.
         """
-        return await self.chat_service.media.upload_media(path)
+        return await self.chat_service.media.upload_media(
+            path,
+            caption=caption,
+            description=description,
+            mime_type=mime_type,
+            callback=callback,
+            callback_args=callback_args,
+        )

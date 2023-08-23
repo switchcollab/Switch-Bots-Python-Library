@@ -1,17 +1,16 @@
 import asyncio
 import os
-import json
+import json, mimetypes
 import logging
 from typing import TYPE_CHECKING, List, Optional
 
-from swibots.api.chat.models import (
-    Message,
-    GroupChatHistory,
-    InlineMarkup,
-    InlineQuery,
-    InlineQueryAnswer,
+from swibots.utils.types import (
+    UploadProgressCallback,
+    ReadCallbackStream,
+    IOClient,
+    UploadProgress,
 )
-from swibots.api.common.models import User, MediaUploadRequest, Media, EmbeddedMedia
+from swibots.api.common.models import User, MediaUploadRequest, Media
 from swibots.api.community.models import Channel, Group
 
 if TYPE_CHECKING:
@@ -30,18 +29,42 @@ class MediaController:
     def __init__(self, client: "ChatClient"):
         self.client = client
 
-    async def upload_media(self, path: str | MediaUploadRequest) -> Media:
+    async def upload_media(
+        self,
+        path: str,
+        caption: Optional[str] = None,
+        description: Optional[str] = None,
+        mime_type: Optional[str] = None,
+        callback: UploadProgressCallback = None,
+        callback_args: Optional[tuple] = None,
+    ) -> Media:
         """upload media from path or with MediaUploadRequest"""
-        if isinstance(path, str):
-            path = MediaUploadRequest(path)
-        
+
         url = f"{BASE_PATH}/upload-multipart"
-        files = path.file_to_request(url)
-        form_data = path.data_to_params_request()
-        files["file"] = files["uploadMediaRequest.file"]
-        del files["uploadMediaRequest.file"]
+        form_data = {
+            "caption": caption,
+            "description": description,
+            "mimeType": mime_type
+            or mimetypes.guess_type(path)[0]
+            or "application/octet-stream",
+        }
+
+        reader = ReadCallbackStream(path, None)
+        if callback:
+            d_progress = UploadProgress(
+                current=0,
+                readed=0,
+                file_name=path,
+                client=IOClient(),
+                url=url,
+                callback=callback,
+                callback_args=callback_args,
+            )
+            reader.callback = d_progress.update
+            d_progress._readable_file = reader
+        files = {"file": (path, reader, mime_type)}
 
         response = await self.client.post(BASE_PATH, form_data=form_data, files=files)
-        files["file"][1].close()
+        reader.close()
 
         return self.client.build_object(Media, response.data)
