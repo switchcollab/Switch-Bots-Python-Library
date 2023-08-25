@@ -2,7 +2,7 @@ import json
 import logging
 from typing import TYPE_CHECKING, List, Optional
 from swibots.api.bot.models import BotInfo, BotCommandInfo
-from swibots.error import SwitchError
+from swibots.errors import SwitchError
 from swibots.utils.types import JSONDict
 
 if TYPE_CHECKING:

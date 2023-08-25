@@ -21,4 +21,4 @@ class GroupController:
 
     async def get_all_groups(self, community_id: str) -> List[Group]:
         response = await self.client.get(f"{BASE_PATH}/all?communityId={community_id}")
-        return self.client.build_list(Group, response.data)
+        return self.client.build_list(Group, response.data.get("result"))

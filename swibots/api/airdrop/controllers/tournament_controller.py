@@ -2,7 +2,7 @@ import json
 import logging
 from typing import TYPE_CHECKING, List
 from swibots.api.airdrop.models import Referral, Tournament
-from swibots.error import SwitchError
+from swibots.errors import SwitchError
 from swibots.utils.types import JSONDict
 
 if TYPE_CHECKING:

@@ -3,7 +3,7 @@ import os
 import swibots
 
 from swibots.utils.types import DownloadProgressCallback
-from swibots.error import SwitchError
+from swibots.errors import SwitchError, MediaEmpty
 from swibots.api.chat.models import Message
 from typing import Union, Optional, Callable, BinaryIO
 
@@ -16,10 +16,10 @@ class DownloadMedia:
         """
 
         if not message.is_media:
-            raise SwitchError("Message is not a media message")
+            raise MediaEmpty("Message is not a media message")
 
         if message.media_link is None:
-            raise SwitchError("Message does not have a media link")
+            raise MediaEmpty("Message does not have a media link")
 
         media_file_name = message.media_link.split("/")[-1]
         if file_name and os.path.isdir(file_name):
@@ -33,5 +33,4 @@ class DownloadMedia:
             url=message.media_link, directory=directory, file_name=file_name, in_memory=in_memory, block=block, progress=progress, progress_args=progress_args)
         if block:
             return await download_fn
-        else:
-            asyncio.get_event_loop().create_task(download_fn)
+        return asyncio.get_event_loop().create_task(download_fn)

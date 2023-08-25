@@ -10,10 +10,8 @@ def _lstrip_str(in_s: str, lstr: str) -> str:
         :obj:`str`: The stripped string.
     """
     if in_s.startswith(lstr):
-        res = in_s[len(lstr):]
-    else:
-        res = in_s
-    return res
+        return in_s[len(lstr):]
+    return in_s
 
 
 class SwitchError(Exception):
@@ -52,3 +50,9 @@ class NetworkError(SwitchError):
 
 class CancelError(SwitchError):
     pass
+
+class BadRequest(SwitchError):
+    pass
+
+class ChatEmpty(BadRequest): ...
+class MediaEmpty(BadRequest): ...

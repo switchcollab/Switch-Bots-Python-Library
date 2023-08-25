@@ -53,7 +53,6 @@ class Group(SwitchObject):
             "updatedAt": self.updated_at,
         }
 
-    @classmethod
     def from_json(self, data: JSONDict) -> "Group":
         if data is not None:
             self.id = data.get("groupId")

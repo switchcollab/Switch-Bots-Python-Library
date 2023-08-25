@@ -22,7 +22,7 @@ class CommunityController:
         if community_id and username:
             raise ValueError("community_id and username can't be provided together.")
         if username:
-            request_url = f"{BASE_PATH}/communityusername?communityId={community_id}"
+            request_url = f"{BASE_PATH}/communityusername?communityUsername={username}"
         else:
             request_url = f"{BASE_PATH}?communityId={community_id}"
         response = await self.client.get(request_url)

@@ -1,3 +1,4 @@
+import json
 from typing import Generic, List, Optional, TypeVar
 import swibots
 from swibots.utils.types import JSONDict
@@ -38,4 +39,4 @@ class SwitchObject(Generic[T]):
         return self
 
     def __repr__(self) -> str:
-        return self.to_json().__repr__()
+        return f"{self.__class__.__name__} {json.dumps(self.to_json(), indent=1)}"

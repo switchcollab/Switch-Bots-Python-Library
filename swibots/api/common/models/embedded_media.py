@@ -9,7 +9,7 @@ from .media_upload_request import MediaUploadRequest
 class EmbeddedMedia(SwitchObject):
     def __init__(
         self,
-        thumbnail: MediaUploadRequest | str,
+        thumbnail: str,
         description: Optional[str] = None,
         footer_icon: Optional[str] = None,
         footer_title: Optional[str] = None,
@@ -19,12 +19,7 @@ class EmbeddedMedia(SwitchObject):
         title: Optional[str] = None,
     ):
         super().__init__()
-        if isinstance(thumbnail, str) and os.path.exists(thumbnail):
-            self.thumbnail = MediaUploadRequest(
-                thumbnail
-            )
-        else:
-            self.thumbnail = thumbnail
+        self.thumbnail = thumbnail
         self.description = description
         self.footer_icon = footer_icon
         self.footer_title = footer_title

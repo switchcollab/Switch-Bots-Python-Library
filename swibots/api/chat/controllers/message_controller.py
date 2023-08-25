@@ -1,11 +1,12 @@
 import asyncio
+import mimetypes
 import os
 import json
 from inspect import iscoroutinefunction
 import logging
 from typing import TYPE_CHECKING, List, Optional
 from asyncio.tasks import Task
-from swibots.error import CancelError
+from swibots.errors import CancelError
 from swibots.api.chat.models import (
     Message,
     GroupChatHistory,
@@ -15,6 +16,13 @@ from swibots.api.chat.models import (
 )
 from swibots.api.common.models import User, MediaUploadRequest, Media, EmbeddedMedia
 from swibots.api.community.models import Channel, Group
+
+from swibots.utils.types import (
+    IOClient,
+    ReadCallbackStream,
+    UploadProgress,
+    UploadProgressCallback,
+)
 
 if TYPE_CHECKING:
     from swibots.api.chat import ChatClient
@@ -83,7 +91,16 @@ class MessageController:
         return response
 
     async def send_message(
-        self, message: Message, media: MediaUploadRequest | EmbeddedMedia = None
+        self,
+        message: str,
+        community_id: str = None,
+        channel_id: str = None,
+        group_id: str = None,
+        user_id: Optional[int] = None,
+        embed_message: Optional[EmbeddedMedia] = None,
+        inline_markup: Optional[InlineMarkup] = None,
+        reply_to_message_id: Optional[int] = None,
+        **kwargs,
     ) -> Message | Task:
         """Send a message
 
@@ -97,108 +114,104 @@ class MessageController:
         Raises:
             ``~switch.error.SwitchError``: If the message could not be sent
         """
-        _embedded = isinstance(media, EmbeddedMedia)
-        if _embedded:
-            message.status = 4
-        data = message.to_json_request()
+        if not (user_id or group_id or channel_id):
+            raise ValueError(
+                "No chat parameter provided, Either use user_id or group_id/channel_id with community_id."
+            )
+
+        new_message = Message(
+            app=self.client.app,
+            message=message,
+            community_id=community_id,
+            group_id=group_id,
+            channel_id=channel_id,
+            receiver_id=user_id,
+            embed_message=embed_message,
+            inline_markup=inline_markup,
+            replied_to_id=reply_to_message_id,
+            **kwargs,
+        )
+
+        if new_message.embed_message and new_message.embed_message.thumbnail:
+            thumb = new_message.embed_message.thumbnail
+            if thumb and os.path.exists(thumb):
+                new_message.embed_message.thumbnail = (
+                    await self.client.app.upload_media(thumb)
+                ).url
+
+        data = new_message.to_json_request()
         log.debug("Sending message %s", json.dumps(data))
 
-        if (
-            _embedded and isinstance(media.thumbnail, MediaUploadRequest)
-        ) or isinstance(media, MediaUploadRequest):
-            url = f"{BASE_PATH}/create-with-media"
-            form_data = message.to_form_data()
-            form_data.update(media.data_to_request())
-            upload_fn = self._send_file(
-                url, form_data, media.thumbnail if _embedded else media
-            )
-            block = media.thumbnail.block if _embedded else media.block
-            task = asyncio.get_event_loop().create_task(upload_fn)
-            if block:
-                response = await task
-            else:
-                return task
-        else:
-            if _embedded:
-                data["embedMessage"] = media.to_json_request()
-            response = await self.client.post(f"{BASE_PATH}/create", data=data)
+        response = await self.client.post(f"{BASE_PATH}/create", data=data)
         return self.client.build_object(Message, response.data["message"])
 
-    async def send_text(
+    async def send_media(
         self,
-        text: str,
-        to: Optional[int | User] = None,
-        channel: Optional[Channel | str] = None,
-        group: Optional[Group | str] = None,
-        inline_markup: InlineMarkup = None,
-        media: MediaUploadRequest = None,
-    ) -> Message:
-        """Send a message with text
+        document: Optional[str] = None,
+        message: Optional[str] = None,
+        community_id: Optional[str] = None,
+        group_id: Optional[str] = None,
+        channel_id: Optional[str] = None,
+        user_id: Optional[int] = None,
+        caption: Optional[str] = None,
+        file_name: Optional[str] = None,
+        mime_type: Optional[str] = None,
+        thumb: Optional[str] = None,
+        blocking: Optional[bool] = True,
+        progress: Optional[callable] = None,
+        progress_args: Optional[tuple] = (),
+        reply_to_message_id: Optional[int] = None,
+        **kwargs,
+    ):
+        new_message = Message(
+            app=self.client.app,
+            receiver_id=user_id,
+            community_id=community_id,
+            group_id=group_id,
+            channel_id=channel_id,
+            replied_to_id=reply_to_message_id,
+            **kwargs,
+        )
+        form = new_message.to_form_data()
+        files = None
+        log.debug("Sending message %s", json.dumps(form))
+        request_url = f"{BASE_PATH}/create-with-media"
 
-        Parameters:
-            to (``int`` | ``~switch.api.common.models.User``, *optional*): The user id to send the message to. Defaults to the current user id.
-            text (``str``): The text to send
-            channel (``~switch.api.community.models.Channel``, *optional*): The channel to send the message to
-            group (``~switch.api.community.models.Group``, *optional*): The group to send the message to
-            inline_markup (``~switch.api.chat.models.InlineMarkup``, *optional*): The inline markup to send with the message
-            media (``~switch.api.common.models.MediaUploadRequest``, *optional*): The media to send with the message
-
-        Returns:
-            ``~switch.api.chat.models.Message``: The message
-
-        Raises:
-            ``~switch.error.SwitchError``: If the message could not be sent
-        """
-        message = await self.new_message(to, channel, group)
-        message.message = text
-        message.inline_markup = inline_markup
-        return await self.send_message(message, media)
-
-    async def reply(
-        self,
-        message: int | Message,
-        reply: Message,
-        media: MediaUploadRequest | EmbeddedMedia = None,
-    ) -> Message:
-        if isinstance(message, Message):
-            id = message.id
-        else:
-            id = message
-        reply.replied_to_id = id
-        return await self.send_message(reply, media)
-
-    async def reply_text(
-        self,
-        message: int | Message,
-        text: str,
-        inline_markup: InlineMarkup = None,
-        media: MediaUploadRequest | EmbeddedMedia = None,
-        cached_media: Media = None,
-    ) -> Message:
-        """Reply to a message with text
-
-        Parameters:
-            message (``~switch.api.chat.models.Message``): The message to reply to
-            text (``str``): The text to reply with
-
-        Returns:
-            ``~switch.api.chat.models.Message``: The message
-
-        Raises:
-            ``~switch.error.SwitchError``: If the message could not be sent
-        """
-        m = message._prepare_response()
-        if text:
-            m.message = text
-        m.inline_markup = inline_markup
-        m.cached_media = cached_media
-
-        if isinstance(message, Message):
-            id = message.id
-        else:
-            id = message
-
-        return await self.reply(id, m, media)
+        reader = ReadCallbackStream(document, None)
+        if progress:
+            d_progress = UploadProgress(
+                current=0,
+                readed=0,
+                file_name=document,
+                client=IOClient(),
+                url=request_url,
+                callback=progress,
+                callback_args=progress_args,
+            )
+            reader.callback = d_progress.update
+            d_progress._readable_file = reader
+        form.update(
+            {
+                "uploadMediaRequest.caption": caption or message,
+                "uploadMediaRequest.description": message,
+                "uploadMediaRequest.mimeType": mime_type
+                or mimetypes.guess_type(document)[0]
+                or "application/octet-stream",
+            }
+        )
+        if thumb:
+            form["uploadMediaRequest.thumbnail"] = (
+                thumb,
+                thumb,
+                mimetypes.guess_type(thumb)[0],
+            )
+        files = {"uploadMediaRequest.file": (file_name or document, reader, mime_type)}
+        request = self.client.post(request_url, files=files, form_data=form)
+        task = asyncio.get_event_loop().create_task(request)
+        if not blocking:
+            return task
+        response = await task
+        return self.client.build_object(Message, response.data["message"])
 
     async def edit_message(
         self, message: Message, media: EmbeddedMedia | MediaUploadRequest = None
@@ -390,7 +403,7 @@ class MessageController:
         """Get a message by id
 
         Parameters:
-            message_id (``int``): The message id, if a Message is passed, the id will be extracted from it.
+            message_id (``int``): The message id
 
         Returns:
             ``~switch.api.chat.models.Message``: The message
@@ -398,12 +411,8 @@ class MessageController:
         Raises:
             ``~switch.error.SwitchError``: If the message could not be retrieved
         """
-        if isinstance(message_id, Message):
-            id = message_id.id
-        else:
-            id = message_id
-        log.debug("Getting message %s", id)
-        response = await self.client.get(f"{BASE_PATH}/findOne/{id}")
+        log.debug("Getting message %s", message_id)
+        response = await self.client.get(f"{BASE_PATH}/findOne/{message_id}")
         return self.client.build_object(Message, response.data)
 
     async def get_group_chat_history(
@@ -452,7 +461,6 @@ class MessageController:
             f"{BASE_PATH}/group/{user_id}/{group_id}?{str_q}"
         )
         return self.client.build_object(GroupChatHistory, response.data)
-        # return GroupChatHistory.build_from_json(response.data)
 
     async def get_channel_chat_history(
         self,
@@ -519,7 +527,6 @@ class MessageController:
             f"{BASE_PATH}/media?communityId={community_id}"
         )
         return self.client.build_list(Message, response.data)
-        # return Message.build_from_json_list(response.data)
 
     async def get_community_media_files_by_status(
         self, community_id: str, status: str
@@ -542,7 +549,6 @@ class MessageController:
             f"{BASE_PATH}/media?communityId={community_id}&status={status}"
         )
         return self.client.build_list(Message, response.data)
-        # return Message.build_from_json_list(response.data)
 
     async def get_user_media_files(self, user_id: int = None) -> List[Message]:
         """Get user media files
@@ -600,7 +606,6 @@ class MessageController:
         log.debug("Get flag messages for %s", user_id)
         response = await self.client.get(f"{BASE_PATH}/flag?userId={user_id}")
         return self.client.build_list(Message, response.data)
-        # return Message.build_from_json_list(response.data)
 
     async def flag_message(self, message: Message | int) -> bool:
         """Flag a message

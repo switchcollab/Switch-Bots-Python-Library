@@ -19,9 +19,13 @@ class Community(SwitchObject):
         description: Optional[str] = None,
         verified: Optional[bool] = None,
         category: Optional[str] = None,
+        owner_id: Optional[int] = None,
         type: Optional[str] = None,
         link: Optional[str] = None,
         icon: Optional[str] = None,
+        members_count: Optional[int] = None,
+        groups_count: Optional[int] = None,
+        channels_count: Optional[int] = None
     ):
         super().__init__(app)
         self.id = id
@@ -36,9 +40,13 @@ class Community(SwitchObject):
         self.description = description
         self.verified = verified
         self.category = category
+        self.owner_id = owner_id
         self.type = type
         self.link = link
         self.icon = icon
+        self.members_count = members_count
+        self.groups_count = groups_count
+        self.channels_count = channels_count
 
     def to_json(self) -> JSONDict:
         return {
@@ -57,6 +65,10 @@ class Community(SwitchObject):
             "communityType": self.type,
             "link": self.link,
             "icon": self.icon,
+            "createdBy": self.owner_id,
+            "member": self.members_count,
+            "numberOfGroups": self.groups_count,
+            "numberOfChannels": self.channels_count
         }
 
     def from_json(self, data: Optional[JSONDict]) -> Optional["Community"]:
@@ -74,6 +86,10 @@ class Community(SwitchObject):
             self.verified = data.get("verified")
             self.category = data.get("communityCategory")
             self.type = data.get("communityType")
+            self.members_count = data.get("member")
+            self.groups_count = data.get("numberOfGroups")
+            self.channels_count = data.get("numberOfChannels")
+            self.owner_id = int(data.get("createdBy"))
             self.link = data.get("link")
             self.icon = data.get("icon")
         return self

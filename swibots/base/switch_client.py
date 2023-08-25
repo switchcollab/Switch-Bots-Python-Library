@@ -1,13 +1,14 @@
 import json
 from typing import List, Tuple, Type, TypeVar
 import swibots
-from swibots.error import NetworkError
+from swibots.errors import NetworkError
 from swibots.utils import RestClient
 from swibots.utils.types import JSONDict
 from swibots.base import RestResponse
+from logging import getLogger
 
 T = TypeVar("T", bound="swibots.SwitchObject")
-
+LOG = getLogger(__name__)
 
 class SwitchRestClient(RestClient):
     def __init__(self, app: "swibots.App" = None, base_url: str = None, token: str = None):
@@ -97,7 +98,8 @@ class SwitchRestClient(RestClient):
 
         response = RestResponse(jsonObject, response[0], {})
         if response.is_error:
-            raise NetworkError(response.error_message)
+            error = response.error_message
+            raise NetworkError(error)
         return response
 
     def prepare_request_data(self, data: dict) -> dict:

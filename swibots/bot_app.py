@@ -15,7 +15,7 @@ log = logging.getLogger(f"{__name__}")
 LoaderLog = logging.getLogger("loader")
 
 
-class BotApp(App, Decorators):
+class Client(App, Decorators):
     """Bot client
 
     This is the main class for interacting with the Switch BOT API.
@@ -198,3 +198,5 @@ class BotApp(App, Decorators):
     async def on_chat_event(self, evt: ChatEvent):
         if evt is not None:
             await self.process_event(self._build_context(evt))
+
+BotApp = Client

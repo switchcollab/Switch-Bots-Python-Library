@@ -3,7 +3,7 @@ from swibots.api.auth.models.auth_user import AuthUser
 from swibots.api.community.events import *
 from swibots.base import SwitchRestClient, SwitchWSAsyncClient
 from swibots.config import get_config
-from swibots.error import SwitchError
+from swibots.errors import SwitchError
 from logging import getLogger
 from swibots.utils.ws.asyncstomp.async_ws_subscription import AsyncWsSubscription
 from swibots.utils.ws.common.ws_message import WsMessage

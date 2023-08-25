@@ -12,7 +12,7 @@ from typing import Callable, Optional
 import swibots
 from swibots.api import ApiClient
 from swibots.api.auth.models import AuthUser
-from swibots.error import CancelError, SwitchError
+from swibots.errors import CancelError, SwitchError
 from swibots.utils import RestClient, DownloadProgressCallback, UploadProgress, DownloadProgress, IOClient, ReadCallbackStream
 import httpx
 
@@ -45,27 +45,6 @@ class App(AbstractContextManager, ApiClient):
         self.on_app_start: Callable = None
         self.rest_client = RestClient()
         self.receive_updates = receive_updates
-
-    async def handle_upload(self, url, file_name, data=None, file_field="file", progress=None,  progress_args: tuple = ()):
-        dProgress = UploadProgress(
-            current=0,
-            readed=0,
-            file_name=file_name,
-            client=IOClient(),
-            url=file_name,
-            callback=progress,
-            callback_args=progress_args
-        )
-        file = open(file_name, "rb")
-        reader = ReadCallbackStream(
-            file, dProgress.update
-        )
-        mime = mimetypes.guess_type(file_name)[0] or "application/octet-stream"
-        try:
-            r = await self.rest_client._client.post(url, files={file_field: (file_name, reader, mime)}, data=data, headers={"Authorization": f"Bearer {self.token}"})
-            return r.json()
-        except CancelError:
-            pass
 
     async def handle_download(self, url: str, file_name: str, directory="downloads/", in_memory: bool = False, block: bool = True, progress: DownloadProgressCallback = None, progress_args: tuple = ()):
         if directory is None or directory == "":
@@ -118,34 +97,6 @@ class App(AbstractContextManager, ApiClient):
                 shutil.move(temp_file_path, file_path)
                 return file_path
 
-        # file_id, directory, file_name, in_memory, file_size, progress, progress_args = packet
-
-        # os.makedirs(directory, exist_ok=True) if not in_memory else None
-        # temp_file_path = os.path.abspath(re.sub("\\\\", "/", os.path.join(directory, file_name))) + ".temp"
-        # file = BytesIO() if in_memory else open(temp_file_path, "wb")
-
-        # try:
-        #     async for chunk in self.get_file(file_id, file_size, 0, 0, progress, progress_args):
-        #         file.write(chunk)
-        # except BaseException as e:
-        #     if not in_memory:
-        #         file.close()
-        #         os.remove(temp_file_path)
-
-        #     if isinstance(e, asyncio.CancelledError):
-        #         raise e
-
-        #     return None
-        # else:
-        #     if in_memory:
-        #         file.name = file_name
-        #         return file
-        #     else:
-        #         file.close()
-        #         file_path = os.path.splitext(temp_file_path)[0]
-        #         shutil.move(temp_file_path, file_path)
-        #         return file_path
-
     async def _validate_credentials(self):
         if self.token is not None:
             return await self._validate_token()
@@ -192,7 +143,7 @@ class App(AbstractContextManager, ApiClient):
     async def start(self):
         try:
             if self._running:
-                raise SwitchError("App is already running")
+                return
             self._running = True
             """Starts the app"""
             log.info("🚀 Starting app...")

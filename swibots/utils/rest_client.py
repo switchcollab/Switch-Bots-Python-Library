@@ -6,7 +6,7 @@ from typing import Optional, Tuple
 # import the REST library
 import httpx
 
-from swibots.error import NetworkError, SwitchError
+from swibots.errors import NetworkError, SwitchError
 from swibots.utils.types import JSONDict
 
 log = logging.getLogger(__name__)
@@ -102,9 +102,7 @@ class RestClient:
         return data
 
     def prepare_request_headers(self, headers: dict) -> dict:
-        if headers is None:
-            headers = {}
-        return headers
+        return headers or {}
 
     async def do_request(
         self, url: str, method: str, data: dict = None, form_data=None, files=None, headers: dict = None

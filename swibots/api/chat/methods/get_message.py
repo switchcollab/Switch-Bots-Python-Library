@@ -19,3 +19,9 @@ class GetMessage:
         This function does the same as :meth:`~switch.api.chat.controllers.MessageController.get_message`.
         """
         return await self.chat_service.messages.get_message(message_id)
+
+    async def get_messages(self: "swibots.ApiClient", message_ids: List[int] | int) -> Message | List[Message]:
+        """Get messages by ids"""
+        if isinstance(message_ids, list):
+            return [await self.get_message(id) for id in message_ids]
+        return await self.get_message(message_ids)

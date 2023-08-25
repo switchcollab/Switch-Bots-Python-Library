@@ -31,4 +31,4 @@ class ChannelController:
 
     async def get_all_channels(self, community_id: str) -> List[Channel]:
         response = await self.client.get(f"{BASE_PATH}/all?communityId={community_id}")
-        return self.client.build_list(Channel, response.data)
+        return self.client.build_list(Channel, response.data.get("result"))

@@ -3,7 +3,7 @@ from asyncio import get_event_loop
 from enum import Enum
 from typing import Any, Callable, Collection, Coroutine, Dict, TypeVar, Union
 from inspect import iscoroutinefunction
-from swibots.error import CancelError
+from swibots.errors import CancelError
 
 
 class IOClient:
@@ -32,7 +32,7 @@ class UploadProgress:
         client: IOClient,
         file_name: str,
         callback,
-        callback_args,
+        callback_args
     ):
         self.current = current
         self.readed = readed
@@ -55,7 +55,7 @@ class UploadProgress:
         if self.callback:
             async def task():
                 try:
-                    iscoro = self.callback(self, *self.callback_args)
+                    iscoro = self.callback(self, *self.callback_args or ())
                     if iscoroutinefunction(self.callback):
                         await iscoro
                 except CancelError as er:
@@ -69,8 +69,12 @@ class UploadProgress:
             self._tasks.append(_task)
 
             def onDone(task):
-                if _task.exception() and self._readable_file:
-                    self._readable_file.cancelled = True
+                if task.exception():
+                    if isinstance(task.exception(), CancelError) and self._readable_file:
+                        self._readable_file.cancelled = True
+                        return
+                    raise task.exception()
+                
 
             _task.add_done_callback(onDone)
 

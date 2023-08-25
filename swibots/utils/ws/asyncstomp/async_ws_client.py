@@ -1,7 +1,7 @@
 import asyncio
 from typing import List
 
-from swibots.error import SwitchError
+from swibots.errors import SwitchError
 
 from .async_ws_subscription import AsyncWsSubscription
 from swibots.utils.ws.common import WsFrame
