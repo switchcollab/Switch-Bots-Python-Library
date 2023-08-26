@@ -173,7 +173,7 @@ class MessageController:
             **kwargs,
         )
         form = new_message.to_form_data()
-        files = None
+        files = {}
         log.debug("Sending message %s", json.dumps(form))
         request_url = f"{BASE_PATH}/create-with-media"
 
@@ -200,12 +200,12 @@ class MessageController:
             }
         )
         if thumb:
-            form["uploadMediaRequest.thumbnail"] = (
+            files["uploadMediaRequest.thumbnail"] = (
                 thumb,
-                thumb,
+                open(thumb, "rb"),
                 mimetypes.guess_type(thumb)[0],
             )
-        files = {"uploadMediaRequest.file": (file_name or document, reader, mime_type)}
+        files["uploadMediaRequest.file"] = (file_name or document, reader, mime_type)
         request = self.client.post(request_url, files=files, form_data=form)
         task = asyncio.get_event_loop().create_task(request)
         if not blocking:
