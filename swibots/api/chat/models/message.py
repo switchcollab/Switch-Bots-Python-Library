@@ -164,6 +164,7 @@ class Message(
             "buttonName": self.button_name,
             "buttonPressedId": self.button_pressed_id,
             "callback_data": self.callback_data,
+            "cachedMedia": self.cached_media.to_json() if self.cached_media else None,
             "channelChat": self.channel_chat,
             "channelId": self.channel_id,
             "commandName": self.command_name,
@@ -191,6 +192,7 @@ class Message(
             "pinned": self.pinned,
             "reactions": self.reactions,
             "receiverId": self.receiver_id,
+            "mediaInfo": self.media_info.to_json() if self.media_info else None,
             "repliedMessage": replied.to_json() if replied else None,
             "repliedTo": self.replied_to_id,
             "replies": self.replies,
@@ -228,6 +230,7 @@ class Message(
             self.media_link = data.get("mediaLink")
             self.media_id = data.get("mediaId")
             self.media_info = Media.build_from_json(data.get("mediaInfo"), self.app)
+            self.cached_media = Media.build_from_json(data.get("cachedMedia"), self.app)
             self.mentioned_ids = data.get("mentionedIds")
             self.message = data.get("message")
             self.personal_chat = data.get("personalChat")
@@ -301,6 +304,8 @@ class Message(
         return self.replies
 
     async def get_replied_message(self) -> "Message":
+        if self.replied_message:
+            return self.replied_message
         if self.replied_to_id is None or self.replied_to_id <= 0:
             return None
         if self.replied_to is None:
@@ -324,47 +329,42 @@ class Message(
 
     ### API Methods ###
 
-    async def respond(
-        self,
-        text: str = None,
-        media: MediaUploadRequest | EmbeddedMedia = None,
-        inline_markup: InlineMarkup = None,
-    ) -> "Message":
-        message = self._prepare_response()
-
-        if isinstance(text, (EmbeddedMedia, MediaUploadRequest)):
-            media = text
-            text = None
-        if text:
-            message.message = text
-        if inline_markup:
-            message.inline_markup = inline_markup
-        return await self.app.send_message(message, media)
+    async def respond(self, message: str, **kwargs) -> "Message":
+        return await self.app.send_message(
+            message=message,
+            community_id=self.community_id,
+            group_id=self.group_id,
+            channel_id=self.channel_id,
+            user_id=self.user_id,
+            **kwargs,
+        )
 
     send = respond
 
     async def delete(self) -> None:
         return await self.app.delete_message(self)
 
-    async def reply(
-        self, reply: "Message", media: MediaUploadRequest | EmbeddedMedia = None
-    ) -> "Message":
-        if isinstance(reply, str):
-            return await self.app.reply_message_text(self, reply, media)
-        return await self.app.reply_message(self, reply, media)
+    async def reply_text(self, message: str, **kwargs) -> "Message":
+        return await self.app.send_message(
+            message,
+            community_id=self.community_id,
+            group_id=self.group_id,
+            channel_id=self.channel_id,
+            user_id=self.user_id,
+            reply_to_message_id=self.id,
+            **kwargs,
+        )
 
-    async def reply_text(
-        self,
-        text: str,
-        inline_markup: Optional[InlineMarkup] = None,
-        media: MediaUploadRequest | EmbeddedMedia = None,
-        cached_media: Media = None,
-        quote: bool = True,
-    ) -> "Message":
-        if not quote:
-            return await self.respond(text, media, inline_markup)
-        return await self.app.reply_message_text(
-            self, text, inline_markup, media, cached_media
+    async def reply_media(self, message: str, document: str, **kwargs) -> "Message":
+        return await self.app.send_media(
+            message=message,
+            document=document,
+            community_id=self.community_id,
+            group_id=self.group_id,
+            channel_id=self.channel_id,
+            user_id=self.user_id,
+            
+            **kwargs,
         )
 
     async def edit_text(
@@ -372,8 +372,9 @@ class Message(
         text: str,
         media: EmbeddedMedia = None,
         inline_markup: Optional[InlineMarkup] = None,
+        cached_media: Media = None
     ) -> "Message":
-        return await self.app.edit_message_text(self, text, media, inline_markup)
+        return await self.app.edit_message_text(self, text, media, inline_markup, cached_media=cached_media)
 
     async def forward_to(
         self,
