@@ -371,10 +371,9 @@ class Message(
         self,
         text: str,
         media: EmbeddedMedia = None,
-        inline_markup: Optional[InlineMarkup] = None,
-        cached_media: Media = None
+        inline_markup: Optional[InlineMarkup] = None
     ) -> "Message":
-        return await self.app.edit_message_text(self, text, media, inline_markup, cached_media=cached_media)
+        return await self.app.edit_message_text(self, text, media, inline_markup)
 
     async def forward_to(
         self,
