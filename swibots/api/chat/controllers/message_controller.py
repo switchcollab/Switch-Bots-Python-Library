@@ -148,12 +148,13 @@ class MessageController:
     async def send_media(
         self,
         document: Optional[str] = None,
-        message: Optional[str] = None,
+        message: Optional[str] = "",
         community_id: Optional[str] = None,
         group_id: Optional[str] = None,
         channel_id: Optional[str] = None,
         user_id: Optional[int] = None,
         caption: Optional[str] = None,
+        description: Optional[str] = None,
         file_name: Optional[str] = None,
         mime_type: Optional[str] = None,
         thumb: Optional[str] = None,
@@ -170,6 +171,7 @@ class MessageController:
             group_id=group_id,
             channel_id=channel_id,
             replied_to_id=reply_to_message_id,
+            message=message,
             **kwargs,
         )
         form = new_message.to_form_data()
@@ -190,10 +192,11 @@ class MessageController:
             )
             reader.callback = d_progress.update
             d_progress._readable_file = reader
+        files["uploadMediaRequest.file"] = (file_name or document, reader, mime_type)
         form.update(
             {
                 "uploadMediaRequest.caption": caption or message,
-                "uploadMediaRequest.description": message,
+                "uploadMediaRequest.description": description or message,
                 "uploadMediaRequest.mimeType": mime_type
                 or mimetypes.guess_type(document)[0]
                 or "application/octet-stream",
@@ -205,7 +208,6 @@ class MessageController:
                 open(thumb, "rb"),
                 mimetypes.guess_type(thumb)[0],
             )
-        files["uploadMediaRequest.file"] = (file_name or document, reader, mime_type)
         request = self.client.post(request_url, files=files, form_data=form)
         task = asyncio.get_event_loop().create_task(request)
         if not blocking:
@@ -244,9 +246,7 @@ class MessageController:
 
         data = new_message.to_json_request()
         log.debug("Editing message %s", json.dumps(data))
-
         response = await self.client.put(f"{BASE_PATH}?id={message.id}", data=data)
-
         return self.client.build_object(Message, response.data["message"])
 
     async def edit_message_text(
@@ -272,7 +272,6 @@ class MessageController:
             id = message.id
         else:
             id = message
-
         return await self.edit_message(
             Message(id=id, message=text, inline_markup=inline_markup), media
         )
