@@ -380,7 +380,7 @@ class Message(
         group_channel: Optional[Group | Channel | str] = None,
         receiver_id: Optional[str] = None,
     ):
-        return await self.app.forward_message(self, group_channel, receiver_id)
+        return await self.app.forward_message(self.id, group_channel, receiver_id)
 
     async def download(
         self,

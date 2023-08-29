@@ -359,10 +359,10 @@ class MessageController:
 
     async def forward_message(
         self,
-        message: Message | int,
+        message_id: int | List[int],
         group_channel: Optional[Group | Channel | str] = None,
         receiver_id: Optional[str] = None,
-    ) -> Message:
+    ) -> Message | List[Message]:
         """Forward a message to a group or user
 
         Parameters:
@@ -376,15 +376,13 @@ class MessageController:
         Raises:
             ``~switch.error.SwitchError``: If the message could not be forwarded
         """
-        if isinstance(message, Message):
-            id = message.id
-        else:
-            id = message
-
         if isinstance(group_channel, (Group, Channel)):
             group_channel = group_channel.id
         elif group_channel is not None:
             group_channel = group_channel
+
+        if isinstance(message_id, list):
+            message_id = ",".join(message_id)
 
         q = []
         if group_channel is not None:
@@ -395,8 +393,12 @@ class MessageController:
         strQuery = "&".join(q)
 
         log.debug("Forwarding message %s", id)
-        response = await self.client.put(f"{BASE_PATH}/forward/{id}?{strQuery}")
-        return self.client.build_object(Message, response.data["message"])
+        response = await self.client.put(f"{BASE_PATH}/forward/{message_id}?{strQuery}")
+        if isinstance(response.data, list):
+            message = self.client.build_list(Message, response.data)
+        if isinstance(message_id, list):
+            return message
+        return message[0] if message else None
 
     async def get_message(self, message_id: int) -> Message:
         """Get a message by id

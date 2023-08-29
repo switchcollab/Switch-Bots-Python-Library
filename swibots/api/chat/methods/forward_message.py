@@ -1,4 +1,4 @@
-from typing import Type, TypeVar, Optional
+from typing import Type, TypeVar, Optional, List
 import swibots
 from swibots.api.chat.models import Message
 from swibots.api.community.models import Group, Channel
@@ -7,10 +7,10 @@ from swibots.api.community.models import Group, Channel
 class ForwardMessage:
     async def forward_message(
         self: "swibots.ApiClient",
-        message: Message | int,
+        message_id: int | List[int],
         group_channel: Optional[Group | Channel | str] = None,
         receiver_id: Optional[str] = None
-    ) -> Message:
+    ) -> Message | List[Message]:
         """Forward a message
 
         Parameters:
@@ -27,5 +27,5 @@ class ForwardMessage:
         This functions does the same as :meth:`~switch.api.chat.controllers.MessageController.forward_message`.
         """
         return await self.chat_service.messages.forward_message(
-            message, group_channel, receiver_id
+            message_id, group_channel, receiver_id
         )
