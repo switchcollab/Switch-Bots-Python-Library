@@ -97,6 +97,9 @@ class MessageController:
         channel_id: str = None,
         group_id: str = None,
         user_id: Optional[int] = None,
+        document: Optional[str] = None,
+        caption: Optional[str] = None,
+        description: Optional[str] = None,
         embed_message: Optional[EmbeddedMedia] = None,
         inline_markup: Optional[InlineMarkup] = None,
         reply_to_message_id: Optional[int] = None,
@@ -117,6 +120,18 @@ class MessageController:
         if not (user_id or group_id or channel_id):
             raise ValueError(
                 "No chat parameter provided, Either use user_id or group_id/channel_id with community_id."
+            )
+        if document:
+            return await self.send_media(
+                document=document,
+                message=message,
+                caption=caption,
+                description=description,
+                community_id=community_id,
+                group_id=group_id,
+                channel_id=channel_id,
+                user_id=user_id,
+                **kwargs,
             )
 
         new_message = Message(
@@ -178,8 +193,23 @@ class MessageController:
         files = {}
         log.debug("Sending message %s", json.dumps(form))
         request_url = f"{BASE_PATH}/create-with-media"
-
+        reader, thumb_like = None, None
         reader = ReadCallbackStream(document, None)
+        files["uploadMediaRequest.file"] = (
+            file_name or document,
+            reader,
+            mime_type,
+        )
+        form.update(
+            {
+                "uploadMediaRequest.caption": caption or message,
+                "uploadMediaRequest.description": description or message,
+                "uploadMediaRequest.mimeType": mime_type
+                or mimetypes.guess_type(document)[0]
+                or "application/octet-stream",
+            }
+        )
+
         if progress:
             d_progress = UploadProgress(
                 current=0,
@@ -192,27 +222,28 @@ class MessageController:
             )
             reader.callback = d_progress.update
             d_progress._readable_file = reader
-        files["uploadMediaRequest.file"] = (file_name or document, reader, mime_type)
-        form.update(
-            {
-                "uploadMediaRequest.caption": caption or message,
-                "uploadMediaRequest.description": description or message,
-                "uploadMediaRequest.mimeType": mime_type
-                or mimetypes.guess_type(document)[0]
-                or "application/octet-stream",
-            }
-        )
+
         if thumb:
+            thumb_like = open(thumb, "rb")
             files["uploadMediaRequest.thumbnail"] = (
                 thumb,
-                open(thumb, "rb"),
+                thumb_like,
                 mimetypes.guess_type(thumb)[0],
             )
-        request = self.client.post(request_url, files=files, form_data=form)
+
+        def close_files(_task=None):
+            if reader:
+                reader.close()
+            if thumb_like:
+                thumb_like.close()
+
+        request = self.client.post(request_url, files=files or None, form_data=form)
         task = asyncio.get_event_loop().create_task(request)
         if not blocking:
+            task.add_done_callback(close_files)
             return task
         response = await task
+        close_files()
         return self.client.build_object(Message, response.data["message"])
 
     async def edit_message(
