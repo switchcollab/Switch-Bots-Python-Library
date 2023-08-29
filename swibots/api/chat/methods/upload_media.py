@@ -71,3 +71,14 @@ class UploadMedia:
             reply_to_message_id=reply_to_message_id,
             **kwargs,
         )
+
+    async def update_media_info(
+        self: "swibots.ApiClient",
+        media_id: int,
+        caption: Optional[str] = None,
+        description: Optional[str] = None,
+    ):
+        """Update Info of uploaded media"""
+        return await self.chat_service.media.update_media(
+            media_id=media_id, caption=caption, description=description
+        )

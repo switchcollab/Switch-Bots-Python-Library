@@ -1,3 +1,4 @@
+import swibots
 from typing import Optional
 from swibots.utils.types import JSONDict
 from swibots.base.switch_object import SwitchObject
@@ -6,6 +7,7 @@ from swibots.base.switch_object import SwitchObject
 class Media(SwitchObject):
     def __init__(
         self,
+        app: "swibots.App" = None,
         id: Optional[int] = None,
         caption: Optional[str] = None,
         description: Optional[str] = None,
@@ -17,6 +19,7 @@ class Media(SwitchObject):
         file_size: Optional[bool] = None,
         url: Optional[bool] = None,
     ):
+        super().__init__(app)
         self.id = id
         self.caption = caption
         self.description = description
@@ -55,3 +58,10 @@ class Media(SwitchObject):
             self.file_size = data.get("fileSize")
             self.url = data.get("downloadUrl")
         return self
+
+    async def edit(
+        self, caption: Optional[str] = None, description: Optional[str] = None
+    ):
+        return await self.app.update_media_info(
+            self.id, caption=caption, description=description
+        )

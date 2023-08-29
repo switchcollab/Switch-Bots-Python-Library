@@ -68,3 +68,15 @@ class MediaController:
         reader.close()
 
         return self.client.build_object(Media, response.data)
+
+    async def update_media(
+        self,
+        media_id: int,
+        caption: Optional[str] = None,
+        description: Optional[str] = None,
+    ):
+        response = await self.client.put(
+            BASE_PATH,
+            data={"id": media_id, "caption": caption, "description": description},
+        )
+        return self.client.build_object(Media, response.data)
