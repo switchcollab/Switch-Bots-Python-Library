@@ -17,7 +17,6 @@ from .get_messages import GetMessages
 from .get_unread_messages_count import GetUnreadMessagesCount
 from .get_user_media_files import GetUserMediaFiles
 from .send_message import SendMessage
-from .edit_message_text import EditMessageText
 from .answer_inline_query import AnswerInlineQuery
 from .download_media import DownloadMedia
 from .upload_media import UploadMedia
@@ -40,7 +39,6 @@ class ChatMethods(
     GetUnreadMessagesCount,
     GetUserMediaFiles,
     SendMessage,
-    EditMessageText,
     AnswerInlineQuery,
     DownloadMedia,
     UploadMedia,

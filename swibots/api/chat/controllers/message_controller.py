@@ -84,12 +84,6 @@ class MessageController:
         response = await self.client.get(f"{BASE_PATH}/{user_id}")
         return self.client.build_list(Message, response.data)
 
-    async def _send_file(self, url, form_data, media: MediaUploadRequest):
-        upload_req, files = media.file_to_request(url)
-        response = await self.client.post(url, form_data=form_data, files=files)
-        files["uploadMediaRequest.file"][1].close()
-        return response
-
     async def send_message(
         self,
         message: str,
@@ -247,7 +241,12 @@ class MessageController:
         return self.client.build_object(Message, response.data["message"])
 
     async def edit_message(
-        self, message: Message, media: EmbeddedMedia | MediaUploadRequest = None
+        self,
+        message_id: int,
+        text: str,
+        embed_message: EmbeddedMedia = None,
+        inline_markup: InlineMarkup = None,
+        **kwargs,
     ) -> Message:
         """Edit a message
 
@@ -260,52 +259,26 @@ class MessageController:
         Raises:
             ``~switch.error.SwitchError``: If the message could not be edited
         """
-        embedded = isinstance(media, EmbeddedMedia)
         new_message = Message(
             self.client.app,
-            message=message.message,
-            inline_markup=message.inline_markup,
-            embed_message=message.embed_message,
-            id=message.id,
+            message=text,
+            inline_markup=inline_markup,
+            id=message_id,
+            **kwargs,
         )
 
-        if embedded:
-            if isinstance(media.thumbnail, MediaUploadRequest):
-                response_media = await self.client.app.upload_media(media.thumbnail)
-                media.thumbnail = response_media.url
-            new_message.embed_message = media
+        if embed_message:
+            if embed_message.thumbnail and os.path.exists(embed_message.thumbnail):
+                response_media = await self.client.app.upload_media(
+                    embed_message.thumbnail
+                )
+                embed_message.thumbnail = response_media.url
+            new_message.embed_message = embed_message
 
         data = new_message.to_json_request()
         log.debug("Editing message %s", json.dumps(data))
-        response = await self.client.put(f"{BASE_PATH}?id={message.id}", data=data)
+        response = await self.client.put(f"{BASE_PATH}?id={message_id}", data=data)
         return self.client.build_object(Message, response.data["message"])
-
-    async def edit_message_text(
-        self,
-        message: int | Message,
-        text: str,
-        media: EmbeddedMedia = None,
-        inline_markup: InlineMarkup = None,
-    ) -> Message:
-        """Edit a message with text
-
-        Parameters:
-            message (``~switch.api.chat.models.Message``): The message to edit
-            text (``str``): The text to edit with
-
-        Returns:
-            ``~switch.api.chat.models.Message``: The message
-
-        Raises:
-            ``~switch.error.SwitchError``: If the message could not be edited
-        """
-        if isinstance(message, Message):
-            id = message.id
-        else:
-            id = message
-        return await self.edit_message(
-            Message(id=id, message=text, inline_markup=inline_markup), media
-        )
 
     async def delete_message(self, message: int | Message) -> bool:
         """Delete a message

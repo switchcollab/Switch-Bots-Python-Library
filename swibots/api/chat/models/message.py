@@ -363,17 +363,23 @@ class Message(
             group_id=self.group_id,
             channel_id=self.channel_id,
             user_id=self.user_id,
-            
             **kwargs,
         )
 
     async def edit_text(
         self,
         text: str,
-        media: EmbeddedMedia = None,
-        inline_markup: Optional[InlineMarkup] = None
+        embed_message: EmbeddedMedia = None,
+        inline_markup: Optional[InlineMarkup] = None,
+        **kwargs,
     ) -> "Message":
-        return await self.app.edit_message_text(self, text, media, inline_markup)
+        return await self.app.edit_message_text(
+            self.id,
+            text,
+            embed_message=embed_message,
+            inline_markup=inline_markup,
+            **kwargs,
+        )
 
     async def forward_to(
         self,
