@@ -1,7 +1,7 @@
-from typing import TYPE_CHECKING, Type, TypeVar, Optional
+from typing import TYPE_CHECKING, Optional
 import swibots
 from swibots.api.chat.models import Message, InlineMarkup
-from swibots.api.common.models import MediaUploadRequest, EmbeddedMedia
+from swibots.api.common.models import EmbeddedMedia
 
 if TYPE_CHECKING:
     from swibots.api import ApiClient
@@ -26,15 +26,19 @@ class SendMessage:
         """Send a message
 
         Parameters:
-            message (``~switch.api.chat.models.Message``): The message to send
+            `message`: text to send as message
+            `community_id`: Community ID
+            `group_id`: Group id
+            `channel_id`: Channel ID
+            `user_id`: User id to send message
+            ``
 
         Returns:
             ``~switch.api.chat.models.Message``: The message
 
         Raises:
             ``~switch.error.SwitchError``: If the message could not be sent
-
-        This functions does the same as :meth:`~switch.api.chat.controllers.MessageController.send_message`.
+            ``~ValueError``: If Chat I
         """
         return await self.chat_service.messages.send_message(
             message,

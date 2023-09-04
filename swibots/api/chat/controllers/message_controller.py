@@ -14,14 +14,13 @@ from swibots.api.chat.models import (
     InlineQuery,
     InlineQueryAnswer,
 )
-from swibots.api.common.models import User, MediaUploadRequest, Media, EmbeddedMedia
+from swibots.api.common.models import User, EmbeddedMedia
 from swibots.api.community.models import Channel, Group
 
 from swibots.utils.types import (
     IOClient,
     ReadCallbackStream,
     UploadProgress,
-    UploadProgressCallback,
 )
 
 if TYPE_CHECKING:
@@ -99,18 +98,6 @@ class MessageController:
         reply_to_message_id: Optional[int] = None,
         **kwargs,
     ) -> Message | Task:
-        """Send a message
-
-        Parameters:
-            message (``~switch.api.chat.models.Message``): The message to send
-            media (``~switch.api.common.models.MediaUploadRequest``, *optional*): The media to send with the message
-
-        Returns:
-            ``~switch.api.chat.models.Message``: The message
-
-        Raises:
-            ``~switch.error.SwitchError``: If the message could not be sent
-        """
         if not (user_id or group_id or channel_id):
             raise ValueError(
                 "No chat parameter provided, Either use user_id or group_id/channel_id with community_id."
@@ -172,7 +159,7 @@ class MessageController:
         progress_args: Optional[tuple] = (),
         reply_to_message_id: Optional[int] = None,
         **kwargs,
-    ):
+    ) -> Message | Task:
         new_message = Message(
             app=self.client.app,
             receiver_id=user_id,

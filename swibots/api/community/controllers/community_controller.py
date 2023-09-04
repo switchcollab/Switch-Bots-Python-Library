@@ -46,7 +46,9 @@ class CommunityController:
         )
         return response.data.get("success", False)
 
-    async def get_community_member(self, community_id: str, user_id: str) -> CommunityMember:
+    async def get_community_member(
+        self, community_id: str, user_id: str
+    ) -> CommunityMember:
         response = await self.client.get(
             f"{BASE_PATH}/user?communityId={community_id}&userId={user_id}"
         )
@@ -56,4 +58,51 @@ class CommunityController:
         response = await self.client.get(
             f"{BASE_PATH}/users?community_id={community_id}"
         )
-        return self.client.build_list(CommunityMember, response.data.get("communityMembers"))
+        return self.client.build_list(
+            CommunityMember, response.data.get("communityMembers")
+        )
+
+    # region
+
+    async def approve_chat_join(
+        self,
+        members: Optional[int] = None,
+        channel_id: Optional[str] = None,
+        community_id: Optional[str] = None,
+        group_id: Optional[str] = None,
+        decline: Optional[bool] = None,
+    ):
+        await self.client.get(
+            f"{BASE_PATH}/members/private/accept",
+            data={
+                "channelId": channel_id,
+                "communityId": community_id,
+                "decline": decline,
+                "groupId": group_id,
+                "members": members,
+            },
+        )
+
+    # endregion
+
+    # region
+    # Commands
+
+    async def get_active_commands(self, community_id: str, channel_id: str = None,
+                                  group_id: Optional[str] = None):
+        response = await self.client.get(f"{BASE_PATH}/activecommands", data={
+            "channelId": channel_id,
+            "communityId": community_id,
+            "isGroup": bool(group_id)
+        })
+
+ 
+    # endregion
+
+    # region
+
+    async def is_admin(self, community_id: str, user_id: int) -> bool:
+        response = await self.client.get(f"{BASE_PATH}/user?communityId={community_id}&userId={user_id}")
+        return response.data.get("result", False)
+
+    # endregion

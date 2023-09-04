@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING, Type, TypeVar, Optional
 import swibots
 from swibots.api.common.models import Media
-from swibots.api.common.models import MediaUploadRequest
 
 if TYPE_CHECKING:
     from swibots.api import ApiClient
@@ -20,7 +19,7 @@ class UploadMedia:
         """upload a file to get `Media` object.
 
         Arguments:
-            path: The path to the file to upload, or a MediaUploadRequest object.
+            path: The path to the file to upload
             caption: str
             description: str
             mime_type: str
@@ -111,3 +110,10 @@ class UploadMedia:
         return await self.chat_service.media.update_media(
             media_id=media_id, caption=caption, description=description
         )
+
+    async def delete_media(self: "swibots.ApiClient", media_id: int):
+        """Delete existing uploaded media!
+        
+        Arguments:
+          media_id: media id to delete"""
+        return await self.chat_service.media.delete_media(media_id)

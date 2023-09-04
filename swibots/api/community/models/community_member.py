@@ -21,6 +21,7 @@ class CommunityMember(SwitchObject):
         user_id: Optional[str] = None,
         user: Optional[User] = None,
         username: Optional[str] = None,
+        request_status: Optional[str] = None,
         xp: Optional[int] = None,
         xp_spend: Optional[int] = None,
     ):
@@ -40,6 +41,7 @@ class CommunityMember(SwitchObject):
         self.username = username
         self.xp = xp
         self.xp_spend = xp_spend
+        self.request_status = request_status
 
     def to_json(self) -> JSONDict:
         return {
@@ -55,6 +57,7 @@ class CommunityMember(SwitchObject):
             "userId": self.user_id,
             "userInfo": self.user.to_json() if self.user else None,
             "userName": self.username,
+            "requestStatus": self.request_status,
             "xp": self.xp,
             "xpSpend": self.xp_spend,
         }
@@ -74,6 +77,7 @@ class CommunityMember(SwitchObject):
             self.user_id = data.get("userId")
             self.username = data.get("userName")
             self.user = User.build_from_json(data.get("userInfo"), self.app)
+            self.request_status = data.get("requestStatus")
             self.xp = data.get("xp")
             self.xp_spend = data.get("xp_spend")
         return self

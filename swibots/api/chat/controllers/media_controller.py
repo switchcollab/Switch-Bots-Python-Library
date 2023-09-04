@@ -10,8 +10,7 @@ from swibots.utils.types import (
     IOClient,
     UploadProgress,
 )
-from swibots.api.common.models import User, MediaUploadRequest, Media
-from swibots.api.community.models import Channel, Group
+from swibots.api.common.models import Media
 
 if TYPE_CHECKING:
     from swibots.api.chat import ChatClient
@@ -38,7 +37,7 @@ class MediaController:
         callback: UploadProgressCallback = None,
         callback_args: Optional[tuple] = None,
     ) -> Media:
-        """upload media from path or with MediaUploadRequest"""
+        """upload media from path"""
 
         url = f"{BASE_PATH}/upload-multipart"
         form_data = {
@@ -80,3 +79,9 @@ class MediaController:
             data={"id": media_id, "caption": caption, "description": description},
         )
         return self.client.build_object(Media, response.data)
+
+    async def delete_media(self, media_id: int):
+        await self.client.delete(
+            "/v1/community/channel/media", data={"mediaId": media_id}
+        )
+        return True

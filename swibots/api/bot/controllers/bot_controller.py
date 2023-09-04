@@ -1,7 +1,7 @@
 import json
 import logging
 from typing import TYPE_CHECKING, List, Optional
-from swibots.api.bot.models import BotInfo, BotCommandInfo
+from swibots.api.bot.models import BotInfo
 from swibots.errors import SwitchError
 from swibots.utils.types import JSONDict
 
@@ -46,7 +46,7 @@ class BotController:
             :obj:``~switch.api.bot.models.BotInfo``: The bot info
         """
         data = bot_info.to_json_request()
-        response = await self.client.put(f"{BASE_PATH}", data=data)
+        response = await self.client.put(BASE_PATH, data=data)
         return BotInfo.build_from_json(response.data)
 
     async def delete_bot_info(self, bot_id: str) -> bool:

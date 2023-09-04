@@ -3,10 +3,10 @@ import os, signal
 import asyncio
 import logging
 import shutil
-from asyncio import CancelledError
 from contextlib import AbstractContextManager
-from typing import List, Collection, Optional, Callable
+from typing import List, Optional, Callable
 import swibots
+from contextlib import suppress
 from signal import signal as signal_fn, SIGINT, SIGTERM, SIGABRT
 from io import BytesIO
 from swibots.api.auth.models import AuthUser
@@ -15,7 +15,7 @@ from swibots.errors import SwitchError, CancelError
 from swibots.api.community.events import CommunityEvent
 from swibots.api.chat.events import ChatEvent
 from swibots.bots import BotContext, Decorators, BaseHandler
-from swibots.api.bot.models import BotInfo, BotCommandInfo
+from swibots.api.bot.models import BotInfo, BotCommand
 from swibots.api.common.events import Event
 from swibots.utils import (
     DownloadProgress,
@@ -48,7 +48,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         bot_description: Optional[str] = None,
         auto_update_bot: Optional[bool] = True,
         loop: asyncio.AbstractEventLoop = None,
-        receive_updates: Optional[bool] = True
+        receive_updates: Optional[bool] = True,
     ):
         """
         Initialize the client
@@ -67,7 +67,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         self.on_chat_service_start = self._on_chat_service_start
         self.on_community_service_start = self._on_community_service_start
         self._handlers: List[BaseHandler] = []
-        self._register_commands: List[swibots.bots.RegisterCommand] = []
+        self._register_commands: List[BotCommand] = []
         self._bot_description = bot_description
         #        self._plugins = plugins
         self.auto_update_bot = auto_update_bot
@@ -123,8 +123,8 @@ class Client(Decorators, AbstractContextManager, ApiClient):
                 for f in files:
                     self.__loadModule(os.path.join(root, f))
 
-    def register_command(
-        self, command: swibots.bots.RegisterCommand | List[swibots.bots.RegisterCommand]
+    def set_bot_commands(
+        self, command: BotCommand | List[BotCommand]
     ) -> "BotApp":
         if isinstance(command, list):
             self._register_commands.extend(command)
@@ -133,8 +133,8 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         asyncio.run_coroutine_threadsafe(self.update_bot_commands(), self._loop)
         return self
 
-    def unregister_command(
-        self, command: swibots.bots.RegisterCommand | List[swibots.bots.RegisterCommand]
+    def delete_bot_commands(
+        self, command: BotCommand| List[BotCommand]
     ) -> "BotApp":
         if isinstance(command, list):
             for cmd in command:
@@ -163,22 +163,9 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         commands = self._register_commands or []
         description = self._bot_description or ""
         # register the commands
-        self._botinfo = BotInfo(description=description, id=self._bot_id)
-        for command in commands:
-            command_name = command.command
-            if isinstance(command_name, str):
-                command_names = command_name.split(",")
-            else:
-                command_names = command_name
-
-            for c_name in command_names:
-                self._botinfo.commands.append(
-                    BotCommandInfo(
-                        command=c_name,
-                        description=command.description,
-                        channel=command.channel,
-                    )
-                )
+        self._botinfo = BotInfo(
+            description=description, id=self._bot_id, commands=commands
+        )
 
         self._botinfo = await self.update_bot_info(self._botinfo)
 
@@ -287,16 +274,6 @@ class Client(Decorators, AbstractContextManager, ApiClient):
                 shutil.move(temp_file_path, file_path)
                 return file_path
 
-    async def _validate_credentials(self):
-        if self.token is not None:
-            return await self._validate_token()
-        if self.username is None or self.password is None:
-            raise SwitchError(
-                "Username and password are required when token is not set"
-            )
-        user = await self.login(user_type=self._user_type)
-        self.user = user
-
     async def _validate_token(self):
         # check if token is valid
         if self.token is None:
@@ -381,19 +358,15 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         return self.start()
 
     def __exit__(self, *args):
-        try:
+        with suppress(ConnectionError):
             self.stop()
-        except ConnectionError:
-            pass
 
     async def __aenter__(self):
         return await self.start()
 
     async def __aexit__(self, *args):
-        try:
+        with suppress(ConnectionError):
             await self.stop()
-        except ConnectionError:
-            pass
 
     async def idle(self):
         task = None

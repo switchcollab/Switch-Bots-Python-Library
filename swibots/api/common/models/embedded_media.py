@@ -3,7 +3,6 @@ from typing import Optional, List
 from swibots.utils.types import JSONDict
 from swibots.base.switch_object import SwitchObject
 from .embed_inline_field import EmbedInlineField
-from .media_upload_request import MediaUploadRequest
 
 
 class EmbeddedMedia(SwitchObject):

@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, BinaryIO, Callable, List, Optional, Union
 import swibots
 from swibots.base import SwitchObject
-from swibots.api.common import User, MediaUploadRequest, Media, EmbeddedMedia
+from swibots.api.common import User, Media, EmbeddedMedia
 from swibots.api.community import Community, Channel, Group
 from swibots.utils.types import JSONDict
 from .inline_markup import InlineMarkup

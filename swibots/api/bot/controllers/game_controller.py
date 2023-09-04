@@ -1,9 +1,7 @@
 import json
 import logging
 from typing import TYPE_CHECKING, List, Optional
-from swibots.api.bot.models import BotInfo, BotCommandInfo, GameInfo
-from swibots.errors import SwitchError
-from swibots.utils.types import JSONDict
+from swibots.api.bot.models import GameInfo
 
 if TYPE_CHECKING:
     from swibots.api.bot import BotClient
