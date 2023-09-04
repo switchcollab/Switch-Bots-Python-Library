@@ -9,7 +9,7 @@ class ForwardMessage:
         self: "swibots.ApiClient",
         message_id: int | List[int],
         group_channel: Optional[Group | Channel | str] = None,
-        receiver_id: Optional[str] = None
+        user_id: Optional[int] = None
     ) -> Message | List[Message]:
         """Forward a message
 
@@ -27,5 +27,5 @@ class ForwardMessage:
         This functions does the same as :meth:`~switch.api.chat.controllers.MessageController.forward_message`.
         """
         return await self.chat_service.messages.forward_message(
-            message_id, group_channel, receiver_id
+            message_id, group_channel, user_id
         )

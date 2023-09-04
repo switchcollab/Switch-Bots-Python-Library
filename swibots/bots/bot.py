@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Optional
 from swibots.api.api_client import ApiClient
 from swibots.api.auth.models.auth_user import AuthUser
-from swibots.api.bot.models import BotInfo, BotCommandInfo
+from swibots.api.bot.models import BotInfo, BotCommand
 from swibots.api.chat.models import Message
 
 if TYPE_CHECKING:
@@ -52,7 +52,7 @@ class Bot(AuthUser, ApiClient):
         self._info = value
 
     @property
-    def commands(self) -> list[BotCommandInfo]:
+    def commands(self) -> list[BotCommand]:
         """Get the bot commands"""
         return self._info.commands or []
 

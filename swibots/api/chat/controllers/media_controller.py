@@ -74,7 +74,7 @@ class MediaController:
         media_id: int,
         caption: Optional[str] = None,
         description: Optional[str] = None,
-    ):
+    ) -> Media:
         response = await self.client.put(
             BASE_PATH,
             data={"id": media_id, "caption": caption, "description": description},

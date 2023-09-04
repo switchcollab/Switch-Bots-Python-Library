@@ -1,7 +1,7 @@
 import json
 from typing import List, Tuple, Type, TypeVar
 import swibots
-from swibots.errors import NetworkError
+from swibots.errors import NetworkError, UnAuthorized, InvalidRouteCall
 from swibots.utils import RestClient
 from swibots.utils.types import JSONDict
 from swibots.base import RestResponse
@@ -99,6 +99,16 @@ class SwitchRestClient(RestClient):
         response = RestResponse(jsonObject, response[0], {})
         if response.is_error:
             error = response.error_message
+            if ":" in error:
+                error = error.split(":", maxsplit=1)[-1].strip().replace("'", '"')
+                try:
+                    error = json.loads(error)['message']
+                except (KeyError, json.JSONDecodeError) as er:
+                    pass
+            if response.status_code == 401:
+                raise UnAuthorized(error)
+            elif response.status_code == 404:
+                raise InvalidRouteCall(error)
             raise NetworkError(error)
         return response
 

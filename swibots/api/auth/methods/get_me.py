@@ -18,4 +18,4 @@ class GetMe:
         This functions does the same as :meth:`~switch.api.auth.controllers.UserController.me`.
 
         """
-        return await self.auth_service.users.me(user_type=user_type)
+        return await self.auth_service.get_me(user_type=user_type)

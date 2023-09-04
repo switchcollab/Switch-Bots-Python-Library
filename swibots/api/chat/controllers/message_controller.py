@@ -365,7 +365,7 @@ class MessageController:
         self,
         message_id: int | List[int],
         group_channel: Optional[Group | Channel | str] = None,
-        receiver_id: Optional[str] = None,
+        user_id: Optional[int] = None,
     ) -> Message | List[Message]:
         """Forward a message to a group or user
 
@@ -391,8 +391,8 @@ class MessageController:
         q = []
         if group_channel is not None:
             q.append(f"groupChannelId={group_channel}")
-        if receiver_id is not None:
-            q.append(f"receiverId={receiver_id}")
+        if user_id is not None:
+            q.append(f"receiverId={user_id}")
 
         strQuery = "&".join(q)
 

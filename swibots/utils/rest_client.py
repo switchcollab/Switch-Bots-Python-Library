@@ -40,16 +40,8 @@ class RestClient:
             limits=limits,
         )
 
-        try:
-            self._client = self._build_client()
-        except ImportError as exc:
-            if "httpx[socks]" not in str(exc):
-                raise exc
+        self._client = self._build_client()
 
-            raise RuntimeError(
-                "To use Socks5 proxies, PTB must be installed via `pip install "
-                "python-telegram-bot[socks]`."
-            ) from exc
 
     def _build_client(self) -> httpx.AsyncClient:
         # type: ignore[arg-type]

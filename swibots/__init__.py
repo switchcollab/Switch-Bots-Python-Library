@@ -6,6 +6,5 @@ from .config import *
 from .types import *
 
 # from .bot_client import SwitchBotClient
-from .app import App
 from .bot_app import BotApp, Client
 from .bots import *

@@ -311,21 +311,10 @@ class Message(
         if self.replied_to is None:
             self.replied_to = await self.app.get_message(self.replied_to_id)
         return self.replied_to
-
-    def _prepare_response(self) -> "Message":
-        response = Message(self.app)
-        if self.community_id:
-            response.community_id = self.community_id
-            response.group_id = self.group_id
-            response.channel_id = self.channel_id
-        else:
-            receiver_id = (
-                self.user_id if self.user_id != self.app.user.id else self.receiver_id
-            )
-            response.receiver_id = receiver_id
-
-        response.user_id = self.id
-        return response
+    
+    def _get_receiver_id(self):
+        """Get receiver id to send message"""
+        return self.user_id if self.user_id != self.app.user.id else self.receiver_id
 
     ### API Methods ###
 
@@ -335,7 +324,7 @@ class Message(
             community_id=self.community_id,
             group_id=self.group_id,
             channel_id=self.channel_id,
-            user_id=self.user_id,
+            user_id=self._get_receiver_id(),
             **kwargs,
         )
 
@@ -350,7 +339,7 @@ class Message(
             community_id=self.community_id,
             group_id=self.group_id,
             channel_id=self.channel_id,
-            user_id=self.user_id,
+            user_id=self._get_receiver_id(),
             reply_to_message_id=self.id,
             **kwargs,
         )
@@ -362,7 +351,7 @@ class Message(
             community_id=self.community_id,
             group_id=self.group_id,
             channel_id=self.channel_id,
-            user_id=self.user_id,
+            user_id=self._get_receiver_id(),
             **kwargs,
         )
 
@@ -384,9 +373,9 @@ class Message(
     async def forward_to(
         self,
         group_channel: Optional[Group | Channel | str] = None,
-        receiver_id: Optional[str] = None,
+        user_id: Optional[int] = None,
     ):
-        return await self.app.forward_message(self.id, group_channel, receiver_id)
+        return await self.app.forward_message(self.id, group_channel, user_id)
 
     async def download(
         self,

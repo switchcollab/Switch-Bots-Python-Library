@@ -29,7 +29,7 @@ pip install git+https://github.com/switchcollab/Switch-Bots-Python-Library.git
 
 ```python title="echobot.py"
 from swibots import (
-    BotApp,
+    Client,
     BotContext,
     MessageEvent
 )
@@ -37,7 +37,7 @@ from swibots import (
 TOKEN = "MY SUPER SECRET TOKEN"
 
 # initialize the app and register commands
-app = BotApp(
+app = Client(
     TOKEN, "A cool bot with annotations and everything you could possibly want :)"
 )
 
@@ -69,11 +69,11 @@ app.run()
 from swibots import InlineMarkup, InlineKeyboardButton
 
 await bot.send_message(
-    Message(receiver_id=50,
+      message="Hi",
+      user_id=bot.user.id,
       inline_markup=InlineMarkup([[
         InlineKeyboardButton("text", url="https://url.com")
    ]])
-  )
 )
 ```
 
@@ -82,21 +82,23 @@ await bot.send_message(
 ```python
 from swibots import MediaUploadRequest
 
-await bot.send_message(
-    Message(...),
-    media=MediaUploadRequest(path="file.png",
-       description="file_name.png",
-       thumbnail="file.png"
-    )
+await bot.send_media(
+   message="This is a message",
+   user_id=100,
+   document="file.pdf",
+   description="file_name.png",
+   thumbnail="file.png"
 )
 ```
 
 #### Sending embedded message
+
 ```python
 from swibots import EmbeddedMedia, EmbedInlineField
 
 await bot.send_message(
-    Message(...),
+    message="Embedded message",
+    user_id=400,
     media=EmbeddedMedia(
         thumbnail="thumb_path.png",
         title="Embedded message.",

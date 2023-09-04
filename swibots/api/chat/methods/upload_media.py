@@ -20,10 +20,15 @@ class UploadMedia:
         """upload a file to get `Media` object.
 
         Arguments:
-        path: The path to the file to upload, or a MediaUploadRequest object.
+            path: The path to the file to upload, or a MediaUploadRequest object.
+            caption: str
+            description: str
+            mime_type: str
+            callback: Callable
+            callback_args: tuple
 
         Returns:
-        A Media object representing the uploaded file.
+             A Media object representing the uploaded file.
         """
         return await self.chat_service.media.upload_media(
             path,
@@ -53,6 +58,25 @@ class UploadMedia:
         progress_args: Optional[tuple] = None,
         **kwargs,
     ):
+        """Send a media to Chat!
+        
+        Arguments:
+          message (str): the message
+          document (str): file path to upload
+          caption (str): the media caption
+          description (str): the media description
+          thumb (str): file path to use as thumb
+          community_id (str): The community ID
+          group_id (str) The Group ID
+          channel_id (str) Channel ID
+          user_id (int) User ID
+          blocking (bool): whether to block task
+          progress (Callable[function]): Progress callback function.
+          progress_args (tuple)
+
+        Returns:
+          `Message` | `Task`
+        """
         return await self.chat_service.messages.send_media(
             document=document,
             message=message,
@@ -78,7 +102,12 @@ class UploadMedia:
         caption: Optional[str] = None,
         description: Optional[str] = None,
     ):
-        """Update Info of uploaded media"""
+        """Update Info of uploaded media
+        
+        media_id: int: Media Id
+        caption: str: Caption of media
+        description: str: Description of media
+        """
         return await self.chat_service.media.update_media(
             media_id=media_id, caption=caption, description=description
         )

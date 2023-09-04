@@ -10,13 +10,13 @@ def _lstrip_str(in_s: str, lstr: str) -> str:
         :obj:`str`: The stripped string.
     """
     if in_s.startswith(lstr):
-        return in_s[len(lstr):]
+        return in_s[len(lstr) :]
     return in_s
 
 
 class SwitchError(Exception):
     """
-    Base class for Seitch errors.
+    Base class for Switch errors.
     .. seealso:: :wiki:`Exceptions, Warnings and Logging <Exceptions%2C-Warnings-and-Logging>`
     """
 
@@ -51,8 +51,21 @@ class NetworkError(SwitchError):
 class CancelError(SwitchError):
     pass
 
+
 class BadRequest(SwitchError):
     pass
 
-class ChatEmpty(BadRequest): ...
-class MediaEmpty(BadRequest): ...
+
+class UnAuthorized(SwitchError):
+    ...
+
+
+class ChatEmpty(BadRequest):
+    ...
+
+
+class MediaEmpty(BadRequest):
+    ...
+
+class InvalidRouteCall(BadRequest):
+    ...

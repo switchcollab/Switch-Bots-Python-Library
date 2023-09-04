@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, List, Optional
 from swibots.api.common.models import User
 from swibots.utils.types import JSONDict
-from .bot_command_info import BotCommandInfo
+from .bot_command import BotCommand
 
 
 class BotInfo(User):
@@ -16,7 +16,7 @@ class BotInfo(User):
         role_info: Optional[str] = None,
         admin: Optional[bool] = None,
         is_bot: Optional[bool] = None,
-        commands: Optional[List[BotCommandInfo]] = None,
+        commands: Optional[List[BotCommand]] = None,
         description: Optional[str] = None,
     ):
         super().__init__(
