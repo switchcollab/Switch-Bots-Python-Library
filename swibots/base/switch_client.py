@@ -11,18 +11,18 @@ T = TypeVar("T", bound="swibots.SwitchObject")
 LOG = getLogger(__name__)
 
 class SwitchRestClient(RestClient):
-    def __init__(self, app: "swibots.App" = None, base_url: str = None, token: str = None):
+    def __init__(self, app: "swibots.BotApp" = None, base_url: str = None, token: str = None):
         super().__init__()
         self._app = app
         self._auth_token = token
         self._base_url = base_url
 
     @property
-    def app(self) -> "swibots.App":
+    def app(self) -> "swibots.BotApp":
         return self._app
 
     @app.setter
-    def app(self, app: "swibots.App"):
+    def app(self, app: "swibots.BotApp"):
         self._app = app
 
     @property
@@ -103,7 +103,7 @@ class SwitchRestClient(RestClient):
                 error = error.split(":", maxsplit=1)[-1].strip().replace("'", '"')
                 try:
                     error = json.loads(error)['message']
-                except (KeyError, json.JSONDecodeError) as er:
+                except (KeyError, json.JSONDecodeError):
                     pass
             if response.status_code == 401:
                 raise UnAuthorized(error)

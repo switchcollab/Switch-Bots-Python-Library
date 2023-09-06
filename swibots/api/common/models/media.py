@@ -62,6 +62,12 @@ class Media(SwitchObject):
     async def edit(
         self, caption: Optional[str] = None, description: Optional[str] = None
     ):
+        """Update media Info
+  
+        Args:
+          caption: Caption of media
+          description: Description to update.
+        """
         return await self.app.update_media_info(
             self.id, caption=caption, description=description
         )

@@ -29,7 +29,7 @@ pip install git+https://github.com/switchcollab/Switch-Bots-Python-Library.git
 
 ```python title="echobot.py"
 from swibots import (
-    Client,
+    BotApp,
     BotContext,
     MessageEvent
 )
@@ -37,7 +37,7 @@ from swibots import (
 TOKEN = "MY SUPER SECRET TOKEN"
 
 # initialize the app and register commands
-app = Client(
+app = BotApp(
     TOKEN, "A cool bot with annotations and everything you could possibly want :)"
 )
 
@@ -80,8 +80,6 @@ await bot.send_message(
 #### Sending media
 
 ```python
-from swibots import MediaUploadRequest
-
 await bot.send_media(
    message="This is a message",
    user_id=100,

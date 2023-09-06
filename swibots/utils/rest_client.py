@@ -52,6 +52,10 @@ class RestClient:
         if self._client.is_closed:
             self._client = self._build_client()
 
+    @property
+    def stream(self):
+        return self._client.stream
+
     async def shutdown(self) -> None:
         """See :meth:`BaseRequest.shutdown`."""
         if self._client.is_closed:

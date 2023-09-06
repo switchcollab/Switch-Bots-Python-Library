@@ -39,5 +39,5 @@ class SwitchObject(Generic[T]):
         return self
 
     def __repr__(self) -> str:
-        filter_dict = {x: y for x, y in self.to_json().values() if y}
+        filter_dict = {x: y for x, y in self.to_json().items() if y}
         return f"{self.__class__.__name__} {json.dumps(filter_dict, indent=1)}"

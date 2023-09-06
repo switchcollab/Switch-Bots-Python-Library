@@ -7,6 +7,7 @@ from swibots import (
     BotContext,
     CallbackQueryEvent,
     CommandEvent,
+    BotCommand,
     InlineMarkup,
     InlineKeyboardButton,
     regexp,
@@ -27,16 +28,15 @@ logger = logging.getLogger(__name__)
 # initialize the app and register commands
 app = BotApp(
     TOKEN,
-    auto_update_bot=False,  # disable auto update bot info
-)
+).set_bot_commands([BotCommand("buttons", "Get Buttons")])
 
 
 # register buttons command
 @app.on_command("buttons")
 async def buttons_handler(ctx: BotContext[CommandEvent]):
     try:
-        m = await ctx.bot.prepare_response_message(ctx.event.message)
-        m.message = f"Please select an option:"
+        m = ctx.event.message
+        message = f"Please select an option:"
 
         inline_keyboard = [
             [
@@ -49,8 +49,8 @@ async def buttons_handler(ctx: BotContext[CommandEvent]):
             ],
         ]
 
-        m.inline_markup = InlineMarkup(inline_keyboard=inline_keyboard)
-        await ctx.bot.send_message(m)
+        inline_markup = InlineMarkup(inline_keyboard=inline_keyboard)
+        await ctx.event.reply_text(message, inline_markup=inline_markup)
     except Exception as e:
         logger.exception(f"Error while processing event: {e}")
         raise e
@@ -61,8 +61,9 @@ async def buttons_handler(ctx: BotContext[CommandEvent]):
 async def callback_query_handler(ctx: BotContext[CallbackQueryEvent]):
     try:
         message = ctx.event.message
-        message.message = f"Option with data: {ctx.event.callback_data} selected!"
-        await ctx.bot.edit_message(message)
+        await message.edit_text(
+            f"Option with data: {ctx.event.callback_data} selected!"
+        )
     except Exception as e:
         logger.exception(f"Error while processing event: {e}")
         raise e

@@ -11,7 +11,7 @@ const projectName = "Switch-Bots-Python-Library";
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Swibots',
-  tagline: 'Switch Python API',
+  tagline: 'Switch Python Library for bots and apps!',
   url: `https://${organizationName}.github.io`,
   baseUrl: `/${projectName}/`,
   onBrokenLinks: 'throw',

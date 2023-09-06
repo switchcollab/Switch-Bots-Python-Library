@@ -1,6 +1,6 @@
 from swibots import (
     BotApp,
-    RegisterCommand,
+    BotCommand,
     BotContext,
     CallbackQueryEvent,
     CommandEvent,
@@ -11,29 +11,29 @@ from swibots import (
     MessageEvent,
     Message,
     DownloadProgress,
-    MediaUploadRequest,
 )
 import logging
+
 logging.basicConfig(level=logging.INFO)
 
 TOKEN = "YOUR_TOKEN_HERE"
 
 app = BotApp(
-    TOKEN,
-    "A cool bot with annotations and everything you could possibly want :)"
-).register_command([
-    RegisterCommand("echo", "Echoes the message", True),
-    RegisterCommand("buttons", "Shows buttons", True),
-    RegisterCommand("buttonfull", "Shows buttons", True),
-    RegisterCommand("back", "Shows buttons", True),
-    RegisterCommand("upload", "Reply with media", True),
-])
+    TOKEN, "A cool bot with annotations and everything you could possibly want :)"
+).set_bot_commands(
+    [
+        BotCommand("echo", "Echoes the message", True),
+        BotCommand("buttons", "Shows buttons", True),
+        BotCommand("buttonfull", "Shows buttons", True),
+        BotCommand("back", "Shows buttons", True),
+        BotCommand("upload", "Reply with media", True),
+    ]
+)
 
 
 @app.on_command("buttons")
 async def buttons_handler(ctx: BotContext[CommandEvent]):
-    m = await ctx.bot.prepare_response_message(ctx.event.message)
-    m.message = f"Please select an option:"
+    message = f"Please select an option:"
 
     inline_keyboard = [
         [
@@ -48,41 +48,35 @@ async def buttons_handler(ctx: BotContext[CommandEvent]):
             InlineKeyboardButton(text="Option 73", callback_data="option73"),
         ],
         [
-            InlineKeyboardButton(text="Optioniablek",
-                                 callback_data="option53"),
-            InlineKeyboardButton(text="Unitedstates",
-                                 callback_data="option03"),
+            InlineKeyboardButton(text="Optioniablek", callback_data="option53"),
+            InlineKeyboardButton(text="Unitedstates", callback_data="option03"),
         ],
         [
-            InlineKeyboardButton(text="Go Back on Press",
-                                 callback_data="option543"),
+            InlineKeyboardButton(text="Go Back on Press", callback_data="option543"),
         ],
         [
-            InlineKeyboardButton(text="Go Back on Press for more Movies haha",
-                                 callback_data="option543"),
+            InlineKeyboardButton(
+                text="Go Back on Press for more Movies haha", callback_data="option543"
+            ),
         ],
     ]
 
-    m.inline_markup = InlineMarkup(
+    inline_markup = InlineMarkup(
         inline_keyboard=inline_keyboard,
     )
-    await ctx.bot.send_message(m)
+    await ctx.event.message.reply_text(message, inline_markup=inline_markup)
 
 
 @app.on_command("test")
 async def test_handler(ctx: BotContext[CommandEvent]):
-    m = await ctx.prepare_response_message(ctx.event.message)
-    m.message = "Test command received"
-    await ctx.send_message(m)
+    await ctx.event.message.reply_text("Test command received")
 
 
 @app.on_command("buttonfull")
 async def buttons_handler(ctx: BotContext[CommandEvent]):
-    m = await ctx.bot.prepare_response_message(ctx.event.message)
-    m.message = f"Please select an option:"
+    message = f"Please select an option:"
 
     inline_keyboard1 = [
-
         [
             InlineKeyboardButton(text="Option 1111", callback_data="option1"),
             InlineKeyboardButton(text="Option 1112", callback_data="option2"),
@@ -94,31 +88,28 @@ async def buttons_handler(ctx: BotContext[CommandEvent]):
             InlineKeyboardButton(text="Option 20", callback_data="option20"),
         ],
         [
-            InlineKeyboardButton(text="Optioniablek",
-                                 callback_data="option53"),
-            InlineKeyboardButton(text="Unitedstates",
-                                 callback_data="option03"),
+            InlineKeyboardButton(text="Optioniablek", callback_data="option53"),
+            InlineKeyboardButton(text="Unitedstates", callback_data="option03"),
         ],
         [
-            InlineKeyboardButton(text="Go Back on Press",
-                                 callback_data="option543"),
+            InlineKeyboardButton(text="Go Back on Press", callback_data="option543"),
         ],
         [
-            InlineKeyboardButton(text="Go Back on Press for more Movies haha",
-                                 callback_data="option543"),
+            InlineKeyboardButton(
+                text="Go Back on Press for more Movies haha", callback_data="option543"
+            ),
         ],
     ]
 
-    m.inline_markup = InlineMarkup(
+    inline_markup = InlineMarkup(
         inline_keyboard=inline_keyboard1,
     )
-    await ctx.bot.send_message(m)
+    await ctx.event.message.reply_text(message, inline_markup=inline_markup)
 
 
 @app.on_command("echo")
 async def buttons_handler(ctx: BotContext[CommandEvent]):
-    m = await ctx.bot.prepare_response_message(ctx.event.message)
-    m.message = f"Please select an option:"
+    message = "Please select an option:"
 
     inline_keyboard1 = [
         [
@@ -131,20 +122,18 @@ async def buttons_handler(ctx: BotContext[CommandEvent]):
         ],
     ]
 
-    m.inline_markup = InlineMarkup(
-        inline_keyboard=inline_keyboard1,
+    await ctx.event.message.reply_text(
+        "Please select an option (echo):",
+        inline_markup=InlineMarkup(
+            inline_keyboard=inline_keyboard1,
+        ),
     )
-    await m.reply_text("Please select an option (echo):", InlineMarkup(
-        inline_keyboard=inline_keyboard1,
-    ))
 
 
 @app.on_callback_query()
 async def query_callback_handler(ctx: BotContext[CallbackQueryEvent]):
     m = ctx.event.message
-    m.message = f"Thank you! I received your callback: {ctx.event.callback_data}"
-    m.inline_markup = None
-    await ctx.edit_message(m)
+    await m.edit_text(f"Thank you! I received your callback: {ctx.event.callback_data}")
 
 
 @app.on_message()
@@ -154,9 +143,11 @@ async def message_handler(ctx: BotContext[MessageEvent]):
     # await ctx.send_message(m)
     print(f"Downloading received message: {ctx.event.message.id}")
     message: Message = ctx.event.message
-    if message.media_link is not None:
+    if message.is_media:
         print(message.media_link)
-        await message.download(in_memory=False, block=False, progress=handle_download_progress)
+        await message.download(
+            in_memory=False, block=False, progress=handle_download_progress
+        )
 
 
 async def handle_download_progress(progress: DownloadProgress):
@@ -166,6 +157,7 @@ async def handle_download_progress(progress: DownloadProgress):
 @app.on_community_update()
 async def community_update_handler(ctx: BotContext[CommunityUpdatedEvent]):
     print(ctx.event.community_id + " was updated")
+
 
 # app.run()
 
@@ -179,12 +171,10 @@ async def show_upload_progress(obj):
 @app.on_command("upload")
 async def upload_handler(ctx: BotContext[CommandEvent]):
     params = ctx.event.params
-    media = MediaUploadRequest(
-        path=params,
-        callback=show_upload_progress,
+    r = await ctx.event.message.reply_media(
+        f"Here is your file {params}", document=params, progress=show_upload_progress
     )
-
-    r = await ctx.event.message.reply_text(f"Here is your file {params}", media=media)
     print(r)
+
 
 app.run()

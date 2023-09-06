@@ -14,7 +14,7 @@ Commands have also parameters, which are separated by spaces. For example, the c
 
 Commands must be registered into the bot creating an instance of `RegisterCommand` class and passing it to the `add_command` method of the `BotApp` class.
 
-The `RegisterCommand` class takes 2 parameters:
+The `BotCommand` class takes 2 parameters:
 
 - `command:str`: The command name.
 - `description:str`: The command description (a short descriptive string of what the command does).
@@ -23,17 +23,17 @@ The `RegisterCommand` class takes 2 parameters:
 ```python
 from swibots import (
     BotApp,
-    RegisterCommand)
+    BotCommand)
 
 TOKEN= "YOUR_TOKEN"
 
 app = BotApp(
     TOKEN, "A cool bot with annotations and everything you could possibly want :)"
-).register_command(
+).set_bot_commands(
     [
-        RegisterCommand("test", "Test command", True),
-        RegisterCommand("echo", "Echoes the message", True),
-        RegisterCommand("buttons", "Shows buttons", True),
+        BotCommand("test", "Test command", True),
+        BotCommand("echo", "Echoes the message", True),
+        BotCommand("buttons", "Shows buttons", True),
     ]
 )
 
@@ -62,9 +62,9 @@ TOKEN = "YOUR_TOKEN"
 
 app = BotApp(
     TOKEN, "A cool bot with annotations and everything you could possibly want :)"
-).register_command(
+).set_bot_commands(
     [
-        RegisterCommand("echo", "Echoes the message", True)
+        BotCommand("echo", "Echoes the message", True)
     ]
 )
 

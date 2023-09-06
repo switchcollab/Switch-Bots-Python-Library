@@ -1,9 +1,18 @@
 import json
 import logging
-from typing import Tuple
-from swibots.api.auth.models.auth_user import AuthUser
-from swibots.api.chat.controllers import MessageController, PostController, MediaController
-from swibots.api.chat.events import ChatEvent, CallbackQueryEvent, MessageEvent, CommandEvent, InlineQueryEvent
+from typing import Tuple, Optional, List
+from swibots.api.chat.controllers import (
+    MessageController,
+    PostController,
+    MediaController,
+)
+from swibots.api.chat.events import (
+    ChatEvent,
+    CallbackQueryEvent,
+    MessageEvent,
+    CommandEvent,
+    InlineQueryEvent,
+)
 from swibots.base import SwitchRestClient, SwitchWSAsyncClient
 from swibots.config import get_config
 from swibots.errors import SwitchError
@@ -119,24 +128,28 @@ class ChatClient(SwitchRestClient):
     async def _parse_event(self, raw_message: WsMessage, callback) -> ChatEvent:
         try:
             json_data = json.loads(raw_message.body)
-            type = json_data.get("type", "MESSAGE")
+            messagetype = json_data.get("type", "MESSAGE")
             evt: ChatEvent = None
-            if type == EventType.MESSAGE.value:
+            if messagetype == EventType.MESSAGE.value:
                 evt = self.build_object(MessageEvent, json_data)
                 if not (evt.message.community_id or evt.message.receiver_id != "null"):
-                    logger.debug(f"recieved message event with incorrect data: {evt.to_json()}")
+                    logger.debug(
+                        f"recieved message event with incorrect data: {evt.to_json()}"
+                    )
                     return
                 # evt = MessageEvent.build_from_json(json_data)
-            elif type == EventType.COMMAND.value:
+            elif messagetype == EventType.COMMAND.value:
                 evt = self.build_object(CommandEvent, json_data)
                 if not (evt.message.community_id or evt.message.receiver_id != "null"):
-                    logger.debug(f"recieved command event with incorrect data: {evt.to_json()}")
+                    logger.debug(
+                        f"recieved command event with incorrect data: {evt.to_json()}"
+                    )
                     return
                 # evt = CommandEvent.build_from_json(json_data)
-            elif type == EventType.CALLBACK_QUERY.value:
+            elif messagetype == EventType.CALLBACK_QUERY.value:
                 evt = self.build_object(CallbackQueryEvent, json_data)
                 # evt = CallbackQueryEvent.build_from_json(json_data)
-            elif type == EventType.INLINE_QUERY.value:
+            elif messagetype == EventType.INLINE_QUERY.value:
                 evt = self.build_object(InlineQueryEvent, json_data)
             else:
                 evt = self.build_object(ChatEvent, json_data)
@@ -146,7 +159,6 @@ class ChatClient(SwitchRestClient):
             return
 
         return await callback(evt)
-        
 
     async def start(self):
         """Start the chat websocket client
@@ -163,3 +175,34 @@ class ChatClient(SwitchRestClient):
         if self._started and self.ws:
             await self.ws.disconnect()
             self._started = False
+
+    # region
+    # Other methods than controllers
+
+    async def get_last_seen(self, user_id: int):
+        response = await self.get(f"/v1/lastseen/{user_id}")
+        return response.data
+
+    async def search_messages(
+        self,
+        text: str,
+        community_id: Optional[str] = None,
+        channel_id: Optional[str] = None,
+        group_id: Optional[str] = None,
+        user_id: Optional[int] = None,
+    ):
+        if not user_id:
+            user_id = self.user.id
+        response = await self.get(
+            f"/v1/search/{user_id}",
+            data={
+                "channelId": channel_id,
+                "communtyId": community_id,
+                "groupId": group_id,
+                "userId": user_id,
+                "searchText": text,
+            },
+        )
+        return response
+
+    # endregion

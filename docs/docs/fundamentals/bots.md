@@ -19,13 +19,13 @@ app.run()
 **In order to be able to use the bot commands, you need to register them with the `register_command` method of the app.** This method accepts a list of `BotCommand` objects.
 
 ```python
-from swibots import BotApp, RegiterCommand
+from swibots import BotApp, BotCommand
 
 app = BotApp("token", "your bot description")
 
-app.register_command([
-    RegiterCommand("hello", "Hello description", True),
-    RegiterCommand("bye", "By description", False)
+app.set_bot_commands([
+    BotCommand("hello", "Hello description", True),
+    BotCommand("bye", "By description", False)
 ])
 
 app.run()
@@ -39,9 +39,9 @@ setting `auto_update_bot` param on the `BotApp` constructor to `False`.
 The server will only send commands to the bot if those commands are registered commands database of the bot.
 :::
 
-### `RegisterCommand` class
+### `BotCommand` class
 
-The `RegisterCommand` class is a dataclass that contains the following fields:
+The `BotCommand` class is a dataclass that contains the following fields:
 
 - `command:str` - The command name.
 - `description:str` - The command description.

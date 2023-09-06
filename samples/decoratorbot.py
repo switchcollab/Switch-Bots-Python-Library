@@ -2,7 +2,13 @@ import logging
 import os
 from dotenv import load_dotenv
 
-from swibots import BotApp, RegisterCommand, BotContext, MessageEvent, CallbackQueryEvent
+from swibots import (
+    BotApp,
+    RegisterCommand,
+    BotContext,
+    MessageEvent,
+    CallbackQueryEvent,
+)
 
 
 env_file = os.path.join(os.path.dirname(__file__), "..", "..", ".env")

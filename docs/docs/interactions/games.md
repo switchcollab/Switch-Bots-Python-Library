@@ -9,7 +9,8 @@ Games on the are the termed referred to the web game (HTML5, any).
 from swibots import InlineKeyboardButton, InlineMarkup
 
 await client.send_message(
-    Message(...),
+    message="Hi",
+    user_id=100,
     inline_markup=InlineMarkup(
         [[
             InlineKeyboardButton(

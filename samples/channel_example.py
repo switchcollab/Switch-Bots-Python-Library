@@ -1,15 +1,18 @@
 import os  # noqa
 import sys  # noqa
 import inspect  # noqa
-currentdir = os.path.dirname(os.path.abspath(
-    inspect.getfile(inspect.currentframe())))  # noqa
+
+currentdir = os.path.dirname(
+    os.path.abspath(inspect.getfile(inspect.currentframe()))
+)  # noqa
 parentdir = os.path.dirname(currentdir)  # noqa
 sys.path.insert(0, parentdir)  # noqa
 from dotenv import load_dotenv
+
 env_file = os.path.join(os.path.dirname(__file__), "..", "..", ".env")  # noqa
 load_dotenv(env_file)  # noqa
 
-from swibots import BotApp, ChannelCreatedHandler, BotContext, ChannelCreatedEvent, Message
+from swibots import BotApp, BotContext, ChannelCreatedEvent, Message
 from swibots.bots.filters import channel
 import logging
 
@@ -25,9 +28,7 @@ load_dotenv(env_file)
 TOKEN = os.getenv("TOKEN")
 
 
-app = BotApp(
-    TOKEN,
-    "your bot description")
+app = BotApp(TOKEN, "your bot description")
 
 
 @app.on_channel_created(channel("d71e33f9-8e12-491f-b041-d02ea6ec6520"))

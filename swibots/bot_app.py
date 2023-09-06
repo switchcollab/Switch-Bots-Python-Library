@@ -64,6 +64,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         self.token = token
         self._user_type = AuthUser
         self._botinfo: BotInfo = None
+        self.on_app_start = None
         self.on_chat_service_start = self._on_chat_service_start
         self.on_community_service_start = self._on_community_service_start
         self._handlers: List[BaseHandler] = []
@@ -123,9 +124,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
                 for f in files:
                     self.__loadModule(os.path.join(root, f))
 
-    def set_bot_commands(
-        self, command: BotCommand | List[BotCommand]
-    ) -> "BotApp":
+    def set_bot_commands(self, command: BotCommand | List[BotCommand]) -> "BotApp":
         if isinstance(command, list):
             self._register_commands.extend(command)
         else:
@@ -133,9 +132,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         asyncio.run_coroutine_threadsafe(self.update_bot_commands(), self._loop)
         return self
 
-    def delete_bot_commands(
-        self, command: BotCommand| List[BotCommand]
-    ) -> "BotApp":
+    def delete_bot_commands(self, command: BotCommand | List[BotCommand]) -> "BotApp":
         if isinstance(command, list):
             for cmd in command:
                 self._register_commands.remove(cmd)
@@ -241,9 +238,8 @@ class Client(Decorators, AbstractContextManager, ApiClient):
 
         if progress:
             await progress(dProgress, *progress_args)
-
         try:
-            with httpx.stream("GET", url) as response:
+            with self.rest_client.stream("GET", url) as response:
                 dProgress.total = int(response.headers["Content-Length"])
                 dProgress.downloaded = response.num_bytes_downloaded
                 dProgress.client = response
@@ -293,8 +289,6 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         if self.user is None:
             raise SwitchError("Invalid token")
 
-    async def _validate_run(self):
-        await self._validate_credentials()
 
     async def _on_app_stop(self):
         await self.chat_service.stop()
@@ -316,7 +310,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
             """Starts the app"""
             log.info("🚀 Starting app...")
 
-            await self._validate_run()
+            await self._validate_token()
 
             if self.receive_updates:
                 try:

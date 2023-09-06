@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, List, Optional
 
 from swibots.utils.types import (
     UploadProgressCallback,
+    DownloadProgressCallback,
     ReadCallbackStream,
     IOClient,
     UploadProgress,
@@ -85,3 +86,22 @@ class MediaController:
             "/v1/community/channel/media", data={"mediaId": media_id}
         )
         return True
+
+    async def download_by_media_id(
+        self,
+        media_id: int,
+        file_name: str = None,
+        in_memory: Optional[bool] = False,
+        block: Optional[bool] = True,
+        progress: Optional[DownloadProgressCallback] = None,
+        progress_args: Optional[tuple] = (),
+    ):
+        url = f"{BASE_PATH}/{media_id}/download"
+        return await self.client.app.handle_download(
+            url,
+            file_name=file_name,
+            in_memory=in_memory,
+            block=block,
+            progress=progress,
+            progress_args=progress_args,
+        )
