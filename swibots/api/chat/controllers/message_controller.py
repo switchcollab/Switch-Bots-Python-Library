@@ -96,9 +96,10 @@ class MessageController:
         embed_message: Optional[EmbeddedMedia] = None,
         inline_markup: Optional[InlineMarkup] = None,
         reply_to_message_id: Optional[int] = None,
+        scheduled_at: Optional[int] = None,
         **kwargs,
     ) -> Message | Task:
-        if not (user_id or group_id or channel_id):
+        if not (user_id or (community_id and (group_id or channel_id))):
             raise ValueError(
                 "No chat parameter provided, Either use user_id or group_id/channel_id with community_id."
             )
@@ -112,6 +113,7 @@ class MessageController:
                 group_id=group_id,
                 channel_id=channel_id,
                 user_id=user_id,
+                scheduled_at=scheduled_at,
                 **kwargs,
             )
 
@@ -125,6 +127,7 @@ class MessageController:
             embed_message=embed_message,
             inline_markup=inline_markup,
             replied_to_id=reply_to_message_id,
+            scheduled_at=scheduled_at,
             **kwargs,
         )
 
@@ -158,6 +161,7 @@ class MessageController:
         progress: Optional[callable] = None,
         progress_args: Optional[tuple] = (),
         reply_to_message_id: Optional[int] = None,
+        scheduled_at: Optional[int] = None,
         **kwargs,
     ) -> Message | Task:
         new_message = Message(
@@ -168,6 +172,7 @@ class MessageController:
             channel_id=channel_id,
             replied_to_id=reply_to_message_id,
             message=message,
+            scheduled_at=scheduled_at,
             **kwargs,
         )
         form = new_message.to_form_data()

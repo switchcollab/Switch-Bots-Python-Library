@@ -9,3 +9,5 @@
 - `.start` no longer raise App already running.
 - rename `switch.error` to `switch.errors`
 - fix `get_community` by `username`.
+- add `get_last_seen`
+- add `get_active_commands`

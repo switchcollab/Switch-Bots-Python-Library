@@ -56,6 +56,7 @@ class Message(
         media_id: int = None,
         media_info: Media = None,
         cached_media: Media = None,
+        scheduled_at: Optional[int] = None,
         **kwargs,
     ):
         super().__init__(app=app)
@@ -102,6 +103,7 @@ class Message(
         self.cached_media = cached_media
         self.embed_message = embed_message
         self.is_embed_message = is_embed_message
+        self.scheduled_at = scheduled_at
         self.__dict__.update(**kwargs)
 
     def to_json_request(self) -> JSONDict:
@@ -156,6 +158,8 @@ class Message(
             form_data["isDocument"] = self.is_document
         if self.inline_markup is not None:
             form_data.update(self.inline_markup.to_form_data())
+        if self.scheduled_at is not None:
+            form_data['scheduledAt'] = self.scheduled_at
         return form_data
 
     def to_json(self) -> JSONDict:
@@ -314,6 +318,8 @@ class Message(
     
     def _get_receiver_id(self):
         """Get receiver id to send message"""
+        if not self.personal_chat:
+            return
         return self.user_id if self.user_id != self.app.user.id else self.receiver_id
 
     ### API Methods ###

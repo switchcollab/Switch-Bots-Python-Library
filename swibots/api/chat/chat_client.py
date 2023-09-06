@@ -3,7 +3,7 @@ import logging
 from typing import Tuple, Optional, List
 from swibots.api.chat.controllers import (
     MessageController,
-    PostController,
+    ChatController,
     MediaController,
 )
 from swibots.api.chat.events import (
@@ -54,7 +54,7 @@ class ChatClient(SwitchRestClient):
         self._ws_url = ws_url or get_config()["CHAT_SERVICE"]["WS_URL"]
         super().__init__(app, base_url)
         self._messages: MessageController = None
-        self._post: PostController = None
+        self._post: ChatController = None
         self._media: MediaController = None
         self._ws: SwitchWSAsyncClient = None
         self._started = False
@@ -73,10 +73,10 @@ class ChatClient(SwitchRestClient):
         return self._messages
 
     @property
-    def posts(self) -> PostController:
+    def posts(self) -> ChatController:
         """Get the post controller"""
         if self._post is None:
-            self._post = PostController(self)
+            self._post = ChatController(self)
         return self._post
 
     @property
@@ -175,34 +175,3 @@ class ChatClient(SwitchRestClient):
         if self._started and self.ws:
             await self.ws.disconnect()
             self._started = False
-
-    # region
-    # Other methods than controllers
-
-    async def get_last_seen(self, user_id: int):
-        response = await self.get(f"/v1/lastseen/{user_id}")
-        return response.data
-
-    async def search_messages(
-        self,
-        text: str,
-        community_id: Optional[str] = None,
-        channel_id: Optional[str] = None,
-        group_id: Optional[str] = None,
-        user_id: Optional[int] = None,
-    ):
-        if not user_id:
-            user_id = self.user.id
-        response = await self.get(
-            f"/v1/search/{user_id}",
-            data={
-                "channelId": channel_id,
-                "communtyId": community_id,
-                "groupId": group_id,
-                "userId": user_id,
-                "searchText": text,
-            },
-        )
-        return response
-
-    # endregion

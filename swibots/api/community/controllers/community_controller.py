@@ -1,6 +1,8 @@
 import logging
 from typing import TYPE_CHECKING, Optional, List
 from swibots.api.community.models import Community, CommunityMember
+from swibots.api.bot.models import BotInfo
+from urllib.parse import urlencode
 
 if TYPE_CHECKING:
     from swibots.api.community import CommunityClient
@@ -88,21 +90,28 @@ class CommunityController:
     # region
     # Commands
 
-    async def get_active_commands(self, community_id: str, channel_id: str = None,
-                                  group_id: Optional[str] = None):
-        response = await self.client.get(f"{BASE_PATH}/activecommands", data={
-            "channelId": channel_id,
+    async def get_active_commands(
+        self, community_id: str, channel_id: str = None, group_id: Optional[str] = None
+    ) -> List[BotInfo]:
+        data = {
+            "channelId": channel_id or group_id,
+            "isGroup": bool(group_id),
             "communityId": community_id,
-            "isGroup": bool(group_id)
-        })
+        }
+        response = await self.client.get(
+            f"{BASE_PATH}/activecommands?{urlencode(data)}"
+        )
+        response_data = response.data.get("result", {}).get("channelOrGroup", {})
+        return self.client.build_list(BotInfo, response_data.get("bots"))
 
- 
     # endregion
 
     # region
 
     async def is_admin(self, community_id: str, user_id: int) -> bool:
-        response = await self.client.get(f"{BASE_PATH}/user?communityId={community_id}&userId={user_id}")
+        response = await self.client.get(
+            f"{BASE_PATH}/user?communityId={community_id}&userId={user_id}"
+        )
         return response.data.get("result", False)
 
     # endregion

@@ -1,5 +1,5 @@
 from .message_controller import MessageController
-from .post_controller import PostController
+from .chat_controller import ChatController
 from .media_controller import MediaController
 
-__all__ = ["MessageController", "PostController", "MediaController"]
+__all__ = ["MessageController", "ChatController", "MediaController"]

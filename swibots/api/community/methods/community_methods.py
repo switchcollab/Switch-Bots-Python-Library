@@ -64,11 +64,25 @@ class CommunityMethods:
             community_id, user_id=user_id
         )
 
-    async def get_active_commands(self: "swibots.ApiClient"):
+    async def get_active_commands(
+        self: "swibots.ApiClient",
+        community_id: str,
+        channel_id: Optional[str] = None,
+        group_id: Optional[str] = None,
+    ):
+        """Get Active commands in the community
+
+        Args:
+            community_id (str): Community ID
+            channel_id (Optional[str], optional): Channel ID
+            group_id (Optional[str], optional): Group ID. Defaults to None.
+
+        Returns:
+            _type_: _description_
         """
-        Get Active commands in the community
-        """
-        pass
+        return await self.community_service.communities.get_active_commands(
+            community_id=community_id, group_id=group_id, channel_id=channel_id
+        )
 
     async def approve_chat_join(
         self: "swibots.ApiClient",
@@ -78,7 +92,7 @@ class CommunityMethods:
         group_id: Optional[str] = None,
     ):
         """Approve private join request
-        
+
         Args:
           members: List[user_id]
           community_id: Community ID
@@ -112,5 +126,5 @@ class CommunityMethods:
             community_id=community_id,
             group_id=group_id,
             channel_id=channel_id,
-            decline=True
+            decline=True,
         )
