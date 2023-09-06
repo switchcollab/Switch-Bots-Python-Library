@@ -50,19 +50,19 @@ The `Message` class represents a message sent to a chat.
 
 Unlike other types, the `Message` class has a few api methods to make it easier to work with.
 
-- > ***async respond(self,  text: str, media: [MediaUploadRequest](./media_upload_request) | [EmbeddedMedia](./embedded_media.md) = None, inline_markup: [InlineMarkup](./inline_markup.md)) -> Message *** 
+- > ***async def respond(self,  text: str, embed_message: [EmbeddedMedia](./embedded_media.md) = None, inline_markup: [InlineMarkup](./inline_markup.md)) -> Message *** 
 
     Sends the message.
 
     You can also add media.
 
-- > ***async reply(self,  reply: Message, media: [MediaUploadRequest](./media_upload_request) = None) -> Message *** 
+- > ***async def reply(self, text: str, embed_message: [EmbeddedMedia](./embedded_media.md) = None) -> Message *** 
 
     Replies to the message with the given message.
 
     You can also add media.
 
-- > ***async reply_text(self,  text: str, inline_markup: Optional[[InlineMarkup](./inline_markup)] = None,  media: MediaUploadRequest = None) -> Message ***
+- > ***async def reply_text(self,  text: str, inline_markup: Optional[[InlineMarkup](./inline_markup)] = None,  media: MediaUploadRequest = None) -> Message ***
      
     Replies to the message with the given text.
 
@@ -74,7 +74,7 @@ Unlike other types, the `Message` class has a few api methods to make it easier 
 
     You can also add an inline markup.
 
-- > ***async delete(self) -> None *** 
+- > ***async def delete(self) -> None *** 
 
     Deletes the message.
 

@@ -16,7 +16,7 @@ app.run()
 
 ## Register bot commands
 
-**In order to be able to use the bot commands, you need to register them with the `register_command` method of the app.** This method accepts a list of `BotCommand` objects.
+**In order to be able to use the bot commands, you need to register them with the `set_bot_commands` method of the app.** This method accepts a list of `BotCommand` objects.
 
 ```python
 from swibots import BotApp, BotCommand

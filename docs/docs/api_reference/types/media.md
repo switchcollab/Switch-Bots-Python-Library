@@ -16,3 +16,9 @@ The `Media` class represents a media (file, audio, video, etc) that has been upl
 - `file_name` (`str`): The media's file name.
 - `file_size` (`int`): The media's file size.
 - `url` (`str`): The media's url.
+
+## Methods
+
+> **async def edit(self, caption: str, description: str):**
+ - `caption` (`str`): caption of media.
+ - `description` (`str`): description of media.
