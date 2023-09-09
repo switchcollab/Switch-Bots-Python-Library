@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Type, TypeVar, Optional
 import swibots
+from io import BytesIO
 from swibots.api.common.models import Media
 
 if TYPE_CHECKING:
@@ -40,7 +41,7 @@ class UploadMedia:
 
     async def send_media(
         self: "swibots.ApiClient",
-        document: str,
+        document: str | BytesIO,
         message: Optional[str] = None,
         community_id: Optional[str] = None,
         group_id: Optional[str] = None,
@@ -58,10 +59,10 @@ class UploadMedia:
         **kwargs,
     ):
         """Send a media to Chat!
-        
+
         Arguments:
           message (str): the message
-          document (str): file path to upload
+          document (str | BytesIO): file path to upload
           caption (str): the media caption
           description (str): the media description
           thumb (str): file path to use as thumb

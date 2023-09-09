@@ -1,3 +1,4 @@
+import swibots
 from typing import TYPE_CHECKING, Generic, TypeVar
 from swibots.api.api_client import ApiClient
 from swibots.api.chat.models import Message
@@ -8,24 +9,24 @@ EventType = TypeVar("EventType", bound="Event")
 
 
 class BotContext(Generic[EventType], ApiClient):
-    def __init__(self, bot: "Bot", event: EventType):
+    def __init__(self, app: "swibots.App", event: EventType):
         self.event = event
-        self.bot = bot
-        self.app = bot.app
-        self._user = bot.app._user
+        self.app = app
+        self._user = app._user
     
         # copy the api client
-        self._chat_client = bot.chat_service
-        self._auth_client = bot.auth_service
-        self._community_client = bot.community_service
-        self._bot_client = bot.bots_service
+        
+        self._chat_client = app.chat_service
+        self._auth_client = app.auth_service
+        self._community_client = app.community_service
+        self._bot_client = app.bots_service
 
         self.add_handler = self.app.add_handler
         self.remove_handler = self.app.remove_handler
         self.handlers = self.app.handlers
         self.update_bot_commands = self.app.update_bot_commands
-        self.register_command = self.app.register_command
-        self.unregister_command = self.app.unregister_command
+        self.set_bot_commands = self.app.set_bot_commands
+        self.delete_bot_commands = self.app.delete_bot_commands
 
     async def prepare_message(self, receiver_id: int, text: str, **kwargs) -> Message:
         """

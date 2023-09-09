@@ -9,7 +9,7 @@ import swibots
 from contextlib import suppress
 from signal import signal as signal_fn, SIGINT, SIGTERM, SIGABRT
 from io import BytesIO
-from swibots.api.auth.models import AuthUser
+from swibots.bots import Bot
 from importlib import import_module
 from swibots.errors import SwitchError, CancelError
 from swibots.api.community.events import CommunityEvent
@@ -62,9 +62,10 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         """
         super().__init__()
         self.token = token
-        self._user_type = AuthUser
+        self._user_type = Bot
         self._botinfo: BotInfo = None
         self.on_app_start = None
+        self.on_app_stop = None
         self.on_chat_service_start = self._on_chat_service_start
         self.on_community_service_start = self._on_community_service_start
         self._handlers: List[BaseHandler] = []
@@ -78,7 +79,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         )
         self._bot_id = self.user.id
         self._running = False
-        self._user_type = AuthUser
+        self._user_type = Bot
         self.rest_client = RestClient()
         self.receive_updates = receive_updates
 
@@ -187,7 +188,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         )
 
     def _build_context(self, event: Event) -> BotContext:
-        return BotContext(bot=self.bot, event=event)
+        return BotContext(app=self, event=event)
 
     async def process_event(self, ctx: BotContext):
         for handler in self.handlers:

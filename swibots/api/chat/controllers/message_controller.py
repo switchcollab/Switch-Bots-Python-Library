@@ -5,6 +5,7 @@ import json
 from inspect import iscoroutinefunction
 import logging
 from typing import TYPE_CHECKING, List, Optional
+from io import BytesIO
 from asyncio.tasks import Task
 from swibots.errors import CancelError
 from swibots.api.chat.models import (
@@ -90,7 +91,7 @@ class MessageController:
         channel_id: str = None,
         group_id: str = None,
         user_id: Optional[int] = None,
-        document: Optional[str] = None,
+        document: Optional[str | BytesIO] = None,
         caption: Optional[str] = None,
         description: Optional[str] = None,
         embed_message: Optional[EmbeddedMedia] = None,
@@ -146,7 +147,7 @@ class MessageController:
 
     async def send_media(
         self,
-        document: Optional[str] = None,
+        document: Optional[str | BytesIO] = None,
         message: Optional[str] = "",
         community_id: Optional[str] = None,
         group_id: Optional[str] = None,
@@ -156,7 +157,7 @@ class MessageController:
         description: Optional[str] = None,
         file_name: Optional[str] = None,
         mime_type: Optional[str] = None,
-        thumb: Optional[str] = None,
+        thumb: Optional[str | BytesIO] = None,
         blocking: Optional[bool] = True,
         progress: Optional[callable] = None,
         progress_args: Optional[tuple] = (),
@@ -180,18 +181,21 @@ class MessageController:
         log.debug("Sending message %s", json.dumps(form))
         request_url = f"{BASE_PATH}/create-with-media"
         reader, thumb_like = None, None
+        name = document if isinstance(document, str) else document.name
         reader = ReadCallbackStream(document, None)
         files["uploadMediaRequest.file"] = (
-            file_name or document,
+            file_name or name,
             reader,
             mime_type,
         )
         form.update(
             {
-                "uploadMediaRequest.caption": caption or message,
-                "uploadMediaRequest.description": description or message,
+                "uploadMediaRequest.caption": caption or file_name or name,
+                "uploadMediaRequest.description": description or file_name or name,
                 "uploadMediaRequest.mimeType": mime_type
-                or mimetypes.guess_type(document)[0]
+                or (
+                    mimetypes.guess_type(name)[0]
+                )
                 or "application/octet-stream",
             }
         )
@@ -200,7 +204,7 @@ class MessageController:
             d_progress = UploadProgress(
                 current=0,
                 readed=0,
-                file_name=document,
+                file_name=document if isinstance(document, str) else document.name,
                 client=IOClient(),
                 url=request_url,
                 callback=progress,
@@ -210,11 +214,13 @@ class MessageController:
             d_progress._readable_file = reader
 
         if thumb:
-            thumb_like = open(thumb, "rb")
+            _is_path = isinstance(thumb, str)
+            thumb_like = open(thumb, "rb") if _is_path else thumb
+            thumb_name = thumb if _is_path else thumb.name
             files["uploadMediaRequest.thumbnail"] = (
-                thumb,
+                thumb_name,
                 thumb_like,
-                mimetypes.guess_type(thumb)[0],
+                mimetypes.guess_type(thumb_name)[0],
             )
 
         def close_files(_task=None):

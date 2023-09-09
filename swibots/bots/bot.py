@@ -13,13 +13,14 @@ class Bot(AuthUser, ApiClient):
         super().__init__(app)
         self._app = app
         self._info: BotInfo = None
+
         # copy methods
         self.add_handler = app.add_handler
         self.remove_handler = app.remove_handler
         self.handlers = app.handlers
         self.update_bot_commands = self.app.update_bot_commands
-        self.register_command = self.app.register_command
-        self.unregister_command = self.app.unregister_command
+        self.set_bot_commands = self.app.set_bot_commands
+        self.delete_bot_commands = self.app.delete_bot_commands
 
     @property
     def app(self) -> "BotApp":
