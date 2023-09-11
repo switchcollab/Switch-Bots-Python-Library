@@ -16,7 +16,8 @@ from .controllers import (
     PermissionController,
     RoleMemberController,
     RestrictController,
-    BanController
+    BanController,
+    QuestsController
 )
 import swibots
 
@@ -36,6 +37,7 @@ class CommunityClient(SwitchRestClient):
         self._channels = None
         self._groups = None
         self._communities = None
+        self._quests = None
         self._roles = None
         self._rolemember = None
         self._permission = None
@@ -43,6 +45,12 @@ class CommunityClient(SwitchRestClient):
         self._restrict = None
         self._ws: SwitchWSAsyncClient = None
         self._started = False
+    
+    @property
+    def quests(self) -> QuestsController:
+        if self._quests is None:
+            self._quests = QuestsController(self)
+        return self._quests
 
     @property
     def channels(self) -> ChannelController:
@@ -133,34 +141,24 @@ class CommunityClient(SwitchRestClient):
         evt = None
         if type == EventType.COMMUNITY_CHANNEL_CREATE.value:
             evt = self.build_object(ChannelCreatedEvent, json_data)
-            # return ChannelCreatedEvent.build_from_json(json_data)
         elif type == EventType.COMMUNITY_CHANNEL_UPDATE.value:
             evt = self.build_object(ChannelUpdatedEvent, json_data)
-            # return ChannelUpdatedEvent.build_from_json(json_data)
         elif type == EventType.COMMUNITY_CHANNEL_DELETE.value:
             evt = self.build_object(ChannelDeletedEvent, json_data)
-            # return ChannelDeletedEvent.build_from_json(json_data)
         elif type == EventType.COMMUNITY_UPDATE.value:
             evt = self.build_object(CommunityUpdatedEvent, json_data)
-            # return CommunityUpdatedEvent.build_from_json(json_data)
         elif type == EventType.COMMUNITY_GROUP_CREATE.value:
             evt = self.build_object(GroupCreatedEvent, json_data)
-            # return GroupCreatedEvent.build_from_json(json_data)
         elif type == EventType.COMMUNITY_GROUP_UPDATE.value:
             evt = self.build_object(GroupUpdatedEvent, json_data)
-            # return GroupUpdatedEvent.build_from_json(json_data)
         elif type == EventType.COMMUNITY_GROUP_DELETE.value:
             evt = self.build_object(GroupDeletedEvent, json_data)
-            # return GroupDeletedEvent.build_from_json(json_data)
         elif type == EventType.COMMUNITY_USER_BAN.value:
             evt = self.build_object(UserBannedEvent, json_data)
-            # return UserBannedEvent.build_from_json(json_data)
         elif type == EventType.COMMUNITY_MEMBER_JOIN.value:
             evt = self.build_object(MemberJoinedEvent, json_data)
-            # return MemberJoinedEvent.build_from_json(json_data)
         elif type == EventType.COMMUNITY_MEMBER_LEAVE.value:
             evt = self.build_object(MemberLeftEvent, json_data)
-            # return MemberLeftEvent.build_from_json(json_data)
         else:
             evt = self.build_object(CommunityEvent, json_data)
 

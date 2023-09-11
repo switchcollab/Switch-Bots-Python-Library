@@ -7,5 +7,6 @@ from .rolemember import RoleMember
 from .baninfo import BanInfo
 from .community_member import CommunityMember
 from .restricteduser import RestrictedUser
+from .quest import Quest, QuestCategory
 
-__all__ = ["Channel", "Community", "Group", "Role", "RolePermission", "RoleMember", "BanInfo", "CommunityMember", "RestrictedUser"]
+__all__ = ["Channel", "Community", "Group", "Role", "RolePermission", "RoleMember", "BanInfo", "CommunityMember", "RestrictedUser", "Quest", "QuestCategory"]

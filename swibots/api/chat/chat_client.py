@@ -5,6 +5,7 @@ from swibots.api.chat.controllers import (
     MessageController,
     ChatController,
     MediaController,
+    StickerController
 )
 from swibots.api.chat.events import (
     ChatEvent,
@@ -56,6 +57,7 @@ class ChatClient(SwitchRestClient):
         self._messages: MessageController = None
         self._post: ChatController = None
         self._media: MediaController = None
+        self._stickers: StickerController = None
         self._ws: SwitchWSAsyncClient = None
         self._started = False
 
@@ -64,6 +66,12 @@ class ChatClient(SwitchRestClient):
         if self._ws is None:
             self._ws = SwitchWSAsyncClient(self._ws_url, self.token)
         return self._ws
+
+    @property
+    def stickers(self) -> StickerController:
+        if self._stickers is None:
+            self._stickers = StickerController(self)
+        return self._stickers
 
     @property
     def messages(self) -> MessageController:
@@ -119,11 +127,10 @@ class ChatClient(SwitchRestClient):
 
         This is a shortcut for :meth:`subscribe` with the endpoint set to ``/chat/queue/events``
         """
-        subscription = await self.ws.subscribe(
+        return await self.ws.subscribe(
             "/chat/queue/events",
             callback=lambda event: self._parse_event(event, callback),
         )
-        return subscription
 
     async def _parse_event(self, raw_message: WsMessage, callback) -> ChatEvent:
         try:

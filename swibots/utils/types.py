@@ -100,7 +100,7 @@ class ReadCallbackStream(object):
     http://code.activestate.com/recipes/578669-wrap-a-string-in-a-file-like-object-that-calls-a-u/
     """
 
-    def __init__(self, file_like, callback):
+    def __init__(self, file_like, callback: Callable = None):
         if isinstance(file_like, str):
             self.file_like = open(file_like, "rb")
         else:

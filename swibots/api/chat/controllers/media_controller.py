@@ -2,6 +2,7 @@ import asyncio
 import os
 import json, mimetypes
 import logging
+from io import BytesIO
 from typing import TYPE_CHECKING, List, Optional
 
 from swibots.utils.types import (
@@ -31,7 +32,7 @@ class MediaController:
 
     async def upload_media(
         self,
-        path: str,
+        path: str | BytesIO,
         caption: Optional[str] = None,
         description: Optional[str] = None,
         mime_type: Optional[str] = None,
@@ -41,12 +42,18 @@ class MediaController:
         """upload media from path"""
 
         url = f"{BASE_PATH}/upload-multipart"
+        if isinstance(path, BytesIO):
+            file_name = path.name
+        else:
+            file_name = path
+
+        if not mime_type:
+            mime_type = mimetypes.guess_type(file_name)[0] or "application/octet-stream"
+
         form_data = {
             "caption": caption,
             "description": description,
             "mimeType": mime_type
-            or mimetypes.guess_type(path)[0]
-            or "application/octet-stream",
         }
 
         reader = ReadCallbackStream(path, None)

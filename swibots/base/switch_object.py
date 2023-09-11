@@ -8,7 +8,7 @@ T = TypeVar("T")
 
 
 class SwitchObject(Generic[T]):
-    def __init__(self, app:"swibots.App"=None, **kwargs):
+    def __init__(self, app: "swibots.App" = None, **kwargs):
         self._app = app
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -18,13 +18,17 @@ class SwitchObject(Generic[T]):
         return self._app
 
     @classmethod
-    def build_from_json(cls, data: Optional[JSONDict] = None, app: Optional["swibots.App"] = None) -> Optional[T]:
+    def build_from_json(
+        cls, data: Optional[JSONDict] = None, app: Optional["swibots.App"] = None
+    ) -> Optional[T]:
         if data is None:
             return None
         return cls(app).from_json(data)
 
     @classmethod
-    def build_from_json_list(cls, data: Optional[JSONDict], app: Optional["swibots.App"] = None) -> List[T]:
+    def build_from_json_list(
+        cls, data: Optional[JSONDict], app: Optional["swibots.App"] = None
+    ) -> List[T]:
         return [cls.build_from_json(item, app) for item in data]
 
     def to_json_request(self) -> JSONDict:
@@ -39,5 +43,9 @@ class SwitchObject(Generic[T]):
         return self
 
     def __repr__(self) -> str:
-        filter_dict = {x: y for x, y in self.to_json().items() if y}
+        filter_dict = {
+            x: y.to_json() if hasattr(y, "to_json") else y
+            for x, y in self.to_json().items()
+            if y and x != "_app"
+        }
         return f"{self.__class__.__name__} {json.dumps(filter_dict, indent=1)}"

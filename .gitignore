@@ -15,3 +15,4 @@ test*
 *png
 *.sqlite
 downloads/
+*sh

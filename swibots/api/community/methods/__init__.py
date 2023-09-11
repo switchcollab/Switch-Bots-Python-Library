@@ -8,6 +8,7 @@ from .channel_methods import ChannelMethods
 from .community_methods import CommunityMethods
 from .restrict_user import RestrictUser
 from .deduct_xp import DeductXP
+from .quest_methods import QuestsMethods
 
 class CommunityMethods(
     CommunityMethods,
@@ -19,6 +20,7 @@ class CommunityMethods(
     UnbanUser,
     ChannelMethods,
     RestrictUser,
-    DeductXP
+    DeductXP,
+    QuestsMethods
 ):
     pass

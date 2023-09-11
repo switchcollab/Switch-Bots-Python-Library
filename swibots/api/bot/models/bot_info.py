@@ -33,17 +33,25 @@ class BotInfo(User):
         self.commands: List[BotCommand] = commands or []
         self.description: Optional[str] = description
 
+    def to_json_request(self) -> JSONDict:
+        return {
+            "commands": [command.to_json() for command in self.commands],
+            "description": self.description,
+        }
+
     def from_json(self, data: Optional[JSONDict] = None) -> "BotInfo":
         super().from_json(data)
         if data is not None:
-            self.commands = [BotCommand().from_json(x) for x in data.get("commands", [])]
+            self.commands = [
+                BotCommand().from_json(x) for x in data.get("commands", [])
+            ]
             self.description = data.get("description")
         return self
 
     def to_json(self) -> JSONDict:
         data = super().to_json()
         if not data.get("commands"):
-            data['commands'] = [x.to_json() for x in self.commands]
+            data["commands"] = [x.to_json() for x in self.commands]
         if not data.get("description"):
-            data['description'] = self.description
+            data["description"] = self.description
         return data

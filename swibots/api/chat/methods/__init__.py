@@ -20,6 +20,8 @@ from .send_message import SendMessage
 from .answer_inline_query import AnswerInlineQuery
 from .download_media import DownloadMedia
 from .upload_media import UploadMedia
+from .sticker_methods import StickerMethods
+
 
 class ChatMethods(
     ClearConversation,
@@ -42,6 +44,7 @@ class ChatMethods(
     AnswerInlineQuery,
     DownloadMedia,
     UploadMedia,
-    GetUser
+    GetUser,
+    StickerMethods
 ):
     pass

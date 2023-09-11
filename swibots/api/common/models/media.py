@@ -12,9 +12,10 @@ class Media(SwitchObject):
         caption: Optional[str] = None,
         description: Optional[str] = None,
         thumbnail_url: Optional[str] = None,
+        type_name: Optional[str] = None,
         source_id: Optional[bool] = None,
-        media_type: Optional[bool] = None,
-        mime_type: Optional[str] = None,
+        media_type: Optional[int] = None,
+        mime_type: Optional[str] = 0,
         file_name: Optional[bool] = None,
         file_size: Optional[bool] = None,
         url: Optional[bool] = None,
@@ -25,11 +26,16 @@ class Media(SwitchObject):
         self.description = description
         self.thumbnail_url = thumbnail_url
         self.source_id = source_id
+        self.type_name = type_name
         self.media_type = media_type
         self.mime_type = mime_type
         self.file_name = file_name
         self.file_size = file_size
         self.url = url
+    
+    @property
+    def is_sticker(self) -> bool:
+        return 200 <= (self.media_type) <= 202
 
     def to_json(self) -> JSONDict:
         return {
@@ -42,6 +48,7 @@ class Media(SwitchObject):
             "mimeType": self.mime_type,
             "fileName": self.file_name,
             "fileSize": self.file_size,
+            "typeName": self.type_name,
             "downloadUrl": self.url,
         }
 

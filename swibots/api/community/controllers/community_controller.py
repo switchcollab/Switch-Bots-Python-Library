@@ -114,4 +114,10 @@ class CommunityController:
         )
         return response.data.get("result", False)
 
+    async def is_community_member(self, community_id: str, user_id: int) -> bool:
+        response = await self.client.get(
+            f"{BASE_PATH}/validate/user/member?communityId={community_id}&user_id={user_id}"
+        )
+        return response.data.get("result", {}).get("member")
+
     # endregion
