@@ -47,6 +47,7 @@ class UploadMedia:
         group_id: Optional[str] = None,
         channel_id: Optional[str] = None,
         user_id: Optional[int] = None,
+        user_session_id: Optional[str] = None,
         description: Optional[str] = None,
         caption: Optional[str] = None,
         file_name: Optional[str] = None,
@@ -70,6 +71,7 @@ class UploadMedia:
           group_id (str) The Group ID
           channel_id (str) Channel ID
           user_id (int) User ID
+          user_session_id: Session ID, present if bot is added as channel in the community.
           blocking (bool): whether to block task
           progress (Callable[function]): Progress callback function.
           progress_args (tuple)
@@ -84,6 +86,7 @@ class UploadMedia:
             group_id=group_id,
             channel_id=channel_id,
             user_id=user_id,
+            user_session_id=user_session_id,
             caption=caption,
             description=description,
             file_name=file_name,

@@ -27,5 +27,5 @@ class MessageHandler(EventHandler):
         return (
             await super().should_handle(context)
             and context.event.message is not None
-            and context.event.message.user_id != context.bot.id
+            and context.event.message.user_id != context.app.user.id
         )

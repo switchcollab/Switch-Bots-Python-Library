@@ -15,6 +15,7 @@ class SendMessage:
         channel_id: str = None,
         group_id: str = None,
         user_id: Optional[int] = None,
+        user_session_id: Optional[str] = None,
         document: Optional[str] = None,
         caption: Optional[str] = None,
         description: Optional[str] = None,
@@ -31,6 +32,7 @@ class SendMessage:
             `group_id`: Group id
             `channel_id`: Channel ID
             `user_id`: User id to send message
+            `user_session_id`: Session ID, present if bot is added as channel in the community.
             ``
 
         Returns:
@@ -46,6 +48,7 @@ class SendMessage:
             group_id=group_id,
             channel_id=channel_id,
             user_id=user_id,
+            user_session_id=user_session_id,
             document=document,
             description=description,
             caption=caption,

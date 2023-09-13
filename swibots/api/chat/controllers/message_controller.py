@@ -5,6 +5,7 @@ import json
 from inspect import iscoroutinefunction
 import logging
 from typing import TYPE_CHECKING, List, Optional
+from urllib.parse import urlencode
 from io import BytesIO
 from asyncio.tasks import Task
 from swibots.errors import CancelError
@@ -91,6 +92,7 @@ class MessageController:
         channel_id: str = None,
         group_id: str = None,
         user_id: Optional[int] = None,
+        user_session_id: Optional[str] = None,
         document: Optional[str | BytesIO] = None,
         caption: Optional[str] = None,
         description: Optional[str] = None,
@@ -113,6 +115,7 @@ class MessageController:
                 community_id=community_id,
                 group_id=group_id,
                 channel_id=channel_id,
+                user_session_id=user_session_id,
                 user_id=user_id,
                 scheduled_at=scheduled_at,
                 **kwargs,
@@ -125,6 +128,7 @@ class MessageController:
             group_id=group_id,
             channel_id=channel_id,
             receiver_id=user_id,
+            user_session_id=user_session_id,
             embed_message=embed_message,
             inline_markup=inline_markup,
             replied_to_id=reply_to_message_id,
@@ -141,7 +145,6 @@ class MessageController:
 
         data = new_message.to_json_request()
         log.debug("Sending message %s", json.dumps(data))
-
         response = await self.client.post(f"{BASE_PATH}/create", data=data)
         return self.client.build_object(Message, response.data["message"])
 
@@ -153,6 +156,7 @@ class MessageController:
         group_id: Optional[str] = None,
         channel_id: Optional[str] = None,
         user_id: Optional[int] = None,
+        user_session_id: Optional[str] = None,
         caption: Optional[str] = None,
         description: Optional[str] = None,
         file_name: Optional[str] = None,
@@ -171,6 +175,7 @@ class MessageController:
             community_id=community_id,
             group_id=group_id,
             channel_id=channel_id,
+            user_session_id=user_session_id,
             replied_to_id=reply_to_message_id,
             message=message,
             scheduled_at=scheduled_at,
@@ -193,9 +198,7 @@ class MessageController:
                 "uploadMediaRequest.caption": caption or file_name or name,
                 "uploadMediaRequest.description": description or file_name or name,
                 "uploadMediaRequest.mimeType": mime_type
-                or (
-                    mimetypes.guess_type(name)[0]
-                )
+                or (mimetypes.guess_type(name)[0])
                 or "application/octet-stream",
             }
         )
@@ -342,20 +345,17 @@ class MessageController:
         Raises:
             ``~switch.error.SwitchError``: If the messages could not be retrieved
         """
-        q = []
-        if page_limit:
-            q.append(f"pageLimit={page_limit}")
-        if page_offset:
-            q.append(f"pageOffset={page_offset}")
-
-        str_q = "&".join(q)
+        data = {
+            "pageOffset": page_offset,
+            "pageLimit": 0,
+        }
 
         if user_id is None:
             user_id = self.client.user.id
 
         log.debug("Getting messages for user %s", recipient_id)
         response = await self.client.get(
-            f"{BASE_PATH}/{user_id}/{recipient_id}?{str_q}"
+            f"{BASE_PATH}/{user_id}/{recipient_id}?{urlencode(data)}"
         )
         return self.client.build_list(Message, response.data["messages"])
 
@@ -443,25 +443,17 @@ class MessageController:
 
         """
         log.debug("Getting group chat history for group %s", group_id)
-        q = ["isChannel=false"]
-        if page_limit:
-            q.append(f"pageLimit={page_limit}")
-        else:
-            q.append(f"pageLimit=0")
-        if page_offset:
-            q.append(f"pageOffset={page_offset}")
-        else:
-            q.append(f"pageOffset=0")
-        if community_id:
-            q.append(f"communityId={community_id}")
-
-        str_q = "&".join(q)
-
+        data = {
+            "communityId": community_id,
+            "pageOffset": page_offset,
+            "pageLimit": page_limit,
+            "isChannel": "false"
+        }
         if user_id is None:
             user_id = self.client.user.id
 
         response = await self.client.get(
-            f"{BASE_PATH}/group/{user_id}/{group_id}?{str_q}"
+            f"{BASE_PATH}/group/{user_id}/{group_id}?{urlencode(data)}"
         )
         return self.client.build_object(GroupChatHistory, response.data)
 
@@ -490,25 +482,18 @@ class MessageController:
 
         """
         log.debug("Getting channel chat history for channel %s", channel_id)
-        q = ["isChannel=true"]
-        if page_limit:
-            q.append(f"pageLimit={page_limit}")
-        else:
-            q.append(f"pageLimit=0")
-        if page_offset:
-            q.append(f"pageOffset={page_offset}")
-        else:
-            q.append(f"pageOffset=0")
-        if community_id:
-            q.append(f"communityId={community_id}")
-
-        str_q = "&".join(q)
+        data = {
+            "communityId": community_id,
+            "pageOffset": page_offset,
+            "pageLimit": page_limit,
+            "isChannel": "true"
+        }
 
         if user_id is None:
             user_id = self.client.user.id
 
         response = await self.client.get(
-            f"{BASE_PATH}/group/{user_id}/{channel_id}?{str_q}"
+            f"{BASE_PATH}/group/{user_id}/{channel_id}?{urlencode(data)}"
         )
         return self.client.build_object(GroupChatHistory, response.data)
         # return GroupChatHistory.build_from_json(response.data)
