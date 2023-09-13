@@ -31,6 +31,7 @@ class Message(
         command_name: str = None,
         community_id: int = None,
         community: "Community" = None,
+        user_session_id: Optional[str] = None,
         embed_message: "EmbeddedMedia" = None,
         is_embed_message: str = None,
         edit: bool = None,
@@ -104,6 +105,8 @@ class Message(
         self.embed_message = embed_message
         self.is_embed_message = is_embed_message
         self.scheduled_at = scheduled_at
+        self.user_session_id = user_session_id
+    
         self.__dict__.update(**kwargs)
 
     def to_json_request(self) -> JSONDict:
@@ -130,10 +133,13 @@ class Message(
             "cachedMedia": self.cached_media.to_json() if self.cached_media else None,
             "mediaId": self.media_id,
             "mediaInfo": self.media_info.to_json() if self.media_info else None,
+            "userSessionId": self.user_session_id
         }
 
     def to_form_data(self):
         form_data = {}
+        if self.user_session_id is not None:
+            form_data["userSessionId"] = self.user_session_id
         if self.user_id is not None:
             form_data["userId"] = self.user_id
         if self.receiver_id is not None:
@@ -205,6 +211,7 @@ class Message(
             "sentDate": self.sent_date,
             "status": self.status,
             "userId": self.user_id,
+            "userSessionId": self.user_session_id
         }
 
     def from_json(self, data: Optional[JSONDict]) -> "Message":
@@ -262,6 +269,7 @@ class Message(
             self.is_embed_message = data.get("isEmbedMessage") or bool(
                 self.embed_message
             )
+            self.user_session_id = data.get("userSessionId")
         return self
 
     # async def get_receiver(self) -> "User":
@@ -331,6 +339,7 @@ class Message(
             group_id=self.group_id,
             channel_id=self.channel_id,
             user_id=self._get_receiver_id(),
+            user_session_id=self.user_session_id,
             **kwargs,
         )
 
@@ -347,6 +356,7 @@ class Message(
             channel_id=self.channel_id,
             user_id=self._get_receiver_id(),
             reply_to_message_id=self.id,
+            user_session_id=self.user_session_id,
             **kwargs,
         )
 
@@ -358,6 +368,7 @@ class Message(
             group_id=self.group_id,
             channel_id=self.channel_id,
             user_id=self._get_receiver_id(),
+            user_session_id=self.user_session_id,
             **kwargs,
         )
 
