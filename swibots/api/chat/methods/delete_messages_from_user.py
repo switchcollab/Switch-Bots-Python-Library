@@ -4,7 +4,9 @@ from swibots.api.chat.models import Message
 
 
 class DeleteMessagesFromUser:
-    async def delete_messages_from_user(self: "swibots.ApiClient", user_id: int) -> bool:
+    async def delete_messages_from_user(
+        self: "swibots.ApiClient", user_id: int
+    ) -> bool:
         """Delete all messages from a user
 
         Parameters:

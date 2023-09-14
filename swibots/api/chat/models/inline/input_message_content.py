@@ -6,8 +6,8 @@ from swibots.base import SwitchObject
 
 class InputMessageContent(SwitchObject):
     def __init__(
-            self,
-            message_text: str = None,
+        self,
+        message_text: str = None,
     ):
         self.message_text = message_text
 

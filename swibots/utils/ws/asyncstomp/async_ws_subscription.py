@@ -3,7 +3,12 @@ from swibots.utils.ws.common import WsMessage
 
 class AsyncWsSubscription:
     def __init__(
-        self, client, destination: str, id: str, headers: dict[str, str] = None, callback=None
+        self,
+        client,
+        destination: str,
+        id: str,
+        headers: dict[str, str] = None,
+        callback=None,
     ):
         from .async_ws_client import AsyncWsClient
 

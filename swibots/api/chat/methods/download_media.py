@@ -11,9 +11,16 @@ DOWNLOAD_MEDIA = "downloads/"
 
 
 class DownloadMedia:
-    async def download_media(self: "swibots.ApiClient", message: Message, file_name: str = DOWNLOAD_MEDIA, in_memory: bool = False, block: bool = True, progress: DownloadProgressCallback = None, progress_args: tuple = ()) -> Optional[Union[BinaryIO, bytes, str]]:
-        """
-        """
+    async def download_media(
+        self: "swibots.ApiClient",
+        message: Message,
+        file_name: str = DOWNLOAD_MEDIA,
+        in_memory: bool = False,
+        block: bool = True,
+        progress: DownloadProgressCallback = None,
+        progress_args: tuple = (),
+    ) -> Optional[Union[BinaryIO, bytes, str]]:
+        """ """
 
         if not message.is_media:
             raise MediaEmpty("Message is not a media message")
@@ -30,7 +37,14 @@ class DownloadMedia:
             file_name = file_name or media_file_name or ""
 
         download_fn = self.handle_download(
-            url=message.media_link, directory=directory, file_name=file_name, in_memory=in_memory, block=block, progress=progress, progress_args=progress_args)
+            url=message.media_link,
+            directory=directory,
+            file_name=file_name,
+            in_memory=in_memory,
+            block=block,
+            progress=progress,
+            progress_args=progress_args,
+        )
         if block:
             return await download_fn
         return asyncio.get_event_loop().create_task(download_fn)

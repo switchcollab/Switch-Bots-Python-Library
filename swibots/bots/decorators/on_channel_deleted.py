@@ -11,7 +11,9 @@ class OnChannelDeleted:
 
         def decorator(func: Callable) -> Callable:
             if isinstance(self, swibots.BotApp):
-                self.add_handler(swibots.bots.handlers.ChannelDeletedHandler(func, filter))
+                self.add_handler(
+                    swibots.bots.handlers.ChannelDeletedHandler(func, filter)
+                )
 
             return func
 

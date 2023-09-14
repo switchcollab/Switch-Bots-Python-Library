@@ -36,7 +36,7 @@ class InlineQueryAnswer(SwitchObject):
             "queryId": self.query_id,
             "userId": self.user_id,
             "title": self.title,
-            "results":   [self._result_json(result) for result in self.results or []],
+            "results": [self._result_json(result) for result in self.results or []],
             "nextOffset": self.next_offset,
             "cacheTime": self.cache_time,
             "isPersonal": self.is_personal,

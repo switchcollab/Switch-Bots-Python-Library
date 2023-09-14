@@ -32,7 +32,7 @@ class UploadProgress:
         client: IOClient,
         file_name: str,
         callback,
-        callback_args
+        callback_args,
     ):
         self.current = current
         self.readed = readed
@@ -53,6 +53,7 @@ class UploadProgress:
         self.current = current
         self.readed += current
         if self.callback:
+
             async def task():
                 try:
                     iscoro = self.callback(self, *self.callback_args or ())
@@ -64,19 +65,23 @@ class UploadProgress:
                         self._readable_file.cancelled = True
                     return False
                 return True
+
             loop = get_event_loop()
             _task = loop.create_task(task())
             self._tasks.append(_task)
 
             def onDone(task):
                 if task.exception():
-                    if isinstance(task.exception(), CancelError) and self._readable_file:
+                    if (
+                        isinstance(task.exception(), CancelError)
+                        and self._readable_file
+                    ):
                         self._readable_file.cancelled = True
                         return
                     raise task.exception()
-                
 
             _task.add_done_callback(onDone)
+
 
 CtxType = TypeVar("CtxType")
 ResType = TypeVar("ResType")
@@ -120,6 +125,7 @@ class ReadCallbackStream(object):
     def close(self):
         if hasattr(self.file_like, "close"):
             self.file_like.close()
+
 
 class RequestMethod(Enum):
     GET = "GET"

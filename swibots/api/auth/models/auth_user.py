@@ -73,7 +73,7 @@ class AuthUser(SwitchObject):
             self.date_of_birth = data.get("date_of_birth")
             self.medias = []
             for _ in range(1, 6):
-                if media:= data.get(f"media{_}"):
+                if media := data.get(f"media{_}"):
                     self.medias.append(media)
             self.more_about_this = data.get("more_about_this")
             self.active = data.get("active")

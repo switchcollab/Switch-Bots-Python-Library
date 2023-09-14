@@ -45,6 +45,6 @@ class ChatMethods(
     DownloadMedia,
     UploadMedia,
     GetUser,
-    StickerMethods
+    StickerMethods,
 ):
     pass

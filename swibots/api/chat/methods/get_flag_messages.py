@@ -4,7 +4,9 @@ from swibots.api.chat.models import Message
 
 
 class GetFlagMessages:
-    async def get_flag_messages(self: "swibots.ApiClient", user_id: int = None) -> List[Message]:
+    async def get_flag_messages(
+        self: "swibots.ApiClient", user_id: int = None
+    ) -> List[Message]:
         """Get flagged messages
 
         Parameters:

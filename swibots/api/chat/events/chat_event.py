@@ -26,7 +26,6 @@ class ChatEvent(Event):
         data: Optional[dict] = None,
         user_id: Optional[int] = None,
         user: Optional[User] = None,
-
     ):
         super().__init__(
             app=app,
@@ -59,20 +58,22 @@ class ChatEvent(Event):
         if data is not None:
             super().from_json(data)
             details = data.get("details") or {}
-            self.user_id = data.get("userId") or data.get(
-                "senderId") or data.get("actionById")
+            self.user_id = (
+                data.get("userId") or data.get("senderId") or data.get("actionById")
+            )
             self.user = User.build_from_json(
-                details.get("user") or details.get("sender") or data.get("actionBy"), self.app)
+                details.get("user") or details.get("sender") or data.get("actionBy"),
+                self.app,
+            )
             self.community_id = data.get("communityId")
             self.community = Community.build_from_json(
-                details.get("community"), self.app)
+                details.get("community"), self.app
+            )
             self.group_id = data.get("groupId")
             self.group = Group.build_from_json(details.get("group"), self.app)
             self.channel_id = data.get("channelId")
-            self.channel = Channel.build_from_json(
-                details.get("channel"), self.app)
+            self.channel = Channel.build_from_json(details.get("channel"), self.app)
             self.action_by_id = int(data.get("actionById"))
-            self.action_by = User.build_from_json(
-                data.get("actionBy"), self.app)
+            self.action_by = User.build_from_json(data.get("actionBy"), self.app)
 
         return self

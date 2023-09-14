@@ -1,4 +1,3 @@
-
 from typing import Type, TypeVar
 import swibots
 from swibots.api.auth.models import AuthUser

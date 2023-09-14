@@ -17,7 +17,7 @@ from .controllers import (
     RoleMemberController,
     RestrictController,
     BanController,
-    QuestsController
+    QuestsController,
 )
 import swibots
 
@@ -45,7 +45,7 @@ class CommunityClient(SwitchRestClient):
         self._restrict = None
         self._ws: SwitchWSAsyncClient = None
         self._started = False
-    
+
     @property
     def quests(self) -> QuestsController:
         if self._quests is None:
@@ -128,7 +128,7 @@ class CommunityClient(SwitchRestClient):
             callback=lambda event: callback(self.__parseEvent(event)),
         )
         return subscription
-    
+
     def __parseEvent(self, raw_message: WsMessage) -> CommunityEvent | None:
         try:
             return self._parse_event(raw_message)

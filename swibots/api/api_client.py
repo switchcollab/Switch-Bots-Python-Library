@@ -12,13 +12,8 @@ from .chat.methods import ChatMethods
 from .community.methods import CommunityMethods
 from .airdrop.methods import AirdropMethods
 
-class ApiClient(
-    AuthMethods,
-    BotMethods,
-    ChatMethods,
-    CommunityMethods,
-    AirdropMethods
-):
+
+class ApiClient(AuthMethods, BotMethods, ChatMethods, CommunityMethods, AirdropMethods):
     def __init__(self, **kwargs):
         """Initialize the client"""
         self._token: str = None

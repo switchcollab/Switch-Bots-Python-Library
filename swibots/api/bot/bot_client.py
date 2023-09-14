@@ -35,7 +35,7 @@ class BotClient(SwitchRestClient):
         if self._bots is None:
             self._bots = BotController(self)
         return self._bots
-    
+
     @property
     def games(self) -> GameController:
         if self._games is None:

@@ -28,14 +28,9 @@ class RoleMemberController:
         member_id: int,
         role_ids: List[int],
     ) -> bool:
-        data = {
-            "communityId": community_id,
-            "roleIds": role_ids,
-            "memberId": member_id
-        }
+        data = {"communityId": community_id, "roleIds": role_ids, "memberId": member_id}
         response = await self.client.post(f"{BASE_PATH}/add", data=data)
         return response.data.get("success", False)
-
 
     async def delete_role_member(
         self,

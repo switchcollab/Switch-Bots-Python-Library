@@ -14,6 +14,7 @@ VERSIONS = "1.1,1.0"
 
 log = logging.getLogger(__name__)
 
+
 class AsyncWsClient:
     def __init__(
         self,
@@ -57,7 +58,10 @@ class AsyncWsClient:
             return
         log.error("Whoops! Lost connection to " + self.url)
         await self._clean_up()
-        if self._connectIntents >= self._maxConnectIntents and self._maxConnectIntents > 0:
+        if (
+            self._connectIntents >= self._maxConnectIntents
+            and self._maxConnectIntents > 0
+        ):
             log.error("Max connection attempts reached. Aborting.")
             raise SwitchError("Max connection attempts reached. Aborting.")
         await asyncio.sleep(self._connectInterval)
@@ -257,7 +261,11 @@ class AsyncWsClient:
             id = headers["id"]
 
         sub = AsyncWsSubscription(
-            client=self, destination=destination, callback=callback, headers=headers, id=id
+            client=self,
+            destination=destination,
+            callback=callback,
+            headers=headers,
+            id=id,
         )
         await self._start_subscription(sub)
         self.subscriptions[id] = sub

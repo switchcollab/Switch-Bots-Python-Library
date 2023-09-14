@@ -37,7 +37,9 @@ class ChannelMethods:
         """
         return await self.community_service.channels.update_channel(channel)
 
-    async def get_all_channels(self: "swibots.ApiClient", community_id: str) -> List[Channel]:
+    async def get_all_channels(
+        self: "swibots.ApiClient", community_id: str
+    ) -> List[Channel]:
         """
         Get all channels from the community.
         """

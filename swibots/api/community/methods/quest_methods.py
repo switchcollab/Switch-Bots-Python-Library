@@ -6,6 +6,7 @@ from swibots.responses import CommunityQuestResponse
 from swibots.api.community.models import Quest, QuestCategory
 from swibots.api.common.models import User
 
+
 class QuestsMethods:
     """
     Methods for managing permissions in a community.
@@ -55,7 +56,7 @@ class QuestsMethods:
         Args:
             quest_id (int): Quest ID.
             community_id (str): Community ID.
-            description (str): Description 
+            description (str): Description
 
         Returns:
             _type_: _description_
@@ -92,7 +93,9 @@ class QuestsMethods:
         """
         return await self.community_service.quests.delete_quest(quest_id=quest_id)
 
-    async def get_quest_participants(self: "swibots.ApiClient", quest_id: int) -> List[User]:
+    async def get_quest_participants(
+        self: "swibots.ApiClient", quest_id: int
+    ) -> List[User]:
         """Get Participants of the quest by quest id.
 
         Args:

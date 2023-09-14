@@ -24,6 +24,9 @@ class UnknownCommandHandler(BaseHandler):
         super().__init__(callback, filter, **kwargs)
 
     async def should_handle(self, context: BotContext[Any]) -> bool:
-        if context.event.type == EventType.COMMAND and context.event.message is not None:
+        if (
+            context.event.type == EventType.COMMAND
+            and context.event.message is not None
+        ):
             return True
         return False

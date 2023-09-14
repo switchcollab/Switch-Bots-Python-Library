@@ -138,7 +138,7 @@ class MessageController:
 
         if new_message.embed_message and new_message.embed_message.thumbnail:
             thumb = new_message.embed_message.thumbnail
-            if thumb and os.path.exists(thumb):
+            if thumb:
                 new_message.embed_message.thumbnail = (
                     await self.client.app.upload_media(thumb)
                 ).url
@@ -447,7 +447,7 @@ class MessageController:
             "communityId": community_id,
             "pageOffset": page_offset,
             "pageLimit": page_limit,
-            "isChannel": "false"
+            "isChannel": "false",
         }
         if user_id is None:
             user_id = self.client.user.id
@@ -486,7 +486,7 @@ class MessageController:
             "communityId": community_id,
             "pageOffset": page_offset,
             "pageLimit": page_limit,
-            "isChannel": "true"
+            "isChannel": "true",
         }
 
         if user_id is None:

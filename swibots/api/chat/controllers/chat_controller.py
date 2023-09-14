@@ -43,7 +43,7 @@ class ChatController:
             data=data,
         )
         return True
-    
+
     async def get_last_seen(self, user_id: int) -> int:
         response = await self.client.get(f"{CHAT_BASE_PATH}lastseen/{user_id}")
-        return response.data.get('lastSeen')
+        return response.data.get("lastSeen")

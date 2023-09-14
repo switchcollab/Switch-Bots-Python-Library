@@ -12,7 +12,9 @@ class OnCommand:
 
         def decorator(func: Callable) -> Callable:
             if isinstance(self, swibots.BotApp):
-                self.add_handler(swibots.bots.handlers.CommandHandler(command, func, filter))
+                self.add_handler(
+                    swibots.bots.handlers.CommandHandler(command, func, filter)
+                )
 
             return func
 

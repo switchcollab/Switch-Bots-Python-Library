@@ -4,7 +4,7 @@ from swibots.base import SwitchObject
 from swibots.api.common import User, Media, EmbeddedMedia
 from swibots.api.community import Community, Channel, Group
 from swibots.utils.types import JSONDict
-from .inline_markup import InlineMarkup
+from .inline_markup import InlineMarkup, InlineMarkupRemove
 
 
 class Message(
@@ -106,7 +106,7 @@ class Message(
         self.is_embed_message = is_embed_message
         self.scheduled_at = scheduled_at
         self.user_session_id = user_session_id
-    
+
         self.__dict__.update(**kwargs)
 
     def to_json_request(self) -> JSONDict:
@@ -133,7 +133,7 @@ class Message(
             "cachedMedia": self.cached_media.to_json() if self.cached_media else None,
             "mediaId": self.media_id,
             "mediaInfo": self.media_info.to_json() if self.media_info else None,
-            "userSessionId": self.user_session_id
+            "userSessionId": self.user_session_id,
         }
 
     def to_form_data(self):
@@ -165,7 +165,7 @@ class Message(
         if self.inline_markup is not None:
             form_data.update(self.inline_markup.to_form_data())
         if self.scheduled_at is not None:
-            form_data['scheduledAt'] = self.scheduled_at
+            form_data["scheduledAt"] = self.scheduled_at
         return form_data
 
     def to_json(self) -> JSONDict:
@@ -211,7 +211,7 @@ class Message(
             "sentDate": self.sent_date,
             "status": self.status,
             "userId": self.user_id,
-            "userSessionId": self.user_session_id
+            "userSessionId": self.user_session_id,
         }
 
     def from_json(self, data: Optional[JSONDict]) -> "Message":
@@ -323,7 +323,7 @@ class Message(
         if self.replied_to is None:
             self.replied_to = await self.app.get_message(self.replied_to_id)
         return self.replied_to
-    
+
     def _get_receiver_id(self):
         """Get receiver id to send message"""
         if not self.personal_chat:
@@ -379,6 +379,11 @@ class Message(
         inline_markup: Optional[InlineMarkup] = None,
         **kwargs,
     ) -> "Message":
+        if isinstance(inline_markup, InlineMarkupRemove):
+            inline_markup = None
+        elif not inline_markup:
+            inline_markup = self.inline_markup
+
         return await self.app.edit_message_text(
             self.id,
             text,

@@ -13,9 +13,9 @@ class BotContext(Generic[EventType], ApiClient):
         self.event = event
         self.app = app
         self._user = app._user
-    
+
         # copy the api client
-        
+
         self._chat_client = app.chat_service
         self._auth_client = app.auth_service
         self._community_client = app.community_service
@@ -40,7 +40,9 @@ class BotContext(Generic[EventType], ApiClient):
         Returns:
             :obj:`switch.api.chat.models.Message`: The prepared message.
         """
-        return await self.bot.prepare_message(receiver_id=receiver_id, text=text, **kwargs)
+        return await self.bot.prepare_message(
+            receiver_id=receiver_id, text=text, **kwargs
+        )
 
     async def prepare_response_message(self, message: Message) -> Message:
         """

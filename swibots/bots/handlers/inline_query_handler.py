@@ -24,6 +24,4 @@ class InlineQueryHandler(EventHandler):
         super().__init__(EventType.INLINE_QUERY, callback, filter, **kwargs)
 
     async def should_handle(self, context: BotContext[InlineQueryEvent]) -> bool:
-        return (
-            await super().should_handle(context)
-        )
+        return await super().should_handle(context)

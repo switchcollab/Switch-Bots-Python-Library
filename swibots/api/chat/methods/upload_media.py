@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 class UploadMedia:
     async def upload_media(
         self: "ApiClient",
-        path: str,
+        path: str | BytesIO,
         caption: Optional[str] = None,
         description: Optional[str] = None,
         mime_type: Optional[str] = None,
@@ -106,7 +106,7 @@ class UploadMedia:
         description: Optional[str] = None,
     ):
         """Update Info of uploaded media
-        
+
         media_id: int: Media Id
         caption: str: Caption of media
         description: str: Description of media
@@ -117,7 +117,7 @@ class UploadMedia:
 
     async def delete_media(self: "swibots.ApiClient", media_id: int):
         """Delete existing uploaded media!
-        
+
         Arguments:
           media_id: media id to delete"""
         return await self.chat_service.media.delete_media(media_id)

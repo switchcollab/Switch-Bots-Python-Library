@@ -42,7 +42,6 @@ class RestClient:
 
         self._client = self._build_client()
 
-
     def _build_client(self) -> httpx.AsyncClient:
         # type: ignore[arg-type]
         return httpx.AsyncClient(**self._client_kwargs)
@@ -63,27 +62,54 @@ class RestClient:
             return
         await self._client.aclose()
 
-    async def get(self, url: str, data: dict = None, headers: dict = None) -> Tuple[int, bytes]:
+    async def get(
+        self, url: str, data: dict = None, headers: dict = None
+    ) -> Tuple[int, bytes]:
         """See :meth:`BaseRequest.get`."""
         return await self.do_request(url, "GET", data, headers=headers)
 
-    async def post(self, url: str, data: dict = None, form_data=None, files=None, headers: dict = None) -> Tuple[int, bytes]:
+    async def post(
+        self,
+        url: str,
+        data: dict = None,
+        form_data=None,
+        files=None,
+        headers: dict = None,
+    ) -> Tuple[int, bytes]:
         """See :meth:`BaseRequest.post`."""
         return await self.do_request(url, "POST", data, form_data, files, headers)
 
-    async def put(self, url: str, data: dict = None, form_data=None, files=None, headers: dict = None) -> Tuple[int, bytes]:
+    async def put(
+        self,
+        url: str,
+        data: dict = None,
+        form_data=None,
+        files=None,
+        headers: dict = None,
+    ) -> Tuple[int, bytes]:
         """See :meth:`BaseRequest.put`."""
         return await self.do_request(url, "PUT", data, form_data, files, headers)
 
-    async def delete(self, url: str, data: dict = None, headers: dict = None) -> Tuple[int, bytes]:
+    async def delete(
+        self, url: str, data: dict = None, headers: dict = None
+    ) -> Tuple[int, bytes]:
         """See :meth:`BaseRequest.delete`."""
         return await self.do_request(url, "DELETE", data, headers=headers)
 
-    async def patch(self, url: str, data: dict = None, form_data=None, files=None, headers: dict = None) -> Tuple[int, bytes]:
+    async def patch(
+        self,
+        url: str,
+        data: dict = None,
+        form_data=None,
+        files=None,
+        headers: dict = None,
+    ) -> Tuple[int, bytes]:
         """See :meth:`BaseRequest.patch`."""
         return await self.do_request(url, "PATCH", data, form_data, files, headers)
 
-    async def head(self, url: str, data: dict = None, headers: dict = None) -> Tuple[int, bytes]:
+    async def head(
+        self, url: str, data: dict = None, headers: dict = None
+    ) -> Tuple[int, bytes]:
         """See :meth:`BaseRequest.head`."""
         return await self.do_request(url, "HEAD", data, headers)
 
@@ -94,14 +120,20 @@ class RestClient:
         return await self.do_request(url, "OPTIONS", data, headers)
 
     def prepare_request_data(self, data: dict) -> dict:
-#        data = {**data} if data else {}
+        #        data = {**data} if data else {}
         return data
 
     def prepare_request_headers(self, headers: dict) -> dict:
         return headers or {}
 
     async def do_request(
-        self, url: str, method: str, data: dict = None, form_data=None, files=None, headers: dict = None
+        self,
+        url: str,
+        method: str,
+        data: dict = None,
+        form_data=None,
+        files=None,
+        headers: dict = None,
     ) -> Tuple[int, bytes]:
         if self._client.is_closed:
             raise RuntimeError("This RestClient is not initialized!")
@@ -111,9 +143,13 @@ class RestClient:
             if form_data is not None:
                 # reqHeaders["Content-Type"] = "multipart/form-data"
                 # reqHeaders["Accept"] = "application/json"
-                response = await self._client.request(method, url, data=form_data, files=files, headers=req_headers)
+                response = await self._client.request(
+                    method, url, data=form_data, files=files, headers=req_headers
+                )
             else:
-                response = await self._client.request(method, url, json=data, headers=req_headers)
+                response = await self._client.request(
+                    method, url, json=data, headers=req_headers
+                )
         except httpx.HTTPError as err:
             # HTTPError must come last as its the base httpx exception class
             # TODO p4: do something smart here; for now just raise NetworkError

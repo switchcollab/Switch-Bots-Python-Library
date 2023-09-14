@@ -103,6 +103,22 @@ is_bot = create(bot_filter)
 """Filter messages coming from bots."""
 
 
+async def personal_filter(self, ctx: BotContext[MessageEvent]):
+    return ctx.event.message.personal_chat
+
+
+personal = create(personal_filter)
+
+
+async def communities_filter(self, ctx: BotContext[MessageEvent]):
+    return bool(ctx.event.message.community_id)
+
+
+communities = create(communities_filter)
+channels = create(lambda _, ctx: ctx.event.message.channel_chat)
+groups = create(lambda _, ctx: ctx.event.message.group_chat)
+
+
 async def me_filter(self, ctx: BotContext[MessageEvent]):
     return bool(
         ctx.event.message is not None and ctx.event.message.user_id == ctx.user.id
@@ -129,6 +145,16 @@ async def outgoing_filter(self, ctx: BotContext[MessageEvent]):
 
 outgoing = create(outgoing_filter)
 """Filter outgoing messages. Messages that are sent by the user."""
+
+
+async def admin_filter(self, ctx: BotContext[MessageEvent]):
+    m = ctx.event.message
+    if not m.community_id:
+        return False
+    return await ctx.is_admin(m.community_id, m.user_id)
+
+
+admin = create(admin_filter)
 
 
 class community(Filter, set):
@@ -172,7 +198,7 @@ class group(Filter, set):
     async def __call__(self, ctx: BotContext[Event]):
         group_id = self.group_id
         if group_id is None:
-            return bool(ctx.event.group_id is not None)
+            return ctx.event.group_id is not None
         if isinstance(group_id, str):
             group_id = frozenset({group_id})
         else:

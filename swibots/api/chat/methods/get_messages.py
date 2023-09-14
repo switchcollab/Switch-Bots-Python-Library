@@ -4,7 +4,9 @@ from swibots.api.chat.models import Message
 
 
 class GetMessages:
-    async def get_messages(self: "swibots.ApiClient", user_id: int = None) -> List[Message]:
+    async def get_messages(
+        self: "swibots.ApiClient", user_id: int = None
+    ) -> List[Message]:
         """Get messages
 
         Parameters:

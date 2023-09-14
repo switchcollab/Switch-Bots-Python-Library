@@ -18,10 +18,8 @@ class GroupChatHistory(SwitchObject):
         self.messages = messages or []
 
     def from_json(self, data: dict) -> "GroupChatHistory":
-        self.users = User.build_from_json_list(
-            data.get("userInfo", []), self.app)
-        self.messages = Message.build_from_json_list(
-            data.get("message", []),  self.app)
+        self.users = User.build_from_json_list(data.get("userInfo", []), self.app)
+        self.messages = Message.build_from_json_list(data.get("message", []), self.app)
         return self
 
     def to_json(self) -> dict:

@@ -4,7 +4,9 @@ from swibots.api.chat.models import InlineQueryAnswer, InlineQuery
 
 
 class AnswerInlineQuery:
-    async def answer_inline_query(self: "swibots.ApiClient", query: InlineQuery, answer: InlineQueryAnswer) -> bool:
+    async def answer_inline_query(
+        self: "swibots.ApiClient", query: InlineQuery, answer: InlineQueryAnswer
+    ) -> bool:
         """Answer inline query
 
         Args:

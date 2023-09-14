@@ -3,6 +3,7 @@ import swibots
 from swibots.api.community.models import Role
 from typing import List
 
+
 class RoleMethods:
     """
     Methods for managing roles in a community.

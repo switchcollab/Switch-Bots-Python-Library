@@ -11,7 +11,9 @@ class OnMemberJoined:
 
         def decorator(func: Callable) -> Callable:
             if isinstance(self, swibots.BotApp):
-                self.add_handler(swibots.bots.handlers.MemberJoinedHandler(func, filter))
+                self.add_handler(
+                    swibots.bots.handlers.MemberJoinedHandler(func, filter)
+                )
 
             return func
 

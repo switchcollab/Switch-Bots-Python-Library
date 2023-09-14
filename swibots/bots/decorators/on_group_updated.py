@@ -11,7 +11,9 @@ class OnGroupUpdated:
 
         def decorator(func: Callable) -> Callable:
             if isinstance(self, swibots.BotApp):
-                self.add_handler(swibots.bots.handlers.GroupUpdatedHandler(func, filter))
+                self.add_handler(
+                    swibots.bots.handlers.GroupUpdatedHandler(func, filter)
+                )
 
             return func
 

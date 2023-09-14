@@ -32,7 +32,7 @@ class Media(SwitchObject):
         self.file_name = file_name
         self.file_size = file_size
         self.url = url
-    
+
     @property
     def is_sticker(self) -> bool:
         return 200 <= (self.media_type) <= 202
@@ -70,7 +70,7 @@ class Media(SwitchObject):
         self, caption: Optional[str] = None, description: Optional[str] = None
     ):
         """Update media Info
-  
+
         Args:
           caption: Caption of media
           description: Description to update.

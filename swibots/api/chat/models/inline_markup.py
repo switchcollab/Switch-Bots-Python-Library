@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING, List, Optional
+import swibots
 
 from swibots.base import SwitchObject
 from swibots.utils.types import JSONDict
@@ -60,3 +61,10 @@ class InlineMarkup(SwitchObject):
                 for row in data.get("inlineKeyboard") or []
             ]
         return self
+
+
+class InlineMarkupRemove(InlineMarkup):
+    """InlineMarkupRemove: InlineMarkup class to remove inline buttons"""
+
+    def __init__(self):
+        ...

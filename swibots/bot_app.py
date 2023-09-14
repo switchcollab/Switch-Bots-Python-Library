@@ -287,7 +287,6 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         if self.user is None:
             raise SwitchError("Invalid token")
 
-
     async def _on_app_stop(self):
         await self.chat_service.stop()
         await self.community_service.stop()

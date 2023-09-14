@@ -11,7 +11,9 @@ class OnGroupDeleted:
 
         def decorator(func: Callable) -> Callable:
             if isinstance(self, swibots.BotApp):
-                self.add_handler(swibots.bots.handlers.GroupDeletedHandler(func, filter))
+                self.add_handler(
+                    swibots.bots.handlers.GroupDeletedHandler(func, filter)
+                )
 
             return func
 

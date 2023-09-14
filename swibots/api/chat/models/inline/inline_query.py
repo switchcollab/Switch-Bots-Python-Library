@@ -56,13 +56,11 @@ class InlineQuery(SwitchObject):
             # self.receiver = User.build_from_json(
             #     data.get("receiver"), self.app)
             self.community_id = data.get("communityId")
-            self.community = Community.build_from_json(
-                data.get("community"), self.app)
+            self.community = Community.build_from_json(data.get("community"), self.app)
             self.group_id = data.get("groupId")
             self.group = Group.build_from_json(data.get("group"), self.app)
             self.channel_id = data.get("channelId")
-            self.channel = Channel.build_from_json(
-                data.get("channel"), self.app)
+            self.channel = Channel.build_from_json(data.get("channel"), self.app)
             self.query_id = data.get("id")
             self.offset = data.get("offset")
             self.query = data.get("query")

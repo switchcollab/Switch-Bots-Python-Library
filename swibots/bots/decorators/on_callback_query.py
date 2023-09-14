@@ -11,7 +11,9 @@ class OnCallbackQuery:
 
         def decorator(func: Callable) -> Callable:
             if isinstance(self, swibots.BotApp):
-                self.add_handler(swibots.bots.handlers.CallbackQueryHandler(func, filter))
+                self.add_handler(
+                    swibots.bots.handlers.CallbackQueryHandler(func, filter)
+                )
 
             return func
 

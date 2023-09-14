@@ -53,7 +53,8 @@ class InlineQueryEvent(ChatEvent):
         super().from_json(data)
         if self.data is not None:
             self.query = InlineQuery.build_from_json(
-                self.data.get("inlineQuery"), self.app)
+                self.data.get("inlineQuery"), self.app
+            )
             self.user = self.action_by
             self.user_id = self.action_by_id
 

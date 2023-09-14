@@ -20,6 +20,8 @@ class RestResponse(Generic[T]):
     @property
     def error_message(self) -> str:
         err = (
-            self.data if self.data is not None and self.data != "" else responses[self.status_code]
+            self.data
+            if self.data is not None and self.data != ""
+            else responses[self.status_code]
         )
         return f"Error {self.status_code}: {err}"

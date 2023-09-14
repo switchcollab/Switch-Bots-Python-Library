@@ -11,7 +11,9 @@ class OnCommunityUpdated:
 
         def decorator(func: Callable) -> Callable:
             if isinstance(self, swibots.BotApp):
-                self.add_handler(swibots.bots.handlers.CommunityUpdatedHandler(func, filter))
+                self.add_handler(
+                    swibots.bots.handlers.CommunityUpdatedHandler(func, filter)
+                )
 
             return func
 

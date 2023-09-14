@@ -55,15 +55,18 @@ class MessageEvent(ChatEvent):
         if self.data is not None:
             self.message_id = data.get("messageId") or 0
             self.message: Message = Message.build_from_json(
-                self.data.get("message"), self.app)
+                self.data.get("message"), self.app
+            )
 
             self.message.user = self.user
             self.message.community = self.community
             self.message.group = self.group
             self.message.channel = self.channel
-            self.message.receiver_id = self.message.receiver_id or self.data.get(
-                "receiverId") or 0
+            self.message.receiver_id = (
+                self.message.receiver_id or self.data.get("receiverId") or 0
+            )
             self.message.receiver = User.build_from_json(
-                self.data.get("receiver") or {}, self.app)
+                self.data.get("receiver") or {}, self.app
+            )
 
         return self

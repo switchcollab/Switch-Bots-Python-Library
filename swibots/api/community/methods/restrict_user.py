@@ -3,6 +3,7 @@ import swibots
 from datetime import datetime
 from swibots.api.community.models import Channel
 
+
 class RestrictUser:
 
     """
@@ -69,9 +70,13 @@ class RestrictUser:
             community_id, restricted, user_id, until_date
         )
 
-    async def get_restricted_user(self: "swibots.ApiClient", community_id: str, user_id:int):
+    async def get_restricted_user(
+        self: "swibots.ApiClient", community_id: str, user_id: int
+    ):
         """get restricted user from community_id and user_id"""
-        return await self.community_service.restrict.get_restricted_user(community_id, user_id)
+        return await self.community_service.restrict.get_restricted_user(
+            community_id, user_id
+        )
 
     async def list_restricted_users(self: "swibots.ApiClient", community_id: str):
         """

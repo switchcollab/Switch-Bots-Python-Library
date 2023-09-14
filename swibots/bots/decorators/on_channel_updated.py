@@ -11,7 +11,9 @@ class OnChannelUpdated:
 
         def decorator(func: Callable) -> Callable:
             if isinstance(self, swibots.BotApp):
-                self.add_handler(swibots.bots.handlers.ChannelUpdatedHandler(func, filter))
+                self.add_handler(
+                    swibots.bots.handlers.ChannelUpdatedHandler(func, filter)
+                )
 
             return func
 

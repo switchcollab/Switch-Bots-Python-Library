@@ -4,7 +4,9 @@ from swibots.bots.filters.filter import Filter
 
 
 class OnMessage:
-    def on_message(self: "swibots.BotApp" = None, filter: Optional[Filter] = None) -> Callable:
+    def on_message(
+        self: "swibots.BotApp" = None, filter: Optional[Filter] = None
+    ) -> Callable:
         """Decorator for handling new messages."""
 
         def decorator(func: Callable) -> Callable:

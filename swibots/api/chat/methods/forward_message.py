@@ -9,7 +9,7 @@ class ForwardMessage:
         self: "swibots.ApiClient",
         message_id: int | List[int],
         group_channel: Optional[Group | Channel | str] = None,
-        user_id: Optional[int] = None
+        user_id: Optional[int] = None,
     ) -> Message | List[Message]:
         """Forward a message
 

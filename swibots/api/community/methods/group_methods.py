@@ -20,8 +20,10 @@ class GroupMethods:
         This method does the same as :meth:`switch.api.community.controllers.GroupController.get_group`.
         """
         return await self.community_service.groups.get_group(id)
-    
-    async def get_all_groups(self: "swibots.ApiClient", community_id: str) -> List[Group]:
+
+    async def get_all_groups(
+        self: "swibots.ApiClient", community_id: str
+    ) -> List[Group]:
         """
         Get all groups from the community.
         """

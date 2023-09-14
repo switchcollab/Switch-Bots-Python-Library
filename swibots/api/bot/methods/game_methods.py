@@ -12,7 +12,9 @@ class GameMethods:
         community_id: str = None,
         bot_id: str | int = None,
     ) -> GameInfo:
-        return await self.bots_service.games.create_leaderboard(user_id, score, level=level, community_id=community_id,bot_id=bot_id)
+        return await self.bots_service.games.create_leaderboard(
+            user_id, score, level=level, community_id=community_id, bot_id=bot_id
+        )
 
     async def update_leaderboard(
         self: "swibots.ApiClient",
@@ -44,4 +46,6 @@ class GameMethods:
         community_id: Optional[str] = None,
         bot_id: Optional[str | int] = None,
     ) -> GameInfo:
-        return await self.bots_service.games.get_game_score(user_id, bot_id=bot_id, community_id=community_id)
+        return await self.bots_service.games.get_game_score(
+            user_id, bot_id=bot_id, community_id=community_id
+        )

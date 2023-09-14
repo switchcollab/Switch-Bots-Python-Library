@@ -7,12 +7,13 @@ from ..inline_markup import InlineMarkup
 
 
 class InlineQueryResult(SwitchObject):
-    def __init__(self,
-                 id: str,
-                 type: InlineQueryResultType,
-                 input_message: "InputMessageContent" = None,
-                 reply_markup: "InlineMarkup" = None,
-                 ):
+    def __init__(
+        self,
+        id: str,
+        type: InlineQueryResultType,
+        input_message: "InputMessageContent" = None,
+        reply_markup: "InlineMarkup" = None,
+    ):
         self.id = id
         self.type = type
         self.input_message = input_message

@@ -3,6 +3,7 @@ from swibots.utils.types import JSONDict
 from swibots.base.switch_object import SwitchObject
 import swibots
 
+
 class Channel(SwitchObject):
     def __init__(
         self,

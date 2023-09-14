@@ -53,7 +53,7 @@ class MediaController:
         form_data = {
             "caption": caption,
             "description": description,
-            "mimeType": mime_type
+            "mimeType": mime_type,
         }
 
         reader = ReadCallbackStream(path, None)
@@ -69,7 +69,7 @@ class MediaController:
             )
             reader.callback = d_progress.update
             d_progress._readable_file = reader
-        files = {"file": (path, reader, mime_type)}
+        files = {"file": (file_name, reader, mime_type)}
 
         response = await self.client.post(BASE_PATH, form_data=form_data, files=files)
         reader.close()

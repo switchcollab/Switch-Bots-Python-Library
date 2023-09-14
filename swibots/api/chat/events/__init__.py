@@ -4,5 +4,10 @@ from .command_event import CommandEvent
 from .callback_query_event import CallbackQueryEvent
 from .inline_query_event import InlineQueryEvent
 
-__all__ = ["ChatEvent", "MessageEvent", "CommandEvent",
-           "CallbackQueryEvent", "InlineQueryEvent"]
+__all__ = [
+    "ChatEvent",
+    "MessageEvent",
+    "CommandEvent",
+    "CallbackQueryEvent",
+    "InlineQueryEvent",
+]

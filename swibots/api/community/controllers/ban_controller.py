@@ -16,18 +16,19 @@ class BanController:
 
     async def ban_user(self, community_id: str, user_id: str):
         """ban a user from community"""
-        response = await self.client.post(f"{BASE_PATH}", data={
-            "communityId": community_id,
-            "userId": user_id
-        })
+        response = await self.client.post(
+            f"{BASE_PATH}", data={"communityId": community_id, "userId": user_id}
+        )
         return self.client.build_object(BanInfo, response.data.get("result"))
 
-
     async def unban_user(self, unban: bool, community_id: str, id: int, user_id: str):
-        response = await self.client.put(f"{BASE_PATH}", data={
-            "approveUnban": unban,
-            "communityId": community_id,
-            "id": id,
-            "userId": user_id
-        })
+        response = await self.client.put(
+            f"{BASE_PATH}",
+            data={
+                "approveUnban": unban,
+                "communityId": community_id,
+                "id": id,
+                "userId": user_id,
+            },
+        )
         return response.data.get("status")

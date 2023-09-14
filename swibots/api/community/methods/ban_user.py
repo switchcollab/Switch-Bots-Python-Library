@@ -1,8 +1,11 @@
 import swibots
 from swibots.api.community.models import BanInfo
 
+
 class BanUser:
-    async def ban_user(self: "swibots.ApiClient", community_id: str, user_id: str) -> BanInfo:
+    async def ban_user(
+        self: "swibots.ApiClient", community_id: str, user_id: str
+    ) -> BanInfo:
         """
         Bans a user in a community.
 

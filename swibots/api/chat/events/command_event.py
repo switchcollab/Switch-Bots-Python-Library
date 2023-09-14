@@ -48,7 +48,7 @@ class CommandEvent(MessageEvent):
             data=data,
             user_id=user_id,
             user=user,
-            message_id = message_id,
+            message_id=message_id,
             message=message,
         )
         self.command = command

@@ -60,9 +60,12 @@ class CommunityMethods:
           community_id (str): Community ID
           user_id (int): User id
         """
-        return await self.community_service.communities.is_admin(
-            community_id, user_id=user_id
+        community_member = (
+            await self.community_service.communities.get_community_member(
+                community_id, user_id=user_id
+            )
         )
+        return community_member.admin
 
     async def get_active_commands(
         self: "swibots.ApiClient",

@@ -67,5 +67,6 @@ class ChatEmpty(BadRequest):
 class MediaEmpty(BadRequest):
     ...
 
+
 class InvalidRouteCall(BadRequest):
     ...

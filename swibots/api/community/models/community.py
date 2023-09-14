@@ -3,6 +3,7 @@ from swibots.utils.types import JSONDict
 from swibots.base.switch_object import SwitchObject
 import swibots
 
+
 class Community(SwitchObject):
     def __init__(
         self,
@@ -25,7 +26,7 @@ class Community(SwitchObject):
         icon: Optional[str] = None,
         members_count: Optional[int] = None,
         groups_count: Optional[int] = None,
-        channels_count: Optional[int] = None
+        channels_count: Optional[int] = None,
     ):
         super().__init__(app)
         self.id = id
@@ -68,7 +69,7 @@ class Community(SwitchObject):
             "createdBy": self.owner_id,
             "member": self.members_count,
             "numberOfGroups": self.groups_count,
-            "numberOfChannels": self.channels_count
+            "numberOfChannels": self.channels_count,
         }
 
     def from_json(self, data: Optional[JSONDict]) -> Optional["Community"]:

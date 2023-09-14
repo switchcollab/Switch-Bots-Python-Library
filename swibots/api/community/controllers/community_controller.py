@@ -49,7 +49,7 @@ class CommunityController:
         return response.data.get("success", False)
 
     async def get_community_member(
-        self, community_id: str, user_id: str
+        self, community_id: str, user_id: int
     ) -> CommunityMember:
         response = await self.client.get(
             f"{BASE_PATH}/user?communityId={community_id}&userId={user_id}"
@@ -107,12 +107,6 @@ class CommunityController:
     # endregion
 
     # region
-
-    async def is_admin(self, community_id: str, user_id: int) -> bool:
-        response = await self.client.get(
-            f"{BASE_PATH}/user?communityId={community_id}&userId={user_id}"
-        )
-        return response.data.get("result", False)
 
     async def is_community_member(self, community_id: str, user_id: int) -> bool:
         response = await self.client.get(

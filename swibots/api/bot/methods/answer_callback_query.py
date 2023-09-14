@@ -14,7 +14,7 @@ class AnswerCallback:
     ) -> bool:
         """
         Answer Callback query from callback button
-        
+
         Arguments:
         query_id: str - Callback query id
         text: str - text
