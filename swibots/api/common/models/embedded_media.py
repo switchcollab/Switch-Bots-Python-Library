@@ -76,7 +76,7 @@ class EmbeddedMedia(SwitchObject):
             "headerIcon": self.header_icon,
             "headerName": self.header_name,
             "inlineFields": [
-                [x.to_json() for x in row] for row in (self.inline_fields or [])
+                [x.to_json() for x in row if x] for row in (self.inline_fields or [])
             ],
             "title": self.title,
         }

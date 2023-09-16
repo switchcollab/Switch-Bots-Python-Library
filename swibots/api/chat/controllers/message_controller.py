@@ -16,6 +16,7 @@ from swibots.api.chat.models import (
     InlineQuery,
     InlineQueryAnswer,
 )
+from swibots.utils import isUrl
 from swibots.api.common.models import User, EmbeddedMedia
 from swibots.api.community.models import Channel, Group
 
@@ -138,7 +139,7 @@ class MessageController:
 
         if new_message.embed_message and new_message.embed_message.thumbnail:
             thumb = new_message.embed_message.thumbnail
-            if thumb:
+            if thumb and not isUrl(thumb):
                 new_message.embed_message.thumbnail = (
                     await self.client.app.upload_media(thumb)
                 ).url
@@ -187,7 +188,7 @@ class MessageController:
         request_url = f"{BASE_PATH}/create-with-media"
         reader, thumb_like = None, None
         name = document if isinstance(document, str) else document.name
-        reader = ReadCallbackStream(document, None)
+        reader = ReadCallbackStream(document)
         files["uploadMediaRequest.file"] = (
             file_name or name,
             reader,
