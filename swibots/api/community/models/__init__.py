@@ -8,6 +8,7 @@ from .baninfo import BanInfo
 from .community_member import CommunityMember
 from .restricteduser import RestrictedUser
 from .quest import Quest, QuestCategory
+from .instantmessaging import InstantMessaging
 
 __all__ = [
     "Channel",
@@ -21,4 +22,5 @@ __all__ = [
     "RestrictedUser",
     "Quest",
     "QuestCategory",
+    "InstantMessaging"
 ]

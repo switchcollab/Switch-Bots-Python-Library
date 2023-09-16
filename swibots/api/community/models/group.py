@@ -70,3 +70,10 @@ class Group(SwitchObject):
             self.created_at = data.get("createdAt")
             self.updated_at = data.get("updatedAt")
         return self
+
+    async def m_enabled(self) -> bool:
+        """Check whether instant messaging is enabled in current chat"""
+        return await self.app.check_messaging_enabled(
+            community_id=self.community_id,
+            group_id=self.id
+        )

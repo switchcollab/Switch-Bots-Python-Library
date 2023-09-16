@@ -1,6 +1,7 @@
 import swibots
 
 from typing import List, Optional
+from ..models import InstantMessaging
 from swibots.api.community.models import CommunityMember, Community
 
 
@@ -131,3 +132,59 @@ class CommunityMethods:
             channel_id=channel_id,
             decline=True,
         )
+
+    async def get_messaging_bots(
+        self: "swibots.ApiClient",
+        community_id: str,
+        channel_id: Optional[str] = None,
+        group_id: Optional[str] = None,
+        bot_id: Optional[str] = None,
+    ) -> List[InstantMessaging]:
+        """Get bots having message handler permission in group or chanenl chat.
+
+        Args:
+            community_id (str): Community ID
+            channel_id (Optional[str], optional): Channel ID.
+            group_id (Optional[str], optional): Group ID.
+            bot_id (Optional[str], optional): bot id.
+
+        Returns:
+            List[InstantMessaging]
+        """
+        return await self.community_service.communities.get_messaging_bots(
+            community_id=community_id,
+            group_id=group_id,
+            channel_id=channel_id,
+            bot_id=bot_id or self.user.id,
+        )
+
+    async def check_messaging_enabled(
+        self,
+        community_id: str,
+        channel_id: Optional[str] = None,
+        group_id: Optional[str] = None,
+    ) -> bool:
+        """Check whether instant messaging is enabled in current group or channel!
+
+        Args:
+            community_id (str): Community ID.
+            channel_id (Optional[str], optional): Channel ID.
+            group_id (Optional[str], optional): Group ID.
+
+        Raises:
+            ValueError: if none of channel_id or group_id is provided!
+
+        Returns:
+            bool: True if instant messaging is enabled!
+        """
+        if not (channel_id or group_id):
+            raise ValueError(
+                "'channel_id' or 'group_id' is required to check instant messaging!"
+            )
+
+        result = await self.get_messaging_bots(
+            community_id=community_id, group_id=group_id, channel_id=channel_id
+        )
+        if not result:
+            return
+        return result[0].enabled

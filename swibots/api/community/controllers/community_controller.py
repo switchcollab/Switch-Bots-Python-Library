@@ -1,5 +1,6 @@
 import logging
 from typing import TYPE_CHECKING, Optional, List
+from ..models import InstantMessaging
 from swibots.api.community.models import Community, CommunityMember
 from swibots.api.bot.models import BotInfo
 from urllib.parse import urlencode
@@ -113,5 +114,26 @@ class CommunityController:
             f"{BASE_PATH}/validate/user/member?communityId={community_id}&user_id={user_id}"
         )
         return response.data.get("result", {}).get("member")
+
+    # endregion
+
+    # region
+    async def get_messaging_bots(
+        self,
+        community_id: str,
+        channel_id: Optional[str] = None,
+        group_id: Optional[str] = None,
+        bot_id: Optional[str] = None
+    ) -> List[InstantMessaging]:
+        data = {
+            "botId": bot_id,
+            "communityId": community_id,
+            "channelId": channel_id,
+            "groupId": group_id,
+        }
+        response = await self.client.get(
+            f"{BASE_PATH}/instant/messaging/bots?{urlencode(data)}"
+        )
+        return self.client.build_list(InstantMessaging, response.data)
 
     # endregion
