@@ -8,6 +8,20 @@ if TYPE_CHECKING:
 
 
 class UploadMedia:
+    async def get_media(
+        self: "ApiClient",
+        media_id: int
+    ) -> Media:
+        """get media by media id
+
+        Args:
+            media_id (int): media id
+
+        Returns:
+            `Media`
+        """
+        return await self.chat_service.media.get_media(media_id)
+
     async def upload_media(
         self: "ApiClient",
         path: str | BytesIO,

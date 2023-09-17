@@ -17,9 +17,9 @@ async def sync_or_async(func):
 
 
 class Filter:
-    callback: Callable[[CtxType]] = None
+    callback = None
     value: bool = None
-    onFailure: Callable[[CtxType]] = None
+    onFailure= None
 
     async def __call__(self, ctx: BotContext) -> bool:
         if not self.callback:
@@ -103,7 +103,6 @@ class FilterCallback:
 
 
 def create(func: FilterCallback, name: str = None, **kwargs) -> Filter:
-    print(func)
     if not isinstance(func, FilterCallback):
         func = FilterCallback(func)
     return type(

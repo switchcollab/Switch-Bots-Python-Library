@@ -76,6 +76,10 @@ class MediaController:
 
         return self.client.build_object(Media, response.data)
 
+    async def get_media(self, media_id: int) -> Media:
+        response = await self.client.get(f"{BASE_PATH}/{media_id}")
+        return self.client.build_object(Media, response.data)
+
     async def update_media(
         self,
         media_id: int,
