@@ -66,6 +66,7 @@ class StickerPack(SwitchObject):
         name: Optional[str] = None,
         pack_type: Optional[str] = None,
         created_by: Optional[int] = None,
+        access_control: Optional[str] = None,
         thumb_media_id: Optional[int] = None,
         thumb_info: Optional[Media] = None,
     ):
@@ -75,6 +76,7 @@ class StickerPack(SwitchObject):
         self.created_by = created_by
         self.thumb_media_id = thumb_media_id
         self.thumb_info = thumb_info
+        self.access_control = access_control
         self.pack_type = pack_type
         self.stickers: List[Sticker] = None
 
@@ -90,3 +92,12 @@ class StickerPack(SwitchObject):
             )
             self.stickers = data.get("sortedStickers")
         return self
+
+    def to_json_request(self) -> JSONDict:
+        return {
+            "name": self.name,
+            "id": self.id,
+            "accessControl": self.access_control,
+            "sortedStickers": self.stickers,
+            "packType": self.pack_type,
+        }

@@ -35,7 +35,6 @@ class StickerController:
         pack_id: str,
     ) -> Sticker:
         file_name = sticker.name if isinstance(sticker, BytesIO) else sticker
-        print(emoji, pack_id, name, description)
         response = await self.client.post(
             BASE_PATH,
             form_data={
@@ -52,7 +51,6 @@ class StickerController:
                 )
             },
         )
-        print(response.data)
         return self.client.build_object(Sticker, response.data)
 
     async def delete_sticker(self, sticker_id: int) -> bool:
@@ -79,7 +77,6 @@ class StickerController:
                     mimetypes.guess_type(thumb_name)[0],
                 )
             }
-        print(form_data, files)
         response = await self.client.post(
             f"{BASE_PATH}/pack", form_data=form_data, files=files
         )
@@ -102,14 +99,12 @@ class StickerController:
         return self.client.build_list(StickerPack, response.data)
 
     async def sort_stickers(
-        self, pack_id: str, sorted_stickers: List[str] = None
+        self, pack: StickerPack, sorted_stickers: List[str] = None
     ) -> StickerPack:
+        pack.stickers = sorted_stickers
         response = await self.client.post(
             f"{BASE_PATH}/pack/sort",
-            data={
-                "sortedStickers": sorted_stickers,
-                "id": pack_id,
-            },
+            data=pack.to_json_request(),
         )
         return self.client.build_object(StickerPack, response.data)
 

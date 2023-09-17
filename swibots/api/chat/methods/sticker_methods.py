@@ -134,17 +134,17 @@ class StickerMethods:
         )
 
     async def sort_stickers(
-        self: "swibots.ApiClient", pack_id: str, sorted_stickers: List[str]
+        self: "swibots.ApiClient", pack: StickerPack, sorted_stickers: List[str]
     ) -> StickerPack:
         """Sort stickers in sticker pack
 
         Args:
-            pack_id (str): Sticker Pack ID
+            pack (StickerPack): Sticker Pack
             sorted_stickers (List[str]): Sorted stickers.
 
         Returns:
             StickerPack: Sticker pack with sorted stickers.
         """
         return await self.chat_service.stickers.sort_stickers(
-            pack_id=pack_id, sorted_stickers=sorted_stickers
+            pack=pack, sorted_stickers=sorted_stickers
         )
