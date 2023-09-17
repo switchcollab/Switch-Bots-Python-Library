@@ -32,11 +32,15 @@ class EventHandler(BaseHandler):
         self.event_types = event_types
         self.filter = filter
 
-    async def should_handle(self, context: BotContext[Event]) -> bool:
+    async def should_handle(self, context: BotContext[Event], precheck=None) -> bool:
         if (self.event_types is not None) and (
             not context.event.type in self.event_types
         ):
             return False
+        if precheck and not precheck(context):
+            return False
         if self.filter is not None:
-            return await self.filter(context)
+            self.filter.value = await self.filter(context)
+            await self.filter.check_failure(context)
+            return self.filter.value
         return True

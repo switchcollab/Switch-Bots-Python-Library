@@ -22,5 +22,5 @@ __all__ = [
     "RestrictedUser",
     "Quest",
     "QuestCategory",
-    "InstantMessaging"
+    "InstantMessaging",
 ]

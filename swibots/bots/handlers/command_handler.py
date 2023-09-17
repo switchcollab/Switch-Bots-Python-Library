@@ -34,10 +34,12 @@ class CommandHandler(EventHandler):
         self.commands = commands
 
     async def should_handle(self, context: BotContext[CommandEvent]) -> bool:
-        return (
-            await super().should_handle(context)
-            and context.event.command is not None
-            and context.event.command in self.commands
-            and context.event.message.user_id != context.app.user.id
-            and context.event.message is not None
+        return await super().should_handle(
+            context,
+            precheck=lambda context: (
+                context.event.command is not None
+                and context.event.command in self.commands
+                and context.event.message.user_id != context.app.user.id
+                and context.event.message is not None
+            ),
         )

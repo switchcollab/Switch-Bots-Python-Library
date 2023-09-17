@@ -3,6 +3,7 @@ from .ws import *
 from .types import *
 from urllib.parse import urlparse
 
+
 def isUrl(text):
     """Validate, if text is url."""
     parse = urlparse(text)

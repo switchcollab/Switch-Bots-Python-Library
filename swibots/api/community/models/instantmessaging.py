@@ -2,6 +2,7 @@ from typing import Optional
 from swibots.utils.types import JSONDict
 from swibots.base.switch_object import SwitchObject
 
+
 class InstantMessaging(SwitchObject):
     def __init__(
         self,

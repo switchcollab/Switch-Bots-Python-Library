@@ -123,7 +123,7 @@ class CommunityController:
         community_id: str,
         channel_id: Optional[str] = None,
         group_id: Optional[str] = None,
-        bot_id: Optional[str] = None
+        bot_id: Optional[str] = None,
     ) -> List[InstantMessaging]:
         data = {
             "botId": bot_id,
@@ -134,6 +134,6 @@ class CommunityController:
         response = await self.client.get(
             f"{BASE_PATH}/instant/messaging/bots?{urlencode(data)}"
         )
-        return self.client.build_list(InstantMessaging, response.data)
+        return self.client.build_list(InstantMessaging, response.data.get("result"))
 
     # endregion

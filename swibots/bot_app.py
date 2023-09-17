@@ -193,6 +193,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
     async def process_event(self, ctx: BotContext):
         for handler in self.handlers:
             try:
+                #                print(handler)
                 await handler.handle(ctx)
             except Exception as e:
                 log.exception(f"Error while processing event: {e}")

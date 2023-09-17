@@ -74,6 +74,5 @@ class Group(SwitchObject):
     async def m_enabled(self) -> bool:
         """Check whether instant messaging is enabled in current chat"""
         return await self.app.check_messaging_enabled(
-            community_id=self.community_id,
-            group_id=self.id
+            community_id=self.community_id, group_id=self.id
         )
