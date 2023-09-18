@@ -76,7 +76,7 @@ class Media(SwitchObject):
             self.url = data.get("downloadUrl")
             self.owner_id = data.get("ownerId")
             self.owner_type = data.get("ownerType")
-            if isinstance(self.owner_id) and self.owner_id.isdigits():
+            if isinstance(self.owner_id, str) and self.owner_id.isdigit():
                 self.owner_id = int(self.owner_id)
 
         return self
