@@ -59,10 +59,10 @@ class CommunityController:
 
     async def get_community_members(self, community_id: str) -> List[CommunityMember]:
         response = await self.client.get(
-            f"{BASE_PATH}/users?community_id={community_id}"
+            f"{BASE_PATH}/users?communityId={community_id}"
         )
         return self.client.build_list(
-            CommunityMember, response.data.get("communityMembers")
+            CommunityMember, response.data.get("result", {}).get("communityMembers")
         )
 
     # region
