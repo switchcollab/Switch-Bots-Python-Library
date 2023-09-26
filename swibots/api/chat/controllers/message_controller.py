@@ -117,6 +117,7 @@ class MessageController:
                 group_id=group_id,
                 channel_id=channel_id,
                 user_session_id=user_session_id,
+                inline_markup=inline_markup,
                 user_id=user_id,
                 scheduled_at=scheduled_at,
                 **kwargs,
@@ -168,6 +169,7 @@ class MessageController:
         progress_args: Optional[tuple] = (),
         reply_to_message_id: Optional[int] = None,
         scheduled_at: Optional[int] = None,
+        inline_markup: Optional[InlineMarkup] = None,
         **kwargs,
     ) -> Message | Task:
         new_message = Message(
@@ -179,6 +181,7 @@ class MessageController:
             user_session_id=user_session_id,
             replied_to_id=reply_to_message_id,
             message=message,
+            inline_markup=inline_markup,
             scheduled_at=scheduled_at,
             **kwargs,
         )
