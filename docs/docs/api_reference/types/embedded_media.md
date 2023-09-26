@@ -4,7 +4,7 @@ The `EmbeddedMedia` class is used to send embedded media in messages.
 
 ## Parameters
 
-- `thumbnail` ( [MediaUploadRequest](./media_upload_request.md) | str): The media upload request or cover Url in updates.
+- `thumbnail` (str): The media upload request or cover Url in updates.
 - `title` `(str)`: title of message.
 - `description` (`str`): description of message.
 - `header_name` (`str`): header name.

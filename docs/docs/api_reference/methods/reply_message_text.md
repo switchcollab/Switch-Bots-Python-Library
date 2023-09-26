@@ -11,7 +11,7 @@ Replies to a message with a text.
 - `message` (int | [Message](../types/message)): The ID of the message to reply to or the message itself
 - `text` (str): The text of the message
 - `inline_markup` ([InlineMarkup](../types/inline_markup)): The inline markup of the message
-- `media` ([MediaUploadRequest](../types/media_upload_request) | [EmbeddedMedia](../types/embedded_media.md)): The media to send with the message
+- `embed_message` [EmbeddedMedia](../types/embedded_media.md)): The media to send with the message
 - `cached_media` ([CachedMedia](../types/media)): The cached media to send with the message (media that has already been uploaded to the server)
 
 
