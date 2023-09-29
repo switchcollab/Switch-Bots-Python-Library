@@ -1,6 +1,5 @@
 import re
 from typing import TYPE_CHECKING, Optional, TypeVar
-from swibots.bots.constants import VALID_COMMAND_REGEX
 from swibots.bots.filters.filter import Filter
 from swibots.types import EventType
 
@@ -8,6 +7,8 @@ from swibots.utils.types import SCT, HandlerCallback
 from swibots.bots.handlers.event_handler import EventHandler
 from swibots.bots.bot_context import BotContext
 from swibots.api.chat.events import CommandEvent
+
+VALID_COMMAND_REGEX = r"^[\da-z0-9_]{1,32}$"
 
 if TYPE_CHECKING:
     pass

@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Optional, List
 from ..models import InstantMessaging
 from swibots.api.community.models import Community, CommunityMember
 from swibots.api.bot.models import BotInfo
+from swibots.api.common.models import User
 from urllib.parse import urlencode
 
 if TYPE_CHECKING:
@@ -61,9 +62,18 @@ class CommunityController:
         response = await self.client.get(
             f"{BASE_PATH}/users?communityId={community_id}"
         )
-        return self.client.build_list(
+        members = self.client.build_list(
             CommunityMember, response.data.get("result", {}).get("communityMembers")
         )
+        userInfo = {
+            int(x["id"]): x for x in response.data.get("result", {}).get("userInfoList")
+        }
+        for community_member in members:
+            print(community_member.id, community_member.user_id)
+            if data := userInfo.get(community_member.user_id):
+                community_member.user = self.client.build_object(User, data)
+
+        return members
 
     # region
 

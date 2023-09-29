@@ -1,6 +1,5 @@
 import re
 from typing import TYPE_CHECKING, Any, Optional, TypeVar
-from swibots.bots.constants import VALID_COMMAND_REGEX
 from swibots.bots.filters.filter import Filter
 from swibots.types import EventType
 

@@ -1,3 +1,4 @@
+from io import BytesIO
 from swibots.base import SwitchObject
 from swibots.utils.types import JSONDict
 from ....api.common.models import Media
@@ -57,6 +58,9 @@ class Sticker(SwitchObject):
             else None,
         }
 
+    async def delete(self) -> bool:
+        return await self.app.delete_sticker(self.id)
+
 
 class StickerPack(SwitchObject):
     def __init__(
@@ -101,3 +105,13 @@ class StickerPack(SwitchObject):
             "sortedStickers": self.stickers,
             "packType": self.pack_type,
         }
+
+    async def delete(self) -> bool:
+        return await self.app.delete_sticker_pack(self.id)
+
+    async def add(
+        self, sticker: str | BytesIO, name: str, description: str, emoji: str
+    ) -> Sticker:
+        return await self.app.create_sticker(
+            sticker, name, description, emoji, pack_id=self.id
+        )
