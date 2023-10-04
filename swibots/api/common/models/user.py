@@ -47,8 +47,8 @@ class User(SwitchObject):
             "bio": self.bio,
             "link": self.link,
             "is_friend": self.is_friend,
-            "username": self.username,
-            "imageUrl": self.image_url,
+            "user_name": self.username,
+            "imageurl": self.image_url,
             "active": self.active,
             "deleted": self.deleted,
             "roleInfo": self.role_info,
@@ -66,7 +66,7 @@ class User(SwitchObject):
             self.is_friend = data.get("is_friend")
             self.is_game = data.get("is_game")
             self.link = data.get("link")
-            self.username = data.get("username")
+            self.username = data.get("user_name")
             self.image_url = data.get("imageurl")
             self.active = data.get("active")
             self.deleted = data.get("deleted")
