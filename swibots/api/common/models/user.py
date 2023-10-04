@@ -17,6 +17,7 @@ class User(SwitchObject):
         active: Optional[bool] = None,
         deleted: Optional[bool] = None,
         role_info: Optional[str] = None,
+        link: Optional[str] = None,
         admin: Optional[bool] = None,
         is_bot: Optional[bool] = None,
         is_game: Optional[bool] = None,
@@ -31,6 +32,7 @@ class User(SwitchObject):
         self.image_url = image_url
         self.active = active
         self.deleted = deleted
+        self.link = link
         self.role_info = role_info
         self.admin = admin
         self.is_bot = is_bot
@@ -43,6 +45,7 @@ class User(SwitchObject):
             "id": self.id,
             "name": self.name,
             "bio": self.bio,
+            "link": self.link,
             "is_friend": self.is_friend,
             "username": self.username,
             "imageUrl": self.image_url,
@@ -62,8 +65,9 @@ class User(SwitchObject):
             self.bio = data.get("bio")
             self.is_friend = data.get("is_friend")
             self.is_game = data.get("is_game")
+            self.link = data.get("link")
             self.username = data.get("username")
-            self.image_url = data.get("imageUrl")
+            self.image_url = data.get("imageurl")
             self.active = data.get("active")
             self.deleted = data.get("deleted")
             self.role_info = data.get("roleInfo")
