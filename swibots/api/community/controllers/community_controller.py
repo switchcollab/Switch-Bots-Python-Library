@@ -69,7 +69,6 @@ class CommunityController:
             int(x["id"]): x for x in response.data.get("result", {}).get("userInfoList")
         }
         for community_member in members:
-            print(community_member.id, community_member.user_id)
             if data := userInfo.get(community_member.user_id):
                 community_member.user = self.client.build_object(User, data)
 

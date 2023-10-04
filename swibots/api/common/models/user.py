@@ -11,6 +11,7 @@ class User(SwitchObject):
         app: "swibots.App" = None,
         id: Optional[int] = None,
         name: Optional[str] = None,
+        bio: Optional[str] = None,
         username: Optional[str] = None,
         image_url: Optional[str] = None,
         active: Optional[bool] = None,
@@ -18,11 +19,14 @@ class User(SwitchObject):
         role_info: Optional[str] = None,
         admin: Optional[bool] = None,
         is_bot: Optional[bool] = None,
+        is_game: Optional[bool] = None,
+        is_friend: Optional[bool] = None,
         tournaments: Optional[List[Any]] = None,
     ):
         super().__init__(app)
         self.id = id
         self.name = name
+        self.bio = bio
         self.username = username
         self.image_url = image_url
         self.active = active
@@ -30,12 +34,16 @@ class User(SwitchObject):
         self.role_info = role_info
         self.admin = admin
         self.is_bot = is_bot
+        self.is_friend = is_friend
+        self.is_game = is_game
         self.tournaments = tournaments
 
     def to_json(self) -> JSONDict:
         return {
             "id": self.id,
             "name": self.name,
+            "bio": self.bio,
+            "is_friend": self.is_friend,
             "username": self.username,
             "imageUrl": self.image_url,
             "active": self.active,
@@ -43,6 +51,7 @@ class User(SwitchObject):
             "roleInfo": self.role_info,
             "admin": self.admin,
             "is_bot": self.is_bot,
+            "is_game": self.is_game,
             "tournamentsParticipated": [x.to_json(x) for x in self.tournaments or []],
         }
 
@@ -50,6 +59,9 @@ class User(SwitchObject):
         if data is not None:
             self.id = int(data.get("id") or data.get("botId") or 0)
             self.name = data.get("name") or data.get("botName")
+            self.bio = data.get("bio")
+            self.is_friend = data.get("is_friend")
+            self.is_game = data.get("is_game")
             self.username = data.get("username")
             self.image_url = data.get("imageUrl")
             self.active = data.get("active")

@@ -690,7 +690,20 @@ class MessageController:
         )
         return response.data
 
-    async def get_user(self, user_id: int | str = None) -> User:
-        """Get user from user id"""
-        response = await self.client.get(f"{BASE_PATH}/user/info?userId={user_id}")
+    async def get_user(self, user_id: int | str = None, username: str = None) -> User:
+        """Get user from user id or username"""
+        if username and user_id:
+            raise ValueError("'username' and 'user_id' both were provided!")
+        elif user_id:
+            response = await self.client.get(f"{BASE_PATH}/user/info?userId={username}")
+        elif username:
+            if username.startswith("@"):
+                username = username[1:]
+            response = await self.client.app.auth_service.get(
+                f"/api/users/getUserByUsername?username={username.lower()}"
+            )
+            if not response.data:
+                return
+        else:
+            raise ValueError("Either provide 'user_id' or 'username' to get user info.")
         return self.client.build_object(User, response.data)

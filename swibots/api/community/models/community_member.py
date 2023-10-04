@@ -62,19 +62,18 @@ class CommunityMember(SwitchObject):
             "xpSpend": self.xp_spend,
         }
 
-    @classmethod
     def from_json(self, data: JSONDict | None) -> "CommunityMember":
         if data is not None:
             self.admin = data.get("admin")
             self.community_id = data.get("communityId")
             self.enable_notification = data.get("enableNotificationOnMentionAndPin")
-            self.id = data.get("id")
+            self.id = int(data.get("id") or 0)
             self.mute_channels = data.get("muteChannels")
             self.mute_groups = data.get("muteGroups")
             self.mute_notification = data.get("muteNotification")
             self.mute_period = data.get("mutePeriod")
             self.role_info = data.get("roleInfo")
-            self.user_id = data.get("userId")
+            self.user_id = int(data.get("userId") or 0)
             self.username = data.get("userName")
             self.user = User.build_from_json(data.get("userInfo"), self.app)
             self.request_status = data.get("requestStatus")

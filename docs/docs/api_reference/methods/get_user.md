@@ -4,8 +4,12 @@
 
 ## Signature
 
-`async def get_user(user_id: int | str) -> User`
+`async def get_user(user_id: int=None, username: str = None) -> User`
 
 ## Parameters
 
-- `user_id` (int | str): The ID of the user to get info.
+- `user_id` (int): The ID of the user to get info.
+- `username` (str): username
+
+## Raises
+- ValueError: if both user_id and username are used.
