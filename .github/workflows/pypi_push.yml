@@ -2,9 +2,9 @@ name: Upload Package
 
 on:
   workflow_dispatch:
-  push:
-    paths: 
-    - "setup.py"
+#  push:
+ #   paths: 
+#    - "setup.py"
 
 jobs:
   deploy:
