@@ -27,9 +27,11 @@ class UploadMedia:
         path: str | BytesIO,
         caption: Optional[str] = None,
         description: Optional[str] = None,
+        thumb: Optional[str] = None, 
         mime_type: Optional[str] = None,
-        callback: callable = None,
-        callback_args: tuple = None,
+        media_type: Optional[int] = None,
+        callback = None,
+        callback_args: Optional[tuple] = None,
     ) -> Media:
         """upload a file to get `Media` object.
 
@@ -49,6 +51,8 @@ class UploadMedia:
             caption=caption,
             description=description,
             mime_type=mime_type,
+            thumb=thumb,
+            media_type=media_type,
             callback=callback,
             callback_args=callback_args,
         )

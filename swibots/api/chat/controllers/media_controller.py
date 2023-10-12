@@ -8,11 +8,12 @@ from typing import TYPE_CHECKING, List, Optional
 from swibots.utils.types import (
     UploadProgressCallback,
     DownloadProgressCallback,
-    ReadCallbackStream,
     IOClient,
     UploadProgress,
 )
+from swibots.config import APP_CONFIG
 from swibots.api.common.models import Media
+from b2sdk.v2 import B2Api
 
 if TYPE_CHECKING:
     from swibots.api.chat import ChatClient
@@ -29,52 +30,79 @@ class MediaController:
 
     def __init__(self, client: "ChatClient"):
         self.client = client
+        self.backblaze = B2Api()
+        self.bucket = None
+        if (account_id := APP_CONFIG["BACKBLAZE"].get("ACCOUNT_ID")) and (
+            application_key := APP_CONFIG["BACKBLAZE"].get("APPLICATION_KEY")
+        ):
+            self.backblaze.authorize_account("production", account_id, application_key)
+        self.prepare_bucket()
+
+    def prepare_bucket(self):
+        if (
+            bucket_id := APP_CONFIG["BACKBLAZE"].get("BUCKET_ID")
+        ) and self.backblaze.get_account_id():
+            self.bucket = self.backblaze.get_bucket_by_id(bucket_id)
+
+    def file_to_url(self, path, mime_type: str = None, *args, **kwargs) -> str:
+        if path:
+            file = self.bucket.upload_local_file(
+                path, path, content_type=mime_type, *args, **kwargs
+            ).as_dict()
+            return self.backblaze.download_file_by_id(file["fileId"])
 
     async def upload_media(
         self,
         path: str | BytesIO,
         caption: Optional[str] = None,
+        file_name: Optional[str] = None,
         description: Optional[str] = None,
+        thumb: Optional[str] = None,
         mime_type: Optional[str] = None,
+        media_type: Optional[int] = None,
         callback: UploadProgressCallback = None,
         callback_args: Optional[tuple] = None,
     ) -> Media:
         """upload media from path"""
-
-        url = f"{BASE_PATH}/upload-multipart"
-        if isinstance(path, BytesIO):
-            file_name = path.name
-        else:
-            file_name = path
+        if not file_name:
+            if isinstance(path, BytesIO):
+                file_name = path.name
+            else:
+                file_name = path
 
         if not mime_type:
             mime_type = mimetypes.guess_type(file_name)[0] or "application/octet-stream"
 
-        form_data = {
-            "caption": caption,
-            "description": description,
-            "mimeType": mime_type,
-        }
+        log.debug(f"Sending request to backblaze: {path}")
 
-        reader = ReadCallbackStream(path, None)
-        if callback:
-            d_progress = UploadProgress(
-                current=0,
-                readed=0,
-                file_name=path,
-                client=IOClient(),
-                url=url,
+        file_response = self.bucket.upload_local_file(
+            path,
+            file_name=file_name,
+            content_type=mime_type,
+            progress_listener=UploadProgress(
+                path,
                 callback=callback,
                 callback_args=callback_args,
             )
-            reader.callback = d_progress.update
-            d_progress._readable_file = reader
-        files = {"file": (file_name, reader, mime_type)}
+            if callback
+            else None,
+        ).as_dict()
 
-        response = await self.client.post(BASE_PATH, form_data=form_data, files=files)
-        reader.close()
+        url = self.backblaze.get_download_url_for_fileid(file_response["fileId"])
+        media = {
+            "caption": caption,
+            "description": description,
+            "mimeType": mime_type,
+            "fileSize": file_response["size"],
+            "fileName": file_response["fileName"],
+            "downloadUrl": url,
+            "thumbnailUrl": self.file_to_url(thumb) if thumb != path else url,
+            "mediaType": media_type,
+            "sourceUri": file_response["fileId"],
+            "checksum": file_response["contentSha1"],
+        }
 
-        return self.client.build_object(Media, response.data)
+        return self.client.build_object(Media, media)
 
     async def get_media(self, media_id: int) -> Media:
         response = await self.client.get(f"{BASE_PATH}/{media_id}")

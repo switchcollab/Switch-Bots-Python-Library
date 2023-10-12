@@ -166,6 +166,9 @@ class Message(
             form_data.update(self.inline_markup.to_form_data())
         if self.scheduled_at is not None:
             form_data["scheduledAt"] = self.scheduled_at
+        if self.media_info is not None:
+            form_data.update(self.media_info.to_form_data())
+            self.media_link = self.media_info.url
         return form_data
 
     def to_json(self) -> JSONDict:

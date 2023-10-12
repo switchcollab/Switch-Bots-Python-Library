@@ -42,15 +42,30 @@ class Media(SwitchObject):
     @property
     def is_sticker(self) -> bool:
         return 200 <= (self.media_type) <= 202
+    
+    def to_form_data(self):
+        return {
+            "mediaInfo.caption": self.caption,
+            "mediaInfo.description": self.description,
+            "mediaInfo.checksum": self.checksum,
+            "mediaInfo.fileName": self.file_name,
+            "mediaInfo.fileSize": self.file_size,
+            "mediaInfo.mimeType": self.mime_type,
+            "mediaInfo.mediaType": self.media_type,
+            "mediaInfo.url": self.url,
+            "mediaInfo.thumbnailUrl": self.thumbnail_url,
+            "mediaInfo.sourceUri": self.source_id,
+            "mediaInfo.typeName": self.type_name
+        }
 
     def to_json(self) -> JSONDict:
-        return {
+        return {x:y  for x, y in {
             "id": self.id,
             "caption": self.caption,
             "checksum": self.checksum,
             "description": self.description,
             "thumbnailUrl": self.thumbnail_url,
-            "sourceId": self.source_id,
+            "sourceUri": self.source_id,
             "mediaType": self.media_type,
             "mimeType": self.mime_type,
             "fileName": self.file_name,
@@ -59,7 +74,7 @@ class Media(SwitchObject):
             "ownerId": self.owner_id,
             "ownerType": self.owner_type,
             "downloadUrl": self.url,
-        }
+        }.items() if y}
 
     def from_json(self, data: Optional[JSONDict] = None) -> "Media":
         if data is not None:
@@ -68,7 +83,7 @@ class Media(SwitchObject):
             self.caption = data.get("caption")
             self.description = data.get("description")
             self.thumbnail_url = data.get("thumbnailUrl")
-            self.source_id = data.get("sourceId")
+            self.source_id = data.get("sourceUri")
             self.media_type = data.get("mediaType")
             self.mime_type = data.get("mimeType")
             self.file_name = data.get("fileName")

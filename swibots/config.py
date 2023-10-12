@@ -24,6 +24,11 @@ APP_CONFIG = {
         "WS_URL": os.getenv("COMMUNITY_SERVICE_WS_URL")
         or "wss://api-gateway.switch.pe/v1/websocket/community/ws",
     },
+    "BACKBLAZE": {
+        "BUCKET_ID": os.getenv("BACKBLAZE_BUCKET_ID"),
+        "ACCOUNT_ID": os.getenv("BACKBLAZE_ACCOUNT_ID"),
+        "APPLICATION_KEY": os.getenv("BACKBLAZE_APPLICATION_KEY")
+    }
 }
 
 
