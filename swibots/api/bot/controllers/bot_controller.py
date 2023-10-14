@@ -72,6 +72,7 @@ class BotController:
         response = await self.client.post(
             f"{BASE_PATH}/callback/answer",
             data={
+                "type": "callback",
                 "callbackQueryId": callback_id,
                 "text": text,
                 "url": url,

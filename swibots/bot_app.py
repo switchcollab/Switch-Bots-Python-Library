@@ -390,6 +390,8 @@ class Client(Decorators, AbstractContextManager, ApiClient):
                 run(self.stop())
             except KeyboardInterrupt:
                 run(self.stop())
+            except asyncio.exceptions.CancelledError as er:
+                log.debug(er)
             except Exception as e:
                 log.exception(e)
                 run(self.stop())
