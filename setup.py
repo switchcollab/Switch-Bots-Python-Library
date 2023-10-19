@@ -4,7 +4,7 @@ try:
     with open("requirements.txt", encoding="utf-8") as r:
         requires = [i.strip() for i in r]
 except FileNotFoundError:
-    requires = ["httpx<=0.25.0", "websockets<=11.0.3", "b2sdk"]
+    requires = ["httpx<=0.25.0", "websockets<=11.0.3"]
 
 try:
     import pypandoc

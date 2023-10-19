@@ -15,6 +15,7 @@ from swibots.utils.types import (
     DownloadProgressCallback,
     IOClient,
     UploadProgress,
+    ReadCallbackStream,
 )
 from swibots.config import APP_CONFIG
 from swibots.api.common.models import Media
@@ -58,7 +59,7 @@ class MediaController:
         self.prepare_bucket()
         self.__token = None
         self._client = AsyncClient(timeout=None, verify=False)
-    
+
     async def getAccountInfo(self):
         response = await self._client.get(
             "https://api.backblazeb2.com/b2api/v2/b2_authorize_account", headers=headers
@@ -67,7 +68,7 @@ class MediaController:
         if token := data.get("authorizationToken"):
             self.__token = token
         return data
-    
+
     def prepare_bucket(self):
         if (
             bucket_id := APP_CONFIG["BACKBLAZE"].get("BUCKET_ID")
@@ -92,8 +93,9 @@ class MediaController:
         media_type: Optional[int] = None,
         callback: UploadProgressCallback = None,
         callback_args: Optional[tuple] = None,
-        _part_size: int = 100*1024*1024,
-        _task_count: int = 20
+        _part_size: int = 100 * 1024 * 1024,
+        _task_count: int = 20,
+        min_file_size: int = 10 * 1024 * 1024
     ) -> Media:
         """upload media from path"""
         if not file_name:
@@ -114,11 +116,7 @@ class MediaController:
                 info = await self.getAccountInfo()
             client = IOClient()
             progress = UploadProgress(
-                path=path,
-                callback=callback,
-                callback_args=callback_args
-            ,
-            client=client
+                path=path, callback=callback, callback_args=callback_args, client=client
             )
             with open(path, "rb") as file:
                 head = {
@@ -145,7 +143,6 @@ class MediaController:
                     logger.error(respp.json())
 
                 logger.info(respp.json())
-                #       token= respp.json()["authorizationToken"]
                 fileId = respp.json()["fileId"]
                 part_number = 1
                 tasks = []
@@ -157,7 +154,6 @@ class MediaController:
                     async def uploadFile(token, part_number, chunk):
                         sha1_checksum = hashlib.sha1(chunk).hexdigest()
 
-    #                    logger.info("get part url")
                         respp = await self._client.post(
                             f"https://api004.backblazeb2.com/b2api/v2/b2_get_upload_part_url",
                             json={"fileId": fileId},
@@ -168,8 +164,6 @@ class MediaController:
                             logger.error(respp.json())
                         token = respp.json()["authorizationToken"]
                         upload_part_url = respp.json()["uploadUrl"]
-                        # (respp.json(), token)
-    #                    logger.info("calling upload")
                         respp = await self._client.post(
                             upload_part_url,
                             data=chunk,
@@ -182,7 +176,6 @@ class MediaController:
                         if respp.status_code != 200:
                             logger.error("onUpload")
                             logger.error(respp.json())
-    #                    logger.info(respp.json())
                         hash = respp.json()["contentSha1"]
                         partHash[hash] = respp.json()["partNumber"]
                         await progress.bytes_readed(respp.json()["contentLength"])
@@ -198,7 +191,9 @@ class MediaController:
                     part_number += 1
             if tasks:
                 await asyncio.gather(*tasks)
-            hashes = list(map(lambda x: x[0], sorted(partHash.items(), key=lambda x: x[1])))
+            hashes = list(
+                map(lambda x: x[0], sorted(partHash.items(), key=lambda x: x[1]))
+            )
 
             response = await self._client.post(
                 f"https://api004.backblazeb2.com/b2api/v2/b2_finish_large_file",
@@ -213,32 +208,44 @@ class MediaController:
 
             return response.json()
 
-
-
         if not mime_type:
             mime_type = mimetypes.guess_type(file_name)[0] or "application/octet-stream"
-        
 
         log.debug(f"Sending request to backblaze: {path}")
 
         _, ext = os.path.splitext(path)
         file_name = f"{uuid.uuid1()}{ext}"
-        if size > 100 * 1024 * 1024: 
+
+        if size > min_file_size:
             file_response = await upload_large_file(self, mime_type, file_name)
         else:
-            _progress = UploadProgress(
-                path,
-                callback=callback,
-                callback_args=callback_args,
-             #   loop=self.loop,
+            if not self.__token:
+                await self.getAccountInfo()
+            head = {
+                "Content-Type": "application/json",
+                "Authorization": self.__token,
+            }
+            bucketId = self.bucket.get_id()
+            rsp = await self._client.get(
+                f"https://api004.backblazeb2.com/b2api/v2/b2_get_upload_url?bucketId={bucketId}",
+                headers=head,
             )
-            loop = asyncio.get_event_loop()
-            file_response = await loop.run_in_executor(None, lambda: self.bucket.upload_local_file(
-                    path,
-                    file_name=file_name,
-                    content_type=mime_type,
-                    progress_listener=_progress if callback else None,
-                ).as_dict())
+   
+            token = rsp.json()["authorizationToken"]
+            with open(path, "rb") as f:
+                content = f.read()
+                file_sha1 = hashlib.sha1(content).hexdigest()
+                rsp = await self._client.post(
+                    rsp.json()["uploadUrl"],
+                    headers={
+                        "Authorization": token,
+                        "X-Bz-File-Name": file_name,
+                        "Content-Type": mime_type,
+                        "X-Bz-Content-Sha1": file_sha1,
+                    },
+                    data=content,
+                )
+                file_response = rsp.json()
 
         url = self.backblaze.get_download_url_for_fileid(file_response["fileId"])
 
@@ -256,7 +263,6 @@ class MediaController:
         }
         print(media)
         return self.client.build_object(Media, media)
-        
 
         file_response = self.bucket.upload_local_file(
             path,
