@@ -5,7 +5,7 @@ from typing import Any, Callable, Collection, Coroutine, Dict, TypeVar, Union
 from inspect import iscoroutinefunction
 from swibots.errors import CancelError
 from b2sdk.progress import AbstractProgressListener
-
+# from tqdm import tqdm
 
 class IOClient:
     def __init__(self) -> None:
@@ -36,28 +36,69 @@ class UploadProgress(AbstractProgressListener):
         callback_args: tuple = (),
         client: IOClient = None,
         loop=None,
+        current: int = 0,
+        readed: int = 0
     ) -> None:
         super().__init__()
         self.callback = callback
         self.path = path
         self.total = os.path.getsize(path)
         self.callback_args = callback_args
-        self.readed = self.current = 0
+#        self.readed = self.current = 0
         self.client = client
-        self.loop = loop or asyncio.new_event_loop()
+        self.current = current
+        self.readed = readed
+        #self.bar = bar or tqdm(total=self.total, unit="B",
+        #                       unit_scale=True, unit_divisor=1024)
+    
+    def update(self, bytes):
+        self.current = bytes 
+        self.readed += bytes
+     #   self.bar.update(bytes)
+   #     if self.readed == self.total:
+    #        self.bar.close()
+        self.runCallback(self.current)
 
     def bytes_completed(self, byte_count):
-        super().bytes_completed(byte_count)
-        self.readed = self.current = byte_count
+        if self.readed and byte_count > self.readed:
+            self.current = byte_count - self.readed
+        else:
+            self.current = byte_count
+        self.readed = byte_count
+       # self.bar.update(self.current)
+        #if self.readed == self.total:
+         #   self.bar.close()
+        self.runCallback(self.current)
+    
+    async def bytes_readed(self, length):
+        self.current = length
+        self.readed += length
+        
+#        if self.readed == self.total:
+ #           self.bar.close()
+
+  #      self.bar.update(length)
 
         if self.callback:
-            iscoro = self.callback(self, *self.callback_args or ())
+            iscoro = self.callback(UploadProgress(self.path, self.callback, self.callback_args, self.client, readed=self.readed, current=length,
+                                                  ), *self.callback_args or (),
+                                   )
             if iscoroutinefunction(self.callback):
-                self.loop.run_until_complete(iscoro)
-        return
+                asyncio.create_task(iscoro)
 
-    def set_total_bytes(self, total_byte_count):
-        self.total = total_byte_count
+    def runCallback(self, current):
+
+        if self.callback:
+            iscoro = self.callback(UploadProgress(self.path, self.callback, self.callback_args, self.client, readed=self.readed, current=current,
+                                                  ), *self.callback_args or ())
+            if iscoroutinefunction(self.callback):
+
+                th = Thread(target=lambda: asyncio.run(iscoro))
+                th.start()
+        return
+    
+    def set_total_bytes(self, total):
+        self.total = total
 
 
 CtxType = TypeVar("CtxType")
