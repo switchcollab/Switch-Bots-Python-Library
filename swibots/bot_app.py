@@ -193,7 +193,6 @@ class Client(Decorators, AbstractContextManager, ApiClient):
     async def process_event(self, ctx: BotContext):
         for handler in self.handlers:
             try:
-                #                print(handler)
                 await handler.handle(ctx)
             except Exception as e:
                 log.exception(f"Error while processing event: {e}")
@@ -279,7 +278,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
             if not self.user:
                 user = await self.get_me(user_type=self._user_type)
                 self.user = user
-            log.info("Logged in as [%s][%d]", self.user.user_name, self.user.id)
+            log.info("Logged in as [%a][%s][%d]", self.user.name, self.user.user_name, self.user.id)
         except Exception as e:
             log.exception(e)
             await self.stop()

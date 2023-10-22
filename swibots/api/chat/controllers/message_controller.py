@@ -199,6 +199,7 @@ class MessageController:
                 replied_to_id=reply_to_message_id,
                 message=message,
                 inline_markup=inline_markup,
+                media_link=media.url if media else None,
                 scheduled_at=scheduled_at,
                 **kwargs,
             )
