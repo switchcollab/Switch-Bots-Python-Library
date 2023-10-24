@@ -120,7 +120,7 @@ class MediaController:
         media_type: Optional[int] = None,
         callback: UploadProgressCallback = None,
         callback_args: Optional[tuple] = None,
-        part_size: int = 100 * 1024 * 1024,
+        part_size: int = 10 * 1024 * 1024,
         task_count: int = 20,
         min_file_size: int = 10 * 1024 * 1024,
     ) -> Media:

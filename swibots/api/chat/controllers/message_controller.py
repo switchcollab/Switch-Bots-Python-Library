@@ -172,6 +172,9 @@ class MessageController:
         reply_to_message_id: Optional[int] = None,
         scheduled_at: Optional[int] = None,
         inline_markup: Optional[InlineMarkup] = None,
+        part_size: Optional[int] = None,
+        task_count: Optional[int] = None,
+        min_file_size: Optional[int] = None,
         **kwargs,
     ) -> Message | Task:
         async def _upload_media(media):
@@ -184,7 +187,11 @@ class MessageController:
                     media_type=media_type,
                     callback=progress,
                     callback_args=progress_args,
-                    thumb=thumb
+                    thumb=thumb,
+                    part_size=part_size,
+                    task_count=task_count,
+                    min_file_size=min_file_size
+            
                 )
             elif not media:
                 raise ValueError("'media' or 'document' must be provided!")

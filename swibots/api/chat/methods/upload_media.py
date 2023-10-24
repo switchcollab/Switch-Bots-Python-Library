@@ -32,6 +32,10 @@ class UploadMedia:
         media_type: Optional[int] = None,
         callback = None,
         callback_args: Optional[tuple] = None,
+        part_size: Optional[int] = 10 * 1024 * 1024,
+        min_file_size: Optional[int] = 10 * 1024 * 1024,
+        task_count: Optional[int] = 10
+        
     ) -> Media:
         """upload a file to get `Media` object.
 
@@ -55,6 +59,9 @@ class UploadMedia:
             media_type=media_type,
             callback=callback,
             callback_args=callback_args,
+            part_size=part_size,
+            task_count=task_count,
+            min_file_size=min_file_size
         )
 
     async def send_media(
@@ -66,10 +73,12 @@ class UploadMedia:
         channel_id: Optional[str] = None,
         user_id: Optional[int] = None,
         user_session_id: Optional[str] = None,
+        media: Optional[Media] = None,
         description: Optional[str] = None,
         caption: Optional[str] = None,
         file_name: Optional[str] = None,
         mime_type: Optional[str] = None,
+        media_type: Optional[int] = None,
         thumb: Optional[str] = None,
         reply_to_message_id: Optional[int] = None,
         blocking: Optional[bool] = True,
@@ -106,9 +115,11 @@ class UploadMedia:
             user_id=user_id,
             user_session_id=user_session_id,
             caption=caption,
+            media=media,
             description=description,
             file_name=file_name,
             mime_type=mime_type,
+            media_type=media_type,
             thumb=thumb,
             blocking=blocking,
             progress=progress,

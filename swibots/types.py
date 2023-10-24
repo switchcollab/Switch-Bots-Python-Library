@@ -26,3 +26,11 @@ class EventType(enum.Enum):
 
     COMMUNITY_UNRESTRICT_USER = "COMMUNITY_UN_RESTRICT_USER"
     COMMUNITY_RESTRICT_USER = "COMMUNITY_RESTRICT_USER"
+
+
+class MediaType(enum.Enum):
+    IMAGE = 1
+    VIDEO = 2
+    AUDIO = 3
+    DOCUMENT = 7
+    STICKER = 200
