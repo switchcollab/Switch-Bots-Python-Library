@@ -71,7 +71,6 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         self._handlers: List[BaseHandler] = []
         self._register_commands: List[BotCommand] = []
         self._bot_description = bot_description
-        #        self._plugins = plugins
         self.auto_update_bot = auto_update_bot
         self._loop = loop or asyncio.get_event_loop()
         self.user = self._loop.run_until_complete(
@@ -237,7 +236,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         if progress:
             await progress(dProgress, *progress_args)
         try:
-            with self.rest_client.stream("GET", url) as response:
+            with httpx.stream("GET", url) as response:
                 dProgress.total = int(response.headers["Content-Length"])
                 dProgress.downloaded = response.num_bytes_downloaded
                 dProgress.client = response
@@ -256,17 +255,15 @@ class Client(Decorators, AbstractContextManager, ApiClient):
                 return None
             if isinstance(e, asyncio.CancelledError):
                 raise e
-
-            return None
+            raise e
+        if in_memory:
+            file.name = file_name
+            return file
         else:
-            if in_memory:
-                file.name = file_name
-                return file
-            else:
-                file.close()
-                file_path = os.path.splitext(temp_file_path)[0]
-                shutil.move(temp_file_path, file_path)
-                return file_path
+            file.close()
+            file_path = os.path.splitext(temp_file_path)[0]
+            shutil.move(temp_file_path, file_path)
+            return file_path
 
     async def _validate_token(self):
         # check if token is valid
@@ -278,7 +275,12 @@ class Client(Decorators, AbstractContextManager, ApiClient):
             if not self.user:
                 user = await self.get_me(user_type=self._user_type)
                 self.user = user
-            log.info("Logged in as [%a][%s][%d]", self.user.name, self.user.user_name, self.user.id)
+            log.info(
+                "Logged in as [%a][%s][%d]",
+                self.user.name,
+                self.user.user_name,
+                self.user.id,
+            )
         except Exception as e:
             log.exception(e)
             await self.stop()
@@ -328,12 +330,8 @@ class Client(Decorators, AbstractContextManager, ApiClient):
 
             log.info("🚀 App started!")
 
-            # # run forever
-            # while self._running:
-            #     await asyncio.sleep(1)
         except asyncio.CancelledError:
             self._running = False
-            # await self._do_stop()
 
     async def _do_stop(self):
         log.info("🛑 Stopping app...")
