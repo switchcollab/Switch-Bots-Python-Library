@@ -25,6 +25,7 @@ For detailed information and documentation, please visit our
   - [Embedded message](#sending-embedded-messages)
   - [Sending media](#sending-media)
   - [Sending buttons](#sending-buttons)
+  - [Handling keyboard callbacks](#handling-keyboard-callbacks)
 - [More samples](#explore-bot-samples)
 - [Code Contribution](#🚀-contributing)
 
@@ -87,6 +88,8 @@ app.run()
 
 For more examples and sample bots, please check out our [Bot samples](./samples)
 directory.
+ ## Other bot samples
+ - [ComBot - Community management bot](https://github.com/New-dev0/Combot)
 
 ## Examples
 
@@ -116,7 +119,7 @@ await bot.send_media(
     user_id=100,
     document="file.pdf",
     description="file_name.png",
-    thumbnail="file.png"
+    thumb="file.png"
 )
 ```
 
@@ -144,6 +147,26 @@ await bot.send_message(
         ]
     )
 )
+```
+
+### Handling Keyboard Callbacks
+```python
+from swibots import CallbackQueryEvent, BotContext
+from swibots import regexp, InlineMarkup, InlineKeyboardButton
+
+# send message with callback button
+await bot.send_message("Hi", user_id=0, inline_markup=InlineMarkup([[
+    InlineKeyboardButton("Callback Button", callback_data="clb")
+]]))
+
+# register callback query handler with data
+@bot.on_callback_query(regexp("clb$"))
+async def onCallback(ctx: BotContext[CallbackQueryEvent]):
+    # display callback answer to user
+    await ctx.event.answer(
+        "Hello, this is a callback answer",
+        show_alert=True
+    )
 ```
 
 Feel free to explore more features and capabilities of SwiBots in our

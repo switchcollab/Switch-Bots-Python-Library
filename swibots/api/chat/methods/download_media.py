@@ -20,8 +20,9 @@ class DownloadMedia:
         progress: DownloadProgressCallback = None,
         progress_args: tuple = (),
     ) -> Optional[Union[BinaryIO, bytes, str]]:
-        """ """
-
+        """
+        Download media by message reference
+        """
         if not message.is_media:
             raise MediaEmpty("Message is not a media message")
 
