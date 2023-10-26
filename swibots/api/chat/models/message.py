@@ -1,9 +1,11 @@
 from typing import TYPE_CHECKING, BinaryIO, Callable, List, Optional, Union
 import swibots
+from io import BytesIO
 from swibots.base import SwitchObject
 from swibots.api.common import User, Media, EmbeddedMedia
 from swibots.api.community import Community, Channel, Group
 from swibots.utils.types import JSONDict
+from swibots.types import MediaType
 from .inline_markup import InlineMarkup, InlineMarkupRemove
 
 
@@ -58,6 +60,7 @@ class Message(
         media_info: Media = None,
         cached_media: Media = None,
         scheduled_at: Optional[int] = None,
+        sticker_pack_id: Optional[str] = None,
         **kwargs,
     ):
         super().__init__(app=app)
@@ -106,6 +109,7 @@ class Message(
         self.is_embed_message = is_embed_message
         self.scheduled_at = scheduled_at
         self.user_session_id = user_session_id
+        self.sticker_pack_id = sticker_pack_id
 
         self.__dict__.update(**kwargs)
 
@@ -205,6 +209,7 @@ class Message(
             "pinned": self.pinned,
             "reactions": self.reactions,
             "receiverId": self.receiver_id,
+            "mediaId": self.media_id,
             "mediaInfo": self.media_info.to_json() if self.media_info else None,
             "repliedMessage": replied.to_json() if replied else None,
             "repliedTo": self.replied_to_id,
@@ -244,6 +249,11 @@ class Message(
             self.media_link = data.get("mediaLink")
             self.media_id = data.get("mediaId")
             self.media_info = Media.build_from_json(data.get("mediaInfo"), self.app)
+            if self.media_info:
+                if not self.media_id:
+                    self.media_id = self.media_info.id
+                if not self.media_link:
+                    self.media_link = self.media_info.link
             self.cached_media = Media.build_from_json(data.get("cachedMedia"), self.app)
             self.mentioned_ids = data.get("mentionedIds")
             self.message = data.get("message")
@@ -273,35 +283,8 @@ class Message(
                 self.embed_message
             )
             self.user_session_id = data.get("userSessionId")
+            self.sticker_pack_id = data.get("stickerPackId")
         return self
-
-    # async def get_receiver(self) -> "User":
-    #     if self.receiver_id is None:
-    #         return None
-    #     if self._receiver is None:
-    #         self._receiver = await self.app.get_user(self.receiver_id)
-    #     return self._receiver
-
-    # async def get_group(self) -> "Group":
-    #     if self.group_id is None:
-    #         return None
-    #     if self.group is None:
-    #         self.group = await self.app.getgroup(self.group_id)
-    #     return self.group
-
-    # async def get_channel(self) -> "Channel":
-    #     if self.channel_id is None:
-    #         return None
-    #     if self.channel is None:
-    #         self.channel = await self.app.get_channel(self.channel_id)
-    #     return self.channel
-
-    # async def get_community(self) -> "Community":
-    #     if self.community_id is None:
-    #         return None
-    #     if self.community is None:
-    #         self.community = await self.app.get_community(self.community_id)
-    #     return self.community
 
     @property
     def is_media(self):
@@ -310,6 +293,11 @@ class Message(
         # 3 = AUDIO
         # 7 = FILE
         return self.status in [1, 2, 3, 7]
+
+    @property
+    def is_sticker(self):
+        """Whether message is sticker"""
+        return bool(self.sticker_pack_id)
 
     async def get_replies(self) -> List["Message"]:
         if self.reply_count <= 0:
@@ -335,7 +323,13 @@ class Message(
 
     ### API Methods ###
 
-    async def respond(self, message: str, **kwargs) -> "Message":
+    async def respond(
+        self,
+        message: str,
+        embed_message: EmbeddedMedia = None,
+        inline_markup: InlineMarkup = None,
+        **kwargs,
+    ) -> "Message":
         return await self.app.send_message(
             message=message,
             community_id=self.community_id,
@@ -343,6 +337,8 @@ class Message(
             channel_id=self.channel_id,
             user_id=self._get_receiver_id(),
             user_session_id=self.user_session_id,
+            embed_message=embed_message,
+            inline_markup=inline_markup,
             **kwargs,
         )
 
@@ -351,7 +347,13 @@ class Message(
     async def delete(self) -> None:
         return await self.app.delete_message(self)
 
-    async def reply_text(self, message: str, **kwargs) -> "Message":
+    async def reply_text(
+        self,
+        message: str,
+        embed_message: EmbeddedMedia = None,
+        inline_markup: InlineMarkup = None,
+        **kwargs,
+    ) -> "Message":
         return await self.app.send_message(
             message,
             community_id=self.community_id,
@@ -360,10 +362,22 @@ class Message(
             user_id=self._get_receiver_id(),
             reply_to_message_id=self.id,
             user_session_id=self.user_session_id,
+            embed_message=embed_message,
+            inline_markup=inline_markup,
             **kwargs,
         )
 
-    async def reply_media(self, message: str, document: str, **kwargs) -> "Message":
+    async def reply_media(
+        self,
+        document: str | BytesIO,
+        message: str = "",
+        thumb: str | BytesIO = None,
+        progress=None,
+        progress_args=None,
+        inline_markup: InlineMarkup = None,
+        **kwargs,
+    ) -> "Message":
+        """reply media to the message"""
         return await self.app.send_media(
             message=message,
             document=document,
@@ -371,7 +385,50 @@ class Message(
             group_id=self.group_id,
             channel_id=self.channel_id,
             user_id=self._get_receiver_id(),
+            thumb=thumb,
             user_session_id=self.user_session_id,
+            reply_to_message_id=self.id,
+            progress=progress,
+            progress_args=progress_args,
+            inline_markup=inline_markup,
+            **kwargs,
+        )
+
+    async def reply_document(
+        self,
+        document: str | BytesIO,
+        message: str = "",
+        thumb: str | BytesIO = None,
+        progress=None,
+        progress_args=None,
+        inline_markup: InlineMarkup = None,
+        **kwargs,
+    ) -> "Message":
+        """Reply document to the message"""
+        return await self.reply_media(
+            message=message,
+            document=document,
+            mime_type=MediaType.DOCUMENT.value,
+            thumb=thumb,
+            progress=progress,
+            progress_args=progress_args,
+            inline_markup=inline_markup,
+            **kwargs,
+        )
+
+    async def reply_audio(
+        self,
+        audio: str | BytesIO,
+        caption: str = "",
+        inline_markup: InlineMarkup = None,
+        **kwargs,
+    ):
+        """Reply audio to message!"""
+        return await self.reply_media(
+            message=caption,
+            document=audio,
+            media_type=MediaType.AUDIO.value,
+            inline_markup=inline_markup,
             **kwargs,
         )
 

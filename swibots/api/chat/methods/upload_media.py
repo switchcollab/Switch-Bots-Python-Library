@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Type, TypeVar, Optional
 import swibots
 from io import BytesIO
 from swibots.api.common.models import Media
+from swibots.api.chat.models.inline_markup import InlineMarkup
 
 if TYPE_CHECKING:
     from swibots.api import ApiClient
@@ -84,6 +85,7 @@ class UploadMedia:
         blocking: Optional[bool] = True,
         progress: Optional[callable] = None,
         progress_args: Optional[tuple] = None,
+        inline_markup: Optional[InlineMarkup] = None,
         **kwargs,
     ):
         """Send a media to Chat!
@@ -125,6 +127,7 @@ class UploadMedia:
             progress=progress,
             progress_args=progress_args,
             reply_to_message_id=reply_to_message_id,
+            inline_markup=inline_markup,
             **kwargs,
         )
 
