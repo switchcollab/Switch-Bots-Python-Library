@@ -248,12 +248,12 @@ class Message(
             self.is_document = data.get("isDocument")
             self.media_link = data.get("mediaLink")
             self.media_id = data.get("mediaId")
-            self.media_info = Media.build_from_json(data.get("mediaInfo"), self.app)
+            self.media_info: Media = Media.build_from_json(data.get("mediaInfo"), self.app)
             if self.media_info:
                 if not self.media_id:
                     self.media_id = self.media_info.id
                 if not self.media_link:
-                    self.media_link = self.media_info.link
+                    self.media_link = self.media_info.url
             self.cached_media = Media.build_from_json(data.get("cachedMedia"), self.app)
             self.mentioned_ids = data.get("mentionedIds")
             self.message = data.get("message")
