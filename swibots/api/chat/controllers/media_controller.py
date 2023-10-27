@@ -10,6 +10,7 @@ import uuid
 from httpx import AsyncClient
 from typing import TYPE_CHECKING, List, Optional
 
+from swibots.errors import UnknownBackBlazeError
 from swibots.utils.types import (
     UploadProgressCallback,
     DownloadProgressCallback,
@@ -78,7 +79,10 @@ class MediaController:
             headers=head,
         )
 
-        token = rsp.json()["authorizationToken"]
+        response_data = rsp.json()
+        if not response_data.get("authorizationToken"):
+            raise UnknownBackBlazeError(response_data)
+        token = response_data["authorizationToken"]
         if Isbytes:
             file_source = path
         else:
@@ -93,8 +97,13 @@ class MediaController:
                 "Content-Type": mime_type,
                 "X-Bz-Content-Sha1": file_sha1,
             }
+
+            respp = rsp.json()
+            if not response_data.get("uploadUrl"):
+                raise UnknownBackBlazeError(respp)
+
             rsp = await self._client.post(
-                rsp.json()["uploadUrl"],
+                respp["uploadUrl"],
                 headers=headers,
                 data=content,
             )
@@ -120,11 +129,20 @@ class MediaController:
         media_type: Optional[int] = None,
         callback: UploadProgressCallback = None,
         callback_args: Optional[tuple] = None,
-        part_size: int = 10 * 1024 * 1024,
-        task_count: int = 20,
-        min_file_size: int = 10 * 1024 * 1024,
+        part_size: int = None,
+        task_count: int = None,
+        min_file_size: int = None,
     ) -> Media:
         """upload media from path"""
+        if not min_file_size:
+            min_file_size = 10 * 1024 * 1024
+
+        if not part_size:
+            part_size = 100 * 1024 * 1024
+
+        if task_count is None:
+            task_count = 0
+
         if not file_name:
             if isinstance(path, BytesIO):
                 file_name = path.name
@@ -261,10 +279,16 @@ class MediaController:
             if respp.status_code != 200:
                 logger.error("on large file")
                 logger.error(respp.json())
+                raise UnknownBackBlazeError(respp.json())
 
             logger.debug(respp.json())
 
-            fileId = respp.json()["fileId"]
+            fileId = respp.json()
+
+            if not fileId.get("fileId"):
+                raise UnknownBackBlazeError(fileId)
+
+            fileId = fileId["fileId"]
             part_number = 1
             tasks = []
             while True:

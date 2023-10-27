@@ -70,3 +70,6 @@ class MediaEmpty(BadRequest):
 
 class InvalidRouteCall(BadRequest):
     ...
+
+class UnknownBackBlazeError(BadRequest):
+    ...
