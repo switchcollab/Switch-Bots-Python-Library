@@ -34,8 +34,8 @@ class AsyncWsClient:
         self._connectCallback = None
         self.errorCallback = None
         self._connectIntents = 0
-        self._connectInterval = 1
-        self._maxConnectIntents = 0
+        self._connectInterval = 10
+        self._maxConnectIntents = 20
         self._connecting = False
         self._gracefully_disconnect = False
 
