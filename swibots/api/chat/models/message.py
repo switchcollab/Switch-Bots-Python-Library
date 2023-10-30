@@ -248,7 +248,9 @@ class Message(
             self.is_document = data.get("isDocument")
             self.media_link = data.get("mediaLink")
             self.media_id = data.get("mediaId")
-            self.media_info: Media = Media.build_from_json(data.get("mediaInfo"), self.app)
+            self.media_info: Media = Media.build_from_json(
+                data.get("mediaInfo"), self.app
+            )
             if self.media_info:
                 if not self.media_id:
                     self.media_id = self.media_info.id
@@ -408,7 +410,7 @@ class Message(
         return await self.reply_media(
             message=message,
             document=document,
-            mime_type=MediaType.DOCUMENT.value,
+            media_type=MediaType.DOCUMENT.value,
             thumb=thumb,
             progress=progress,
             progress_args=progress_args,

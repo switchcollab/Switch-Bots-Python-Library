@@ -23,6 +23,7 @@ from swibots.utils import (
     RestClient,
     DownloadProgressCallback,
 )
+from swibots.errors import TokenInvalidError
 from swibots.api import ApiClient
 
 log = logging.getLogger(__name__)
@@ -62,6 +63,8 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         """
         super().__init__()
         self.token = token
+        if not token:
+            raise TokenInvalidError(f"'token' for the bot can't be '{token}'")
         self._user_type = Bot
         self._botinfo: BotInfo = None
         self.on_app_start = None
@@ -284,10 +287,10 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         except Exception as e:
             log.exception(e)
             await self.stop()
-            raise SwitchError("Invalid token")
+            raise TokenInvalidError("Invalid token")
 
         if self.user is None:
-            raise SwitchError("Invalid token")
+            raise TokenInvalidError("Invalid token")
 
     async def _on_app_stop(self):
         await self.chat_service.stop()
@@ -379,7 +382,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         loop = asyncio.get_event_loop()
         run = loop.run_until_complete
         if task is not None:
-            run(task)
+            return run(task)
         else:
             try:
                 run(self.start())

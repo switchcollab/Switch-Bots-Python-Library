@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING, Optional
+from io import BytesIO
 import swibots
+from swibots.types import MediaType
 from swibots.api.chat.models import Message, InlineMarkup, Sticker
 from swibots.api.common.models import EmbeddedMedia
 
@@ -93,5 +95,42 @@ class SendMessage:
             group_id=group_id,
             user_id=user_id,
             user_session_id=user_session_id,
+            **kwargs,
+        )
+
+    async def send_audio(
+        self: "ApiClient",
+        audio: str | BytesIO,
+        caption: str = "",
+        community_id: Optional[str] = None,
+        channel_id: Optional[str] = None,
+        group_id: Optional[str] = None,
+        user_id: Optional[int] = None,
+        user_session_id: Optional[str] = None,
+        **kwargs,
+    ):
+        """Send audio
+
+        Args:
+            `audio` `(str | BytesIO)`: audio file path:
+            `caption` (str, optional): message caption. Defaults to "".
+            `community_id`: Community ID
+            `group_id`: Group id
+            `channel_id`: Channel ID
+            `user_id`: User id to send message
+            `user_session_id`: Session ID, present if bot is added as channel in the community.
+
+        Returns:
+            Message | Task
+        """
+        return await self.send_media(
+            document=audio,
+            user_id=user_id,
+            user_session_id=user_session_id,
+            community_id=community_id,
+            channel_id=channel_id,
+            group_id=group_id,
+            message=caption,
+            media_type=MediaType.AUDIO.value,
             **kwargs,
         )

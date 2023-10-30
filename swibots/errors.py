@@ -47,6 +47,8 @@ class NetworkError(SwitchError):
         :any:`Raw API Bot <examples.rawapibot>`
     """
 
+class TokenInvalidError(SwitchError):
+    ...
 
 class CancelError(SwitchError):
     pass
