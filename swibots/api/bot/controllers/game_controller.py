@@ -17,11 +17,11 @@ class GameController:
 
     async def create_leaderboard(
         self,
-        user_id: str | int,
-        score: str | int = 0,
-        level: str | int = None,
+        user_id: int,
+        score: int = 0,
+        level: int = None,
         community_id: str = None,
-        bot_id: str | int = None,
+        bot_id: int = None,
     ) -> GameInfo:
         if not bot_id:
             bot_id = self.client.user.id
@@ -40,11 +40,11 @@ class GameController:
     async def update_leaderboard(
         self,
         id: str,
-        user_id: str | int,
-        score: str | int = 0,
-        level: str | int = 0,
+        user_id: int,
+        score: int = 0,
+        level: int = 0,
         community_id: str = None,
-        bot_id: str | int = None,
+        bot_id: int = None,
     ) -> None:
         if not bot_id:
             bot_id = self.client.user.id
@@ -62,7 +62,7 @@ class GameController:
         return self.client.build_object(GameInfo, response.data)
 
     async def get_global_leaderboard(
-        self, bot_id: Optional[str | int] = None
+        self, bot_id: Optional[int] = None
     ) -> List[GameInfo]:
         if not bot_id:
             bot_id = self.client.user.id
@@ -72,7 +72,7 @@ class GameController:
         return self.client.build_list(GameInfo, response.data)
 
     async def get_community_leaderboard(
-        self, community_id: str, bot_id: Optional[int | str] = None
+        self, community_id: str, bot_id: Optional[int] = None
     ) -> List[GameInfo]:
         if not bot_id:
             bot_id = self.client.user.id
@@ -83,9 +83,9 @@ class GameController:
 
     async def get_game_score(
         self,
-        user_id: str | int,
+        user_id: int,
         community_id: Optional[str] = None,
-        bot_id: Optional[str | int] = None,
+        bot_id: Optional[int] = None,
     ) -> GameInfo:
         if not bot_id:
             bot_id = self.client.user.id

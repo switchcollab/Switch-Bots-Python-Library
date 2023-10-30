@@ -41,7 +41,7 @@ class Referral(SwitchObject):
         }
 
     @classmethod
-    def from_json(self, data: JSONDict | None) -> Any:
+    def from_json(self, data: JSONDict = None) -> Any:
         if data:
             self.id = data.get("id")
             self.reference_id = data.get("reference_id")

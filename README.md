@@ -41,12 +41,6 @@ To install SwiBots, you can use pip:
 pip install swibots
 ```
 
-Alternatively, you can install it from the GitHub repository:
-
-```bash
-pip install git+https://github.com/switchcollab/Switch-Bots-Python-Library.git
-```
-
 ### Usage Example
 
 Let's create a simple echo bot to get you started quickly. Follow these steps:

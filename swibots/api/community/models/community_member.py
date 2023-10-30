@@ -62,7 +62,7 @@ class CommunityMember(SwitchObject):
             "xpSpend": self.xp_spend,
         }
 
-    def from_json(self, data: JSONDict | None) -> "CommunityMember":
+    def from_json(self, data: JSONDict = None) -> "CommunityMember":
         if data is not None:
             self.admin = data.get("admin")
             self.community_id = data.get("communityId")

@@ -28,7 +28,7 @@ class InlineMarkup(SwitchObject):
         if len(buttons) > 0:
             self.inline_keyboard.append(list(buttons))
 
-    def to_json(self) -> JSONDict | None:
+    def to_json(self) -> JSONDict:
         if self._inline_keyboard is None:
             return None
         return {

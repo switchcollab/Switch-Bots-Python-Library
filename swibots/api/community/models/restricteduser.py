@@ -32,7 +32,7 @@ class RestrictedUser(SwitchObject):
         }
 
     @classmethod
-    def from_json(self, data: JSONDict | None) -> "BanInfo":
+    def from_json(self, data: JSONDict = None) -> "BanInfo":
         if data is not None:
             self.restricted = data.get("restricted")
             self.community_id = data.get("communityId")

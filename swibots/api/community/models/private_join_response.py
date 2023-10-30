@@ -16,7 +16,7 @@ class PrivateJoinResponse(SwitchObject):
         self.group_id = None
         self.members = []
 
-    def from_json(self, data: JSONDict | None) -> "PrivateJoinResponse":
+    def from_json(self, data: JSONDict = None) -> "PrivateJoinResponse":
         if data:
             self.channel_id = data.get("channelId")
             self.community_id = data.get("communityId")

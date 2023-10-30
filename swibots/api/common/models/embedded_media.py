@@ -47,7 +47,7 @@ class EmbeddedMedia(SwitchObject):
                 form_data[icon_key] = b.icon
         return form_data
 
-    def from_json(self, data: JSONDict | None) -> "EmbeddedMedia":
+    def from_json(self, data: JSONDict = None) -> "EmbeddedMedia":
         if data is not None:
             self.thumbnail = data.get("coverPic")
             self.description = data.get("description")

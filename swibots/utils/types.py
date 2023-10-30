@@ -71,7 +71,7 @@ class UploadProgress:
                     self.client,
                     readed=self.readed,
                     current=length,
-                    size=self.total
+                    size=self.total,
                 ),
                 *self.callback_args or (),
             )

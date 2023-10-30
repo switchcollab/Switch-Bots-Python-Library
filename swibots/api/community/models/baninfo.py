@@ -19,7 +19,7 @@ class BanInfo(SwitchObject):
         return {"isBanned": self.banned, "message": self.message}
 
     @classmethod
-    def from_json(self, data: JSONDict | None) -> "BanInfo":
+    def from_json(self, data: JSONDict = None) -> "BanInfo":
         if data is not None:
             self.banned = data.get("isBanned")
             self.message = data.get("message")

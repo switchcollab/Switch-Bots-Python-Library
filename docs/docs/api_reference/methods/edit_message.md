@@ -4,7 +4,15 @@ Edits a message
 
 # Signature
 
-`async def edit_message(message: Message) -> Message:`
+```python
+async def edit_message(
+        self,
+        message_id: int,
+        text: str,
+        embed_message: EmbeddedMedia = None,
+        inline_markup: InlineMarkup = None,
+        **kwargs)-> Message:
+```
 
 # Parameters
 

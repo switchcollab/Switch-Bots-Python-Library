@@ -57,6 +57,7 @@ class Message(
         replies: List["Message"] = None,
         reply_count: int = None,
         media_id: int = None,
+        link: str = None,
         media_info: Media = None,
         cached_media: Media = None,
         scheduled_at: Optional[int] = None,
@@ -105,6 +106,7 @@ class Message(
         self.replies = replies
         self.reply_count = reply_count
         self.cached_media = cached_media
+        self.link = link
         self.embed_message = embed_message
         self.is_embed_message = is_embed_message
         self.scheduled_at = scheduled_at
@@ -138,6 +140,7 @@ class Message(
             "mediaId": self.media_id,
             "mediaInfo": self.media_info.to_json() if self.media_info else None,
             "userSessionId": self.user_session_id,
+            "link": self.link,
         }
 
     def to_form_data(self):
@@ -220,6 +223,7 @@ class Message(
             "status": self.status,
             "userId": self.user_id,
             "userSessionId": self.user_session_id,
+            "link": self.link,
         }
 
     def from_json(self, data: Optional[JSONDict]) -> "Message":
@@ -244,6 +248,7 @@ class Message(
             self.inline_markup = InlineMarkup.build_from_json(
                 data.get("inline_markup"), self.app
             )
+            self.link = data.get("link")
             self.is_read = data.get("isRead")
             self.is_document = data.get("isDocument")
             self.media_link = data.get("mediaLink")
@@ -371,9 +376,9 @@ class Message(
 
     async def reply_media(
         self,
-        document: str | BytesIO,
+        document: Union[str, BytesIO],
         message: str = "",
-        thumb: str | BytesIO = None,
+        thumb: Union[str, BytesIO] = None,
         progress=None,
         progress_args=None,
         inline_markup: InlineMarkup = None,
@@ -398,9 +403,9 @@ class Message(
 
     async def reply_document(
         self,
-        document: str | BytesIO,
+        document: Union[str, BytesIO],
         message: str = "",
-        thumb: str | BytesIO = None,
+        thumb: Union[str, BytesIO] = None,
         progress=None,
         progress_args=None,
         inline_markup: InlineMarkup = None,
@@ -420,7 +425,7 @@ class Message(
 
     async def reply_audio(
         self,
-        audio: str | BytesIO,
+        audio: Union[str, BytesIO],
         caption: str = "",
         inline_markup: InlineMarkup = None,
         **kwargs,
@@ -456,7 +461,7 @@ class Message(
 
     async def forward_to(
         self,
-        group_channel: Optional[Group | Channel | str] = None,
+        group_channel: Union[Group, Channel, str] = None,
         user_id: Optional[int] = None,
     ):
         return await self.app.forward_message(self.id, group_channel, user_id)

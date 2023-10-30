@@ -47,8 +47,10 @@ class NetworkError(SwitchError):
         :any:`Raw API Bot <examples.rawapibot>`
     """
 
+
 class TokenInvalidError(SwitchError):
     ...
+
 
 class CancelError(SwitchError):
     pass
@@ -72,6 +74,7 @@ class MediaEmpty(BadRequest):
 
 class InvalidRouteCall(BadRequest):
     ...
+
 
 class UnknownBackBlazeError(BadRequest):
     ...

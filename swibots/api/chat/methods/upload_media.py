@@ -9,10 +9,7 @@ if TYPE_CHECKING:
 
 
 class UploadMedia:
-    async def get_media(
-        self: "ApiClient",
-        media_id: int
-    ) -> Media:
+    async def get_media(self: "ApiClient", media_id: int) -> Media:
         """get media by media id
 
         Args:
@@ -28,15 +25,14 @@ class UploadMedia:
         path: str | BytesIO,
         caption: Optional[str] = None,
         description: Optional[str] = None,
-        thumb: Optional[str] = None, 
+        thumb: Optional[str] = None,
         mime_type: Optional[str] = None,
         media_type: Optional[int] = None,
-        callback = None,
+        callback=None,
         callback_args: Optional[tuple] = None,
         part_size: Optional[int] = 10 * 1024 * 1024,
         min_file_size: Optional[int] = 10 * 1024 * 1024,
-        task_count: Optional[int] = 10
-        
+        task_count: Optional[int] = 10,
     ) -> Media:
         """upload a file to get `Media` object.
 
@@ -62,7 +58,7 @@ class UploadMedia:
             callback_args=callback_args,
             part_size=part_size,
             task_count=task_count,
-            min_file_size=min_file_size
+            min_file_size=min_file_size,
         )
 
     async def send_media(

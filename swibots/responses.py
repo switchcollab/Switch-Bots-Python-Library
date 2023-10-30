@@ -12,7 +12,7 @@ class CommunityQuestResponse(SwitchObject):
         self.categories = categories
         self.quests = quests
 
-    def from_json(self, data: JSONDict | None) -> "CommunityQuestResponse":
+    def from_json(self, data: JSONDict = None) -> "CommunityQuestResponse":
         if data is not None:
             self.quests = [
                 QuestCategory.build_from_json(quest) for quest in data.get("quests")

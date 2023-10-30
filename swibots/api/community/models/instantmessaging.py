@@ -20,7 +20,7 @@ class InstantMessaging(SwitchObject):
         self.bot_id = bot_id
         self.enabled = enabled
 
-    def from_json(self, data: JSONDict | None) -> "InstantMessaging":
+    def from_json(self, data: JSONDict = None) -> "InstantMessaging":
         if data is not None:
             self.id = data.get("id")
             self.community_id = data.get("communityId")

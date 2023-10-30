@@ -19,7 +19,7 @@ async def sync_or_async(func):
 class Filter:
     callback = None
     value: bool = None
-    onFailure= None
+    onFailure = None
 
     async def __call__(self, ctx: BotContext) -> bool:
         if not self.callback:

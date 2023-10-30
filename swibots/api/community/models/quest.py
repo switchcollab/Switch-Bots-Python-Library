@@ -53,7 +53,7 @@ class Quest(SwitchObject):
             "createdBy": self.created_by,
         }
 
-    def from_json(self, data: JSONDict | None) -> "Quest":
+    def from_json(self, data: JSONDict = None) -> "Quest":
         if data is not None:
             self.community_id = data.get("communityId")
             self.enabled = data.get("enabled")
@@ -88,7 +88,7 @@ class QuestCategory(SwitchObject):
         self.updated_at = updated_at
         self.category_id = category_id
 
-    def from_json(self, data: JSONDict | None) -> "QuestCategory":
+    def from_json(self, data: JSONDict = None) -> "QuestCategory":
         if data is not None:
             self.category_id = data.get("categoryId")
             self.category_name = data.get("categoryName")

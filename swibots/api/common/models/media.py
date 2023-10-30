@@ -21,7 +21,7 @@ class Media(SwitchObject):
         file_size: Optional[bool] = None,
         url: Optional[bool] = None,
         owner_id: Optional[int] = None,
-        owner_type: Optional[str] = None
+        owner_type: Optional[str] = None,
     ):
         super().__init__(app)
         self.id = id
@@ -42,7 +42,7 @@ class Media(SwitchObject):
     @property
     def is_sticker(self) -> bool:
         return 200 <= (self.media_type) <= 202
-    
+
     def to_form_data(self):
         return {
             "mediaInfo.caption": self.caption,
@@ -55,26 +55,30 @@ class Media(SwitchObject):
             "mediaInfo.url": self.url,
             "mediaInfo.thumbnailUrl": self.thumbnail_url,
             "mediaInfo.sourceUri": self.source_id,
-            "mediaInfo.typeName": self.type_name
+            "mediaInfo.typeName": self.type_name,
         }
 
     def to_json(self) -> JSONDict:
-        return {x:y  for x, y in {
-            "id": self.id,
-            "caption": self.caption,
-            "checksum": self.checksum,
-            "description": self.description,
-            "thumbnailUrl": self.thumbnail_url,
-            "sourceUri": self.source_id,
-            "mediaType": self.media_type,
-            "mimeType": self.mime_type,
-            "fileName": self.file_name,
-            "fileSize": self.file_size,
-            "typeName": self.type_name,
-            "ownerId": self.owner_id,
-            "ownerType": self.owner_type,
-            "downloadUrl": self.url,
-        }.items() if y}
+        return {
+            x: y
+            for x, y in {
+                "id": self.id,
+                "caption": self.caption,
+                "checksum": self.checksum,
+                "description": self.description,
+                "thumbnailUrl": self.thumbnail_url,
+                "sourceUri": self.source_id,
+                "mediaType": self.media_type,
+                "mimeType": self.mime_type,
+                "fileName": self.file_name,
+                "fileSize": self.file_size,
+                "typeName": self.type_name,
+                "ownerId": self.owner_id,
+                "ownerType": self.owner_type,
+                "downloadUrl": self.url,
+            }.items()
+            if y
+        }
 
     def from_json(self, data: Optional[JSONDict] = None) -> "Media":
         if data is not None:

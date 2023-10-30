@@ -129,7 +129,7 @@ class CommunityClient(SwitchRestClient):
         )
         return subscription
 
-    def __parseEvent(self, raw_message: WsMessage) -> CommunityEvent | None:
+    def __parseEvent(self, raw_message: WsMessage) -> CommunityEvent:
         try:
             return self._parse_event(raw_message)
         except Exception as er:

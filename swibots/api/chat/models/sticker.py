@@ -84,7 +84,7 @@ class StickerPack(SwitchObject):
         self.pack_type = pack_type
         self.stickers: List[Sticker] = None
 
-    def from_json(self, data: JSONDict | None) -> "StickerPack":
+    def from_json(self, data: JSONDict = None) -> "StickerPack":
         if data is not None:
             self.id = data.get("id")
             self.name = data.get("name")

@@ -4,7 +4,9 @@ from swibots.api.common.models import User
 
 
 class GetUser:
-    async def get_user(self: "swibots.ApiClient", user_id: int = None, username: str = None) -> User:
+    async def get_user(
+        self: "swibots.ApiClient", user_id: int = None, username: str = None
+    ) -> User:
         """Get User Info from user_id or username
 
         Args:

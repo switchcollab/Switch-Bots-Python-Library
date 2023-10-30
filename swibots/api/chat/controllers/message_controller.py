@@ -182,7 +182,9 @@ class MessageController:
                 media = await self.client.app.upload_media(
                     path=document,
                     caption=caption,
-                    description=file_name or description or os.path.basename(document) if isinstance(document, str) else document.name,
+                    description=file_name or description or os.path.basename(document)
+                    if isinstance(document, str)
+                    else document.name,
                     mime_type=mime_type,
                     media_type=media_type,
                     callback=progress,
@@ -190,8 +192,7 @@ class MessageController:
                     thumb=thumb,
                     part_size=part_size,
                     task_count=task_count,
-                    min_file_size=min_file_size
-            
+                    min_file_size=min_file_size,
                 )
             elif not media:
                 raise ValueError("'media' or 'document' must be provided!")
@@ -215,11 +216,11 @@ class MessageController:
             request_url = f"{BASE_PATH}/create"
             response = await self.client.post(request_url, data=form)
             return self.client.build_object(Message, response.data["message"])
+
         task = asyncio.create_task(_upload_media(media))
         if blocking:
             return await task
         return task
-
 
     async def edit_message(
         self,

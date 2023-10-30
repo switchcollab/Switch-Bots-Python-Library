@@ -31,7 +31,7 @@ class UserTournament(SwitchObject):
         }
 
     @classmethod
-    def from_json(self, data: JSONDict | None) -> "UserTournament":
+    def from_json(self, data: JSONDict = None) -> "UserTournament":
         if data:
             self.id = data.get("id")
             self.type = data.get("type")

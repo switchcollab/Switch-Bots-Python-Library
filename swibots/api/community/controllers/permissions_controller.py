@@ -16,7 +16,7 @@ class PermissionController:
     def __init__(self, client: "CommunityClient"):
         self.client = client
 
-    async def get_permission(self, role_id: str) -> RolePermission | None:
+    async def get_permission(self, role_id: str) -> RolePermission:
         """Get permission by role id"""
         response = await self.client.get(f"{BASE_PATH}/get/?roleId={role_id}")
         return self.client.build_object(RolePermission, response.data.get("result"))
