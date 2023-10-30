@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, List, Optional
 from urllib.parse import urlencode
 from io import BytesIO
 from asyncio.tasks import Task
+from swibots.types import MediaType
 from swibots.errors import CancelError
 from swibots.api.chat.models import (
     Message,
@@ -174,7 +175,6 @@ class MessageController:
         inline_markup: Optional[InlineMarkup] = None,
         part_size: Optional[int] = None,
         task_count: Optional[int] = None,
-        min_file_size: Optional[int] = None,
         **kwargs,
     ) -> Message | Task:
         async def _upload_media(media):
@@ -192,7 +192,8 @@ class MessageController:
                     thumb=thumb,
                     part_size=part_size,
                     task_count=task_count,
-                    min_file_size=min_file_size,
+                    for_document=kwargs.get("is_document")
+                    or (kwargs.get("media_type", 0) == MediaType.DOCUMENT.value),
                 )
             elif not media:
                 raise ValueError("'media' or 'document' must be provided!")

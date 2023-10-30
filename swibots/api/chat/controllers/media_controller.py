@@ -1,10 +1,12 @@
 import asyncio
-import os
+import os, tempfile
 import json, mimetypes
 import logging, base64
 from io import BytesIO
 import json, mimetypes
 import logging, hashlib
+from uuid import uuid1
+from typing import Union, Dict
 from io import BytesIO
 import uuid
 from httpx import AsyncClient
@@ -41,6 +43,8 @@ headers["Authorization"] = (
 )
 headers["accept"] = "application/json"
 
+MAX_THUMB_SIZE = 1024 * 20
+
 
 class MediaController:
     """Media controller
@@ -51,6 +55,7 @@ class MediaController:
         self.client = client
         self.__token = None
         self._client = AsyncClient(timeout=None, verify=False)
+        self._min_part_size = 5000000
 
     async def getAccountInfo(self):
         if self.__token:
@@ -61,14 +66,28 @@ class MediaController:
         data = response.json()
         if token := data.get("authorizationToken"):
             self.__token = token
+        log.debug(data)
+        self._min_part_size = data.get("absoluteMinimumPartSize")
         return data
 
-    async def file_to_response(self, path, mime_type=None, file_name=None):
+    async def file_to_response(
+        self,
+        path: str | BytesIO,
+        mime_type=None,
+        file_name=None,
+        content: bytes = None,
+        callback=None,
+        callback_args=None,
+        remove: bool = None,
+    ):
         await self.getAccountInfo()
         Isbytes = isinstance(path, BytesIO)
 
         if not mime_type:
-            mime_type = mimetypes.guess_type(path.name if Isbytes else path)[0] or "application/octet-stream"
+            mime_type = (
+                mimetypes.guess_type(path.name if Isbytes else path)[0]
+                or "application/octet-stream"
+            )
 
         head = {
             "Content-Type": "application/json",
@@ -83,40 +102,130 @@ class MediaController:
         if not response_data.get("authorizationToken"):
             raise UnknownBackBlazeError(response_data)
         token = response_data["authorizationToken"]
+
         if Isbytes:
             file_source = path
         else:
             file_source = open(path, "rb")
 
-        with file_source as f:
-            content = f.read()
-            file_sha1 = hashlib.sha1(content).hexdigest()
-            headers = {
-                "Authorization": token,
-                "X-Bz-File-Name": file_name,
-                "Content-Type": mime_type,
-                "X-Bz-Content-Sha1": file_sha1,
-            }
+        if not content:
+            content = file_source.read()
+        else:
+            file_source.close()
+            if remove:
+                os.remove(path)
+        file_sha1 = hashlib.sha1(content).hexdigest()
 
-            respp = rsp.json()
-            if not response_data.get("uploadUrl"):
-                raise UnknownBackBlazeError(respp)
+        headers = {
+            "Authorization": token,
+            "X-Bz-File-Name": file_name,
+            "Content-Type": mime_type,
+            "X-Bz-Content-Sha1": file_sha1,
+            "Content-Length": str(len(content)),
+        }
 
-            rsp = await self._client.post(
-                respp["uploadUrl"],
-                headers=headers,
-                data=content,
-            )
-            file_response = rsp.json()
-            return file_response
+        respp = rsp.json()
+        if not response_data.get("uploadUrl"):
+            raise UnknownBackBlazeError(respp)
 
-    async def file_to_url(self, path, mime_type: str = None, *args, **kwargs) -> str:
-        if path:
-            _, ext = os.path.splitext(path)
-            file_name = f"{uuid.uuid1()}{ext}"
+        rsp = await self._client.post(
+            respp["uploadUrl"],
+            headers=headers,
+            data=content,
+        )
+        file_response = rsp.json()
+        if "contentLength" in file_response:
+            if callback:
+                progress = UploadProgress(
+                    path=path,
+                    callback=callback,
+                    callback_args=callback_args,
+                    client=IOClient(),
+                )
+                await progress.bytes_readed(file_response["contentLength"])
+        else:
+            log.error(file_response)
+        return file_response
 
-            file = await self.file_to_response(path, mime_type, file_name)
-            return f"https://f004.backblazeb2.com/file/switch-bucket/{file['fileName']}"
+    async def generate_from_ffmpeg(self, path: str, hw: int):
+        log.debug("checking for ffmpeg")
+        ffmpeg_path = os.getenv("FFMPEG_PATH") or "ffmpeg"
+        proc = await asyncio.create_subprocess_exec(
+            ffmpeg_path, stderr=asyncio.subprocess.PIPE
+        )
+        await proc.wait()
+        if b"ffmpeg version" not in (er := await proc.stderr.read()):
+            log.info(f"ffmpeg is not installed, {er}")
+            return
+        name = os.path.join(tempfile.gettempdir(), f"{uuid1()}.png")
+        log.info(f"generating thumb for '{path}'")
+        cmd = [
+            ffmpeg_path,
+            "-i",
+            path,
+            "-ss",
+            "00:00:01.000",
+            "-vf",
+            f"scale={hw}:-1:force_original_aspect_ratio=increase",
+            "-vframes",
+            "1",
+            name,
+        ]
+        log.debug(f"Running command, {cmd}")
+        proc = await asyncio.create_subprocess_shell(
+            " ".join(cmd), stderr=asyncio.subprocess.PIPE
+        )
+        await proc.wait()
+        if os.path.exists(name):
+            return name
+        log.info(await proc.stderr.read())
+
+    async def get_thumb_url(
+        self, path: Union[str, BytesIO], for_document: bool = False, *args, **kwargs
+    ) -> str:
+        if not path:
+            return
+        __remove = False
+        mime_type = mimetypes.guess_type(path)[0]
+        hw = 30 if for_document else 100
+        if "video/" in mime_type:
+            path = await self.generate_from_ffmpeg(path, hw)
+            if not path:
+                return
+            __remove = True
+        elif not "image/" in mime_type:
+            return
+        content = None
+        if isinstance(path, str):
+            size = os.path.getsize(path)
+            name = path
+        else:
+            content = path.getvalue()
+            size = len(content)
+            name = path.name
+
+        if size > MAX_THUMB_SIZE:
+            try:
+                from PIL import Image
+
+                log.info(f"creating thumb for {path}")
+
+                img = Image.open(content or path)
+                img.thumbnail((hw, hw))
+                path = tempfile.gettempdir() + f"/{uuid.uuid1()}.png"
+                __remove = True
+                img.save(path)
+            except ImportError:
+                log.warning("thumb size is greater than 20kb, ignoring thumb")
+                return
+
+        _, ext = os.path.splitext(name)
+        file_name = f"{uuid.uuid1()}{ext}"
+
+        file = await self.file_to_response(
+            path, mime_type, file_name, content=content, remove=__remove
+        )
+        return f"https://f004.backblazeb2.com/file/switch-bucket/{file['fileName']}"
 
     async def upload_media(
         self,
@@ -129,19 +238,44 @@ class MediaController:
         media_type: Optional[int] = None,
         callback: UploadProgressCallback = None,
         callback_args: Optional[tuple] = None,
+        auto_thumb: Optional[bool] = True,
         part_size: int = None,
         task_count: int = None,
         min_file_size: int = None,
+        for_document: bool = False,
     ) -> Media:
-        """upload media from path"""
+        """Upload media to switch
+
+        Args:
+            path (str | BytesIO): path to upload
+            caption (Optional[str], optional): caption of media Defaults to None.
+            description (Optional[str], optional): file name of media. Defaults to None.
+            thumb (Optional[str], optional): path to use as thumb for media. Defaults to None.
+            mime_type (Optional[str], optional): MIME type of media. Defaults to None.
+            media_type (Optional[int], optional): Media type. Defaults to None.
+            callback (UploadProgressCallback, optional): Callback progress. Defaults to None.
+            callback_args (Optional[tuple], optional): Additional args to use in callbacks. Defaults to None.
+            part_size (int, optional): part size while uploading. Defaults to None.
+            task_count (int, optional): number of tasks while uploading, Defaults to None.
+
+        Returns:
+            Media:
+        """
+
         if not min_file_size:
-            min_file_size = 10 * 1024 * 1024
+            min_file_size = self._min_part_size
 
         if not part_size:
-            part_size = 100 * 1024 * 1024
+            part_size = self._min_part_size
 
         if task_count is None:
-            task_count = 0
+            task_count = 1
+
+        if part_size < self._min_part_size:
+            log.warning(
+                f"part_size cant be smaller than minimum [{self._min_part_size}]"
+            )
+            part_size = self._min_part_size
 
         if not file_name:
             if isinstance(path, BytesIO):
@@ -154,16 +288,18 @@ class MediaController:
 
         log.debug(f"Sending request to backblaze: {path}")
         _is_bytesio = isinstance(path, BytesIO)
-    
+
         if not _is_bytesio:
             size = os.path.getsize(path)
         else:
-            size = len(path.getvalue())
+            content = path.getvalue()
+            size = len(content)
+            path = BytesIO(content)
 
         _, ext = os.path.splitext(path.name if _is_bytesio else path)
         file_name = f"{uuid.uuid1()}{ext}"
 
-        if size > min_file_size and not (size / part_size) < 2:
+        if size > min_file_size and size > self._min_part_size:
             file_response = await self.upload_large_file(
                 path,
                 callback=callback,
@@ -172,12 +308,21 @@ class MediaController:
                 callback_args=callback_args,
                 part_size=part_size,
                 task_count=task_count,
-                file_size=size
+                file_size=size,
             )
         else:
-            file_response = await self.file_to_response(path, mime_type, file_name)
+            file_response = await self.file_to_response(
+                path, mime_type, file_name, callback=callback
+            )
 
         url = f"https://f004.backblazeb2.com/file/switch-bucket/{file_response['fileName']}"
+        try:
+            thumbUrl = await self.get_thumb_url(
+                thumb or (path if auto_thumb else None), for_document
+            )
+        except Exception as er:
+            log.exception(er)
+            thumbUrl = None
 
         media = {
             "caption": caption,
@@ -186,10 +331,11 @@ class MediaController:
             "fileSize": file_response.get("size", size),
             "fileName": file_response["fileName"],
             "downloadUrl": url,
-            "thumbnailUrl": await self.file_to_url(thumb) or url,
+            "thumbnailUrl": thumbUrl,
             "mediaType": media_type,
             "sourceUri": file_response["fileId"],
             "checksum": file_response["contentSha1"],
+            "ownerId": self.client.app.user.id,
         }
         return self.client.build_object(Media, media)
 
@@ -200,7 +346,8 @@ class MediaController:
         chunk,
         fileId: str,
         progress: UploadProgress,
-        partHash: dict,
+        partHash: Dict,
+        retries: int = 1,
     ):
         sha1_checksum = hashlib.sha1(chunk).hexdigest()
 
@@ -209,27 +356,36 @@ class MediaController:
             json={"fileId": fileId},
             headers={"Authorization": token},
         )
+        resp_data = respp.json()
         if respp.status_code != 200:
             logger.error("on Part url")
-            logger.error(respp.json())
-        token = respp.json()["authorizationToken"]
-        upload_part_url = respp.json()["uploadUrl"]
+            logger.error(resp_data)
 
-        respp = await self._client.post(
-            upload_part_url,
-            data=chunk,
-            headers={
-                "Authorization": token,
-                "X-Bz-Part-Number": str(part_number),
-                "X-Bz-Content-Sha1": sha1_checksum,
-            },
-        )
-        if respp.status_code != 200:
-            logger.error("onUpload")
-            logger.error(respp.json())
-        hash = respp.json()["contentSha1"]
-        partHash[hash] = respp.json()["partNumber"]
-        await progress.bytes_readed(respp.json()["contentLength"])
+        token = resp_data["authorizationToken"]
+        upload_part_url = resp_data["uploadUrl"]
+        for _ in range(retries + 1):
+            try:
+                if _:
+                    log.info(f"Retrying upload [{_}]")
+                respp = await self._client.post(
+                    upload_part_url,
+                    data=chunk,
+                    headers={
+                        "Authorization": token,
+                        "X-Bz-Part-Number": str(part_number),
+                        "X-Bz-Content-Sha1": sha1_checksum,
+                    },
+                )
+                resp_data = respp.json()
+                if respp.status_code != 200:
+                    logger.error("onUpload")
+                    logger.error(resp_data)
+                break
+            except Exception as er:
+                log.exception(er)
+        hash = resp_data["contentSha1"]
+        partHash[hash] = resp_data["partNumber"]
+        await progress.bytes_readed(resp_data["contentLength"])
 
     async def upload_large_file(
         self,
@@ -241,14 +397,19 @@ class MediaController:
         callback_args=None,
         part_size=None,
         task_count=None,
-        file_size=None
+        file_size=None,
+        retries: int = 1,
     ):
+        log.info("getting account info")
         await self.getAccountInfo()
 
         client = IOClient()
         progress = UploadProgress(
-            path=path, callback=callback, callback_args=callback_args, client=client,
-            size=file_size
+            path=path,
+            callback=callback,
+            callback_args=callback_args,
+            client=client,
+            size=file_size,
         )
         if isinstance(path, BytesIO):
             file_source = path
@@ -256,7 +417,7 @@ class MediaController:
                 file_name = path.name
         else:
             file_source = open(path, "rb")
-    
+
         with file_source as file:
             head = {
                 "Content-Type": content_type,
@@ -298,7 +459,13 @@ class MediaController:
 
                 tsk = asyncio.create_task(
                     self.__upload_file(
-                        self.__token, part_number, chunk, fileId, progress, partHash
+                        self.__token,
+                        part_number,
+                        chunk,
+                        fileId,
+                        progress,
+                        partHash,
+                        retries=retries,
                     )
                 )
                 tasks.append(tsk)
@@ -310,15 +477,18 @@ class MediaController:
         if tasks:
             await asyncio.gather(*tasks)
         hashes = list(map(lambda x: x[0], sorted(partHash.items(), key=lambda x: x[1])))
-
-        response = await self._client.post(
-            f"https://api004.backblazeb2.com/b2api/v2/b2_finish_large_file",
-            json={
-                "fileId": fileId,
-                "partSha1Array": hashes,
-            },
-            headers={"Authorization": self.__token},
-        )
+        try:
+            response = await self._client.post(
+                f"https://api004.backblazeb2.com/b2api/v2/b2_finish_large_file",
+                json={
+                    "fileId": fileId,
+                    "partSha1Array": hashes,
+                },
+                headers={"Authorization": self.__token},
+            )
+        except Exception as er:
+            log.error("Error on finish large file")
+            log.exception(er)
         if response.status_code != 200:
             logger.error(response.json())
 

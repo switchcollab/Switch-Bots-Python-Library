@@ -169,18 +169,6 @@ class Client(Decorators, AbstractContextManager, ApiClient):
 
         self._botinfo = await self.update_bot_info(self._botinfo)
 
-    async def _validate_token(self):
-        await super()._validate_token()
-        if not isinstance(self.user, self._user_type):
-            raise swibots.SwitchError("Invalid token")
-
-        if not self.user.is_bot:
-            raise swibots.SwitchError("Invalid token (not a bot)")
-
-        self.user.app = self
-        # Register commands
-        await self.user.on_app_start(self)
-
     async def _on_chat_service_start(self, _):
         await self.chat_service.subscribe_to_notifications(callback=self.on_chat_event)
 
@@ -291,6 +279,8 @@ class Client(Decorators, AbstractContextManager, ApiClient):
 
         if self.user is None:
             raise TokenInvalidError("Invalid token")
+
+        await self.user.on_app_start(self)
 
     async def _on_app_stop(self):
         await self.chat_service.stop()
