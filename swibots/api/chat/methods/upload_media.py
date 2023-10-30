@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Type, TypeVar, Optional
 import swibots
 from io import BytesIO
+from swibots.types import MediaType
 from swibots.api.common.models import Media
 from swibots.api.chat.models.inline_markup import InlineMarkup
 
@@ -30,9 +31,9 @@ class UploadMedia:
         media_type: Optional[int] = None,
         callback=None,
         callback_args: Optional[tuple] = None,
-        part_size: Optional[int] = 10 * 1024 * 1024,
-        min_file_size: Optional[int] = 10 * 1024 * 1024,
-        task_count: Optional[int] = 10,
+        part_size: Optional[int] = None,
+        task_count: Optional[int] = None,
+        **kwargs,
     ) -> Media:
         """upload a file to get `Media` object.
 
@@ -58,7 +59,27 @@ class UploadMedia:
             callback_args=callback_args,
             part_size=part_size,
             task_count=task_count,
-            min_file_size=min_file_size,
+            **kwargs,
+        )
+
+    async def send_document(
+        self: "swibots.ApiClient",
+        document: str | BytesIO,
+        progress=None,
+        progress_args=None,
+        inline_markup: InlineMarkup = None,
+        *args,
+        **kwargs,
+    ):
+        """Alias of send_media to send as document"""
+        return await self.send_media(
+            document=document,
+            media_type=MediaType.DOCUMENT.value,
+            progress=progress,
+            progress_args=progress_args,
+            inline_markup=inline_markup,
+            *args,
+            **kwargs,
         )
 
     async def send_media(
