@@ -239,8 +239,8 @@ class MediaController:
         callback: UploadProgressCallback = None,
         callback_args: Optional[tuple] = None,
         auto_thumb: Optional[bool] = True,
-        part_size: int = None,
-        task_count: int = None,
+        part_size: int = int(os.getenv("UPLOAD_PART_SIZE", 0)),
+        task_count: int = int(os.getenv("UPLOAD_TASKS", 0)),
         min_file_size: int = None,
         for_document: bool = False,
     ) -> Media:
@@ -268,7 +268,7 @@ class MediaController:
         if not part_size:
             part_size = self._min_part_size
 
-        if task_count is None:
+        if not task_count:
             task_count = 1
 
         if part_size < self._min_part_size:
@@ -365,8 +365,6 @@ class MediaController:
         upload_part_url = resp_data["uploadUrl"]
         for _ in range(retries + 1):
             try:
-                if _:
-                    log.info(f"Retrying upload [{_}]")
                 respp = await self._client.post(
                     upload_part_url,
                     data=chunk,
@@ -398,7 +396,6 @@ class MediaController:
         part_size=None,
         task_count=None,
         file_size=None,
-        retries: int = 1,
     ):
         log.info("getting account info")
         await self.getAccountInfo()
@@ -411,14 +408,10 @@ class MediaController:
             client=client,
             size=file_size,
         )
-        if isinstance(path, BytesIO):
-            file_source = path
-            if not file_name:
-                file_name = path.name
-        else:
-            file_source = open(path, "rb")
+        if isinstance(path, BytesIO) and not file_name:
+            file_name = path.name
 
-        with file_source as file:
+        with open(path, "rb") if isinstance(path, str) else path as file:
             head = {
                 "Content-Type": content_type,
                 "X-Bz-File-Name": file_name,
@@ -465,7 +458,6 @@ class MediaController:
                         fileId,
                         progress,
                         partHash,
-                        retries=retries,
                     )
                 )
                 tasks.append(tsk)
@@ -489,6 +481,7 @@ class MediaController:
         except Exception as er:
             log.error("Error on finish large file")
             log.exception(er)
+
         if response.status_code != 200:
             logger.error(response.json())
 

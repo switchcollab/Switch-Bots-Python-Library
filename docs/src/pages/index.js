@@ -35,6 +35,10 @@ function HomepageHeader() {
 
 export default function Home() {
   const { siteConfig } = useDocusaurusContext();
+  window.addEventListener("resize", function (ev) {
+    window.location.reload();
+  })
+  const isDesktop = window.innerWidth > 500;
   return (
     <Layout
       title={`Hello from ${siteConfig.title}`}
@@ -43,7 +47,10 @@ export default function Home() {
       <main style={{
         padding: "1rem",
         marginRight: 15,
-        marginLeft: 15
+        marginLeft: 15,
+        maxWidth: isDesktop ? "40%" : null,
+        alignSelf: isDesktop ? "center" : null,
+        justifySelf: isDesktop ? "center" : null
       }}>
         <div style={{
           display: "flex",
@@ -51,11 +58,10 @@ export default function Home() {
           alignItems: "center",
           alignContent: "center",
           justifyContent: "center"
-        }}>
+        }}
+        >
 
         </div>
-
-        {/* <HomepageFeatures /> */}
         <h3 style={{
           marginTop: 10,
         }}>Installation</h3>
@@ -63,25 +69,16 @@ export default function Home() {
           pip3 install swibots
         </pre>
         <h3 style={{
-          marginTop: "18px"
-        }}>
-          Installing from source
-        </h3>
-        <pre>
-          pip3 install git+https://github.com/switchcollab/Switch-Bots-Python-Library.git
-        </pre>
-        <h3 style={{
           marginTop: 15
         }}>
           Say Hi 👋 to self!
         </h3>
-        <pre>
-          <code aria-multiline>
-            async with BotApp(token) as bot:<br />
-            {'    '}await bot.send_message(user_id=0,
-            message="Hello 👋 from swibots!")
-          </code>
-
+        <pre style={{
+          width: isDesktop ? "max-content" : null
+        }}>
+          async with BotApp(token) as bot:<br />
+          {'    '}await bot.send_message(user_id=0,
+          message="Hello 👋 from swibots!")
         </pre>
       </main>
     </Layout>
