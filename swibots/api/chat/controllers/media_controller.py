@@ -262,7 +262,6 @@ class MediaController:
         Returns:
             Media:
         """
-
         if not min_file_size:
             min_file_size = self._min_part_size
 

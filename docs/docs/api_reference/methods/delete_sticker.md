@@ -1,4 +1,4 @@
-## `delete_sticker` Method
+# `delete_sticker` Method
 
 Deletes a sticker by its ID.
 

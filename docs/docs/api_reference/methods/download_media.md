@@ -4,7 +4,16 @@ Download a media file from a message.
 
 ## Signature
 
-`async def download_media(message: Message, file_name: str = DOWNLOAD_MEDIA, in_memory: bool = False, block: bool = True, progress: DownloadProgressCallback = None, progress_args: tuple = ()) -> Optional[Union[BinaryIO, bytes]]:`
+```python
+async def download_media(
+  message: Message,
+  file_name: str = DOWNLOAD_MEDIA,
+  in_memory: bool = False,
+  block: bool = True,
+  progress: DownloadProgressCallback = None,
+  progress_args: tuple = ()
+) -> Optional[Union[BinaryIO, bytes]]:
+```
 
 ## Parameters
 

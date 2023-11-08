@@ -236,28 +236,42 @@ class MessageController:
         mime_type: Optional[str] = None,
         file_name: Optional[str] = None,
         **kwargs,
-    ) -> Union[Message, Task]:
+    ) -> Union[Message, Media]:
+        msg = None
         if message_id:
             msg = await self.client.app.get_message(message_id)
             media_id = msg.media_id
             if not media_id:
                 raise ValueError("Message does'nt contain any media!")
-        media = await self.client.app.upload_media(
-            path=document,
-            caption=message,
-            thumb=thumb,
-            callback=progress,
-            callback_args=progress_args,
-            part_size=kwargs.get("part_size"),
-            task_count=kwargs.get("task_count"),
-            mime_type=mime_type,
-            description=file_name or os.path.basename(document),
-        )
+        if document:
+            media = await self.client.app.upload_media(
+                path=document,
+                caption=message,
+                thumb=thumb,
+                callback=progress,
+                callback_args=progress_args,
+                part_size=kwargs.get("part_size"),
+                task_count=kwargs.get("task_count"),
+                mime_type=mime_type,
+                description=file_name or os.path.basename(document)
+                if document
+                else None,
+            )
+        else:
+            media = Media(
+                app=self.client.app,
+                description=file_name,
+                file_name=file_name,
+                thumbnail_url=thumb,
+                mime_type=mime_type,
+            )
         log.debug(f"response from [upload_media]: {media}")
         response = await self.client.app.update_media_info(
             media_id=media_id, media=media
         )
         log.debug(f"response from [update_media_info]:{response}")
+        if not message_id:
+            return response
         response = await self.edit_message(
             message_id=message_id,
             text=message,

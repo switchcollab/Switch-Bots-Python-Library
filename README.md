@@ -24,6 +24,7 @@ For detailed information and documentation, please visit our
 - Quick Guide
   - [Embedded message](#sending-embedded-messages)
   - [Sending media](#sending-media)
+  - [Editing media](#editing-media)
   - [Sending buttons](#sending-buttons)
   - [Handling keyboard callbacks](#handling-keyboard-callbacks)
 - [More samples](#explore-bot-samples)
@@ -140,6 +141,20 @@ await bot.send_message(
             ]
         ]
     )
+)
+```
+### Editing Media
+```python
+# send media/document
+message = await bot.send_document(
+    document="file.pdf",
+    thumb="image.png",
+    user_id=100
+)
+# use the message reference to edit
+await message.edit_media(
+    document="file2.pdf",
+    thumb="thumb.png"
 )
 ```
 

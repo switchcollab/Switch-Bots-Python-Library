@@ -1,4 +1,4 @@
-## `create_sticker_pack` Method
+# `create_sticker_pack` Method
 
 Creates a new sticker pack.
 

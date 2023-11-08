@@ -401,6 +401,29 @@ class Message(
             **kwargs,
         )
 
+    async def edit_media(
+        self,
+        document: str,
+        message: Optional[str] = None,
+        inline_markup: Optional[InlineMarkup] = None,
+        **kwargs,
+    ):
+        """Bound method of client.edit_media
+
+        Args:
+           document: path to file
+           message: message caption
+           inline_markup: InlineMarkup
+        """
+        return await self.app.edit_media(
+            message_id=self.id,
+            media_id=self.media_id,
+            document=document,
+            message=message,
+            inline_markup=inline_markup,
+            **kwargs,
+        )
+
     async def reply_document(
         self,
         document: Union[str, BytesIO],

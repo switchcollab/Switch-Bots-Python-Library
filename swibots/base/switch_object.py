@@ -41,6 +41,11 @@ class SwitchObject(Generic[T]):
         for key, value in data.items():
             setattr(self, key, value)
         return self
+    
+    def update(self, data: Optional[JSONDict]) -> T:
+        new_data = self.to_json()
+        new_data.update(data)
+        return self.__class__.build_from_json(new_data, self.app)
 
     def copy(self):
         """Create a copy of object"""
