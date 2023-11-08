@@ -4,7 +4,7 @@ import os
 import json
 from inspect import iscoroutinefunction
 import logging
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 from urllib.parse import urlencode
 from io import BytesIO
 from asyncio.tasks import Task
@@ -222,6 +222,51 @@ class MessageController:
         if blocking:
             return await task
         return task
+
+    async def edit_media(
+        self,
+        message_id: int,
+        media_id: Optional[int] = None,
+        message: Optional[str] = None,
+        document: Optional[str] = None,
+        thumb: Optional[str] = None,
+        inline_markup: InlineMarkup = None,
+        progress=None,
+        progress_args: Optional[Tuple] = None,
+        mime_type: Optional[str] = None,
+        file_name: Optional[str] = None,
+        **kwargs,
+    ) -> Union[Message, Task]:
+        if message_id:
+            msg = await self.client.app.get_message(message_id)
+            media_id = msg.media_id
+            if not media_id:
+                raise ValueError("Message does'nt contain any media!")
+        media = await self.client.app.upload_media(
+            path=document,
+            caption=message,
+            thumb=thumb,
+            callback=progress,
+            callback_args=progress_args,
+            part_size=kwargs.get("part_size"),
+            task_count=kwargs.get("task_count"),
+            mime_type=mime_type,
+            description=file_name or os.path.basename(document),
+        )
+        log.debug(f"response from [upload_media]: {media}")
+        response = await self.client.app.update_media_info(
+            media_id=media_id, media=media
+        )
+        log.debug(f"response from [update_media_info]:{response}")
+        response = await self.edit_message(
+            message_id=message_id,
+            text=message,
+            inline_markup=inline_markup,
+            media_id=media_id,
+            **kwargs,
+        )
+        response.media_info = await self.client.app.get_media(media_id)
+        return response
 
     async def edit_message(
         self,
@@ -673,7 +718,7 @@ class MessageController:
         if username and user_id:
             raise ValueError("'username' and 'user_id' both were provided!")
         elif user_id:
-            response = await self.client.get(f"{BASE_PATH}/user/info?userId={username}")
+            response = await self.client.get(f"{BASE_PATH}/user/info?userId={user_id}")
         elif username:
             if username.startswith("@"):
                 username = username[1:]

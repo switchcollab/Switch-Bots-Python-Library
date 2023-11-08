@@ -1,6 +1,7 @@
 import asyncio
 import os, tempfile
 import json, mimetypes
+from datetime import datetime
 import logging, base64
 from io import BytesIO
 import json, mimetypes
@@ -186,7 +187,7 @@ class MediaController:
         if not path:
             return
         __remove = False
-        mime_type = mimetypes.guess_type(path)[0]
+        mime_type = mimetypes.guess_type(path)[0] or "application/octet-stream"
         hw = 30 if for_document else 100
         if "video/" in mime_type:
             path = await self.generate_from_ffmpeg(path, hw)
@@ -309,6 +310,10 @@ class MediaController:
                 part_size=part_size,
                 task_count=task_count,
                 file_size=size,
+                file_info={
+                    "timestamp": str(datetime.now().timestamp()),
+                    "uploaded_by": str(self.client.user.id),
+                },
             )
         else:
             file_response = await self.file_to_response(
@@ -494,13 +499,17 @@ class MediaController:
     async def update_media(
         self,
         media_id: int,
-        caption: Optional[str] = None,
-        description: Optional[str] = None,
+        media: Optional[Media] = None
     ) -> Media:
+        """Update media"""
+        media.id = media_id
+        data = media.to_update_request()
+
         response = await self.client.put(
-            BASE_PATH,
-            data={"id": media_id, "caption": caption, "description": description},
-        )
+                BASE_PATH,
+                data=data,
+            )
+        
         return self.client.build_object(Media, response.data)
 
     async def delete_media(self, media_id: int):

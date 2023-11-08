@@ -151,17 +151,29 @@ class UploadMedia:
     async def update_media_info(
         self: "swibots.ApiClient",
         media_id: int,
-        caption: Optional[str] = None,
-        description: Optional[str] = None,
+        thumb_url: Optional[str] = None,
+        url: Optional[str] = None,
+        media_type: Optional[str] = None,
+        media: Media = None,
+        file_name: Optional[str] = None
     ):
         """Update Info of uploaded media
 
         media_id: int: Media Id
-        caption: str: Caption of media
-        description: str: Description of media
+        media: Media
         """
+        if not media:
+            media = Media(
+                app=self.chat_service.app,
+                id=media_id,
+                description=file_name,
+                thumbnail_url=thumb_url,
+                media_type=media_type,
+                url=url
+            )
         return await self.chat_service.media.update_media(
-            media_id=media_id, caption=caption, description=description
+            media_id=media_id,
+            media=media
         )
 
     async def delete_media(self: "swibots.ApiClient", media_id: int):

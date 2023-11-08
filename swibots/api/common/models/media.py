@@ -1,7 +1,8 @@
 import swibots
-from typing import Optional
+from typing import Optional, Union
 from swibots.utils.types import JSONDict
 from swibots.base.switch_object import SwitchObject
+from swibots.types import GetMediaType
 
 
 class Media(SwitchObject):
@@ -15,7 +16,7 @@ class Media(SwitchObject):
         thumbnail_url: Optional[str] = None,
         type_name: Optional[str] = None,
         source_id: Optional[bool] = None,
-        media_type: Optional[int] = None,
+        media_type: Optional[Union[str, int]] = None,
         mime_type: Optional[str] = 0,
         file_name: Optional[bool] = None,
         file_size: Optional[bool] = None,
@@ -76,6 +77,7 @@ class Media(SwitchObject):
                 "ownerId": self.owner_id,
                 "ownerType": self.owner_type,
                 "downloadUrl": self.url,
+                "url": self.url
             }.items()
             if y
         }
@@ -100,15 +102,39 @@ class Media(SwitchObject):
 
         return self
 
+    def to_update_request(self):
+        return {
+            "id": self.id,
+            "checksum": self.checksum,
+            "description": self.description,
+            "thumbnailUrl": self.thumbnail_url,
+            "sourceUri": self.source_id,
+            "mediaType": GetMediaType(self.media_type),
+            "mimeType": self.mime_type,
+            "fileName": self.file_name,
+            "fileSize": self.file_size,
+            "url": self.url,
+        }
+
     async def edit(
-        self, caption: Optional[str] = None, description: Optional[str] = None
+        self,
+        thumb_url: Optional[str] = None,
+        url: Optional[str] = None,
+        media_type: Optional[str] = None,
+        file_name: Optional[str] = None,
+        media: "Media" = None,
     ):
         """Update media Info
 
         Args:
-          caption: Caption of media
-          description: Description to update.
+          file_name: Caption of media
+          media: Media: new media object
         """
         return await self.app.update_media_info(
-            self.id, caption=caption, description=description
+            self.id,
+            media=media,
+            thumb_url=thumb_url,
+            url=url,
+            file_name=file_name,
+            media_type=media_type,
         )

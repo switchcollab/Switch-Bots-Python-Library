@@ -34,3 +34,19 @@ class MediaType(enum.Enum):
     AUDIO = 3
     DOCUMENT = 7
     STICKER = 200
+
+
+def GetMediaType(media_type: int):
+    try:
+        return {
+            1: "IMAGE",
+            2: "VIDEO",
+            3: "AUDIO",
+            4: "EMBED",
+            7: "FILE",
+            200: "STATIC_STICKER",
+            201: "ANIMATED_STICKER",
+            202: "VIDEO_STICKER"
+        }[media_type]
+    except KeyError:
+        return None

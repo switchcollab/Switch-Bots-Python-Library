@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Dict, Union
 
 
 def _lstrip_str(in_s: str, lstr: str) -> str:
@@ -22,7 +22,7 @@ class SwitchError(Exception):
 
     def __init__(self, message: str):
         super().__init__()
-
+        #if isinstance(message, str):
         msg = _lstrip_str(message, "Error: ")
         msg = _lstrip_str(msg, "[Error]: ")
         msg = _lstrip_str(msg, "Bad Request: ")
