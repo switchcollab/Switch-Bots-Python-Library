@@ -4,7 +4,7 @@ The `EmbeddedMedia` class is used to send embedded media in messages.
 
 ## Parameters
 
-- `thumbnail` (str): The media upload request or cover Url in updates.
+- `thumbnail` (str): The path to file or cover Url in updates.
 - `title` `(str)`: title of message.
 - `description` (`str`): description of message.
 - `header_name` (`str`): header name.
@@ -20,7 +20,7 @@ The `EmbeddedMedia` class is used to send embedded media in messages.
 from swibots import EmbeddedMedia, EmbedInlineField, MediaUploadRequest
 
 embedded = EmbeddedMedia(
-    thumbnail=MediaUploadRequest("image.png"),
+    thumbnail="image.png",
     title="Embedded Message",
     description="This is description",
     header_name="header",
