@@ -6,6 +6,7 @@ from swibots.api.chat.controllers import (
     ChatController,
     MediaController,
     StickerController,
+    OrganizationController
 )
 from swibots.api.chat.events import (
     ChatEvent,
@@ -58,6 +59,7 @@ class ChatClient(SwitchRestClient):
         self._post: ChatController = None
         self._media: MediaController = None
         self._stickers: StickerController = None
+        self._organization: OrganizationController = None
         self._ws: SwitchWSAsyncClient = None
         self._started = False
 
@@ -66,6 +68,12 @@ class ChatClient(SwitchRestClient):
         if self._ws is None:
             self._ws = SwitchWSAsyncClient(self._ws_url, self.token)
         return self._ws
+
+    @property
+    def organization(self) -> OrganizationController:
+        if self._organization is None:
+            self._organization = OrganizationController(self)
+        return self._organization
 
     @property
     def stickers(self) -> StickerController:

@@ -21,6 +21,7 @@ from .answer_inline_query import AnswerInlineQuery
 from .download_media import DownloadMedia
 from .upload_media import UploadMedia
 from .sticker_methods import StickerMethods
+from .organization_methods import OrganizationMethods
 
 
 class ChatMethods(
@@ -46,5 +47,6 @@ class ChatMethods(
     UploadMedia,
     GetUser,
     StickerMethods,
+    OrganizationMethods
 ):
     pass
