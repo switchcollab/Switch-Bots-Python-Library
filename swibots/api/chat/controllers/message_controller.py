@@ -2,7 +2,6 @@ import asyncio
 import mimetypes
 import os
 import json
-from inspect import iscoroutinefunction
 import logging
 from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 from urllib.parse import urlencode
@@ -20,12 +19,6 @@ from swibots.api.chat.models import (
 from swibots.utils import isUrl
 from swibots.api.common.models import User, EmbeddedMedia, Media
 from swibots.api.community.models import Channel, Group
-
-from swibots.utils.types import (
-    IOClient,
-    ReadCallbackStream,
-    UploadProgress,
-)
 
 if TYPE_CHECKING:
     from swibots.api.chat import ChatClient
@@ -217,7 +210,6 @@ class MessageController:
             request_url = f"{BASE_PATH}/create"
             response = await self.client.post(request_url, data=form)
             return self.client.build_object(Message, response.data["message"])
-
         task = asyncio.create_task(_upload_media(media))
         if blocking:
             return await task

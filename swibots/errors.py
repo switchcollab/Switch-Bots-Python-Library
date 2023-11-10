@@ -20,9 +20,9 @@ class SwitchError(Exception):
     .. seealso:: :wiki:`Exceptions, Warnings and Logging <Exceptions%2C-Warnings-and-Logging>`
     """
 
-    def __init__(self, message: str):
+    def __init__(self, message: Union[str, Dict]):
         super().__init__()
-        #if isinstance(message, str):
+        message = str(message)
         msg = _lstrip_str(message, "Error: ")
         msg = _lstrip_str(msg, "[Error]: ")
         msg = _lstrip_str(msg, "Bad Request: ")
