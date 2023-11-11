@@ -61,10 +61,3 @@ class InlineMarkup(SwitchObject):
                 for row in data.get("inlineKeyboard") or []
             ]
         return self
-
-
-class InlineMarkupRemove(InlineMarkup):
-    """InlineMarkupRemove: InlineMarkup class to remove inline buttons"""
-
-    def __init__(self):
-        ...

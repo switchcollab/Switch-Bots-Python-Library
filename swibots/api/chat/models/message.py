@@ -6,7 +6,7 @@ from swibots.api.common import User, Media, EmbeddedMedia
 from swibots.api.community import Community, Channel, Group
 from swibots.utils.types import JSONDict
 from swibots.types import MediaType
-from .inline_markup import InlineMarkup, InlineMarkupRemove
+from .inline_markup import InlineMarkup
 
 
 class Message(
@@ -401,6 +401,12 @@ class Message(
             **kwargs,
         )
 
+    async def edit_inline_markup(self, inline_markup: InlineMarkup = None):
+        """Edit inline markup of message"""
+        if not inline_markup:
+            inline_markup = InlineMarkup()
+        return await self.edit_text(text=None, inline_markup=inline_markup)
+
     async def edit_media(
         self,
         document: str,
@@ -469,9 +475,7 @@ class Message(
         inline_markup: Optional[InlineMarkup] = None,
         **kwargs,
     ) -> "Message":
-        if isinstance(inline_markup, InlineMarkupRemove):
-            inline_markup = None
-        elif not inline_markup:
+        if not inline_markup:
             inline_markup = self.inline_markup
 
         return await self.app.edit_message_text(

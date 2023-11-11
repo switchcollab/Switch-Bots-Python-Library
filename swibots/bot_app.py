@@ -7,6 +7,7 @@ from contextlib import AbstractContextManager
 from typing import List, Optional, Callable
 import swibots
 from contextlib import suppress
+from pathlib import Path
 from signal import signal as signal_fn, SIGINT, SIGTERM, SIGABRT
 from io import BytesIO
 from swibots.bots import Bot
@@ -47,6 +48,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         self,
         token: str,
         bot_description: Optional[str] = None,
+        plugins: dict = None,
         auto_update_bot: Optional[bool] = True,
         loop: asyncio.AbstractEventLoop = None,
         receive_updates: Optional[bool] = True,
@@ -57,7 +59,8 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         Args:
             token (:obj:`str`): The bot token.
             bot_description(:obj:`str`): The bot description.
-            auto_update_bot(:obj:`bool`): Whether to automatically update the bot description and the regitered commands.
+            auto_update_bot(:obj:`bool`): Whether to automatically update the bot description and the registered commands.
+            plugins(:obj:`dict`): plugin path to load, use as: dict(root="plugins")
             loop (:obj:`asyncio.AbstractEventLoop`): The asyncio loop to use (default: asyncio.get_event_loop()).
 
         """
@@ -79,11 +82,13 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         self.user = self._loop.run_until_complete(
             self.get_me(user_type=self._user_type)
         )
+        self.name = self.user.user_name
         self._bot_id = self.user.id
         self._running = False
         self._user_type = Bot
         self.rest_client = RestClient()
         self.receive_updates = receive_updates
+        self.plugins = plugins or dict()
 
     @property
     def bot(self) -> "swibots.bots.Bot":
@@ -107,7 +112,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
             self._handlers = []
         return self._handlers
 
-    def __loadModule(self, path):
+    def load_path(self, path):
         baseName = os.path.basename(path)
         if baseName.startswith("__") or not baseName.endswith(".py"):
             return
@@ -118,14 +123,64 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         except Exception as er:
             LoaderLog.exception(er)
 
-    def load_plugins(self, plugins: List[str]):
-        for path in plugins:
-            if os.path.isfile(path):
-                self.__loadModule(path)
-                return
-            for root, __, files in os.walk(path):
-                for f in files:
-                    self.__loadModule(os.path.join(root, f))
+    def load_plugins(self):
+        if not self.plugins:
+            return
+        plugins = self.plugins.copy()
+
+        for option in ["include", "exclude"]:
+            if plugins.get(option, []):
+                plugins[option] = [
+                    (i.split()[0], i.split()[1:] or None) for i in self.plugins[option]
+                ]
+
+        root = plugins["root"]
+        include = plugins.get("include", [])
+        exclude = plugins.get("exclude", [])
+
+        count = 0
+
+        if not include:
+            for path in sorted(Path(root.replace(".", "/")).rglob("*.py")):
+                module_path = ".".join(path.parent.parts + (path.stem,))
+                try:
+                    module = import_module(module_path)
+                    count += 1
+                except Exception as er:
+                    log.exception(er)
+        else:
+            for path in include:
+                module_path = root + "." + path
+
+                try:
+                    module = import_module(module_path)
+                    count += 1
+                except ImportError:
+                    continue
+
+                if "__path__" in dir(module):
+                    continue
+
+        if exclude:
+            for path in exclude:
+                module_path = root + "." + path
+ 
+                try:
+                    module = import_module(module_path)
+                except ImportError:
+                    continue
+
+                if "__path__" in dir(module):
+                    continue
+
+        if count > 0:
+            log.info(
+                '[{}] Successfully loaded {} modules{} from "{}"'.format(
+                    self.name, count, "s" if count > 1 else "", root
+                )
+            )
+            return
+        log.warning('[%s] No modules loaded from "%s"', self.name, root)
 
     def set_bot_commands(self, command: BotCommand | List[BotCommand]) -> "BotApp":
         if isinstance(command, list):
@@ -304,6 +359,8 @@ class Client(Decorators, AbstractContextManager, ApiClient):
 
             await self._validate_token()
 
+            self.load_plugins()
+
             if self.receive_updates:
                 try:
                     await self.chat_service.start()
@@ -326,15 +383,13 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         except asyncio.CancelledError:
             self._running = False
 
-    async def _do_stop(self):
-        log.info("🛑 Stopping app...")
-        await self._on_app_stop()
-        self._running = False
 
     async def stop(self):
         if not self._running:
             return
-        await self._do_stop()
+        log.info("🛑 Stopping app...")
+        await self._on_app_stop()
+        self._running = False
 
     def __enter__(self):
         return self.start()

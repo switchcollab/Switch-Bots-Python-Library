@@ -293,13 +293,14 @@ class MessageController:
         Raises:
             ``~switch.error.SwitchError``: If the message could not be edited
         """
-        new_message = Message(
-            self.client.app,
-            message=text,
-            inline_markup=inline_markup,
-            id=message_id,
-            **kwargs,
-        )
+        new_message = await self.client.app.get_message(message_id)
+        if text:
+            new_message.message = text
+        if inline_markup:
+            new_message.inline_markup = inline_markup
+
+        for key, value in kwargs:
+            setattr(new_message, key, value)
 
         if embed_message:
             if embed_message.thumbnail and os.path.exists(embed_message.thumbnail):
