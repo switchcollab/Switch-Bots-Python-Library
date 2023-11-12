@@ -8,11 +8,11 @@ import json, mimetypes
 import logging, hashlib
 from uuid import uuid1
 import httpx
-from typing import Union, Dict
+from typing import Union
 from io import BytesIO
 import uuid
 from httpx import AsyncClient
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, Optional
 
 from swibots.errors import UnknownBackBlazeError
 from swibots.utils.types import (
@@ -46,6 +46,7 @@ headers["Authorization"] = (
 headers["accept"] = "application/json"
 
 MAX_THUMB_SIZE = 1024 * 20
+logging.getLogger("httpx").setLevel(logging.ERROR)
 
 
 class MediaController:
@@ -59,8 +60,6 @@ class MediaController:
         self._min_part_size = 5000000
 
     async def getAccountInfo(self):
-        if self.__token:
-            return
         response = await self.request(
             "https://api.backblazeb2.com/b2api/v2/b2_authorize_account",
             headers=headers,
@@ -73,7 +72,7 @@ class MediaController:
         if min_size := data.get("absoluteMinimumPartSize"):
             self._min_part_size = min_size
 
-        return data
+        return self.__token
 
     async def file_to_response(
         self,
@@ -83,43 +82,39 @@ class MediaController:
         content: bytes = None,
         callback=None,
         callback_args=None,
+        file_size=None,
         remove: bool = None,
     ):
-        await self.getAccountInfo()
-        async with AsyncClient(timeout=None, verify=False) as client:
-            Isbytes = isinstance(path, BytesIO)
+        token = self.__token or await self.getAccountInfo()
+        Isbytes = isinstance(path, BytesIO)
 
-            if not mime_type:
-                mime_type = (
-                    mimetypes.guess_type(path.name if Isbytes else path)[0]
-                    or "application/octet-stream"
-                )
-
-            head = {
-                "Content-Type": "application/json",
-                "Authorization": self.__token,
-            }
-            rsp = await client.get(
-                f"https://api004.backblazeb2.com/b2api/v2/b2_get_upload_url?bucketId={bucket_id}",
-                headers=head,
+        if not mime_type:
+            mime_type = (
+                mimetypes.guess_type(path.name if Isbytes else path)[0]
+                or "application/octet-stream"
             )
 
-            response_data = rsp.json()
-            if not response_data.get("authorizationToken"):
-                raise UnknownBackBlazeError(response_data)
-            token = response_data["authorizationToken"]
+        head = {
+            "Content-Type": "application/json",
+            "Authorization": token,
+        }
+        rsp = await self.request(
+            f"https://api004.backblazeb2.com/b2api/v2/b2_get_upload_url?bucketId={bucket_id}",
+            method="GET",
+            headers=head,
+        )
 
-            if Isbytes:
-                file_source = path
-            else:
-                file_source = open(path, "rb")
+        response_data = rsp.json()
+        if not response_data.get("authorizationToken"):
+            raise UnknownBackBlazeError(response_data)
+        token = response_data["authorizationToken"]
 
-            if not content:
-                content = file_source.read()
-            else:
-                file_source.close()
-                if remove:
-                    os.remove(path)
+        respp = rsp.json()
+        if not respp.get("uploadUrl"):
+            raise UnknownBackBlazeError(respp)
+
+        with path if Isbytes else open(path, "rb") as f:
+            content = f.read()
             file_sha1 = hashlib.sha1(content).hexdigest()
 
             headers = {
@@ -130,28 +125,31 @@ class MediaController:
                 "Content-Length": str(len(content)),
             }
 
-            respp = rsp.json()
-            if not respp.get("uploadUrl"):
-                raise UnknownBackBlazeError(respp)
-
-            rsp = await client.post(
+            rsp = await self.request(
                 respp["uploadUrl"],
                 headers=headers,
                 data=content,
             )
-            file_response = rsp.json()
-            if "contentLength" in file_response:
-                if callback:
-                    progress = UploadProgress(
-                        path=path,
-                        callback=callback,
-                        callback_args=callback_args,
-                        client=IOClient(),
-                    )
-                    await progress.bytes_readed(file_response["contentLength"])
-            else:
-                log.error(file_response)
-        return file_response
+            if Isbytes:
+                path = BytesIO(content)
+                path.name = file_name
+        if remove:
+            os.remove(path)
+
+        file_response = rsp.json()
+        if "contentLength" in file_response:
+            if callback:
+                progress = UploadProgress(
+                    path=path,
+                    callback=callback,
+                    callback_args=callback_args,
+                    client=IOClient(),
+                    size=file_size,
+                )
+                await progress.bytes_readed(file_response["contentLength"])
+        else:
+            log.error(file_response)
+        return path, file_response
 
     async def generate_from_ffmpeg(self, path: str, hw: int):
         log.debug("checking for ffmpeg")
@@ -192,7 +190,10 @@ class MediaController:
         if not path:
             return
         __remove = False
-        mime_type = mimetypes.guess_type(path)[0] or "application/octet-stream"
+        mime_type = (
+            mimetypes.guess_type(path.name if isinstance(path, BytesIO) else path)[0]
+            or "application/octet-stream"
+        )
         hw = 30 if for_document else 100
         if "video/" in mime_type:
             path = await self.generate_from_ffmpeg(path, hw)
@@ -206,8 +207,7 @@ class MediaController:
             size = os.path.getsize(path)
             name = path
         else:
-            content = path.getvalue()
-            size = len(content)
+            size = path.getbuffer().nbytes
             name = path.name
 
         if size > MAX_THUMB_SIZE:
@@ -228,7 +228,7 @@ class MediaController:
         _, ext = os.path.splitext(name)
         file_name = f"{uuid.uuid1()}{ext}"
 
-        file = await self.file_to_response(
+        path, file = await self.file_to_response(
             path, mime_type, file_name, content=content, remove=__remove
         )
         return f"https://f004.backblazeb2.com/file/switch-bucket/{file['fileName']}"
@@ -298,9 +298,7 @@ class MediaController:
         if not _is_bytesio:
             size = os.path.getsize(path)
         else:
-            content = path.getvalue()
-            size = len(content)
-            path = BytesIO(content)
+            size = path.getbuffer().nbytes
 
         _, ext = os.path.splitext(path.name if _is_bytesio else path)
         file_name = f"{uuid.uuid1()}{ext}"
@@ -322,8 +320,8 @@ class MediaController:
                 retries=retries,
             )
         else:
-            file_response = await self.file_to_response(
-                path, mime_type, file_name, callback=callback
+            path, file_response = await self.file_to_response(
+                path, mime_type, file_name, callback=callback, file_size=size
             )
         if not file_response.get("fileName"):
             raise UnknownBackBlazeError(file_response)
@@ -352,9 +350,16 @@ class MediaController:
 
     async def request(self, url: str, method: str = "POST", **kwargs):
         async with AsyncClient(verify=False, timeout=None) as client:
-            return await (client.post if method == "POST" else client.get)(
+            resp = await (client.post if method == "POST" else client.get)(
                 url, **kwargs
             )
+            message = resp.json()
+            if message.get("code") == "expired_auth_token":
+                log.error("Expired auth token, retrying")
+                token = await self.getAccountInfo()
+                headers["Authorization"] = token
+                return await self.request(url, method, kwargs)
+            return resp
 
     async def __upload_file(
         self,
@@ -441,7 +446,7 @@ class MediaController:
         retries: int = None,
     ):
         log.info("getting account info")
-        await self.getAccountInfo()
+        token = await self.getAccountInfo()
 
         progress = UploadProgress(
             path=path,
@@ -456,7 +461,7 @@ class MediaController:
         head = {
             "Content-Type": content_type,
             "X-Bz-File-Name": file_name,
-            "Authorization": self.__token,
+            "Authorization": token,
         }
         data = {
             "fileName": file_name,
@@ -501,7 +506,7 @@ class MediaController:
             while upl_size < file_size:
                 await queue.put(
                     self.__upload_file(
-                        self.__token,
+                        token,
                         part_number,
                         path,
                         upl_size,
@@ -531,12 +536,12 @@ class MediaController:
         if not partHash:
             raise Exception("parts are not found!")
         response = await self.__finish_large_file(
-            partHash, fileId, path, part_size=part_size, progress=progress
+            partHash, fileId, path, part_size=part_size, progress=progress, token=token
         )
         return response
 
     async def __finish_large_file(
-        self, partHash, fileId, path, part_size, progress, retry_count: int = 0
+        self, partHash, fileId, path, part_size, progress, token, retry_count: int = 0
     ):
         if retry_count > 3:
             raise Exception("Max retries reached for finish file")
@@ -548,7 +553,7 @@ class MediaController:
                     "fileId": fileId,
                     "partSha1Array": hashes,
                 },
-                headers={"Authorization": self.__token},
+                headers={"Authorization": token},
             )
         except Exception as er:
             log.error("Error on finish large file")
@@ -557,9 +562,10 @@ class MediaController:
             resp = await self.request(
                 f"https://api004.backblazeb2.com/b2api/v2/b2_cancel_large_file",
                 data={"fileId": fileId},
-                headers={"Authorization": self.__token},
+                headers={"Authorization": token},
             )
             log.info(resp)
+            log.info(resp.json())
         response = response.json()
         if response.get("code") == "bad_request":
             logger.info(response)
@@ -569,7 +575,7 @@ class MediaController:
             if mtch:
                 part_number = int(mtch.group(1))
                 hash, part_number = await self.__upload_file(
-                    self.__token,
+                    token,
                     part_number,
                     fileId,
                     path,
@@ -580,7 +586,13 @@ class MediaController:
                 partHash[hash] = part_number
                 retry_count += 1
                 return await self.__finish_large_file(
-                    partHash, fileId, path, part_size, progress, retry_count=retry_count
+                    partHash,
+                    fileId,
+                    path,
+                    part_size,
+                    progress,
+                    token=token,
+                    retry_count=retry_count,
                 )
         return response
 

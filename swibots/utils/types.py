@@ -1,5 +1,6 @@
 import os, asyncio
 from enum import Enum
+from io import BytesIO
 from typing import Any, Callable, Collection, Coroutine, Dict, TypeVar, Union
 from inspect import iscoroutinefunction
 from swibots.errors import CancelError
@@ -40,8 +41,12 @@ class UploadProgress:
     ) -> None:
         super().__init__()
         self.callback = callback
-        self.path = path
-        self.total = size or os.path.getsize(path)
+        _bytesio = isinstance(path, BytesIO)
+        self.obj = path
+        self.total = size
+        if not size:
+            self.total = path.getbuffer().nbytes if _bytesio else os.path.getsize(path)
+        self.path = path.name if _bytesio else path
         self.callback_args = callback_args
         self.readed, self.current = readed, current
         self.client = client
