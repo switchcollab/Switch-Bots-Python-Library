@@ -16,10 +16,10 @@ class GetChannelChatHistory:
 
 
         Parameters:
-            channel_id (``int``): The channel id
+            channel_id (``str``): The channel id
             limit (``int``, *optional*): The maximum number of messages to return. Defaults to 100.
             offset (``int``, *optional*): The offset. Defaults to 0.
-            community_id (``int``): The community id
+            community_id (``str``): The community id
             user_id (``int``, *optional*): The user id. Defaults to the current user id.
 
         Returns:

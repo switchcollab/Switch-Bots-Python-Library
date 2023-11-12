@@ -302,7 +302,29 @@ class Message(
         return self.status in [1, 2, 3, 7]
 
     @property
-    def is_sticker(self):
+    def video(self):
+        """Whether message includes video"""
+        return self.media_info and self.media_info.media_type == MediaType.VIDEO.value
+
+    @property
+    def photo(self):
+        """Whether message includes photo"""
+        return self.media_info and self.media_info.media_type == MediaType.IMAGE.value
+
+    @property
+    def audio(self):
+        """Whether message includes audio as media"""
+        return self.media_info and self.media_info.media_type == MediaType.AUDIO.value
+
+    @property
+    def document(self):
+        """Whether message includes document"""
+        return (
+            self.media_info and self.media_info.media_type == MediaType.DOCUMENT.value
+        )
+
+    @property
+    def sticker(self):
         """Whether message is sticker"""
         return bool(self.sticker_pack_id)
 

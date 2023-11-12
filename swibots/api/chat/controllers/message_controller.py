@@ -210,6 +210,7 @@ class MessageController:
             request_url = f"{BASE_PATH}/create"
             response = await self.client.post(request_url, data=form)
             return self.client.build_object(Message, response.data["message"])
+
         task = asyncio.create_task(_upload_media(media))
         if blocking:
             return await task
@@ -530,7 +531,6 @@ class MessageController:
             f"{BASE_PATH}/group/{user_id}/{channel_id}?{urlencode(data)}"
         )
         return self.client.build_object(GroupChatHistory, response.data)
-        # return GroupChatHistory.build_from_json(response.data)
 
     async def get_community_media_files(self, community_id: str) -> List[Message]:
         """Get community media files
@@ -548,15 +548,24 @@ class MessageController:
         response = await self.client.get(
             f"{BASE_PATH}/media?communityId={community_id}"
         )
-        return self.client.build_list(Message, response.data)
+        return self.client.build_list(Message, response.data.get("result"))
 
     async def get_community_media_files_by_status(
-        self, community_id: str, status: str
+        self,
+        *,
+        status: Union[str, List[str]],
+        community_id: str = None,
+        channel_id: str = None,
+        user_id: int = None,
+        group_id: str = None,
     ) -> List[Message]:
         """Get community media files by status
 
         Parameters:
             community_id (``str``): The community id
+            channel_id (``str``)
+            group_id (``str``)
+            user_id (``int``)
             status (``str``): The status of the media files
 
         Returns:
@@ -567,10 +576,23 @@ class MessageController:
             ``~switch.error.SwitchError``: If the community media files could not be retrieved
         """
         log.debug("Getting community media files for community %s", community_id)
-        response = await self.client.get(
-            f"{BASE_PATH}/media?communityId={community_id}&status={status}"
+        if not isinstance(status, list):
+            status = [status]
+        params = urlencode(
+            {
+                x: y
+                for x, y in {
+                    "communityId": community_id,
+                    "groupId": group_id,
+                    "receiverId": user_id,
+                    "status": ",".join(list(map(str, status))),
+                    "channelId": channel_id,
+                }.items()
+                if y
+            }
         )
-        return self.client.build_list(Message, response.data)
+        response = await self.client.get(f"{BASE_PATH}/mediabystatus?{params}")
+        return self.client.build_list(Message, response.data.get("result"))
 
     async def get_user_media_files(self, user_id: int = None) -> List[Message]:
         """Get user media files

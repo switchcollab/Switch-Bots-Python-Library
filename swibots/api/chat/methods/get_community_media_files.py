@@ -20,4 +20,4 @@ class GetCommunityMediaFiles:
 
         This function does the same as :meth:`~switch.api.chat.controllers.MessageController.get_messages`.
         """
-        return await self.chat_service.messages.get_messages(community_id)
+        return await self.chat_service.messages.get_community_media_files(community_id)

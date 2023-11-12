@@ -24,7 +24,7 @@ class Filter:
     async def __call__(self, ctx: BotContext) -> bool:
         if not self.callback:
             raise NotImplemented
-        self.value = await self.callback(ctx)
+        self.value = await sync_or_async(self.callback(ctx))
         return self.value
 
     async def check_failure(self, ctx: BotContext):
@@ -163,6 +163,12 @@ communities = create(communities_filter, name="communities")
 
 channels = create(lambda _, ctx: ctx.event.message.channel_chat)
 groups = create(lambda _, ctx: ctx.event.message.group_chat)
+
+video = create(lambda _, ctx: ctx.event.message.video)
+photo = create(lambda _, ctx: ctx.event.message.photo)
+document = create(lambda _, ctx: ctx.event.message.document)
+audio = create(lambda _, ctx: ctx.event.message.audio)
+sticker = create(lambda _, ctx: ctx.event.message.sticker)
 
 
 async def me_filter(self, ctx: BotContext[MessageEvent]):
