@@ -27,6 +27,12 @@ To add a filter to a handler, add the filter as a parameter to the handler class
 - `regexp` Filter messages that match a specific regex. Example: @app.on_message(regex(r"^hello")) will match messages that start with "hello"
 - `message_type` Filter messages that match a specific message type. Example: @app.on_message(message_type(0)) will match messages that are of type 0 (text), @app.on_message(message_type(1)) will match messages that are of type 1 (image), etc.
 (Available types are: 0 text, 1 image, 2 video, 3 audio, 7 document/file)
+- `audio`: Filter for audio messages.
+- `document`: Filter for document messages.
+- `video`: Filter for video messages.
+- `photo`: Filter for photo messages.
+- `sticker`: Filter for sticker messages.
+
 
 ## Filter examples
 
