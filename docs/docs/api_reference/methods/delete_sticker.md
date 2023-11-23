@@ -1,5 +1,4 @@
-# `delete_sticker` Method
-
+# `delete_sticker`
 Deletes a sticker by its ID.
 
 ### Signature

@@ -1,5 +1,4 @@
-## `search_sticker_packs` Method
-
+## `search_sticker_packs```
 Searches for sticker packs using a query.
 
 ### Signature

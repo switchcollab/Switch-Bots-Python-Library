@@ -219,7 +219,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         description = self._bot_description or ""
         # register the commands
         self._botinfo = BotInfo(
-            description=description, id=self._bot_id, commands=commands
+            description=description, id=self._bot_id, commands=commands,
         )
 
         self._botinfo = await self.update_bot_info(self._botinfo)

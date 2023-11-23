@@ -2,7 +2,7 @@ import asyncio, aiofiles
 import os, tempfile
 import json, mimetypes, re
 from datetime import datetime
-import logging, base64
+import logging, base64, random
 from io import BytesIO
 import json, mimetypes
 import logging, hashlib
@@ -53,6 +53,9 @@ class MediaController:
     """Media controller
     This controller is used to communicate with the media endpoints.
     """
+
+    MIN_WAIT = 3
+    MAX_WAIT = 7
 
     def __init__(self, client: "ChatClient"):
         self.client = client
@@ -222,7 +225,9 @@ class MediaController:
                 __remove = True
                 img.save(path)
             except ImportError:
-                log.warning("thumb size is greater than 20kb, ignoring thumb")
+                log.warning(
+                    "[Pillow is not installed] and [thumb size is greater than 20kb], ignoring thumb"
+                )
                 return
 
         _, ext = os.path.splitext(name)
@@ -270,7 +275,7 @@ class MediaController:
         """
 
         if not min_file_size:
-            min_file_size = self._min_part_size
+            min_file_size = 100 * 1024 * 1024
 
         if not part_size:
             part_size = self._min_part_size
@@ -303,7 +308,11 @@ class MediaController:
         _, ext = os.path.splitext(path.name if _is_bytesio else path)
         file_name = f"{uuid.uuid1()}{ext}"
 
-        if size > min_file_size and size > self._min_part_size:
+        if (
+            size > min_file_size
+            and size > self._min_part_size
+            and (size // part_size) > 1
+        ):
             file_response = await self.upload_large_file(
                 path,
                 callback=callback,
@@ -349,7 +358,9 @@ class MediaController:
         return self.client.build_object(Media, media)
 
     async def request(self, url: str, method: str = "POST", **kwargs):
-        async with AsyncClient(verify=False, timeout=None) as client:
+        async with AsyncClient(
+            verify=False, timeout=None, headers=kwargs.get("headers")
+        ) as client:
             resp = await (client.post if method == "POST" else client.get)(
                 url, **kwargs
             )
@@ -357,8 +368,16 @@ class MediaController:
             if message.get("code") == "expired_auth_token":
                 log.error("Expired auth token, retrying")
                 token = await self.getAccountInfo()
+                headers = kwargs.get("headers") or {}
                 headers["Authorization"] = token
-                return await self.request(url, method, kwargs)
+                kwargs["headers"] = headers
+                return await self.request(url, method, **kwargs)
+            elif message.get("code") == "service_unavailable":
+                log.error(message)
+                randomTime = random.randint(self.MIN_WAIT, self.MAX_WAIT)
+                log.info(f"Waiting for {randomTime} before retry!")
+                await asyncio.sleep(randomTime)
+                return await self.request(url, method, **kwargs)
             return resp
 
     async def __upload_file(

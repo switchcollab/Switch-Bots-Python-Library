@@ -23,11 +23,11 @@ class ChannelController:
 
     async def create_channel(self, channel: Channel) -> str:
         response = await self.client.post(BASE_PATH, data=channel.to_json_request())
-        return response.data.get("channelId")
+        return response.data.get("result", {}).get("channelId")
 
     async def update_channel(self, channel: Channel) -> str:
         response = await self.client.put(BASE_PATH, data=channel.to_json_request())
-        return response.data.get("channelId")
+        return response.data.get("result", {}).get("channelId")
 
     async def get_all_channels(self, community_id: str) -> List[Channel]:
         response = await self.client.get(f"{BASE_PATH}/all?communityId={community_id}")

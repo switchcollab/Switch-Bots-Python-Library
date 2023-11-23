@@ -1,5 +1,4 @@
-## `get_all_sticker_packs` Method
-
+## `get_all_sticker_packs`
 Retrieves all sticker packs.
 
 ### Signature

@@ -299,8 +299,7 @@ class MessageController:
             new_message.message = text
         if inline_markup:
             new_message.inline_markup = inline_markup
-
-        for key, value in kwargs:
+        for key, value in kwargs.items():
             setattr(new_message, key, value)
 
         if embed_message:
@@ -752,7 +751,7 @@ class MessageController:
             if username.startswith("@"):
                 username = username[1:]
             response = await self.client.app.auth_service.get(
-                f"/api/users/getUserByUsername?username={username.lower()}"
+                f"/api/users/getUserByUsername?username={username}"
             )
             if not response.data:
                 return

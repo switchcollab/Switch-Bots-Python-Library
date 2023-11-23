@@ -4,7 +4,7 @@
 
 ![GitHub stars](https://img.shields.io/github/stars/switchcollab/Switch-Bots-Python-Library)
 ![GitHub Forks](https://img.shields.io/github/forks/switchcollab/Switch-Bots-Python-Library)
-![Version](https://img.shields.io/badge/version-0.3.30-teal.svg)
+![Version](https://img.shields.io/badge/version-1.4.20-teal.svg)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/swibots)
 
 # SwiBots: Python Library for Switch App
@@ -83,8 +83,10 @@ app.run()
 
 For more examples and sample bots, please check out our [Bot samples](./samples)
 directory.
- ## Other bot samples
- - [ComBot - Community management bot](https://github.com/New-dev0/Combot)
+
+## Other bot samples
+
+- [ComBot - Community management bot](https://github.com/New-dev0/Combot)
 
 ## Examples
 
@@ -143,7 +145,9 @@ await bot.send_message(
     )
 )
 ```
+
 ### Editing Media
+
 ```python
 # send media/document
 message = await bot.send_document(
@@ -159,6 +163,7 @@ await message.edit_media(
 ```
 
 ### Handling Keyboard Callbacks
+
 ```python
 from swibots import CallbackQueryEvent, BotContext
 from swibots import regexp, InlineMarkup, InlineKeyboardButton

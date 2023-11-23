@@ -33,7 +33,7 @@ class BotController:
         """
         if bot_id is None:
             bot_id = self.client.user.id
-        response = await self.client.get(f"{BASE_PATH}/{bot_id}")
+        response = await self.client.get(BASE_PATH + "{botId}?botId=" + str(bot_id))
         return BotInfo.build_from_json(response.data)
 
     async def update_bot_info(self, bot_info: BotInfo) -> BotInfo:

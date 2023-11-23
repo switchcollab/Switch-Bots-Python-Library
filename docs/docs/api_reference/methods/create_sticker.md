@@ -1,5 +1,4 @@
-## `create_sticker` Method
-
+## `create_sticker`
 Creates a new sticker and adds it to a sticker pack.
 
 ### Signature
