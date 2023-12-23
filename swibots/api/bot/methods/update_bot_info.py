@@ -16,3 +16,20 @@ class UpdateBotInfo:
         This functions does the same as :meth:`~switch.api.bot.controllers.BotController.update_bot_info`.
         """
         return await self.bots_service.bots.update_bot_info(bot_info=bot_info)
+
+
+    async def set_welcome(self: "swibots.ApiClient", text: str = None, thumb: str = None, button: str = None,
+                          command: str = None):
+        """Set bot welcome message
+
+        Args:
+            text (str, optional): welcome text
+            thumb (str, optional): welcome image
+            button (str, optional): button title
+            command (str, optional): button command
+
+        Returns:
+            `BotInfo`: updated bot info
+        """
+        return await self.bots_service.bots.set_welcome(text=text, thumb=thumb, button=button,
+                                                        command=command)

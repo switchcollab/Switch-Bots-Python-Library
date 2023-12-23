@@ -281,7 +281,7 @@ class MediaController:
             part_size = self._min_part_size
 
         if not task_count:
-            task_count = 1
+            task_count = 5
 
         if part_size < self._min_part_size:
             log.warning(

@@ -1,7 +1,39 @@
 from typing import TYPE_CHECKING, List, Optional
 from swibots.api.common.models import User
 from swibots.utils.types import JSONDict
+from swibots.base import SwitchObject
 from .bot_command import BotCommand
+from typing import Dict, Any
+
+
+class BotWelcome(SwitchObject):
+    def __init__(
+        self,
+        text: Optional[str] = None,
+        button: Optional[str] = None,
+        command: Optional[str] = None,
+        thumb: Optional[str] = None,
+    ):
+        self.text = text
+        self.thumb = thumb
+        self.button = button
+        self.command = command
+
+    def to_json(self) -> JSONDict:
+        return {
+            "welcomeImage": self.thumb,
+            "welcomeText": self.text,
+            "buttonName": self.button,
+            "buttonCommand": self.command,
+        }
+    
+    def from_json(self, data: Dict[str, Any] | None) -> Any:
+        if data:
+            self.thumb = data.get("welcomeImage")
+            self.text = data.get("welcomeText")
+            self.button = data.get("buttonName")
+            self.command = data.get("buttonCommand")
+        return self
 
 
 class BotInfo(User):
@@ -18,6 +50,8 @@ class BotInfo(User):
         is_bot: Optional[bool] = None,
         commands: Optional[List[BotCommand]] = None,
         description: Optional[str] = None,
+        welcome: BotWelcome = None,
+        source_code: Optional[str] = None,
     ):
         super().__init__(
             id=id,
@@ -32,12 +66,18 @@ class BotInfo(User):
         )
         self.commands: List[BotCommand] = commands or []
         self.description: Optional[str] = description
+        self.source_code = source_code
+        self.welcome = welcome
 
     def to_json_request(self) -> JSONDict:
-        return {
+        data = {
             "commands": [command.to_json() for command in self.commands],
             "description": self.description,
+            "sourceCode": self.source_code,
         }
+        if self.welcome:
+            data.update(self.welcome.to_json())
+        return data
 
     def from_json(self, data: Optional[JSONDict] = None) -> "BotInfo":
         super().from_json(data)
@@ -46,6 +86,13 @@ class BotInfo(User):
                 BotCommand().from_json(x) for x in data.get("commands", [])
             ]
             self.description = data.get("description")
+            self.welcome = BotWelcome(
+                data.get("welcomeText"),
+                data.get("buttonName"),
+                data.get("buttonCommand"),
+                data.get("welcomeImage"),
+            )
+            self.source_code = data.get("sourceCode")
         return self
 
     def to_json(self) -> JSONDict:
@@ -54,4 +101,6 @@ class BotInfo(User):
             data["commands"] = [x.to_json() for x in self.commands]
         if not data.get("description"):
             data["description"] = self.description
+        if self.welcome:
+            data.update(self.welcome.to_json())
         return data

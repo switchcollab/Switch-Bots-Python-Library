@@ -62,6 +62,7 @@ class Message(
         cached_media: Media = None,
         scheduled_at: Optional[int] = None,
         sticker_pack_id: Optional[str] = None,
+        command_details: Optional[dict] = None,
         **kwargs,
     ):
         super().__init__(app=app)
@@ -112,6 +113,7 @@ class Message(
         self.scheduled_at = scheduled_at
         self.user_session_id = user_session_id
         self.sticker_pack_id = sticker_pack_id
+        self.command_details = command_details
 
         self.__dict__.update(**kwargs)
 
@@ -141,6 +143,7 @@ class Message(
             "mediaInfo": self.media_info.to_json() if self.media_info else None,
             "userSessionId": self.user_session_id,
             "link": self.link,
+            "commandDetails": self.command_details
         }
 
     def to_form_data(self):
@@ -224,6 +227,7 @@ class Message(
             "userId": self.user_id,
             "userSessionId": self.user_session_id,
             "link": self.link,
+            "commandDetails": self.command_details
         }
 
     def from_json(self, data: Optional[JSONDict]) -> "Message":
@@ -267,6 +271,7 @@ class Message(
             self.personal_chat = data.get("personalChat")
             self.pinned = data.get("pinned")
             self.reactions = data.get("reactions")
+            self.command_details = data.get("commandDetails")
             receiver_id = data.get("receiverId")
             if receiver_id == "null":
                 receiver_id = 0
@@ -381,15 +386,19 @@ class Message(
         message: str,
         embed_message: EmbeddedMedia = None,
         inline_markup: InlineMarkup = None,
+        quote: bool = None,
         **kwargs,
     ) -> "Message":
+        if quote == None:
+            quote = True if self.personal_chat else False
+
         return await self.app.send_message(
             message,
             community_id=self.community_id,
             group_id=self.group_id,
             channel_id=self.channel_id,
             user_id=self._get_receiver_id(),
-            reply_to_message_id=self.id,
+            reply_to_message_id=self.id if quote else None,
             user_session_id=self.user_session_id,
             embed_message=embed_message,
             inline_markup=inline_markup,
@@ -404,9 +413,12 @@ class Message(
         progress=None,
         progress_args=None,
         inline_markup: InlineMarkup = None,
+        quote: bool = None,
         **kwargs,
     ) -> "Message":
         """reply media to the message"""
+        if quote == None:
+            quote = True if self.personal_chat else False
         return await self.app.send_media(
             message=message,
             document=document,
@@ -416,7 +428,7 @@ class Message(
             user_id=self._get_receiver_id(),
             thumb=thumb,
             user_session_id=self.user_session_id,
-            reply_to_message_id=self.id,
+            reply_to_message_id=self.id if quote else None,
             progress=progress,
             progress_args=progress_args,
             inline_markup=inline_markup,
@@ -460,6 +472,7 @@ class Message(
         progress=None,
         progress_args=None,
         inline_markup: InlineMarkup = None,
+        quote: bool = None,
         **kwargs,
     ) -> "Message":
         """Reply document to the message"""
@@ -471,6 +484,7 @@ class Message(
             progress=progress,
             progress_args=progress_args,
             inline_markup=inline_markup,
+            quote=quote,
             **kwargs,
         )
 
@@ -479,6 +493,7 @@ class Message(
         audio: Union[str, BytesIO],
         caption: str = "",
         inline_markup: InlineMarkup = None,
+        quote: bool = None,
         **kwargs,
     ):
         """Reply audio to message!"""
@@ -487,6 +502,7 @@ class Message(
             document=audio,
             media_type=MediaType.AUDIO.value,
             inline_markup=inline_markup,
+            quote=quote,
             **kwargs,
         )
 

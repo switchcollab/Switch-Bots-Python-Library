@@ -9,6 +9,9 @@ from .inline_keyboard_button import InlineKeyboardButton
 if TYPE_CHECKING:
     from .inline_keyboard_button import InlineKeyboardButton
 
+MAX_ROWS = 10
+MAX_COLUMNS = 8
+
 
 class InlineMarkup(SwitchObject):
     def __init__(
@@ -16,6 +19,8 @@ class InlineMarkup(SwitchObject):
         inline_keyboard: List[List["InlineKeyboardButton"]] = None,
     ):
         super().__init__()
+        if isinstance(inline_keyboard, InlineKeyboardButton):
+            inline_keyboard = [[inline_keyboard]]
         self._inline_keyboard = inline_keyboard
 
     @property
@@ -33,7 +38,8 @@ class InlineMarkup(SwitchObject):
             return None
         return {
             "inlineKeyboard": [
-                [x.to_json() for x in row] for row in self._inline_keyboard
+                [x.to_json() for x in row[:MAX_COLUMNS]]
+                for row in self._inline_keyboard[:MAX_ROWS]
             ],
         }
 

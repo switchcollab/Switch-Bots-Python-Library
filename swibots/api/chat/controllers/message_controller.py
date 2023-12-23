@@ -132,12 +132,14 @@ class MessageController:
             **kwargs,
         )
 
-        if new_message.embed_message and new_message.embed_message.thumbnail:
-            thumb = new_message.embed_message.thumbnail
-            if thumb and not isUrl(thumb):
-                new_message.embed_message.thumbnail = (
-                    await self.client.app.upload_media(thumb)
-                ).url
+        if new_message.embed_message:
+
+            if new_message.embed_message.thumbnail:
+                thumb = new_message.embed_message.thumbnail
+                if thumb and not isUrl(thumb):
+                    new_message.embed_message.thumbnail = (
+                        await self.client.app.upload_media(thumb)
+                    ).url
 
         data = new_message.to_json_request()
         log.debug("Sending message %s", json.dumps(data))
@@ -295,14 +297,14 @@ class MessageController:
             ``~switch.error.SwitchError``: If the message could not be edited
         """
         new_message = await self.client.app.get_message(message_id)
-        if text:
+        if text is not None:
             new_message.message = text
         if inline_markup:
             new_message.inline_markup = inline_markup
         for key, value in kwargs.items():
             setattr(new_message, key, value)
 
-        if embed_message:
+        if embed_message is not None:
             if embed_message.thumbnail and os.path.exists(embed_message.thumbnail):
                 response_media = await self.client.app.upload_media(
                     embed_message.thumbnail

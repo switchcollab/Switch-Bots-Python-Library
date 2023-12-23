@@ -33,7 +33,7 @@ class BotController:
         """
         if bot_id is None:
             bot_id = self.client.user.id
-        response = await self.client.get(BASE_PATH + "{botId}?botId=" + str(bot_id))
+        response = await self.client.get(BASE_PATH + "?botId=" + str(bot_id))
         return BotInfo.build_from_json(response.data)
 
     async def update_bot_info(self, bot_info: BotInfo) -> BotInfo:
@@ -81,3 +81,22 @@ class BotController:
             },
         )
         return response.data
+
+    async def set_welcome(
+        self,
+        text: str = None,
+        thumb: str = None,
+        button: str = None,
+        command: str = None,
+    ):
+        response = await self.client.post(
+            f"{BASE_PATH}/set-intro-message",
+            data={
+                "botId": str(self.client.user.id),
+                "welcomeImage": thumb,
+                "welcomeText": text,
+                "buttonName": button,
+                "buttonCommand": command,
+            },
+        )
+        return self.client.build_object(BotInfo, response.data)
