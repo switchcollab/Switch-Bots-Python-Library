@@ -5,3 +5,4 @@ from .community import *
 from .common import *
 from .bot import *
 from .airdrop import *
+from .callback import *

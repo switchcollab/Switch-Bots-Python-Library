@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, List, Optional
 from swibots.api.bot.models import BotInfo
 from swibots.errors import SwitchError
 from swibots.utils.types import JSONDict
+from swibots.api.callback import AppPage
 
 if TYPE_CHECKING:
     from swibots.api.bot import BotClient
@@ -80,6 +81,12 @@ class BotController:
                 "cacheTime": cache_time,
             },
         )
+        return response.data
+
+    async def answer_ui_query(self, callback_id: str, callback: AppPage) -> bool:
+        data = callback.to_json_request()
+        data["callbackQueryId"] = callback_id
+        response = await self.client.post(f"{BASE_PATH}/callback/answer", data=data)
         return response.data
 
     async def set_welcome(

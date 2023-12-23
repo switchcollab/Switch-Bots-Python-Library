@@ -5,6 +5,7 @@ from swibots.api.community.models.channel import Channel
 from swibots.api.community.models.community import Community
 from swibots.api.community.models.group import Group
 from swibots.api.common.models.user import User
+from swibots.api.callback import AppPage
 from swibots.api.chat.models.message import Message
 from swibots.types import EventType
 from swibots.utils.types import JSONDict
@@ -65,12 +66,15 @@ class CallbackQueryEvent(CommandEvent):
 
     async def answer(
         self,
-        text: str,
+        text: str = None,
         url: Optional[str] = None,
         show_alert: Optional[bool] = False,
         cache_time: Optional[int] = None,
+        callback: Optional[AppPage] = None,
     ) -> bool:
         """Answer callback query"""
+        if callback:
+            return await self.app.answer_ui_query(self.query_id, callback=callback)
         return await self.app.answer_callback_query(
             self.query_id,
             text=text,

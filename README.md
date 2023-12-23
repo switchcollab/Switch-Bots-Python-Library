@@ -4,7 +4,7 @@
 
 ![GitHub stars](https://img.shields.io/github/stars/switchcollab/Switch-Bots-Python-Library)
 ![GitHub Forks](https://img.shields.io/github/forks/switchcollab/Switch-Bots-Python-Library)
-![Version](https://img.shields.io/badge/version-1.4.20-teal.svg)
+![Version](https://img.shields.io/badge/version-1.4.22-red.svg)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/swibots)
 
 # SwiBots: Python Library for Switch App
@@ -27,6 +27,7 @@ For detailed information and documentation, please visit our
   - [Editing media](#editing-media)
   - [Sending buttons](#sending-buttons)
   - [Handling keyboard callbacks](#handling-keyboard-callbacks)
+  - [Sending UI based callbacks](#send-ui-based-callbacks)
 - [More samples](#explore-bot-samples)
 - [Code Contribution](#🚀-contributing)
 
@@ -180,6 +181,34 @@ async def onCallback(ctx: BotContext[CallbackQueryEvent]):
     await ctx.event.answer(
         "Hello, this is a callback answer",
         show_alert=True
+    )
+```
+
+### Send UI Based Callbacks
+
+```python
+from swibots import CallbackQueryEvent, BotContext
+from swibots import AppPage, AppBar, Dropdown, ListItem
+
+# handle callback query
+@app.on_callback_query()
+async def onCallback(ctx: BotContext[CallbackQueryEvent]):
+    # create a callback component
+    await ctx.event.answer(
+        callback=AppPage(
+            app_bar=AppBar(title="Hello from Swibots"),
+            components=[
+                Dropdown(
+                    placeholder="Choose Option",
+                    options=[
+                        ListItem("1. Orange", callback_data="option1"),
+                        ListItem("2. Yellow", callback_data="option2"),
+                        ListItem("3. Green", callback_data="option3"),
+                        ListItem("4. Green", callback_data="option4"),
+                    ],
+                )
+            ],
+        )
     )
 ```
 
