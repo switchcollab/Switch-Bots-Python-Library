@@ -34,8 +34,9 @@ class AsyncWsClient:
         self._connectCallback = None
         self.errorCallback = None
         self._connectIntents = 0
-        self._connectInterval = 10
-        self._maxConnectIntents = 20
+        self._connectInterval = 7
+        self._incrementalDelay = 3
+        self._maxConnectIntents = 50
         self._connecting = False
         self._gracefully_disconnect = False
 
@@ -64,14 +65,19 @@ class AsyncWsClient:
         ):
             log.error("Max connection attempts reached. Aborting.")
             raise SwitchError("Max connection attempts reached. Aborting.")
-        await asyncio.sleep(self._connectInterval)
-        self._connectIntents = self._connectIntents + 1
+        wait_time = self._connectInterval
+        if self._connectIntents:
+            wait_time += (self._connectIntents * self._incrementalDelay)
+        log.info(f"Waiting for {wait_time}s before retry!")
+        await asyncio.sleep(wait_time)
+        self._connectIntents += 1
         await self.connect(**self._connect_args)
 
     async def _on_error(self, ws_app, error, *args):
         await self._clean_up()
         await self._on_close(ws_app, *args)
-        log.error(error)
+        if error:
+            log.error(error)
 
     async def _on_message(self, ws_app, message, *args):
         frame = WsFrame.unmarshall_single(message)
@@ -83,10 +89,11 @@ class AsyncWsClient:
 
         _results = []
         if frame.command == "CONNECTED":
+            if self._connectIntents:
+                log.info("connected to server " + self.url)
             self.connected = True
             self._connecting = False
             self._connectIntents = 0
-            log.debug("connected to server " + self.url)
             self._heartbeatTask = self._loop.create_task(self._start_heartbeat())
             # resubscribe
             for sub in self.subscriptions.values():
@@ -120,14 +127,10 @@ class AsyncWsClient:
                 info = "Unhandled received MESSAGE: " + str(frame)
                 log.debug(info)
                 _results.append(info)
-        elif frame.command == "RECEIPT":
-            pass
         elif frame.command == "ERROR":
             if self.errorCallback is not None:
                 _results.append(self.errorCallback(frame))
-        elif frame.command == "PONG":
-            pass
-        else:
+        elif frame.command not in ["PONG", "RECEIPT"]:
             info = "Unhandled received MESSAGE: " + frame.command
             log.debug(info)
             _results.append(info)
