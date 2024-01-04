@@ -37,13 +37,34 @@ To add a filter to a handler, add the filter as a parameter to the handler class
 ## Filter examples
 
 ```python
-from swibots import BotApp, MessageHandler, is_bot, community, channel, user, text, regex
+from swibots import BotApp, MessageHandler, BotContext, is_bot, community, channel, user, text, regex
 
 app = BotApp("token", "your bot description")
 
 @app.on_message(is_bot & (community("123456789") | channel("123456")))
 async def message_handler(ctx: BotContext[MessageEvent]):
     await m.reply_text(f"Thank you! I received your message: {ctx.event.message.message}")
+    
+app.run()
+```
+
+## Custom Filters
+
+You can use the `filters.create()` function to create your own custom filters!
+
+```python
+from swibots import BotApp, CallbackQueryHandler, BotContext, filters
+
+app = BotApp("token", "your bot description")
+
+def callback_filter(data: str):
+    async def func(flt, data):
+        return flt.data == data.event.callback_data
+    return filters.create(func, data=data)
+
+@app.on_callback_query(callback_filter('query_to_process'))
+async def custom_filters(context: BotContext[CallbackQueryEvent]):
+    await context.event.answer(f'Received query: {context.event.callback_data}')
     
 app.run()
 ```
