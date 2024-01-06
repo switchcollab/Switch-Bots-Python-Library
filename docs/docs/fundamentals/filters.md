@@ -53,18 +53,19 @@ app.run()
 You can use the `filters.create()` function to create your own custom filters!
 
 ```python
-from swibots import BotApp, CallbackQueryHandler, BotContext, filters
+from swibots import filters
 
-app = BotApp("token", "your bot description")
-
-def callback_filter(data: str):
-    async def func(flt, data):
-        return flt.data == data.event.callback_data
+# create filter to look for word in message
+def hello_filter(data: str):
+    async def func(flt, ctx):
+        m = ctx.event.message
+        if not m.message:
+            return
+        return m.message.lower().startswith(flt.data.lower())
     return filters.create(func, data=data)
 
-@app.on_callback_query(callback_filter('query_to_process'))
-async def custom_filters(context: BotContext[CallbackQueryEvent]):
-    await context.event.answer(f'Received query: {context.event.callback_data}')
-    
-app.run()
+# add filter to message event
+@app.on_message(hello_filter('hi'))
+async def custom_filters(ctx: BotContext[MessageEvent]):
+    await ctx.event.message.reply_text("Hello user 🤖!")
 ```
