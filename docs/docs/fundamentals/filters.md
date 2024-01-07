@@ -37,7 +37,7 @@ To add a filter to a handler, add the filter as a parameter to the handler class
 ## Filter examples
 
 ```python
-from swibots import BotApp, MessageHandler, is_bot, community, channel, user, text, regex
+from swibots import BotApp, MessageHandler, BotContext, is_bot, community, channel, user, text, regex
 
 app = BotApp("token", "your bot description")
 
@@ -46,4 +46,26 @@ async def message_handler(ctx: BotContext[MessageEvent]):
     await m.reply_text(f"Thank you! I received your message: {ctx.event.message.message}")
     
 app.run()
+```
+
+## Custom Filters
+
+You can use the `filters.create()` function to create your own custom filters!
+
+```python
+from swibots import filters
+
+# create filter to look for word in message
+def hello_filter(data: str):
+    async def func(flt, ctx):
+        m = ctx.event.message
+        if not m.message:
+            return
+        return m.message.lower().startswith(flt.data.lower())
+    return filters.create(func, data=data)
+
+# add filter to message event
+@app.on_message(hello_filter('hi'))
+async def custom_filters(ctx: BotContext[MessageEvent]):
+    await ctx.event.message.reply_text("Hello user 🤖!")
 ```
