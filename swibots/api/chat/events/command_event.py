@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Dict
 import swibots
 from swibots.api.common.events.event import Event
 from swibots.api.community.models.channel import Channel
@@ -33,6 +33,7 @@ class CommandEvent(MessageEvent):
         message_id: Optional[int] = None,
         command: Optional[str] = None,
         params: Optional[str] = None,
+        details: Optional[Dict] = None,
     ):
         super().__init__(
             app=app,
@@ -53,13 +54,15 @@ class CommandEvent(MessageEvent):
         )
         self.command = command
         self.params = params
+        self.details = details
 
     def from_json(self, data: JSONDict) -> "CommandEvent":
         super().from_json(data)
         if self.data is not None:
             details = self.data.get("commandDetails")
             self.command = self.data.get("command")
-            if  not self.command and details:
+            if not self.command and details:
                 self.command = details.get("command")
             self.params = self.data.get("commandParams")
+            self.details = self.data.get("message", {}).get("additionalDetails")
         return self

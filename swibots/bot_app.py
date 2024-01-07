@@ -17,6 +17,7 @@ from swibots.api.community.events import CommunityEvent
 from swibots.api.chat.events import ChatEvent
 from swibots.bots import BotContext, Decorators, BaseHandler
 from swibots.api.bot.models import BotInfo, BotCommand
+from swibots.api.callback import AppBar
 from swibots.api.common.events import Event
 from swibots.utils import (
     DownloadProgress,
@@ -52,6 +53,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         auto_update_bot: Optional[bool] = True,
         loop: asyncio.AbstractEventLoop = None,
         receive_updates: Optional[bool] = True,
+        app_bar: Optional[AppBar] = AppBar(),
     ):
         """
         Initialize the client
@@ -89,6 +91,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         self.rest_client = RestClient()
         self.receive_updates = receive_updates
         self.plugins = plugins or dict()
+        self.app_bar = app_bar
 
     @property
     def bot(self) -> "swibots.bots.Bot":
@@ -164,7 +167,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         if exclude:
             for path in exclude:
                 module_path = root + "." + path
- 
+
                 try:
                     module = import_module(module_path)
                 except ImportError:
@@ -219,7 +222,9 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         description = self._bot_description or ""
         # register the commands
         self._botinfo = BotInfo(
-            description=description, id=self._bot_id, commands=commands,
+            description=description,
+            id=self._bot_id,
+            commands=commands,
         )
 
         self._botinfo = await self.update_bot_info(self._botinfo)
@@ -382,7 +387,6 @@ class Client(Decorators, AbstractContextManager, ApiClient):
 
         except asyncio.CancelledError:
             self._running = False
-
 
     async def stop(self):
         if not self._running:

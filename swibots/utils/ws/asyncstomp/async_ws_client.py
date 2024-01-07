@@ -20,7 +20,6 @@ class AsyncWsClient:
         self,
         url: str,
     ):
-
         self.url = url
         self.ws = None
         self._loop = asyncio.get_event_loop()
@@ -67,7 +66,7 @@ class AsyncWsClient:
             raise SwitchError("Max connection attempts reached. Aborting.")
         wait_time = self._connectInterval
         if self._connectIntents:
-            wait_time += (self._connectIntents * self._incrementalDelay)
+            wait_time += self._connectIntents * self._incrementalDelay
         log.info(f"Waiting for {wait_time}s before retry!")
         await asyncio.sleep(wait_time)
         self._connectIntents += 1
@@ -102,7 +101,6 @@ class AsyncWsClient:
             # if self._connectCallback is not None:
             #     _results.append(await self._send_heartbeat(frame))
         elif frame.command == "MESSAGE":
-
             subscription = frame.headers["subscription"]
 
             if subscription in self.subscriptions:
@@ -147,7 +145,8 @@ class AsyncWsClient:
                 out = command
             log.debug("\n>>> " + l)
             await self.ws.send(out)
-        except (exceptions.WebSocketException):
+        except exceptions.WebSocketException as er:
+            log.error(er)
             await self._on_close(self.ws)
         except Exception as e:
             await self._on_error(self.ws, e)
@@ -210,7 +209,6 @@ class AsyncWsClient:
                 elapsed += 1
                 if timeout > 0 and elapsed > timeout:
                     raise Exception("Connection timeout")
-        # await self._start_heartbeat()
         except (exceptions.WebSocketException,):
             await self._on_close(self.ws)
         except Exception as e:
@@ -221,7 +219,8 @@ class AsyncWsClient:
             async for message in self.ws:
                 await self._on_message(self.ws, message)
             await self._on_close(self.ws)
-        except (exceptions.WebSocketException,):
+        except exceptions.WebSocketException as er:
+            log.error(er)
             await self._on_close(self.ws)
         except Exception as e:
             await self._on_error(self.ws, e)
@@ -240,10 +239,6 @@ class AsyncWsClient:
             self.connected = False
             self._connecting = False
             self.opened = False
-            # if self._heartbeatTask is not None:
-            #     await asyncio.wait_for(self._heartbeatTask, 5)
-            # [task.cancel() for task in self.tasks]
-            # self.ws = None
             self.tasks = []
         except Exception as e:
             log.debug("Error cleaning up: " + str(e))

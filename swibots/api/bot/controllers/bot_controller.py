@@ -67,6 +67,7 @@ class BotController:
         callback_id: str,
         text: str,
         url: Optional[str] = None,
+        message_id: Optional[int] = 0,
         show_alert: Optional[bool] = False,
         cache_time: Optional[int] = None,
     ) -> bool:
@@ -75,6 +76,7 @@ class BotController:
             data={
                 "type": "callback",
                 "callbackQueryId": callback_id,
+                "messageId": message_id,
                 "text": text,
                 "url": url,
                 "showAlerts": show_alert,
@@ -83,9 +85,15 @@ class BotController:
         )
         return response.data
 
-    async def answer_ui_query(self, callback_id: str, callback: AppPage) -> bool:
+    async def answer_ui_query(
+        self, callback_id: str, message_id: int, callback: AppPage
+    ) -> bool:
+        default_bar = self.client.app.app_bar
+        if not callback.app_bar and default_bar:
+            callback.app_bar = default_bar
         data = callback.to_json_request()
         data["callbackQueryId"] = callback_id
+        data["messageId"] = message_id
         response = await self.client.post(f"{BASE_PATH}/callback/answer", data=data)
         return response.data
 

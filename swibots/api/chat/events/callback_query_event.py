@@ -74,9 +74,12 @@ class CallbackQueryEvent(CommandEvent):
     ) -> bool:
         """Answer callback query"""
         if callback:
-            return await self.app.answer_ui_query(self.query_id, callback=callback)
+            return await self.app.answer_ui_query(
+                self.query_id, callback=callback, message_id=self.message.id
+            )
         return await self.app.answer_callback_query(
             self.query_id,
+            message_id=self.message.id,
             text=text,
             url=url,
             show_alert=show_alert,

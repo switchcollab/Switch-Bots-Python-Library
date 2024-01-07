@@ -11,12 +11,14 @@ class InlineKeyboardButton(SwitchObject):
         url: Optional[str] = None,
         callback_data: Optional[str] = None,
         game: Optional[bool] = False,
+        app: Optional[bool] = False,
     ):
         super().__init__(None)
         self.text = text
         self.url = url
         self.callback_data = callback_data
         self.game = game
+        self.is_app = app
 
     def to_json(self) -> JSONDict:
         return {
@@ -24,6 +26,7 @@ class InlineKeyboardButton(SwitchObject):
             "url": self.url,
             "callbackData": self.callback_data,
             "game": self.game,
+            "app": self.is_app,
         }
 
     def from_json(self, data: JSONDict) -> "InlineKeyboardButton":
@@ -32,4 +35,5 @@ class InlineKeyboardButton(SwitchObject):
             self.url = data.get("url")
             self.callback_data = data.get("callbackData")
             self.game = data.get("game")
+            self.is_app = data.get("app")
         return self
