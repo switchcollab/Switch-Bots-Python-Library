@@ -17,6 +17,7 @@ class AppBar(SwitchObject):
             "https://raw.githubusercontent.com/switchcollab/Switch-Bots-Python-Library/main/docs/static/img/logo.png"
         ),
         secondary_icon: Union[Icon, str] = None,
+        tertiary_icon: Union[Icon, str] = ""
     ):
         self.title = title
         self.subtitle = subtitle
@@ -29,12 +30,18 @@ class AppBar(SwitchObject):
             secondary_icon = Icon(secondary_icon)
         self.secondary_icon = secondary_icon
 
+        if isinstance(tertiary_icon, str):
+            tertiary_icon = Icon(tertiary_icon)
+        self.tertiary_icon = tertiary_icon
+
     def to_json(self) -> JSONDict:
         data = {"title": self.title, "subtitle": self.subtitle}
         if self.left_icon:
             data["leftIcon"] = self.left_icon.to_json()
         if self.secondary_icon:
             data["secondaryIcon"] = self.secondary_icon.to_json()
+        if self.tertiary_icon:
+            data["tertiaryIcon"] = self.tertiary_icon.to_json()
         return data
 
 

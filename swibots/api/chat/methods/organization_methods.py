@@ -4,6 +4,7 @@ from typing import List
 from swibots.api.common.models import User
 from swibots.api.chat.models import Organization, OrgApp
 
+
 class OrganizationMethods:
     """Organization methods.
 
@@ -36,7 +37,9 @@ class OrganizationMethods:
             bot_id=bot_id, community_id=community_id, user_id=user_id
         )
 
-    async def get_organization_by_id(self: "swibots.ApiClient", id: str) -> List[Organization]:
+    async def get_organization_by_id(
+        self: "swibots.ApiClient", id: str
+    ) -> List[Organization]:
         """Get organization details by ID.
 
         Args:
@@ -58,7 +61,9 @@ class OrganizationMethods:
         """
         return await self.chat_service.organization.get_organization_apps(id)
 
-    async def get_organization_followers(self: "swibots.ApiClient", id: str) -> List[User]:
+    async def get_organization_followers(
+        self: "swibots.ApiClient", id: str
+    ) -> List[User]:
         """Get followers of an organization.
 
         Args:

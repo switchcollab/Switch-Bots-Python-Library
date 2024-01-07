@@ -17,9 +17,13 @@ class UpdateBotInfo:
         """
         return await self.bots_service.bots.update_bot_info(bot_info=bot_info)
 
-
-    async def set_welcome(self: "swibots.ApiClient", text: str = None, thumb: str = None, button: str = None,
-                          command: str = None):
+    async def set_welcome(
+        self: "swibots.ApiClient",
+        text: str = None,
+        thumb: str = None,
+        button: str = None,
+        command: str = None,
+    ):
         """Set bot welcome message
 
         Args:
@@ -31,5 +35,6 @@ class UpdateBotInfo:
         Returns:
             `BotInfo`: updated bot info
         """
-        return await self.bots_service.bots.set_welcome(text=text, thumb=thumb, button=button,
-                                                        command=command)
+        return await self.bots_service.bots.set_welcome(
+            text=text, thumb=thumb, button=button, command=command
+        )

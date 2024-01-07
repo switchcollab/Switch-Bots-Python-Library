@@ -5,7 +5,8 @@ from swibots.api.chat.models import Message
 
 class GetCommunityMediaFilesByStatus:
     async def get_community_media_files_by_status(
-        self: "swibots.ApiClient", status: Union[str, List[str]],
+        self: "swibots.ApiClient",
+        status: Union[str, List[str]],
         community_id: str = None,
         group_id: str = None,
         channel_id: str = None,
@@ -30,5 +31,5 @@ class GetCommunityMediaFilesByStatus:
             user_id=user_id,
             channel_id=channel_id,
             group_id=group_id,
-            status=status
+            status=status,
         )

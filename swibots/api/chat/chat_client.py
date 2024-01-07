@@ -6,7 +6,7 @@ from swibots.api.chat.controllers import (
     ChatController,
     MediaController,
     StickerController,
-    OrganizationController
+    OrganizationController,
 )
 from swibots.api.chat.events import (
     ChatEvent,

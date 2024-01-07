@@ -133,7 +133,6 @@ class MessageController:
         )
 
         if new_message.embed_message:
-
             if new_message.embed_message.thumbnail:
                 thumb = new_message.embed_message.thumbnail
                 if thumb and not isUrl(thumb):

@@ -46,7 +46,7 @@ def GetMediaType(media_type: int):
             7: "FILE",
             200: "STATIC_STICKER",
             201: "ANIMATED_STICKER",
-            202: "VIDEO_STICKER"
+            202: "VIDEO_STICKER",
         }[media_type]
     except KeyError:
         return None

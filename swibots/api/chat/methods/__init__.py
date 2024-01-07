@@ -47,6 +47,6 @@ class ChatMethods(
     UploadMedia,
     GetUser,
     StickerMethods,
-    OrganizationMethods
+    OrganizationMethods,
 ):
     pass

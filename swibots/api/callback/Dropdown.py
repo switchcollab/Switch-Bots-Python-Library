@@ -27,5 +27,5 @@ class Dropdown(Component):
             "disabled": self.disabled,
         }
         if self.selected:
-            data['selectedIndex'] = self.selected
+            data["selectedIndex"] = self.selected
         return data

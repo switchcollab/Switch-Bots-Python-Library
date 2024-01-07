@@ -143,7 +143,7 @@ class Message(
             "mediaInfo": self.media_info.to_json() if self.media_info else None,
             "userSessionId": self.user_session_id,
             "link": self.link,
-            "commandDetails": self.command_details
+            "commandDetails": self.command_details,
         }
 
     def to_form_data(self):
@@ -227,7 +227,7 @@ class Message(
             "userId": self.user_id,
             "userSessionId": self.user_session_id,
             "link": self.link,
-            "commandDetails": self.command_details
+            "commandDetails": self.command_details,
         }
 
     def from_json(self, data: Optional[JSONDict]) -> "Message":

@@ -26,7 +26,7 @@ class BotWelcome(SwitchObject):
             "buttonName": self.button,
             "buttonCommand": self.command,
         }
-    
+
     def from_json(self, data: Dict[str, Any] | None) -> Any:
         if data:
             self.thumb = data.get("welcomeImage")

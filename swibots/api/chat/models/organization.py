@@ -114,16 +114,16 @@ class OrgApp(SwitchObject):
         self.org_id = org_id
         self.role = role
         self.status = status
- 
+
     def from_json(self, data: JSONDict | None) -> "OrgApp":
         if data:
-#            self.commands = BotCommand.build_from_json_list(data.get("commands"), self.app)
+            #            self.commands = BotCommand.build_from_json_list(data.get("commands"), self.app)
             self.org_id = data.get("orgId")
             self.name = data.get("name")
             self.status = data.get("status")
             self.role = data.get("role")
         return self
-    
+
     def to_json(self) -> JSONDict:
         return {
             "status": self.status,
@@ -131,5 +131,5 @@ class OrgApp(SwitchObject):
             "name": self.name,
             "role": self.role,
             "orgId": self.org_id,
-            "id": self.id
+            "id": self.id,
         }

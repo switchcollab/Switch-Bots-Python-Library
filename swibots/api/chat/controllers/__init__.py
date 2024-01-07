@@ -9,5 +9,5 @@ __all__ = [
     "ChatController",
     "MediaController",
     "StickerController",
-    "OrganizationController"
+    "OrganizationController",
 ]

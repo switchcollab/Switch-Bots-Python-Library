@@ -77,7 +77,7 @@ class Media(SwitchObject):
                 "ownerId": self.owner_id,
                 "ownerType": self.owner_type,
                 "downloadUrl": self.url,
-                "url": self.url
+                "url": self.url,
             }.items()
             if y
         }

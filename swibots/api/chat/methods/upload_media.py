@@ -155,7 +155,7 @@ class UploadMedia:
         url: Optional[str] = None,
         media_type: Optional[str] = None,
         media: Media = None,
-        file_name: Optional[str] = None
+        file_name: Optional[str] = None,
     ):
         """Update Info of uploaded media
 
@@ -169,11 +169,10 @@ class UploadMedia:
                 description=file_name,
                 thumbnail_url=thumb_url,
                 media_type=media_type,
-                url=url
+                url=url,
             )
         return await self.chat_service.media.update_media(
-            media_id=media_id,
-            media=media
+            media_id=media_id, media=media
         )
 
     async def delete_media(self: "swibots.ApiClient", media_id: int):
