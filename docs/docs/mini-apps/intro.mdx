@@ -1,0 +1,53 @@
+---
+sidebar_osition: 1
+---
+
+# Introduction
+
+import IMDBLogo from "../../static/img/imdb.jpg";
+import IMDB2Logo from "../../static/img/imdb2.jpg";
+
+
+<p style={{
+    fontSize: 25
+}}>With the power of Mini-Apps on Switch, developers can build feature rich applications with ease and integrate them with communities.</p>
+
+<img src={IMDBLogo} height="620" width="320"/>
+<img src={IMDB2Logo} height="620" width="320"/>
+
+## Sample
+```python
+
+from swibots import Client, AppBar, AppPage, Text, regexp
+from swibots import MessageEvent, CallbackQueryEvent
+
+# creating a client and specifying default app bar..
+app = Client("token", app_bar=AppBar(
+    title="Magic World"
+))
+
+# register a command to send button
+@app.on_command("start")
+async def command(ctx: BotContext[CommandEvent]):
+    await ctx.event.message.reply_text(
+        "Use below button to open app..",
+        inline_markup=InlineMarkup(
+            [[
+                InlineKeyboardButton("Open APP", callback_data="open")
+            ]]
+        )
+    )
+
+# display the page on callback
+@app.on_callback_query(regexp("^open$"))
+async def openApp(ctx: BotContext[CallbackQueryEvent]):
+    await ctx.event.answer(
+        callback=AppPage(
+            components=[
+                Text(f"HI {ctx.action_by.name}"),
+                Image(url="https://example.png"),
+                Button("Enjoy!!!", callback_data="clicked")
+            ]
+        )
+    )
+```

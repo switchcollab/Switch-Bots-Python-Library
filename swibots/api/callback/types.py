@@ -15,12 +15,16 @@ class TextSize(Enum):
     LARGE = "xx_large"
     BODY = "body"
     BOLD = "bold_body"
+    MARKDOWN = "markdown"
 
 
 class Expansion(Enum):
     DEFAULT = "default_expansion"
+    # TODO: Remove FLEXIBLE, EXPAND
     FLEXIBLE = "flexible_expansion"
     EXPAND = "expanded_expansion"
+    VERTICAL = "expanded_expansion"
+    HORIZONTAL = "flexible_expansion"
 
 
 class Component(SwitchObject):

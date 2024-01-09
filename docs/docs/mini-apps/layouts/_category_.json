@@ -1,0 +1,10 @@
+{
+  "label": "Layouts",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Building feature rich mini-apps on Switch."
+  },
+  "collapsed": true
+
+}

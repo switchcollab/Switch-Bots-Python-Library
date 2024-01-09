@@ -1,0 +1,10 @@
+{
+  "label": "MiniApps",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "Building feature rich mini-apps on Switch."
+  },
+  "collapsed": false
+
+}
