@@ -57,7 +57,7 @@ from swibots import BotApp, filters, BotContext, MessageEvent
 
 app = BotApp('TOKEN')
 
-# A filter to matcht he starting of the message sent [case insensitive]
+# A filter to match the starting of the message sent [case insensitive]
 def hello_filter(data: str):
     async def func(flt, ctx):
         m = ctx.event.message
