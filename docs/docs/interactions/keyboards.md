@@ -56,7 +56,7 @@ app = BotApp(
     auto_update_bot=False,  # disable auto update bot info
 )
 
-# Swtup what to do on receiving [buttons] command
+# Setup what to do on receiving [buttons] command
 @app.on_command("buttons")
 async def buttons_handler(ctx: BotContext[CommandEvent]):
     m = ctx.event.message
