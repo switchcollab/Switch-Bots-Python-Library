@@ -35,10 +35,10 @@ function HomepageHeader() {
 
 export default function Home() {
   const { siteConfig } = useDocusaurusContext();
-  window.addEventListener("resize", function (ev) {
-    window.location.reload();
-  })
-  const isDesktop = window.innerWidth > 500;
+//  window.addEventListener("resize", function (ev) {
+  //  window.location.reload();
+//  })
+  const isDesktop = true; //window.innerWidth > 500;
   return (
     <Layout
       title={`Hello from ${siteConfig.title}`}
