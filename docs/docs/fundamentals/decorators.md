@@ -36,13 +36,13 @@ All of the decorators take the same arguments as the corresponding handler metho
 
 
 ```python
-from swibots import BotApp, MessageHandler
+from swibots import BotApp, MessageEvent, BotContext
 
 app = BotApp("token", "your bot description")
 
 @app.on_message()
 async def message_handler(ctx: BotContext[MessageEvent]):
-   await m.reply_text(f"Thank you! I received your message: {ctx.event.message.message}")
+   await ctx.event.message.reply_text(f"Thank you! I received your message: {ctx.event.message.message}")
 
 app.run()
 ```

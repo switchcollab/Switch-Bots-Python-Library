@@ -15,13 +15,15 @@ callback queries are called after the user click the `InlineKeyboardButton`
 
 ### Example
 ```python
-from swibots import CallbackQueryEvent, BotContext
+from swibots import BotApp, CallbackQueryEvent, BotContext
+
+app = BotApp('TOKEN')
 
 @Client.on_callback_query()
-async def onCallback(ctx: BotContext[CommandEvent]):
+async def onCallback(ctx: BotContext[CallbackQueryEvent]):
     await ctx.event.answer(
         text="Hello this is a alert!",
-        show_alert=True
+        show_alert=True,
     )
 
 ```
