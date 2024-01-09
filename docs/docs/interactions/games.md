@@ -6,19 +6,16 @@ sidebar_position: 5
 Games on the are the termed referred to the web game (HTML5, any).
 
 ```python
-from swibots import InlineKeyboardButton, InlineMarkup
+from swibots import BotApp, InlineKeyboardButton, InlineMarkup
 
-await client.send_message(
+app = BotApp('TOKEN')
+
+await app.send_message(
     message="Hi",
     user_id=100,
-    inline_markup=InlineMarkup(
-        [[
-            InlineKeyboardButton(
-                text="Play Game",
-                game=True
-            )
-        ]]
-    )
+    inline_markup=InlineMarkup([
+        [InlineKeyboardButton(text="Play Game", game=True)]
+    ])
 )
 ```
 
@@ -27,7 +24,7 @@ await client.send_message(
 
 ### Creating leaderboard
 ```python
-await client.create_leaderboard(
+await app.create_leaderboard(
     user_id=user_id,
     community_id=community_id,
     score=score
@@ -36,19 +33,19 @@ await client.create_leaderboard(
 
 ### Getting Global leaderboard
 ```python
-await client.get_global_leaderboard()
+await app.get_global_leaderboard()
 ```
 
 ### Getting Community leaderboard
 ```python
-await client.get_community_leaderboard(
+await app.get_community_leaderboard(
     community_id=communityId
 )
 ```
 
 ### Getting User's score
 ```python
-await client.get_game_score(
+await app.get_game_score(
     user_id=user_id,
     community_id=communityId
     # ignore community id to get score in user's private

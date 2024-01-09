@@ -30,31 +30,25 @@ The `InlineKeyboardButton` class has 4 properties:
 - `url`: The URL that will be opened when the button is pressed.
 - `game`: Whether the button is game button, (url must be present.)
 
-:::tip You can also add a inline keyboard passing a _list of lists_ (each list
+:::tip
+You can also add a inline keyboard passing a _list of lists_
+(each list
 is an `inline_markup` row, containing another list with one or more
 `InlineKeyboardButton`) of `InlineKeyboardButton` objects to the
-`inline_keyboard` parameter of the `InlineMarkup` class. :::
+`inline_keyboard` parameter of the `InlineMarkup` class.
+:::
 
 Here is an example of how to create an inline keyboard, add it to a message and
 receive the callback data when the user presses a button:
 
 ```python
-from swibots import (
-    BotApp,
-    BotContext,
-    CallbackQueryEvent,
-    CommandEvent,
-    InlineMarkup,
-    InlineKeyboardButton,
-    regexp,
-)
-
+from swibots import BotApp, BotContext, CallbackQueryEvent, CommandEvent, InlineMarkup, InlineKeyboardButton, regexp
+import os
 
 env_file = os.path.join(os.path.dirname(__file__), "..", "..", ".env")
 load_dotenv(env_file)
 
-
-TOKEN = "YOUR_BOT_TOKEN"
+TOKEN = os.environ.get('BOT_TOKEN')
 
 # initialize the app and register commands
 app = BotApp(
@@ -62,12 +56,10 @@ app = BotApp(
     auto_update_bot=False,  # disable auto update bot info
 )
 
-
-# register buttons command
+# Swtup what to do on receiving [buttons] command
 @app.on_command("buttons")
 async def buttons_handler(ctx: BotContext[CommandEvent]):
     m = ctx.event.message
-
     inline_keyboard = [
         [
             InlineKeyboardButton(text="Option 1", callback_data="option1"),
@@ -78,9 +70,8 @@ async def buttons_handler(ctx: BotContext[CommandEvent]):
             InlineKeyboardButton(text="Option 4", callback_data="option4"),
         ],
     ]
-
     inline_markup = InlineMarkup(inline_keyboard=inline_keyboard)
-    await m.respond(f"Please select an option:", inline_markup=inline_markup)
+    await m.reply_text(f"Please select an option:", inline_markup=inline_markup)
 
 
 # handle callback query
@@ -90,6 +81,10 @@ async def callback_query_handler(ctx: BotContext[CallbackQueryEvent]):
     message.message = f"Option with data: {ctx.event.callback_data} selected!"
     await ctx.bot.edit_message(message)
 
+# Register the command to receive CommandEvent
+app.set_bot_commands([
+    BotCommand('buttons', 'Get buttons'),
+])
 
 app.run()
 ```

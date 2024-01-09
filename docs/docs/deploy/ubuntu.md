@@ -34,7 +34,6 @@ sudo apt update
 3. Install Python 3.10:
 
 ```bash
-
 sudo apt install python3.10
 ```
 
@@ -44,7 +43,6 @@ sudo apt install python3.10
 sudo apt install python3.10-distutils
 curl https://bootstrap.pypa.io/get-pip.py | sudo python3.10
 ```
-
 
 ## Install dependencies
 

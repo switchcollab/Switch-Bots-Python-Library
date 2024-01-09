@@ -53,14 +53,16 @@ app.run()
 You can use the `filters.create()` function to create your own custom filters!
 
 ```python
-from swibots import filters
+from swibots import BotApp, filters, BotContext, MessageEvent
 
-# create filter to look for word in message
+app = BotApp('TOKEN')
+
+# A filter to matcht he starting of the message sent [case insensitive]
 def hello_filter(data: str):
     async def func(flt, ctx):
         m = ctx.event.message
         if not m.message:
-            return
+            return False
         return m.message.lower().startswith(flt.data.lower())
     return filters.create(func, data=data)
 

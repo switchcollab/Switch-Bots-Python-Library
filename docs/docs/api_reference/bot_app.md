@@ -25,7 +25,7 @@ from swibots import BotApp
 
 app = BotApp("token", "This is a bot")
 
-with app:
-    app.send_message(123, "Hello world")
+async with app:
+    await app.send_message(123, "Hello world")
 
 ```

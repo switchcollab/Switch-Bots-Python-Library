@@ -19,13 +19,13 @@ To explain how handlers work let’s examine the one which will be in charge for
 The most elegant way to register a message handler is by using the `on_message()` decorator:
 
 ```python
-from swibots import BotApp, BotContext,  MessageEvent
+from swibots import BotApp, BotContext, MessageEvent
 
 app = BotApp("TOKEN")
 
 @app.on_message()
 async def message_handler(ctx: BotContext[MessageEvent]):
-   await m.reply_text(f"Thank you! I received your message: {ctx.event.message.message}")
+   await ctx.event.message.reply_text(f"Thank you! I received your message: {ctx.event.message.message}")
 
 app.run()
 ```
@@ -44,7 +44,7 @@ from swibots import BotApp, BotContext, MessageEvent, MessageHandler
 app = BotApp("TOKEN")
 
 async def handle_message(ctx: BotContext[MessageEvent]):
-    await m.reply_text(f"Thank you! I received your message: {ctx.event.message.message}")
+    await ctx.event.message.reply_text(f"Thank you! I received your message: {ctx.event.message.message}")
 
 app.add_handler(MessageHandler(handle_message))
 

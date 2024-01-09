@@ -21,11 +21,11 @@ app.run()
 ```python
 from swibots import BotApp, BotCommand
 
-app = BotApp("token", "your bot description")
+app = BotApp("token", "your bot description", auto_update_bot=False) # [False] here means the commands are set one time until the bot is running
 
 app.set_bot_commands([
-    BotCommand("hello", "Hello description", True),
-    BotCommand("bye", "By description", False)
+    BotCommand("hello", "Hello description", True), # [True] here means the command is available in communities
+    BotCommand("bye", "By description", False), # [False] here means its only available in personal chats with the bot
 ])
 
 app.run()
@@ -35,14 +35,15 @@ The app will update your bot commands every time you run it, you can disable thi
 setting `auto_update_bot` param on the `BotApp` constructor to `False`.
 
 
-:::note
-The server will only send commands to the bot if those commands are registered commands database of the bot.
+:::info
+The switch server will only send a [`CommandEvent`] to you only if you have it registred as a command!
+Otherwise it's a normal message.
 :::
 
 ### `BotCommand` class
 
 The `BotCommand` class is a dataclass that contains the following fields:
 
-- `command:str` - The command name.
+- `command:str` - The command.
 - `description:str` - The command description.
 - `channel:bool` - Whether the command is available for use in communities or not.
