@@ -25,3 +25,8 @@ list_item = ListItem(
 #   right=[Components...],
 #   left=[Components...]
 )
+```
+
+:::info
+Unlike `GridItem` which is used in `Grid`, `ListItem` is used in `Dropdown` and not `List`.
+:::
