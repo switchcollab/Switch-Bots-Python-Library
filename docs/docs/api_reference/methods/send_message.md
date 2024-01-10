@@ -27,3 +27,4 @@ async def send_message(
 - `user_session_id` (`str`): Session ID, present if bot is added as channel in the community.
 - `embed_message` ([EmbeddedMedia](../types/embedded_media.md)).
 - `inline_markup` ([InlineMarkup](../types/inline_markup.md)): Inline Markup linked with message.
+- `document` (`str`): Path to the local file to send as document.
