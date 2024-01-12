@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING, BinaryIO, Callable, List, Optional, Union
+from re import Match
 import swibots
 from io import BytesIO
 from swibots.base import SwitchObject
@@ -21,6 +22,7 @@ class Message(
         receiver_id: int = None,
         receiver: "User" = None,
         message: str = None,
+        matches: List[Match] = None,
         sent_date: int = None,
         status: int = None,
         request_id: int = None,
@@ -72,6 +74,7 @@ class Message(
         self.receiver_id = receiver_id
         self.receiver = receiver
         self.message = message
+        self.matches = matches
         self.sent_date = sent_date
         self.status = status
         self.request_id = request_id

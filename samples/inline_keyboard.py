@@ -57,12 +57,12 @@ async def buttons_handler(ctx: BotContext[CommandEvent]):
 
 
 # handle callback query
-@app.on_callback_query(regexp(r"option\d"))
+@app.on_callback_query(regexp(r"option(\d)"))
 async def callback_query_handler(ctx: BotContext[CallbackQueryEvent]):
     try:
         message = ctx.event.message
         await message.edit_text(
-            f"Option with data: {ctx.event.callback_data} selected!"
+            f"Option with data: {ctx.event.message.matches[0].group(1)} selected!" # The option number is given back
         )
     except Exception as e:
         logger.exception(f"Error while processing event: {e}")

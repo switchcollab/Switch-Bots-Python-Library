@@ -36,14 +36,29 @@ To add a filter to a handler, add the filter as a parameter to the handler class
 
 ## Filter examples
 
+### Normal filters
 ```python
-from swibots import BotApp, MessageHandler, BotContext, is_bot, community, channel, user, text, regex
+from swibots import BotApp, MessageHandler, BotContext, is_bot, community, channel, 
 
 app = BotApp("token", "your bot description")
 
 @app.on_message(is_bot & (community("123456789") | channel("123456")))
 async def message_handler(ctx: BotContext[MessageEvent]):
     await m.reply_text(f"Thank you! I received your message: {ctx.event.message.message}")
+    
+app.run()
+```
+
+### Regex filters
+```python
+from swibots import BotApp, MessageEvent, BotContext, regexp
+
+app = BotApp("token", "your bot description")
+
+@app.on_message(regexp('hello (.*)'))
+async def regex_handler(ctx: BotContext[MessageEvent]):
+    print(ctx.event.message.matches) # List[re.Match]
+    await ctx.event.message.respond(f"🦆 Hello {ctx.event.message.matches[0].group(1)}!")
     
 app.run()
 ```
