@@ -335,6 +335,9 @@ def regexp(regexp: Optional[SCT[str]]):
             try:
                 cr = re.compile(r)
                 if cr.match(value):
+                    if not isinstance(ctx.event.message.matches, list):
+                        ctx.event.message.matches = []
+                    ctx.event.message.matches.append(cr.match(value))
                     return True
             except re.error:
                 pass
