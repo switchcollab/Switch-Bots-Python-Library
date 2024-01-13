@@ -4,6 +4,8 @@ from logging import getLogger
 from swibots.utils.types import JSONDict
 from .types import ScreenType, Layout, Component, Icon
 from typing import List, Optional, Dict, Any, Union
+from .BottomBar import BottomBar
+from .ListView import ListView
 
 LOG = getLogger(__name__)
 
@@ -17,7 +19,7 @@ class AppBar(SwitchObject):
             "https://raw.githubusercontent.com/switchcollab/Switch-Bots-Python-Library/main/docs/static/img/logo.png"
         ),
         secondary_icon: Union[Icon, str] = None,
-        tertiary_icon: Union[Icon, str] = ""
+        tertiary_icon: Union[Icon, str] = "",
     ):
         self.title = title
         self.subtitle = subtitle
@@ -53,6 +55,8 @@ class AppPage(SwitchObject):
         layouts: List[Layout] = None,
         components: List[Component] = None,
         app_bar: AppBar = None,
+        bottom_bar: BottomBar = None,
+        show_continue: bool = False,
     ):
         super().__init__(app)
         self.type = "appPage"
@@ -60,12 +64,16 @@ class AppPage(SwitchObject):
         self.layouts = layouts or []
         self.components = components or []
         self.app_bar = app_bar
+        self.bottom_bar = bottom_bar
+        self.show_continue = show_continue
 
     def to_json(self) -> JSONDict:
         layouts = []
         components = []
         for layout in self.layouts:
-            if isinstance(layout, Layout):
+            if isinstance(layout, ListView):
+                layouts.extend(ListView.to_json_request())
+            elif isinstance(layout, Layout):
                 layouts.append(layout.to_json())
             else:
                 LOG.warning(f"Ignoring: {layout}: type is not layout.")
@@ -83,4 +91,8 @@ class AppPage(SwitchObject):
         }
         if self.app_bar:
             data["pageBar"] = self.app_bar.to_json()
+        if self.bottom_bar:
+            data.update(self.bottom_bar.to_json())
+        if self.show_continue:
+            data["showContinue"] = self.show_continue
         return data

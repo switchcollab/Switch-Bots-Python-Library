@@ -1,6 +1,27 @@
 from swibots.utils.types import JSONDict
-from typing import Dict, Any, Optional
-from .types import Component, Icon
+from typing import Dict, Any, Optional, Union
+from .types import Component, Image
+
+
+class AudioPlayer(Component):
+    type = "audio_player"
+
+    def __init__(
+        self, title: str, url: str, subtitle: str = "", thumb: Union[Image, str] = None
+    ):
+        self.title = title
+        self.url = url
+        self.subtitle = subtitle
+        self.thumb = thumb
+
+    def to_json(self):
+        return {
+            "type": self.type,
+            "title": self.title,
+            "subtitle": self.subtitle,
+            "image": self.thumb.to_json(),
+            "url": self.url,
+        }
 
 
 class VideoPlayer(Component):
