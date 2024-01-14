@@ -1,4 +1,4 @@
-### Grid
+# Grid
 
 The `Grid` class represents a grid layout.
 
