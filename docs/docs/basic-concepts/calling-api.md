@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Calling the API methods
 
-After your [project is set up](./project-setup) you can start creating your app
+After your [project is set up](./project-setup), you can start creating your app
 and calling the API methods
 
 ## Basic usage
