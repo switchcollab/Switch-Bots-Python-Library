@@ -32,8 +32,7 @@ class CommandEvent(MessageEvent):
         message: Optional[Message] = None,
         message_id: Optional[int] = None,
         command: Optional[str] = None,
-        params: Optional[str] = None,
-        details: Optional[Dict] = None,
+        params: Optional[str] = None
     ):
         super().__init__(
             app=app,
@@ -54,7 +53,6 @@ class CommandEvent(MessageEvent):
         )
         self.command = command
         self.params = params
-        self.details = details
 
     def from_json(self, data: JSONDict) -> "CommandEvent":
         super().from_json(data)
@@ -64,5 +62,4 @@ class CommandEvent(MessageEvent):
             if not self.command and details:
                 self.command = details.get("command")
             self.params = self.data.get("commandParams")
-            self.details = self.data.get("message", {}).get("additionalDetails")
         return self

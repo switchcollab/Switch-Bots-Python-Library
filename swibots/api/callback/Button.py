@@ -52,7 +52,8 @@ class DownloadButton(Button):
         callback_data: str = None
     ):
         super().__init__(
-            text, icon, url=download_url, file_name=file_name, action="download",
+            text, icon, url=download_url, file_name=file_name,
+            action="download",
             callback_data=callback_data
         )
 
@@ -72,4 +73,25 @@ class ButtonGroup(Component):
         return {
             "type": self.type,
             "buttons": [button.to_json() for button in self.buttons],
+        }
+
+
+class StickyHeader(Component):
+    type = "sticky_header"
+    
+    def __init__(self, text: str, color: str = None,
+                 callback_data: str = None,
+                 icon: Icon = None):
+        self.text = text
+        self.color = color
+        self.callback_data = callback_data
+        self.icon = icon
+    
+    def to_json(self):
+        return {
+            "type": self.type,
+            "text": self.text,
+            "color": self.color,
+            "callbackData": self.callback_data,
+            "icon": self.icon.to_json() if self.icon else None
         }

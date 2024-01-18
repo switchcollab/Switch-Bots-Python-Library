@@ -7,8 +7,6 @@ from .event_handler import EventHandler
 from swibots.types import EventType
 from swibots.utils.types import HandlerCallback
 
-if TYPE_CHECKING:
-    pass
 
 ResType = TypeVar("ResType")
 

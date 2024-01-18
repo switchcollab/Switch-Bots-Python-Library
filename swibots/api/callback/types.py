@@ -38,11 +38,12 @@ class Layout(SwitchObject):
 class Icon(Component):
     type = "icon"
 
-    def __init__(self, url: str):
+    def __init__(self, url: str, dark_url: str = None):
         self.url = url
+        self.dark_url = dark_url
 
     def to_json(self) -> Dict[str, Any]:
-        return {"type": self.type, "name": self.url}
+        return {"type": self.type, "name": self.url, "darkIcon": self.dark_url}
 
 
 class Text(Component):
@@ -64,12 +65,13 @@ class Text(Component):
 class Image(Component):
     type = "image"
 
-    def __init__(self, url: str, callback_data: str = None):
+    def __init__(self, url: str, callback_data: str = None, dark_url: str = None):
         self.url = url
         self.callback_data = callback_data
+        self.dark_url = dark_url
 
     def to_json(self):
-        data = {"type": self.type, "mediaUrl": self.url}
+        data = {"type": self.type, "mediaUrl": self.url, "darkMediaUrl": self.dark_url}
         if self.callback_data:
             data["callbackData"] = self.callback_data
         return data

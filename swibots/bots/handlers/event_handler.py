@@ -9,9 +9,6 @@ from swibots.bots.bot_context import BotContext
 from swibots.api.chat.events import CommandEvent
 from swibots.api.common.events import Event
 
-if TYPE_CHECKING:
-    pass
-
 ResType = TypeVar("ResType")
 
 

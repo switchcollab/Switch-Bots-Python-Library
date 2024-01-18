@@ -10,12 +10,16 @@ class BottomBarTile(SwitchObject):
         name: str,
         icon: str = "",
         selection_icon: str = "",
+        dark_icon: str = "",
+        dark_selection_icon: str = "",
         callback_data: str = "",
         selected: bool = False,
     ):
         self.name = name
         self.icon = icon
         self.selected_icon = selection_icon
+        self.dark_icon = dark_icon
+        self.dark_selection_icon = dark_selection_icon
         self.selected = selected
         self.callback_data = callback_data
 
@@ -23,13 +27,15 @@ class BottomBarTile(SwitchObject):
         return {
             "name": self.name,
             "icon": self.icon,
-            "selectedIcon": self.selected_icon,
+            "selectionIcon": self.selected_icon,
             "selected": self.selected,
             "callbackData": self.callback_data,
+            "darkIcon": self.dark_icon,
+            "darkSelectedIcon": self.dark_selection_icon
         }
 
 
-class BottomBarTypes(Enum):
+class BottomBarType(Enum):
     DEFAULT = "default"
     TOPLINE = "topline"
     BOTTOMLINE = "bottomline"
@@ -41,7 +47,7 @@ class BottomBar(SwitchObject):
     def __init__(
         self,
         options: List[BottomBarTile],
-        type: BottomBarTypes = BottomBarTypes.DEFAULT,
+        type: BottomBarType = BottomBarType.DEFAULT,
         theme_color: str = "",
     ):
         self.options = options

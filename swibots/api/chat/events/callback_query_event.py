@@ -6,6 +6,7 @@ from swibots.api.community.models.community import Community
 from swibots.api.community.models.group import Group
 from swibots.api.common.models.user import User
 from swibots.api.callback import AppPage
+from swibots.api.callback import CallbackResponse
 from swibots.api.chat.models.message import Message
 from swibots.types import EventType
 from swibots.utils.types import JSONDict
@@ -35,6 +36,7 @@ class CallbackQueryEvent(CommandEvent):
         params: Optional[str] = None,
         callback_data: Optional[JSONDict] = None,
         query_id: Optional[str] = None,
+        details: Optional[CallbackResponse] = None,
     ):
         super().__init__(
             app=app,
@@ -56,13 +58,17 @@ class CallbackQueryEvent(CommandEvent):
         )
         self.callback_data = callback_data
         self.query_id = query_id
+        self.details = details
 
     def from_json(self, data: JSONDict) -> "CallbackQueryEvent":
         super().from_json(data)
         if data is not None:
             self.callback_data = self.data.get("callbackData")
             self.query_id = self.data.get("callbackQueryId")
-            return self
+            self.details = CallbackResponse().from_json(
+                self.data.get("message", {}).get("additionalDetails")
+            )
+        return self
 
     async def answer(
         self,

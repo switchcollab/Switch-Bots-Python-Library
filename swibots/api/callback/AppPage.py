@@ -72,7 +72,7 @@ class AppPage(SwitchObject):
         components = []
         for layout in self.layouts:
             if isinstance(layout, ListView):
-                layouts.extend(ListView.to_json_request())
+                layouts.extend(layout.to_json_request())
             elif isinstance(layout, Layout):
                 layouts.append(layout.to_json())
             else:

@@ -29,7 +29,7 @@ from swibots import (
     ScreenType,
     Button,
     SearchBar,
-    SearchHolder
+    SearchHolder,
 )
 
 BOT_TOKEN = "Token here"
@@ -73,7 +73,6 @@ async def openAPP(ctx: BotContext[CallbackQueryEvent]):
                 [
                     Button("Embed", callback_data="embed"),
                     Button("Video Player", callback_data="video"),
-                    
                     Button("Carousel", callback_data="carousel"),
                 ]
             ),
@@ -93,17 +92,11 @@ async def openAPP(ctx: BotContext[CallbackQueryEvent]):
 @app.on_callback_query(regexp("showsearch$"))
 async def openAPP(ctx: BotContext[CallbackQueryEvent]):
     callback = AppPage(
-            screen=ScreenType.SCREEN,
-            components=[
-                SearchBar(
-                    callback_data="search"
-                )
-            ]
+        screen=ScreenType.SCREEN, components=[SearchBar(callback_data="search")]
     )
-    await ctx.event.answer(
-        callback=callback
-    )
+    await ctx.event.answer(callback=callback)
     print(callback.to_json())
+
 
 @app.on_callback_query(regexp("search$"))
 async def openAPP(ctx: BotContext[CallbackQueryEvent]):
@@ -187,15 +180,18 @@ async def openAPP(ctx: BotContext[CallbackQueryEvent]):
 
 @app.on_callback_query(regexp("video$"))
 async def openAPP(ctx: BotContext[CallbackQueryEvent]):
-    proc = await create_subprocess_exec(sys.executable, *[
-        "-m",
-        "yt_dlp",
-        "-f",
-        "bestaudio+bestvideo",
-        "-g",
-        "https://youtu.be/-Jros0sg3CM",
-            ],
-                        stdout=subprocess.PIPE)
+    proc = await create_subprocess_exec(
+        sys.executable,
+        *[
+            "-m",
+            "yt_dlp",
+            "-f",
+            "bestaudio+bestvideo",
+            "-g",
+            "https://youtu.be/-Jros0sg3CM",
+        ],
+        stdout=subprocess.PIPE,
+    )
     await proc.wait()
     out = (await proc.stdout.read()).decode().strip()
     print(out)
@@ -203,12 +199,7 @@ async def openAPP(ctx: BotContext[CallbackQueryEvent]):
     print(url)
     callback = AppPage(
         screen=ScreenType.SCREEN,
-        components=[
-            VideoPlayer(
-                url,
-                title="Trending of 2023"
-            )
-        ],
+        components=[VideoPlayer(url, title="Trending of 2023")],
     )
     await ctx.event.answer(callback=callback)
     print(callback.to_json())

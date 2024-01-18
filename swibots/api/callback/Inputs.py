@@ -1,7 +1,9 @@
+from swibots.utils.types import JSONDict
 from .types import Component, Icon
-from typing import Optional
+from typing import Optional, List
 
 from enum import Enum
+
 
 class KeyboardType(Enum):
     NUMBER = "number"
@@ -20,7 +22,7 @@ class TextInput(Component):
         width: int = 0,
         placeholder: Optional[str] = None,
         callback_data: Optional[str] = None,
-        keyboardType: KeyboardType = KeyboardType.DEFAULT,
+        keyboardType: KeyboardType = KeyboardType.TEXT,
         error: bool = False,
         error_text: Optional[str] = None,
         password: bool = False,
@@ -63,3 +65,25 @@ class TextInput(Component):
         if self.left_icon:
             data["leftIcon"] = self.left_icon.to_json()
         return data
+
+
+class FilePicker(Component):
+    type = "file_picker"
+
+    def __init__(
+        self,
+        callback_data: str,
+        files_count: int = 1,
+        mime_type: List[str] = ["png", "jpg", "jpeg", "webp"],
+    ):
+        self.callback_data = callback_data
+        self.files_count = files_count
+        self.mime_type = mime_type
+
+    def to_json(self):
+        return {
+            "type": self.type,
+            "callbackData": self.callback_data,
+            "numberOfFiles": self.files_count,
+            "mimeType": self.mime_type
+        }
