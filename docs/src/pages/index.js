@@ -38,7 +38,7 @@ export default function Home() {
 //  window.addEventListener("resize", function (ev) {
   //  window.location.reload();
 //  })
-  const isDesktop = true; //window.innerWidth > 500;
+  const isDesktop = true;
   return (
     <Layout
       title={`Hello from ${siteConfig.title}`}
@@ -66,7 +66,7 @@ export default function Home() {
           marginTop: 10,
         }}>Installation</h3>
         <pre>
-          pip3 install swibots
+          pip3 install swibots -U
         </pre>
         <h3 style={{
           marginTop: 15

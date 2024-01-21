@@ -443,7 +443,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
                 log.debug(er)
             except Exception as e:
                 log.exception(e)
-                run(self.stop())
+                run(self.stop()
 
-
-BotApp = Client
+class BotApp(Client):
+    ...
