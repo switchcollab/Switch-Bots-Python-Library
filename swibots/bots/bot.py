@@ -35,13 +35,6 @@ class Bot(AuthUser, ApiClient):
         self._community_client = value.community_service
         self._bot_client = value.bots_service
 
-    async def on_app_start(self, app: "BotApp"):
-        if app.auto_update_bot:
-            """Called when app start
-            This method registers the bot commands and updates the bot info
-            """
-            # await self.update_bot_commands()
-
     @property
     def info(self) -> BotInfo:
         """Get the bot info"""
@@ -56,31 +49,3 @@ class Bot(AuthUser, ApiClient):
     def commands(self) -> list[BotCommand]:
         """Get the bot commands"""
         return self._info.commands or []
-
-    async def prepare_message(self, receiver_id: int, text: str, **kwargs) -> Message:
-        """
-        Prepares a message to be sent to the given receiver.
-
-        Parameters:
-            receiver_id (:obj:`int`): The receiver's id.
-            text (:obj:`str`): The message's text.
-            **kwargs: Additional keyword arguments to pass to the message constructor.
-
-        Returns:
-            :obj:`switch.api.chat.models.Message`: The prepared message.
-        """
-        message = Message(receiver_id=receiver_id, message=text, app=self.app, **kwargs)
-        message.user_id = self.id
-        return message
-
-    async def prepare_response_message(self, message: Message) -> Message:
-        """
-        Prepares a message to be sent as a response to the given message.
-
-        Parameters:
-            message (:obj:`switch.api.chat.models.Message`): The message to respond to.
-
-        Returns:
-            :obj:`switch.api.chat.models.Message`: The prepared message.
-        """
-        return message._prepare_response()

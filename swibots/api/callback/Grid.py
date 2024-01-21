@@ -1,6 +1,13 @@
 from swibots.utils.types import JSONDict
 from .types import Layout, SwitchObject, Expansion, Component
 from typing import List, Optional
+from enum import Enum
+
+
+class GridType(Enum):
+    SMALL = "small"
+    DEFAULT = "medium"
+    LARGE = "large"
 
 
 class GridItem(Component):
@@ -12,7 +19,7 @@ class GridItem(Component):
         media: str,
         subtitle: str = "",
         callback_data: str = None,
-        selective: bool = False,
+        selective: bool = False
     ):
         self.title = title
         self.subtitle = subtitle
@@ -43,6 +50,7 @@ class Grid(Layout):
         expansion: Optional[Expansion] = Expansion.DEFAULT,
         right_image: str = None,
         image_callback: str = None,
+        grid_type: GridType = GridType.DEFAULT
     ):
         self.size = size
         self.options = options
@@ -51,6 +59,7 @@ class Grid(Layout):
         self.expansion = expansion
         self.right_image = right_image
         self.image_callback = image_callback
+        self.grid_type = grid_type
 
     def to_json(self) -> JSONDict:
         data = {
@@ -60,6 +69,7 @@ class Grid(Layout):
             "gridSize": self.size,
             "horizontalMode": self.horizontal,
             "expansion": self.expansion.value,
+            "gridStyle": self.grid_type.value
         }
         if self.right_image:
             data["subTitle"] = self.right_image

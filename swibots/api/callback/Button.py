@@ -12,6 +12,7 @@ class Button(Component):
         text: Union[str, Text],
         icon: Union[str, Icon] = "",
         callback_data: Optional[str] = None,
+        color: str = None,
         **kwargs
     ):
         if isinstance(text, str):
@@ -21,6 +22,7 @@ class Button(Component):
             icon = Icon(icon)
         self.icon = icon
         self.callback_data = callback_data
+        self.color = color
         self.action = kwargs.get("action")
         self.url = kwargs.get("url")
         self.file_name = kwargs.get("downloadFileName")
@@ -30,6 +32,7 @@ class Button(Component):
             "type": self.type,
             "text": self.text.to_json() if self.text else None,
             "callbackData": self.callback_data if self.callback_data else None,
+            "color": self.color
         }
         if self.icon:
             data["icon"] = self.icon.to_json()

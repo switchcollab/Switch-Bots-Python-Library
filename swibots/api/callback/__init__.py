@@ -2,7 +2,7 @@ from .AppPage import AppPage, AppBar
 from .Dropdown import Dropdown
 from .ListView import ListView, ListTile, ListViewType
 from .ListItem import ListItem
-from .Grid import Grid, GridItem
+from .Grid import Grid, GridItem, GridType
 from .Search import SearchBar, SearchHolder
 from .Tab import TabBar, TabBarTile, TabBarType
 from .types import Text, Image, Icon, ScreenType, TextSize, Expansion
@@ -35,6 +35,7 @@ __all__ = [
     "FileViewer",
     "Grid",
     "GridItem",
+    "GridType",
     "Icon",
     "Image",
     "ListItem",

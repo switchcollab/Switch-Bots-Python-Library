@@ -27,31 +27,3 @@ class BotContext(Generic[EventType], ApiClient):
         self.update_bot_commands = self.app.update_bot_commands
         self.set_bot_commands = self.app.set_bot_commands
         self.delete_bot_commands = self.app.delete_bot_commands
-
-    async def prepare_message(self, receiver_id: int, text: str, **kwargs) -> Message:
-        """
-        Prepares a message to be sent to the given receiver.
-
-        Parameters:
-            receiver_id (:obj:`int`): The receiver's id.
-            text (:obj:`str`): The message's text.
-            **kwargs: Additional keyword arguments to pass to the message constructor.
-
-        Returns:
-            :obj:`switch.api.chat.models.Message`: The prepared message.
-        """
-        return await self.bot.prepare_message(
-            receiver_id=receiver_id, text=text, **kwargs
-        )
-
-    async def prepare_response_message(self, message: Message) -> Message:
-        """
-        Prepares a message to be sent as a response to the given message.
-
-        Parameters:
-            message (:obj:`switch.api.chat.models.Message`): The message to respond to.
-
-        Returns:
-            :obj:`switch.api.chat.models.Message`: The prepared message.
-        """
-        return await self.bot.prepare_response_message(message=message)

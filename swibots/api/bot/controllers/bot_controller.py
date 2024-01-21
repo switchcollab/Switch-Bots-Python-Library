@@ -76,7 +76,7 @@ class BotController:
             data={
                 "type": "callback",
                 "callbackQueryId": callback_id,
-                "messageId": message_id,
+                "messageId": str(message_id),
                 "text": text,
                 "url": url,
                 "showAlerts": show_alert,

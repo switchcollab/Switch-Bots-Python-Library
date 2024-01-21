@@ -77,11 +77,16 @@ class CallbackQueryEvent(CommandEvent):
         show_alert: Optional[bool] = False,
         cache_time: Optional[int] = None,
         callback: Optional[AppPage] = None,
+        new_page: bool = False
     ) -> bool:
         """Answer callback query"""
         if callback:
+            query_id = self.query_id
+            if not new_page and self.details.parent_id:
+                query_id = self.details.parent_id
+
             return await self.app.answer_ui_query(
-                self.query_id, callback=callback, message_id=self.message.id
+                query_id, callback=callback, message_id=self.message.id
             )
         return await self.app.answer_callback_query(
             self.query_id,

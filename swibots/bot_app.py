@@ -81,11 +81,9 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         self._bot_description = bot_description
         self.auto_update_bot = auto_update_bot
         self._loop = loop or asyncio.get_event_loop()
-        self.user = self._loop.run_until_complete(
-            self.get_me(user_type=self._user_type)
-        )
-        self.name = self.user.user_name
-        self._bot_id = self.user.id
+        self.user = None
+        self.name = None
+        self._bot_id = None
         self._running = False
         self._user_type = Bot
         self.rest_client = RestClient()
@@ -332,6 +330,8 @@ class Client(Decorators, AbstractContextManager, ApiClient):
                 self.user.user_name,
                 self.user.id,
             )
+            self.name = self.user.user_name
+            self._bot_id = self.user.id
         except Exception as e:
             log.exception(e)
             await self.stop()
@@ -340,7 +340,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         if self.user is None:
             raise TokenInvalidError("Invalid token")
 
-        await self.user.on_app_start(self)
+        await self._on_app_start()
 
     async def _on_app_stop(self):
         await self.chat_service.stop()
@@ -443,7 +443,8 @@ class Client(Decorators, AbstractContextManager, ApiClient):
                 log.debug(er)
             except Exception as e:
                 log.exception(e)
-                run(self.stop()
+                run(self.stop())
+
 
 class BotApp(Client):
     ...
