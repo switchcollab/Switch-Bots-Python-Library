@@ -49,16 +49,24 @@ class Icon(Component):
 class Text(Component):
     type = "text"
 
-    def __init__(self, text: str, size: TextSize = TextSize.BODY, opacity: float = 1):
+    def __init__(
+        self,
+        text: str,
+        size: TextSize = TextSize.BODY,
+        opacity: float = 1,
+        color: str = None,
+    ):
         self.text = text
         self.size = size
         self.opacity = opacity
+        self.color = color
 
     def to_json(self) -> Dict[str, Any]:
         return {
             "type": self.type,
             "text": self.text,
             "textType": self.size.value,
+            "color": self.color,
         }
 
 

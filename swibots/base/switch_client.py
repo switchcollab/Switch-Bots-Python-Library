@@ -13,7 +13,7 @@ LOG = getLogger(__name__)
 
 class SwitchRestClient(RestClient):
     def __init__(
-        self, app: "swibots.BotApp" = None, base_url: str = None, token: str = None
+        self, app: "swibots.Client" = None, base_url: str = None, token: str = None
     ):
         super().__init__()
         self._app = app
@@ -21,11 +21,11 @@ class SwitchRestClient(RestClient):
         self._base_url = base_url
 
     @property
-    def app(self) -> "swibots.BotApp":
+    def app(self) -> "swibots.Client":
         return self._app
 
     @app.setter
-    def app(self, app: "swibots.BotApp"):
+    def app(self, app: "swibots.Client"):
         self._app = app
 
     @property

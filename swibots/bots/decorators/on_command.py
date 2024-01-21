@@ -6,12 +6,12 @@ from swibots.utils.types import SCT
 
 class OnCommand:
     def on_command(
-        self: "swibots.BotApp", command: SCT[str], filter: Optional[Filter] = None
+        self: "swibots.Client", command: SCT[str], filter: Optional[Filter] = None
     ) -> Callable:
         """Decorator for handling new commands."""
 
         def decorator(func: Callable) -> Callable:
-            if isinstance(self, swibots.BotApp):
+            if isinstance(self, swibots.Client):
                 self.add_handler(
                     swibots.bots.handlers.CommandHandler(command, func, filter)
                 )

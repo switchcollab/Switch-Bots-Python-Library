@@ -84,7 +84,6 @@ class CallbackQueryEvent(CommandEvent):
             query_id = self.query_id
             if not new_page and self.details.parent_id:
                 query_id = self.details.parent_id
-
             return await self.app.answer_ui_query(
                 query_id, callback=callback, message_id=self.message.id
             )

@@ -5,11 +5,11 @@ from swibots.api.bot.models import BotInfo, BotCommand
 from swibots.api.chat.models import Message
 
 if TYPE_CHECKING:
-    from swibots import BotApp
+    from swibots import Client
 
 
 class Bot(AuthUser, ApiClient):
-    def __init__(self, app: Optional["BotApp"] = None):
+    def __init__(self, app: Optional["Client"] = None):
         super().__init__(app)
         self._app = app
         self._info: BotInfo = None
@@ -23,11 +23,11 @@ class Bot(AuthUser, ApiClient):
         self.delete_bot_commands = self.app.delete_bot_commands
 
     @property
-    def app(self) -> "BotApp":
+    def app(self) -> "Client":
         return self._app
 
     @app.setter
-    def app(self, value: "BotApp"):
+    def app(self, value: "Client"):
         self._app = value
         # copy the api client
         self._chat_client = value.chat_service

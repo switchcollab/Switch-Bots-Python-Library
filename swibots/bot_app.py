@@ -109,9 +109,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         Returns:
             :obj:`List[BaseHandler]`: The list of handlers.
         """
-        if self._handlers is None:
-            self._handlers = []
-        return self._handlers
+        return self._handlers 
 
     def load_path(self, path):
         baseName = os.path.basename(path)
@@ -191,7 +189,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         asyncio.run_coroutine_threadsafe(self.update_bot_commands(), self._loop)
         return self
 
-    def delete_bot_commands(self, command: BotCommand | List[BotCommand]) -> "BotApp":
+    def delete_bot_commands(self, command: BotCommand | List[BotCommand]) -> "Client":
         if isinstance(command, list):
             for cmd in command:
                 self._register_commands.remove(cmd)
@@ -446,5 +444,4 @@ class Client(Decorators, AbstractContextManager, ApiClient):
                 run(self.stop())
 
 
-class BotApp(Client):
-    ...
+BotApp = Client
