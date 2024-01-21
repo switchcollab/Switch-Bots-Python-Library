@@ -2,9 +2,9 @@
 sidebar_position: 1
 ---
 
-# BotApp
+# Client
 
-`Class swibots.BotApp`
+`Class swibots.Client`
 
 This is the main class of the library. It is used to create a bot app and to call the API methods.
 
@@ -21,9 +21,9 @@ This is the main class of the library. It is used to create a bot app and to cal
 ## Example
 
 ```python
-from swibots import BotApp
+from swibots import Client
 
-app = BotApp("token", "This is a bot")
+app = Client("token", "This is a bot")
 
 async with app:
     await app.send_message(123, "Hello world")

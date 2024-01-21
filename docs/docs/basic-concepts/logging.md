@@ -7,14 +7,14 @@ sidebar_position: 4
 It is crucial you turn on the logging for swibots for better productivity!
 
 ```python {3,4} title="main.py"
-from switbots import BotApp
+from switbots import Client
 
 import logging
 logging.basicConfig(level=logging.INFO)
 
 TOKEN = "" # Always import from [.env] file or system env
 
-bot = BotApp(TOKEN, "My bot description")
+bot = Client(TOKEN, "My bot description")
 
 bot.run()
 ```

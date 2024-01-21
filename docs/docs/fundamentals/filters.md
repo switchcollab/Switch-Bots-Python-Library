@@ -38,9 +38,9 @@ To add a filter to a handler, add the filter as a parameter to the handler class
 
 ### Normal filters
 ```python
-from swibots import BotApp, MessageHandler, BotContext, is_bot, community, channel, 
+from swibots import Client, MessageHandler, BotContext, is_bot, community, channel, 
 
-app = BotApp("token", "your bot description")
+app = Client("token", "your bot description")
 
 @app.on_message(is_bot & (community("123456789") | channel("123456")))
 async def message_handler(ctx: BotContext[MessageEvent]):
@@ -51,9 +51,9 @@ app.run()
 
 ### Regex filters
 ```python
-from swibots import BotApp, MessageEvent, BotContext, regexp
+from swibots import Client, MessageEvent, BotContext, regexp
 
-app = BotApp("token", "your bot description")
+app = Client("token", "your bot description")
 
 @app.on_message(regexp('hello (.*)'))
 async def regex_handler(ctx: BotContext[MessageEvent]):
@@ -68,9 +68,9 @@ app.run()
 You can use the `filters.create()` function to create your own custom filters!
 
 ```python
-from swibots import BotApp, filters, BotContext, MessageEvent
+from swibots import Client, filters, BotContext, MessageEvent
 
-app = BotApp('TOKEN')
+app = Client('TOKEN')
 
 # A filter to match the starting of the message sent [case insensitive]
 def hello_filter(data: str):

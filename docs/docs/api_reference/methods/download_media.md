@@ -36,14 +36,14 @@ async def download_media(
 
 ```python
 from swibots import (
-    BotApp,
+    Client,
     Message,
     DownloadProgress,
 )
 
 TOKEN = "YOUR_TOKEN_HERE"
 
-app = BotApp(
+app = Client(
     TOKEN,
     "A cool bot with annotations and everything you could possibly want :)"
 )

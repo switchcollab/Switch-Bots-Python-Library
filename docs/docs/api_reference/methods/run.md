@@ -8,9 +8,9 @@ You are most likely to use this method in your main function.
 
 ```python
 
-from swibots import BotApp
+from swibots import Client
 
-app = BotApp()
+app = Client()
 
 # register your handlers here
 

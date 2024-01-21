@@ -6,9 +6,9 @@ sidebar_position: 5
 Games on the are the termed referred to the web game (HTML5, any).
 
 ```python
-from swibots import BotApp, InlineKeyboardButton, InlineMarkup
+from swibots import Client, InlineKeyboardButton, InlineMarkup
 
-app = BotApp('TOKEN')
+app = Client('TOKEN')
 
 await app.send_message(
     message="Hi",

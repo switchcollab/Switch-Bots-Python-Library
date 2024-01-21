@@ -12,9 +12,9 @@ and calling the API methods
 Making API calls with SwiBots is very simple. Here’s a basic example we are going to examine step by step:
 
 ```python
-from swibots import BotApp
+from swibots import Client
 
-app = BotApp("TOKEN")
+app = Client("TOKEN")
 
 async def main():
     async with app:
@@ -26,16 +26,16 @@ app.run(main())
 
 ## Step by step
 
-1. Import the BotApp from swibots, you will import all your classes from this package
+1. Import the Client from swibots, you will import all your classes from this package
 
 ```python
-from swibots import BotApp
+from swibots import Client
 ```
 
 2. Instantiate the class with your TOKEN
 
 ```python
-app = BotApp("TOKEN")
+app = Client("TOKEN")
 ```
 
 3. Async methods must be invoked within an async context. Here we define an async function and put our code inside. Also notice the `await` keyword in front of the method call; this is required for all asynchronous methods.
@@ -47,7 +47,7 @@ async def main():
         print(me)
 ```
 
-4. Finally, we tell Python to schedule our main() async function by using BotApp run() method.
+4. Finally, we tell Python to schedule our main() async function by using Client run() method.
 
 ```python
 app.run(main())
@@ -60,9 +60,9 @@ The async with statement starts a context manager, which is used as a shortcut f
 Below there’s the same example as above, but without the use of the context manager:
 
 ```python
-from swibots import BotApp
+from swibots import Client
 
-app = BotApp("TOKEN")
+app = Client("TOKEN")
 
 
 async def main():
@@ -81,10 +81,10 @@ Alternatively to the run() method, you can use Python’s asyncio.run() to execu
 
 ```python
 import asyncio
-from swibots import BotApp
+from swibots import Client
 
 async def main():
-    app = BotApp("TOKEN")
+    app = Client("TOKEN")
     async with app:
         me = await app.get_me()
         print(me)

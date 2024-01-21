@@ -32,7 +32,7 @@ The InlineQuery object represents an incoming inline query. When the user sends 
 import logging
 import json
 from typing import Tuple
-from swibots import (BotApp, BotContext, MessageEvent, Message, InlineQuery,  
+from swibots import (Client, BotContext, MessageEvent, Message, InlineQuery,  
                      InlineQueryEvent, RestClient, RestResponse, JSONDict,
                      NetworkError, InlineQueryResultArticle,
                      InputMessageContent)
@@ -59,7 +59,7 @@ def parse_response(response: Tuple[int, bytes]) -> RestResponse[JSONDict]:
 
 TOKEN = "your_token"
 
-app = BotApp(TOKEN, "This is an inline query bot")
+app = Client(TOKEN, "This is an inline query bot")
 
 @app.on_message()
 async def on_message(ctx: BotContext[MessageEvent]):

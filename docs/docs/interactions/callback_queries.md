@@ -15,9 +15,9 @@ callback queries are called after the user click the `InlineKeyboardButton`
 
 ### Example
 ```python
-from swibots import BotApp, CallbackQueryEvent, BotContext
+from swibots import Client, CallbackQueryEvent, BotContext
 
-app = BotApp('TOKEN')
+app = Client('TOKEN')
 
 @Client.on_callback_query()
 async def onCallback(ctx: BotContext[CallbackQueryEvent]):

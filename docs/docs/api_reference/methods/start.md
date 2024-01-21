@@ -5,9 +5,9 @@ Starts the app and starts listening for updates.
 ## Example
 
 ```python
-from swibots import BotApp
+from swibots import Client
 
-app = BotApp("TOKEN")
+app = Client("TOKEN")
 
 async def main():
     await app.start()

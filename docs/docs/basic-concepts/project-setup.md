@@ -17,15 +17,15 @@ Never share your AuthKey or commit it to any source code versioning system!
 
 # Configuration
 
-Having the API key from the previous step, we can now begin to configure a SwiBots project: pass your API key to SwiBots by using the token parameter of the BotApp class:
+Having the API key from the previous step, we can now begin to configure a SwiBots project: pass your API key to SwiBots by using the token parameter of the Client class:
 
 ```python
-from swibots import BotApp
+from swibots import Client
 
 TOKEN = "MY SUPER SECRET TOKEN"
 
 # initialize the app
-app = BotApp(
+app = Client(
     TOKEN
 )
 ```

@@ -42,7 +42,7 @@ Here is an example of how to create an inline keyboard, add it to a message and
 receive the callback data when the user presses a button:
 
 ```python
-from swibots import BotApp, BotContext, CallbackQueryEvent, CommandEvent, InlineMarkup, InlineKeyboardButton, regexp
+from swibots import Client, BotContext, CallbackQueryEvent, CommandEvent, InlineMarkup, InlineKeyboardButton, regexp
 import os
 
 env_file = os.path.join(os.path.dirname(__file__), "..", "..", ".env")
@@ -51,7 +51,7 @@ load_dotenv(env_file)
 TOKEN = os.environ.get('BOT_TOKEN')
 
 # initialize the app and register commands
-app = BotApp(
+app = Client(
     TOKEN,
     auto_update_bot=False,  # disable auto update bot info
 )

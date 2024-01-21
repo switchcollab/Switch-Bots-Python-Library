@@ -13,7 +13,7 @@ Commands have also parameters, which are separated by spaces. For example, the c
 ## Registering commands
 
 :::info
-Commands must be registered into the bot creating an instance of `RegisterCommand` class and passing it to the `add_command` method of the `BotApp` class.
+Commands must be registered into the bot creating an instance of `RegisterCommand` class and passing it to the `add_command` method of the `Client` class.
 :::
 
 The `BotCommand` class takes 2 parameters:
@@ -23,11 +23,11 @@ The `BotCommand` class takes 2 parameters:
 - `channel:bool`: Whether the command can be used in a channel or not. Defaults to `False`.
 
 ```python
-from swibots import BotApp, BotCommand
+from swibots import Client, BotCommand
 
 TOKEN= "YOUR_TOKEN"
 
-app = BotApp(
+app = Client(
     TOKEN,
     "A cool bot with annotations and everything you could possibly want :)"
 )
@@ -54,11 +54,11 @@ To handle the command, you must create a handler function and register it using 
 The handler function must accept a `BotContext[CommandEvent]` as its only argument.
 
 ```python
-from swibots import BotApp, BotCommand, BotContext, CommandEvent
+from swibots import Client, BotCommand, BotContext, CommandEvent
 
 TOKEN = "YOUR_TOKEN"
 
-app = BotApp(
+app = Client(
     TOKEN,
     "A cool bot with annotations and everything you could possibly want :)"
 )

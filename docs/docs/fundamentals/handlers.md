@@ -25,9 +25,9 @@ To define a handler callback function you must use the `async def` syntax, and t
 This is an example of how to create a handler function for each type of event:
 
 ```python
-from swibots import BotApp, BotContext, MessageEvent, CommandEvent, CommandHandler, MessageHandler
+from swibots import Client, BotContext, MessageEvent, CommandEvent, CommandHandler, MessageHandler
 
-app = BotApp("token", "your bot description")
+app = Client("token", "your bot description")
 
 async def message_handler(ctx: BotContext[MessageEvent]):
     await ctx.event.message.reply_text(f"Thank you! I received your message: {ctx.event.message.message}")
@@ -50,9 +50,9 @@ Handlers are registered with the `add_handler` function of the app. The function
 This is an example of how to register a handler function:
 
 ```python
-from swibots import BotApp, MessageHandler
+from swibots import Client, MessageHandler
 
-app = BotApp("token", "your bot description")
+app = Client("token", "your bot description")
 
 async def message_handler(ctx: BotContext[MessageEvent]):
     await ctx.event.message.reply_text(f"Thank you! I received your message: {ctx.event.message.message}")
@@ -75,10 +75,10 @@ The `MessageHandler` is a handler for the `MessageEvent`. It is called when a me
 
 #### Example
 ```python
-from swibots import BotApp, MessageHandler, MessageEvent, BotContext
+from swibots import Client, MessageHandler, MessageEvent, BotContext
 
 # create app and call it app
-app = BotApp('TOKEN')
+app = Client('TOKEN')
 
 # handler callback function
 async def message_handler(context: BotContext[MessageEvent]):
@@ -101,10 +101,10 @@ The `CommandHandler` is a handler for the `CommandEvent`. It is called when a co
 
 #### Example
 ```python
-from swibots import BotApp, CommandHandler, CommandEvent, BotContext
+from swibots import Client, CommandHandler, CommandEvent, BotContext
 
 # create app and call it app
-app = BotApp('TOKEN')
+app = Client('TOKEN')
 
 # handler callback function
 async def command_handler(context: BotContext[CommandEvent]):
@@ -128,10 +128,10 @@ The `CallbackQueryHandler` is a handler for the `CallbackQueryEvent`. It is call
 #### Example
 ```python
 
-from swibots import BotApp, CallbackQueryHandler, CallbackQueryEvent, BotContext
+from swibots import Client, CallbackQueryHandler, CallbackQueryEvent, BotContext
 
 # create app and call it app
-app = BotApp('TOKEN')
+app = Client('TOKEN')
 
 # handler callback function
 async def callback_query_handler(context: BotContext[CallbackQueryEvent]):
@@ -155,10 +155,10 @@ The `InlineQueryHandler` is a handler for the `InlineQueryEvent`. It is called w
 
 ```python
 
-from swibots import BotApp, InlineQueryHandler, InlineQueryEvent, InlineQuery, BotContext
+from swibots import Client, InlineQueryHandler, InlineQueryEvent, InlineQuery, BotContext
 
 # create app and call it app
-app = BotApp('TOKEN')
+app = Client('TOKEN')
 
 # handler callback function
 async def inline_query_handler(context: BotContext[InlineQueryEvent]):
@@ -186,10 +186,10 @@ The `CommunityUpdatedHandler` is a handler for the `CommunityUpdatedEvent`. It i
 
 ```python
 
-from swibots import BotApp, CommunityUpdatedHandler, CommunityUpdatedEvent, BotContext, Community
+from swibots import Client, CommunityUpdatedHandler, CommunityUpdatedEvent, BotContext, Community
 
 # create app and call it app
-app = BotApp('TOKEN')
+app = Client('TOKEN')
 
 # handler callback function
 async def community_updated_handler(context: BotContext[CommunityUpdatedEvent]):
@@ -214,10 +214,10 @@ The `MemberJoinedHandler` is a handler for the `MemberJoinedEvent`. It is called
 
 ```python
 
-from swibots import BotApp, MemberJoinedHandler, MemberJoinedEvent, BotContext, User
+from swibots import Client, MemberJoinedHandler, MemberJoinedEvent, BotContext, User
 
 # create app and call it app
-app = BotApp('TOKEN')
+app = Client('TOKEN')
 
 # handler callback function
 async def member_joined_handler(context: BotContext[MemberJoinedEvent]):
@@ -242,10 +242,10 @@ The `MemberLeftHandler` is a handler for the `MemberLeftEvent`. It is called whe
 
 ```python
 
-from swibots import BotApp, MemberLeftHandler, MemberLeftEvent, BotContext, User
+from swibots import Client, MemberLeftHandler, MemberLeftEvent, BotContext, User
 
 # create app and call it app
-app = BotApp('TOKEN')
+app = Client('TOKEN')
 
 # handler callback function
 async def member_left_handler(context: BotContext[MemberLeftEvent]):
@@ -269,10 +269,10 @@ The `ChannelUpdatedHandler` is a handler for the `ChannelUpdatedEvent`. It is ca
 
 ```python
 
-from swibots import BotApp, ChannelUpdatedHandler, ChannelUpdatedEvent, BotContext, Channel
+from swibots import Client, ChannelUpdatedHandler, ChannelUpdatedEvent, BotContext, Channel
 
 # create app and call it app
-app = BotApp('TOKEN')
+app = Client('TOKEN')
 
 # handler callback function
 async def channel_updated_handler(context: BotContext[ChannelUpdatedEvent]):
@@ -297,10 +297,10 @@ The `ChannelCreatedHandler` is a handler for the `ChannelCreatedEvent`. It is ca
 
 ```python
 
-from swibots import BotApp, ChannelCreatedHandler, ChannelCreatedEvent, BotContext, Channel
+from swibots import Client, ChannelCreatedHandler, ChannelCreatedEvent, BotContext, Channel
 
 # create app and call it app
-app = BotApp('TOKEN')
+app = Client('TOKEN')
 
 # handler callback function
 async def channel_created_handler(context: BotContext[ChannelCreatedEvent]):
@@ -324,10 +324,10 @@ The `ChannelDeletedHandler` is a handler for the `ChannelDeletedEvent`. It is ca
 
 ```python
 
-from swibots import BotApp, ChannelDeletedHandler, ChannelDeletedEvent, BotContext, Channel
+from swibots import Client, ChannelDeletedHandler, ChannelDeletedEvent, BotContext, Channel
 
 # create app and call it app
-app = BotApp('TOKEN')
+app = Client('TOKEN')
 
 # handler callback function
 async def channel_deleted_handler(context: BotContext[ChannelDeletedEvent]):
@@ -351,10 +351,10 @@ The `GroupUpdatedHandler` is a handler for the `GroupUpdatedEvent`. It is called
 
 ```python
 
-from swibots import BotApp, GroupUpdatedHandler, GroupUpdatedEvent, BotContext, Group
+from swibots import Client, GroupUpdatedHandler, GroupUpdatedEvent, BotContext, Group
 
 # create app and call it app
-app = BotApp('TOKEN')
+app = Client('TOKEN')
 
 # handler callback function
 async def group_updated_handler(context: BotContext[GroupUpdatedEvent]):
@@ -378,10 +378,10 @@ The `GroupCreatedHandler` is a handler for the `GroupCreatedEvent`. It is called
 
 ```python
 
-from swibots import BotApp, GroupCreatedHandler, GroupCreatedEvent, BotContext, Group
+from swibots import Client, GroupCreatedHandler, GroupCreatedEvent, BotContext, Group
 
 # create app and call it app
-app = BotApp('TOKEN')
+app = Client('TOKEN')
 
 # handler callback function
 async def group_created_handler(context: BotContext[GroupCreatedEvent]):
@@ -407,10 +407,10 @@ The `GroupDeletedHandler` is a handler for the `GroupDeletedEvent`. It is called
 
 ```python
 
-from swibots import BotApp, GroupDeletedHandler, GroupDeletedEvent, BotContext, Group
+from swibots import Client, GroupDeletedHandler, GroupDeletedEvent, BotContext, Group
 
 # create app and call it app
-app = BotApp('TOKEN')
+app = Client('TOKEN')
 
 # handler callback function
 async def group_deleted_handler(context: BotContext[GroupDeletedEvent]):
@@ -434,10 +434,10 @@ The `UserBannedHandler` is a handler for the `UserBannedEvent`. It is called whe
 
 ```python
 
-from swibots import BotApp, UserBannedHandler, UserBannedEvent, BotContext, User, Group
+from swibots import Client, UserBannedHandler, UserBannedEvent, BotContext, User, Group
 
 # create app and call it app
-app = BotApp('TOKEN')
+app = Client('TOKEN')
 
 # handler callback function
 async def user_banned_handler(context: BotContext[UserBannedEvent]):

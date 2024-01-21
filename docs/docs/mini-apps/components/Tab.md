@@ -1,10 +1,8 @@
 # TabBar
 
-Represents a layout containing a tab bar.
+Represents a component containing a tab bar.
 
 ### Properties:
-
-- `type`: The type of the tab bar layout, set to "tab".
 - `tabs`: A list of `TabBarTile` instances representing individual tabs.
 - `bar_type`: The type of the tab bar, default is `TabBarType.SWIPE`.
 

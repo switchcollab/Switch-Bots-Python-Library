@@ -76,7 +76,7 @@ export default function Home() {
         <pre style={{
           width: isDesktop ? "max-content" : null
         }}>
-          async with BotApp(token) as bot:<br />
+          async with Client(token) as bot:<br />
           {'    '}await bot.send_message(user_id=0,
           message="Hello 👋 from swibots!")
         </pre>

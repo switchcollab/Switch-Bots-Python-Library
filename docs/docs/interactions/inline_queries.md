@@ -24,7 +24,7 @@ Here is an example of how to handle an inline query:
 import logging
 import json
 from typing import Tuple
-from swibots import BotApp, BotContext, MessageEvent, Message, InlineQuery, InlineQueryEvent, RestClient, RestResponse, JSONDict, NetworkError, InlineQueryResultArticle, InputMessageContent
+from swibots import Client, BotContext, MessageEvent, Message, InlineQuery, InlineQueryEvent, RestClient, RestResponse, JSONDict, NetworkError, InlineQueryResultArticle, InputMessageContent
 
 logging.basicConfig(level=logging.INFO)
 
@@ -47,7 +47,7 @@ def parse_response(response: Tuple[int, bytes]) -> RestResponse[JSONDict]:
 
 TOKEN = "your_token"
 
-app = BotApp(TOKEN, "This is an inline query bot")
+app = Client(TOKEN, "This is an inline query bot")
 
 @app.on_message()
 async def on_message(ctx: BotContext[MessageEvent]):

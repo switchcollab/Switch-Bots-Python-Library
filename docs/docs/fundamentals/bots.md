@@ -3,12 +3,12 @@ sidebar_position: 1
 ---
 
 # Bots
-Every bot is an instance of the `BotApp` class. You can create a new bot by calling the `BotApp` constructor and passing it the bot token and the bot description.
+Every bot is an instance of the `Client` class. You can create a new bot by calling the `Client` constructor and passing it the bot token and the bot description.
 
 ```python
-from swibots import BotApp
+from swibots import Client
 
-app = BotApp("token", "your bot description")
+app = Client("token", "your bot description")
 
 app.run()
 
@@ -19,9 +19,9 @@ app.run()
 **In order to be able to use the bot commands, you need to register them with the `set_bot_commands` method of the app.** This method accepts a list of `BotCommand` objects.
 
 ```python
-from swibots import BotApp, BotCommand
+from swibots import Client, BotCommand
 
-app = BotApp("token", "your bot description", auto_update_bot=False) # [False] here means the commands are set one time until the bot is running
+app = Client("token", "your bot description", auto_update_bot=False) # [False] here means the commands are set one time until the bot is running
 
 app.set_bot_commands([
     BotCommand("hello", "Hello description", True), # [True] here means the command is available in communities
@@ -32,7 +32,7 @@ app.run()
 ```
 
 The app will update your bot commands every time you run it, you can disable this behavior (for example, you just want to register your commands one time and you are not planning to update them) 
-setting `auto_update_bot` param on the `BotApp` constructor to `False`.
+setting `auto_update_bot` param on the `Client` constructor to `False`.
 
 
 :::info

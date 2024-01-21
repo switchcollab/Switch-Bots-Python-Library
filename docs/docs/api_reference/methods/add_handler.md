@@ -4,7 +4,7 @@ Add a handler to the bot.
 
 ## Signature
 
-`def add_handler(self, handler: BaseHandler | List[BaseHandler]) -> BotApp`
+`def add_handler(self, handler: BaseHandler | List[BaseHandler]) -> Client`
 
 ## Parameters
 
@@ -16,7 +16,7 @@ Add a handler to the bot.
 ```python
 
 
-from swibots import BotApp, BotContext, CommandEvent, MessageEvent, CallbackQueryEvent, filters, InlineKeyboardButton, InlineMarkup, BotCommandInfo
+from swibots import Client, BotContext, CommandEvent, MessageEvent, CallbackQueryEvent, filters, InlineKeyboardButton, InlineMarkup, BotCommandInfo
 
 from swibots.bots.handlers import (
     MessageHandler,
@@ -32,7 +32,7 @@ async def echo(ctx: BotContext[CommandEvent]):
     m.message = f"Your message: {text}"
     await ctx.bot.send_message(m)
 
-app = BotApp()
+app = Client()
 
 # register your handlers here
 

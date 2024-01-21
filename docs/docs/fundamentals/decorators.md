@@ -36,9 +36,9 @@ All of the decorators take the same arguments as the corresponding handler metho
 
 
 ```python
-from swibots import BotApp, MessageEvent, BotContext
+from swibots import Client, MessageEvent, BotContext
 
-app = BotApp("token", "your bot description")
+app = Client("token", "your bot description")
 
 @app.on_message()
 async def message_handler(ctx: BotContext[MessageEvent]):
