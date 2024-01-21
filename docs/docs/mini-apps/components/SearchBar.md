@@ -24,3 +24,14 @@ search_bar = SearchBar(
     callback_data="Callback Data"
 )
 ```
+
+:::note
+The search query can be obtained as shown below:
+
+```python
+@app.on_callback_query(regexp(...))
+async def onCallback(ctx: BotContext[CallbackQueryEvent]):
+    input_ = ctx.event.details.search_query
+    print("User searched for", input_)
+```
+:::
