@@ -38,7 +38,7 @@ export default function Home() {
 //  window.addEventListener("resize", function (ev) {
   //  window.location.reload();
 //  })
-  const isDesktop = window.innerWidth > 500;
+  const isDesktop = true;
   return (
     <Layout
       title={`Hello from ${siteConfig.title}`}
