@@ -32,10 +32,11 @@ class SearchBar(Component):
         label: Optional[str] = None,
         callback_data: Optional[str] = None,
         right_icon: Union[Icon, str] = Icon(
-            "https://img.icons8.com/?size=50&id=12773&format=png"
+            "https://img.icons8.com/?size=50&id=KPmthqkeTgDN&format=png"
         ),
         left_icon: Union[Icon, str] = Icon(
-            "https://img.icons8.com/?size=50&id=47516&format=png"
+            "https://img.icons8.com/?size=50&id=357&format=png",
+            "https://img.icons8.com/?size=50&id=357&format=png&color=ffffff"
         ),
     ):
         self.placeholder = placeholder

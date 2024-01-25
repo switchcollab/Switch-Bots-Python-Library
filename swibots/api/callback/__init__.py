@@ -5,7 +5,7 @@ from .ListItem import ListItem
 from .Grid import Grid, GridItem, GridType
 from .Search import SearchBar, SearchHolder
 from .Tab import TabBar, TabBarTile, TabBarType
-from .types import Text, Image, Icon, ScreenType, TextSize, Expansion
+from .types import Text, Image, Icon, ScreenType, TextSize, Expansion, Spacer
 from .BottomBar import BottomBarTile, BottomBarType, BottomBar
 from .Players import VideoPlayer, Embed, AudioPlayer, FileViewer
 from .Inputs import TextInput, FilePicker
@@ -45,6 +45,7 @@ __all__ = [
     "ScreenType",
     "SearchBar",
     "SearchHolder",
+    "Spacer",
     "StickyHeader",
     "TabBar",
     "TabBarTile",

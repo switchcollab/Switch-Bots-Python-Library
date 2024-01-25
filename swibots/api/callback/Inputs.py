@@ -20,14 +20,15 @@ class TextInput(Component):
         label: str,
         value: str = "",
         width: int = 0,
-        placeholder: Optional[str] = None,
-        callback_data: Optional[str] = None,
+        placeholder: Optional[str] = "",
+        callback_data: Optional[str] = "",
         keyboardType: KeyboardType = KeyboardType.TEXT,
         error: bool = False,
-        error_text: Optional[str] = None,
+        error_text: Optional[str] = "",
         password: bool = False,
         right_icon: Optional[Icon] = None,
         left_icon: Optional[Icon] = None,
+        multiline: bool = False
     ):
         self.label = label
         self.width = width
@@ -38,6 +39,7 @@ class TextInput(Component):
         self.error = error
         self.error_text = error_text
         self.password = password
+        self.multiline = multiline
 
         if isinstance(right_icon, str):
             right_icon = Icon(right_icon)
@@ -64,6 +66,8 @@ class TextInput(Component):
             data["rightIcon"] = self.right_icon.to_json()
         if self.left_icon:
             data["leftIcon"] = self.left_icon.to_json()
+        if self.multiline:
+            data['expansion'] = "flexible_expansion"
         return data
 
 

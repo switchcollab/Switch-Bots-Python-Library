@@ -40,7 +40,7 @@ class Icon(Component):
 
     def __init__(self, url: str, dark_url: str = None):
         self.url = url
-        self.dark_url = dark_url
+        self.dark_url = dark_url or url
 
     def to_json(self) -> Dict[str, Any]:
         return {"type": self.type, "name": self.url, "darkIcon": self.dark_url}
@@ -76,10 +76,24 @@ class Image(Component):
     def __init__(self, url: str, callback_data: str = None, dark_url: str = None):
         self.url = url
         self.callback_data = callback_data
-        self.dark_url = dark_url
+        self.dark_url = dark_url or url
 
     def to_json(self):
         data = {"type": self.type, "mediaUrl": self.url, "darkMediaUrl": self.dark_url}
         if self.callback_data:
             data["callbackData"] = self.callback_data
         return data
+
+class Spacer(Component):
+    type = "spacer"
+
+    def __init__(self, x: int = 0, y: int = 0):
+        self.x = x
+        self.y = y
+
+    def to_json(self):
+        return {
+            "type": self.type,
+            "x": self.x,
+            "y": self.y
+        }

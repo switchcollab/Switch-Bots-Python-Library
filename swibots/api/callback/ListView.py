@@ -16,13 +16,13 @@ class ListTile(Layout):
     def __init__(
         self,
         title: str,
-        description: str = None,
-        subtitle=None,
-        title_extra: str = None,
-        description_extra: str = None,
-        subtitle_extra: str = None,
-        callback_data: str = None,
-        thumb: Union[Image, str] = None,
+        description: str = "",
+        subtitle: str ="",
+        title_extra: str = "",
+        description_extra: str = "",
+        subtitle_extra: str = "",
+        callback_data: str = "",
+        thumb: Union[Image, str] = "",
     ):
         self.title = title
         self.subtitle = subtitle
@@ -48,7 +48,7 @@ class ListTile(Layout):
         }
         if self.thumb:
             data["image"] = self.thumb.to_json()
-        return {x: y for x, y in data.items() if y}
+        return data
 
 
 class SmallListTile(ListTile):

@@ -17,6 +17,7 @@ class GridItem(Component):
         self,
         title: str,
         media: str,
+        dark_media: str = None,
         subtitle: str = "",
         callback_data: str = None,
         selective: bool = False
@@ -24,6 +25,7 @@ class GridItem(Component):
         self.title = title
         self.subtitle = subtitle
         self.media = media
+        self.dark_media = dark_media or media
         self.callback_data = callback_data
         self.selective = selective
 
@@ -35,6 +37,7 @@ class GridItem(Component):
             "subTitle": self.subtitle,
             "media": self.media,
             "callbackData": self.callback_data,
+            "darkMedia": self.dark_media
         }
 
 

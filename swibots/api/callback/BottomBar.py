@@ -18,8 +18,8 @@ class BottomBarTile(SwitchObject):
         self.name = name
         self.icon = icon
         self.selected_icon = selection_icon
-        self.dark_icon = dark_icon
-        self.dark_selection_icon = dark_selection_icon
+        self.dark_icon = dark_icon or icon
+        self.dark_selection_icon = dark_selection_icon or selection_icon
         self.selected = selected
         self.callback_data = callback_data
 
