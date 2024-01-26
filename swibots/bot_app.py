@@ -429,6 +429,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         loop = asyncio.get_event_loop()
         run = loop.run_until_complete
         if task is not None:
+            run(self._validate_token())
             return run(task)
         else:
             try:
