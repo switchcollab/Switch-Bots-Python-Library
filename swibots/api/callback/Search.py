@@ -36,7 +36,7 @@ class SearchBar(Component):
         ),
         left_icon: Union[Icon, str] = Icon(
             "https://img.icons8.com/?size=50&id=357&format=png",
-            "https://img.icons8.com/?size=50&id=357&format=png&color=ffffff"
+            "https://img.icons8.com/?size=50&id=357&format=png&color=ffffff",
         ),
     ):
         self.placeholder = placeholder

@@ -65,14 +65,12 @@ class Embed(Component):
             "fullScreen": self.full_screen,
         }
 
+
 class FileViewer(Component):
     type = "pdf_viewer"
 
     def __init__(self, url: str):
         self.url = url
-    
+
     def to_json(self):
-        return {
-            "type": self.type,
-            "url": self.url
-        }
+        return {"type": self.type, "url": self.url}

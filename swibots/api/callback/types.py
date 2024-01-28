@@ -84,6 +84,7 @@ class Image(Component):
             data["callbackData"] = self.callback_data
         return data
 
+
 class Spacer(Component):
     type = "spacer"
 
@@ -92,8 +93,4 @@ class Spacer(Component):
         self.y = y
 
     def to_json(self):
-        return {
-            "type": self.type,
-            "x": self.x,
-            "y": self.y
-        }
+        return {"type": self.type, "x": self.x, "y": self.y}

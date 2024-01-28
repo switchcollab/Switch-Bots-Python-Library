@@ -29,6 +29,9 @@ class AuthClient(SwitchRestClient):
             headers["authtoken"] = f"{self.token}"
         return headers
 
+    def get_me_sync(self, user_type: Type[T] = AuthUser) -> T:
+        return self.build_object(user_type, self.sync_get("/api/user").data)
+
     async def get_me(self, user_type: Type[T] = AuthUser) -> T:
         """Get the current user
 

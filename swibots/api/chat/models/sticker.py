@@ -53,9 +53,9 @@ class Sticker(SwitchObject):
             "stickerPackId": self.sticker_pack_id,
             "createdBy": self.created_by,
             "stickerMediaId": self.media_id,
-            "stickerMediaInfo": self.sticker_info.to_json()
-            if self.sticker_info
-            else None,
+            "stickerMediaInfo": (
+                self.sticker_info.to_json() if self.sticker_info else None
+            ),
         }
 
     async def delete(self) -> bool:

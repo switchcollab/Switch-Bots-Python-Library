@@ -28,7 +28,7 @@ class TextInput(Component):
         password: bool = False,
         right_icon: Optional[Icon] = None,
         left_icon: Optional[Icon] = None,
-        multiline: bool = False
+        multiline: bool = False,
     ):
         self.label = label
         self.width = width
@@ -67,7 +67,7 @@ class TextInput(Component):
         if self.left_icon:
             data["leftIcon"] = self.left_icon.to_json()
         if self.multiline:
-            data['expansion'] = "flexible_expansion"
+            data["expansion"] = "flexible_expansion"
         return data
 
 
@@ -89,5 +89,5 @@ class FilePicker(Component):
             "type": self.type,
             "callbackData": self.callback_data,
             "numberOfFiles": self.files_count,
-            "mimeType": self.mime_type
+            "mimeType": self.mime_type,
         }

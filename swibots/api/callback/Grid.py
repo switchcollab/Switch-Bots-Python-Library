@@ -20,7 +20,7 @@ class GridItem(Component):
         dark_media: str = None,
         subtitle: str = "",
         callback_data: str = None,
-        selective: bool = False
+        selective: bool = False,
     ):
         self.title = title
         self.subtitle = subtitle
@@ -37,7 +37,7 @@ class GridItem(Component):
             "subTitle": self.subtitle,
             "media": self.media,
             "callbackData": self.callback_data,
-            "darkMedia": self.dark_media
+            "darkMedia": self.dark_media,
         }
 
 
@@ -53,7 +53,7 @@ class Grid(Layout):
         expansion: Optional[Expansion] = Expansion.DEFAULT,
         right_image: str = None,
         image_callback: str = None,
-        grid_type: GridType = GridType.DEFAULT
+        grid_type: GridType = GridType.DEFAULT,
     ):
         self.size = size
         self.options = options
@@ -72,7 +72,7 @@ class Grid(Layout):
             "gridSize": self.size,
             "horizontalMode": self.horizontal,
             "expansion": self.expansion.value,
-            "gridStyle": self.grid_type.value
+            "gridStyle": self.grid_type.value,
         }
         if self.right_image:
             data["subTitle"] = self.right_image

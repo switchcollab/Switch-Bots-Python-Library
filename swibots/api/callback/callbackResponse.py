@@ -1,6 +1,7 @@
 from typing import Dict, Any
 from swibots.base import SwitchObject
 
+
 class CallbackResponse(SwitchObject):
 
     def __init__(self):
@@ -28,5 +29,5 @@ class CallbackResponse(SwitchObject):
             "fileResponse": self.file_url,
             "fileName": self.file_name,
             "callbackQueryId": self.parent_id,
-            "inputValue": self.input_value
+            "inputValue": self.input_value,
         }

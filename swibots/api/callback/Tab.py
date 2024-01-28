@@ -7,8 +7,11 @@ from swibots.base import SwitchObject
 
 class TabBarTile(SwitchObject):
     def __init__(
-        self, title: str = "", callback_data: str = None, selected: bool = False,
-        selection_icon: str = None
+        self,
+        title: str = "",
+        callback_data: str = None,
+        selected: bool = False,
+        selection_icon: str = None,
     ):
         self.title = title
         self.callback_data = callback_data
@@ -20,7 +23,7 @@ class TabBarTile(SwitchObject):
             "icon": self.title,
             "selected": self.selected,
             "callbackData": self.callback_data,
-            "selectionIcon": self.selection_icon
+            "selectionIcon": self.selection_icon,
         }
 
 

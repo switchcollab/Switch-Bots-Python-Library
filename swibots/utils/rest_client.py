@@ -120,7 +120,6 @@ class RestClient:
         return await self.do_request(url, "OPTIONS", data, headers)
 
     def prepare_request_data(self, data: dict) -> dict:
-        #        data = {**data} if data else {}
         return data
 
     def prepare_request_headers(self, headers: dict) -> dict:

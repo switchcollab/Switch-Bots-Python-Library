@@ -31,7 +31,7 @@ class BottomBarTile(SwitchObject):
             "selected": self.selected,
             "callbackData": self.callback_data,
             "darkIcon": self.dark_icon,
-            "darkSelectedIcon": self.dark_selection_icon
+            "darkSelectedIcon": self.dark_selection_icon,
         }
 
 

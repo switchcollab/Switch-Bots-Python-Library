@@ -81,8 +81,8 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         self._bot_description = bot_description
         self.auto_update_bot = auto_update_bot
         self._loop = loop or asyncio.get_event_loop()
-        self.user = None
-        self.name = None
+        self.user = self.auth_service.get_me_sync(user_type=self._user_type)
+        self.name = self.user.name
         self._bot_id = None
         self._running = False
         self._user_type = Bot
@@ -109,7 +109,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         Returns:
             :obj:`List[BaseHandler]`: The list of handlers.
         """
-        return self._handlers 
+        return self._handlers
 
     def load_path(self, path):
         baseName = os.path.basename(path)
@@ -312,34 +312,6 @@ class Client(Decorators, AbstractContextManager, ApiClient):
             shutil.move(temp_file_path, file_path)
             return file_path
 
-    async def _validate_token(self):
-        # check if token is valid
-        if self.token is None:
-            raise SwitchError("Token is not set")
-
-        try:
-            log.debug("checking token...")
-            if not self.user:
-                user = await self.get_me(user_type=self._user_type)
-                self.user = user
-            log.info(
-                "Logged in as [%a][%s][%d]",
-                self.user.name,
-                self.user.user_name,
-                self.user.id,
-            )
-            self.name = self.user.user_name
-            self._bot_id = self.user.id
-        except Exception as e:
-            log.exception(e)
-            await self.stop()
-            raise TokenInvalidError("Invalid token")
-
-        if self.user is None:
-            raise TokenInvalidError("Invalid token")
-
-        await self._on_app_start()
-
     async def _on_app_stop(self):
         await self.chat_service.stop()
         await self.community_service.stop()
@@ -360,7 +332,14 @@ class Client(Decorators, AbstractContextManager, ApiClient):
             """Starts the app"""
             log.info("🚀 Starting app...")
 
-            await self._validate_token()
+            log.info(
+                "Logged in as [%a][%s][%d]",
+                self.user.name,
+                self.user.user_name,
+                self.user.id,
+            )
+            self.name = self.user.user_name
+            self._bot_id = self.user.id
 
             self.load_plugins()
 
@@ -429,7 +408,6 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         loop = asyncio.get_event_loop()
         run = loop.run_until_complete
         if task is not None:
-            run(self._validate_token())
             return run(task)
         else:
             try:

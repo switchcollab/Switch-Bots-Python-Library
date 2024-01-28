@@ -5,7 +5,6 @@ from swibots.api.community.models import Channel
 
 
 class RestrictUser:
-
     """
     Class for restricting users in a community.
 

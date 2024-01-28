@@ -17,7 +17,7 @@ class ListTile(Layout):
         self,
         title: str,
         description: str = "",
-        subtitle: str ="",
+        subtitle: str = "",
         title_extra: str = "",
         description_extra: str = "",
         subtitle_extra: str = "",

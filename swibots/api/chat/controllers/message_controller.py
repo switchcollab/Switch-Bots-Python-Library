@@ -176,9 +176,11 @@ class MessageController:
                 media = await self.client.app.upload_media(
                     path=document,
                     caption=caption,
-                    description=file_name or description or os.path.basename(document)
-                    if isinstance(document, str)
-                    else document.name,
+                    description=(
+                        file_name or description or os.path.basename(document)
+                        if isinstance(document, str)
+                        else document.name
+                    ),
                     mime_type=mime_type,
                     media_type=media_type,
                     callback=progress,
@@ -247,9 +249,9 @@ class MessageController:
                 part_size=kwargs.get("part_size"),
                 task_count=kwargs.get("task_count"),
                 mime_type=mime_type,
-                description=file_name or os.path.basename(document)
-                if document
-                else None,
+                description=(
+                    file_name or os.path.basename(document) if document else None
+                ),
             )
         else:
             media = Media(

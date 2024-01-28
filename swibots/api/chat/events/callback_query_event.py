@@ -77,7 +77,7 @@ class CallbackQueryEvent(CommandEvent):
         show_alert: Optional[bool] = False,
         cache_time: Optional[int] = None,
         callback: Optional[AppPage] = None,
-        new_page: bool = False
+        new_page: bool = False,
     ) -> bool:
         """Answer callback query"""
         if callback:

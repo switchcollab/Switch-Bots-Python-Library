@@ -130,16 +130,16 @@ class Message(
             "communityId": self.community_id,
             "groupId": self.group_id,
             "channelId": self.channel_id,
-            "inline_markup": self.inline_markup.to_json_request()
-            if self.inline_markup
-            else None,
+            "inline_markup": (
+                self.inline_markup.to_json_request() if self.inline_markup else None
+            ),
             "callback_data": self.callback_data,
             "repliedTo": self.replied_to_id,
             "mediaLink": self.media_link,
             "status": 4 if self.embed_message else self.status,
-            "embedMessage": self.embed_message.to_json()
-            if self.embed_message
-            else None,
+            "embedMessage": (
+                self.embed_message.to_json() if self.embed_message else None
+            ),
             "isEmbedMessage": self.is_embed_message or bool(self.embed_message),
             "cachedMedia": self.cached_media.to_json() if self.cached_media else None,
             "mediaId": self.media_id,
@@ -202,13 +202,13 @@ class Message(
             "groupId": self.group_id,
             "id": self.id,
             "information": self.information,
-            "embedMessage": self.embed_message.to_json()
-            if self.embed_message
-            else None,
+            "embedMessage": (
+                self.embed_message.to_json() if self.embed_message else None
+            ),
             "isEmbedMessage": self.is_embed_message,
-            "inline_markup": self.inline_markup.to_json()
-            if self.inline_markup
-            else None,
+            "inline_markup": (
+                self.inline_markup.to_json() if self.inline_markup else None
+            ),
             "isRead": self.is_read,
             "isDocument": self.is_document,
             "mediaLink": self.media_link,

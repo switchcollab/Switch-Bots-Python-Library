@@ -53,9 +53,11 @@ class SwitchObject(Generic[T]):
 
     def __repr__(self) -> str:
         filter_dict = {
-            x: y.to_json()
-            if hasattr(y, "to_json")
-            else (y if isinstance(y, (str, dict, int)) else str(y))
+            x: (
+                y.to_json()
+                if hasattr(y, "to_json")
+                else (y if isinstance(y, (str, dict, int)) else str(y))
+            )
             for x, y in self.__dict__.items()
             if y and x != "_app"
         }

@@ -32,7 +32,7 @@ class Button(Component):
             "type": self.type,
             "text": self.text.to_json() if self.text else None,
             "callbackData": self.callback_data if self.callback_data else None,
-            "color": self.color
+            "color": self.color,
         }
         if self.icon:
             data["icon"] = self.icon.to_json()
@@ -52,18 +52,20 @@ class DownloadButton(Button):
         file_name: str,
         text: str | Text = "Download",
         icon: str | Icon = "",
-        callback_data: str = None
+        callback_data: str = None,
     ):
         super().__init__(
-            text, icon, url=download_url, file_name=file_name,
+            text,
+            icon,
+            url=download_url,
+            file_name=file_name,
             action="download",
-            callback_data=callback_data
+            callback_data=callback_data,
         )
 
 
 # TODO:
-class ShareButton(Button):
-    ...
+class ShareButton(Button): ...
 
 
 class ButtonGroup(Component):
@@ -81,20 +83,20 @@ class ButtonGroup(Component):
 
 class StickyHeader(Component):
     type = "sticky_header"
-    
-    def __init__(self, text: str, color: str = None,
-                 callback_data: str = None,
-                 icon: Icon = None):
+
+    def __init__(
+        self, text: str, color: str = None, callback_data: str = None, icon: Icon = None
+    ):
         self.text = text
         self.color = color
         self.callback_data = callback_data
         self.icon = icon
-    
+
     def to_json(self):
         return {
             "type": self.type,
             "text": self.text,
             "color": self.color,
             "callbackData": self.callback_data,
-            "icon": self.icon.to_json() if self.icon else None
+            "icon": self.icon.to_json() if self.icon else None,
         }

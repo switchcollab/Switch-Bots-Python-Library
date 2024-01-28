@@ -1,6 +1,6 @@
 import json
 from typing import List, Tuple, Type, TypeVar
-import swibots
+import swibots, httpx
 from swibots.errors import NetworkError, UnAuthorized, InvalidRouteCall
 from swibots.utils import RestClient
 from swibots.utils.types import JSONDict
@@ -49,6 +49,20 @@ class SwitchRestClient(RestClient):
 
     def build_list(self, obj_type: Type[T], data: JSONDict) -> List[T]:
         return obj_type.build_from_json_list(data, self.app)
+
+    def sync_post(self, url: str, data: dict = None, headers: dict = None):
+        request = httpx.post(
+            self._base_url + url,
+            data=data,
+            headers=self.prepare_request_headers(headers),
+        )
+        return self.parse_response((request.status_code, request.content))
+
+    def sync_get(self, url: str, headers: dict = None) -> RestResponse[JSONDict]:
+        request = httpx.get(
+            self._base_url + url, headers=self.prepare_request_headers(headers)
+        )
+        return self.parse_response((request.status_code, request.content))
 
     async def get(
         self, url: str, data: dict = None, headers: dict = None

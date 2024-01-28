@@ -32,7 +32,7 @@ class CommandEvent(MessageEvent):
         message: Optional[Message] = None,
         message_id: Optional[int] = None,
         command: Optional[str] = None,
-        params: Optional[str] = None
+        params: Optional[str] = None,
     ):
         super().__init__(
             app=app,
