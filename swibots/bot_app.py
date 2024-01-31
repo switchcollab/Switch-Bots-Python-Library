@@ -71,7 +71,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         if not token:
             raise TokenInvalidError(f"'token' for the bot can't be '{token}'")
         self._user_type = Bot
-        self._botinfo: BotInfo = None
+        self._bot_info: BotInfo | None = None
         self.on_app_start = None
         self.on_app_stop = None
         self.on_chat_service_start = self._on_chat_service_start
@@ -112,8 +112,8 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         return self._handlers 
 
     def load_path(self, path):
-        baseName = os.path.basename(path)
-        if baseName.startswith("__") or not baseName.endswith(".py"):
+        base_name = os.path.basename(path)
+        if base_name.startswith("__") or not base_name.endswith(".py"):
             return
         try:
             module_path = path[:-3].replace("\\", ".").replace("/", ".")
@@ -217,16 +217,18 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         commands = self._register_commands or []
         description = self._bot_description or ""
         # register the commands
-        self._botinfo = BotInfo(
+        self._bot_info = BotInfo(
             description=description,
             id=self._bot_id,
             commands=commands,
         )
 
-        self._botinfo = await self.update_bot_info(self._botinfo)
+        self._bot_info = await self.update_bot_info(self._botinfo)
 
     async def _on_chat_service_start(self, _):
-        await self.chat_service.subscribe_to_notifications(callback=self.on_chat_event)
+        await self.chat_service.subscribe_to_notifications(
+            callback=self.on_chat_event
+        )
 
     async def _on_community_service_start(self, _):
         await self.community_service.subscribe_to_notifications(
@@ -272,7 +274,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         )
         file = BytesIO() if in_memory else open(temp_file_path, "wb")
 
-        dProgress = DownloadProgress(
+        d_progress = DownloadProgress(
             total=0,
             downloaded=0,
             file_name=file_name,
@@ -281,18 +283,18 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         )
 
         if progress:
-            await progress(dProgress, *progress_args)
+            await progress(d_progress, *progress_args)
         try:
             with httpx.stream("GET", url) as response:
-                dProgress.total = int(response.headers["Content-Length"])
-                dProgress.downloaded = response.num_bytes_downloaded
-                dProgress.client = response
-                dProgress.started = True
+                d_progress.total = int(response.headers["Content-Length"])
+                d_progress.downloaded = response.num_bytes_downloaded
+                d_progress.client = response
+                d_progress.started = True
                 for chunk in response.iter_bytes():
                     file.write(chunk)
-                    dProgress.downloaded += len(chunk)
+                    d_progress.downloaded += len(chunk)
                     if progress:
-                        await progress(dProgress, *progress_args)
+                        await progress(d_progress, *progress_args)
 
         except BaseException as e:
             if not in_memory:

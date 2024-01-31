@@ -1,6 +1,7 @@
 import json
 import logging
-from typing import Tuple, Optional, List
+
+import swibots
 from swibots.api.chat.controllers import (
     MessageController,
     ChatController,
@@ -21,7 +22,6 @@ from swibots.errors import SwitchError
 from swibots.types import EventType
 from swibots.utils.ws.asyncstomp.async_ws_subscription import AsyncWsSubscription
 from swibots.utils.ws.common.ws_message import WsMessage
-import swibots
 
 logger = logging.getLogger(__name__)
 
@@ -136,7 +136,7 @@ class ChatClient(SwitchRestClient):
         This is a shortcut for :meth:`subscribe` with the endpoint set to ``/chat/queue/events``
         """
         return await self.ws.subscribe(
-            "/chat/queue/events",
+            f"/topic/bot.chat.event.{self.user.id}",
             callback=lambda event: self._parse_event(event, callback),
         )
 
