@@ -7,7 +7,7 @@ class AsyncWsSubscription:
         self,
         client,
         destination: str,
-        id: str,
+        sub_id: str,
         headers: Dict[str, str] = None,
         callback=None,
     ):
@@ -16,13 +16,13 @@ class AsyncWsSubscription:
         self.client: AsyncWsClient = client
         self.destination = destination
         self.callback = callback
-        self.id = id
+        self.sub_id = sub_id
         self.headers = headers or {}
 
     async def start(self):
-        self.headers["id"] = self.id
+        self.headers["id"] = self.sub_id
         self.headers["destination"] = self.destination
-        await self.client._transmit("SUBSCRIBE", self.headers)
+        await self.client.transmit("SUBSCRIBE", self.headers)
 
     async def receive(self, message):
         if self.callback is not None:
@@ -32,4 +32,4 @@ class AsyncWsSubscription:
         await self.client.send(self.destination, headers or {}, body)
 
     async def unsubscribe(self):
-        await self.client.unsubscribe(self.id)
+        await self.client.unsubscribe(self.sub_id)

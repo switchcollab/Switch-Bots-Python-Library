@@ -1,11 +1,11 @@
 import asyncio
+import uuid
 from typing import List
 
 from swibots.errors import SwitchError
 
 from .async_ws_subscription import AsyncWsSubscription
 from swibots.utils.ws.common import WsFrame
-import websockets
 from websockets.client import connect
 from websockets import exceptions
 import logging
@@ -30,8 +30,8 @@ class AsyncWsClient:
         self._heartbeatTask = None
         self.subscriptions: dict[str, AsyncWsSubscription] = {}
         self._connect_args = {}
-        self._connectCallback = None
-        self.errorCallback = None
+        self._connect_callback = None
+        self.error_callback = None
         self._connectIntents = 0
         self._connectInterval = 7
         self._incrementalDelay = 3
@@ -45,7 +45,7 @@ class AsyncWsClient:
             await asyncio.sleep(0.1)
             elapsed = elapsed + 0.1
             if elapsed >= 5:
-                await self._transmit("\n", {})
+                await self.transmit("\n", {})
                 elapsed = 0
         log.debug("Heartbeat stopped")
 
@@ -58,10 +58,7 @@ class AsyncWsClient:
             return
         log.error("Whoops! Lost connection to " + self.url)
         await self._clean_up()
-        if (
-            self._connectIntents >= self._maxConnectIntents
-            and self._maxConnectIntents > 0
-        ):
+        if self._connectIntents >= self._maxConnectIntents > 0:
             log.error("Max connection attempts reached. Aborting.")
             raise SwitchError("Max connection attempts reached. Aborting.")
         wait_time = self._connectInterval
@@ -98,24 +95,24 @@ class AsyncWsClient:
             for sub in self.subscriptions.values():
                 await self._start_subscription(sub)
 
-            # if self._connectCallback is not None:
+            # if self._connect_callback is not None:
             #     _results.append(await self._send_heartbeat(frame))
         elif frame.command == "MESSAGE":
             subscription = frame.headers["subscription"]
 
             if subscription in self.subscriptions:
                 sub = self.subscriptions[subscription]
-                messageID = frame.headers["message-id"]
+                message_id = frame.headers["message-id"]
 
                 async def ack(headers):
                     if headers is None:
                         headers = {}
-                    return await self.ack(messageID, subscription, headers)
+                    return await self.ack(message_id, subscription, headers)
 
                 async def nack(headers):
                     if headers is None:
                         headers = {}
-                    return await self.nack(messageID, subscription, headers)
+                    return await self.nack(message_id, subscription, headers)
 
                 frame.ack = ack
                 frame.nack = nack
@@ -126,8 +123,8 @@ class AsyncWsClient:
                 log.debug(info)
                 _results.append(info)
         elif frame.command == "ERROR":
-            if self.errorCallback is not None:
-                _results.append(self.errorCallback(frame))
+            if self.error_callback is not None:
+                _results.append(self.error_callback(frame))
         elif frame.command not in ["PONG", "RECEIPT"]:
             info = "Unhandled received MESSAGE: " + frame.command
             log.debug(info)
@@ -135,15 +132,14 @@ class AsyncWsClient:
 
         return _results
 
-    async def _transmit(self, command, headers, body=None):
+    async def transmit(self, command, headers, body=None):
         try:
             if self.ws is None:
                 return
-            out = l = WsFrame.marshall(command, headers, body)
+            out = WsFrame.marshall(command, headers, body)
             if command == "\n":
-                l = "PING"
                 out = command
-            log.debug("\n>>> " + l)
+            log.debug("\n>>> {}".format("PING" if command == "\n" else out))
             await self.ws.send(out)
         except exceptions.WebSocketException as er:
             log.error(er)
@@ -156,23 +152,23 @@ class AsyncWsClient:
         login=None,
         passcode=None,
         headers=None,
-        connectCallback=None,
-        errorCallback=None,
+        connect_callback=None,
+        error_callback=None,
         timeout=0,
         **kwargs,
     ):
         headers = self._set_default_headers(headers)
-        await self._connect(
-            login, passcode, headers, connectCallback, errorCallback, timeout, **kwargs
-        )
+        await self._connect(login, passcode, headers,
+                            connect_callback, error_callback,
+                            timeout, **kwargs)
 
     async def _connect(
         self,
         login=None,
         passcode=None,
         headers=None,
-        connectCallback=None,
-        errorCallback=None,
+        connect_callback=None,
+        error_callback=None,
         timeout=30,
         **kwargs,
     ):
@@ -199,15 +195,15 @@ class AsyncWsClient:
                 headers["login"] = login
             if passcode is not None:
                 headers["passcode"] = passcode
-            self._connectCallback = connectCallback
-            self.errorCallback = errorCallback
-            await self._transmit("CONNECT", headers)
+            self._connect_callback = connect_callback
+            self.error_callback = error_callback
+            await self.transmit("CONNECT", headers)
             # elapsed time
             elapsed = 0
             while not self.connected:
                 await asyncio.sleep(1)
                 elapsed += 1
-                if timeout > 0 and elapsed > timeout:
+                if 0 < timeout < elapsed:
                     raise Exception("Connection timeout")
         except (exceptions.WebSocketException,):
             await self._on_close(self.ws)
@@ -225,14 +221,14 @@ class AsyncWsClient:
         except Exception as e:
             await self._on_error(self.ws, e)
 
-    async def disconnect(self, disconnectCallback=None, headers=None):
+    async def disconnect(self, disconnect_callback=None, headers=None):
         headers = self._set_default_headers(headers)
-        await self._transmit("DISCONNECT", headers)
+        await self.transmit("DISCONNECT", headers)
         self._gracefully_disconnect = True
         await self.ws.close()
         await self._clean_up()
-        if disconnectCallback is not None:
-            disconnectCallback()
+        if disconnect_callback is not None:
+            disconnect_callback()
 
     async def _clean_up(self):
         try:
@@ -248,45 +244,43 @@ class AsyncWsClient:
         if body is None:
             body = ""
         headers["destination"] = destination
-        return await self._transmit("SEND", headers, body)
+        return await self.transmit("SEND", headers, body)
 
     async def subscribe(self, destination, callback=None, headers=None):
         headers = self._set_default_headers(headers)
-        if "id" not in headers or headers["id"] is None or headers["id"] == "":
-            id = "sub-" + str(self.counter)
-            self.counter += 1
-        else:
-            id = headers["id"]
+        sub_id = f"sub-{uuid.uuid4()}"
+        headers["id"] = sub_id
 
         sub = AsyncWsSubscription(
             client=self,
             destination=destination,
             callback=callback,
             headers=headers,
-            id=id,
+            sub_id=sub_id,
         )
         await self._start_subscription(sub)
-        self.subscriptions[id] = sub
+        self.subscriptions[sub_id] = sub
         return sub
 
     def _set_default_headers(self, headers):
         return headers or {}
 
-    async def _start_subscription(self, subscription: AsyncWsSubscription):
+    @staticmethod
+    async def _start_subscription(subscription: AsyncWsSubscription):
         return await subscription.start()
 
-    async def unsubscribe(self, id):
-        del self.subscriptions[id]
-        return await self._transmit("UNSUBSCRIBE", {"id": id})
+    async def unsubscribe(self, sub_id):
+        del self.subscriptions[sub_id]
+        return await self.transmit("UNSUBSCRIBE", {"id": sub_id})
 
     async def ack(self, message_id, subscription, headers):
         headers = self._set_default_headers(headers)
         headers["message-id"] = message_id
         headers["subscription"] = subscription
-        return await self._transmit("ACK", headers)
+        return await self.transmit("ACK", headers)
 
     async def nack(self, message_id, subscription, headers):
         headers = self._set_default_headers(headers)
         headers["message-id"] = message_id
         headers["subscription"] = subscription
-        return await self._transmit("NACK", headers)
+        return await self.transmit("NACK", headers)

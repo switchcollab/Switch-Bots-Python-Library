@@ -1,13 +1,14 @@
 import json
-from swibots.api.auth.models.auth_user import AuthUser
+from logging import getLogger
+
+import swibots
 from swibots.api.community.events import *
 from swibots.base import SwitchRestClient, SwitchWSAsyncClient
 from swibots.config import get_config
 from swibots.errors import SwitchError
-from logging import getLogger
+from swibots.types import EventType
 from swibots.utils.ws.asyncstomp.async_ws_subscription import AsyncWsSubscription
 from swibots.utils.ws.common.ws_message import WsMessage
-from swibots.types import EventType
 from .controllers import (
     ChannelController,
     GroupController,
@@ -19,7 +20,6 @@ from .controllers import (
     BanController,
     QuestsController,
 )
-import swibots
 
 Logger = getLogger(__name__)
 
@@ -114,7 +114,6 @@ class CommunityClient(SwitchRestClient):
             self._ws = SwitchWSAsyncClient(self._ws_url, self.token)
         return self._ws
 
-    @property
     async def subscribe(self, endpoint: str, callback=None) -> AsyncWsSubscription:
         if self.user is None:
             raise SwitchError("User is not set")
@@ -124,7 +123,7 @@ class CommunityClient(SwitchRestClient):
 
     async def subscribe_to_notifications(self, callback=None) -> AsyncWsSubscription:
         subscription = await self.ws.subscribe(
-            "/user/queue/events",
+            f"/topic/bot.community.event.{self.user.id}",
             callback=lambda event: callback(self.__parseEvent(event)),
         )
         return subscription
