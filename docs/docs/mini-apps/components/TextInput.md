@@ -15,6 +15,8 @@ The `TextInput` class represents an input box component for capturing user input
 - `password` (Optional): A boolean flag indicating whether the input should be treated as a password.
 - `right_icon` (Optional): An icon displayed on the right side of the input box.
 - `left_icon` (Optional): An icon displayed on the left side of the input box.
+- `expanded` (bool): whether to show expanded text input.
+- `multiline` (bool): whether to show multiline input.
 
 ## KeyboardType Enum
 
