@@ -53,7 +53,8 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         auto_update_bot: Optional[bool] = True,
         loop: asyncio.AbstractEventLoop = None,
         receive_updates: Optional[bool] = True,
-        app_bar: Optional[AppBar] = AppBar(),
+        app_bar: Optional[AppBar] = None,
+        **kwargs
     ):
         """
         Initialize the client
@@ -83,6 +84,12 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         self._loop = loop or asyncio.get_event_loop()
         self.user = self.auth_service.get_me_sync(user_type=self._user_type)
         self.name = self.user.name
+        if app_bar is None:
+            app_bar = AppBar(
+                self.name,
+                left_icon=self.user.imageurl
+            )
+        self.app_bar = app_bar
         self._bot_id = None
         self._running = False
         self._user_type = Bot
@@ -223,7 +230,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
             commands=commands,
         )
 
-        self._bot_info = await self.update_bot_info(self._botinfo)
+        self._bot_info = await self.update_bot_info(self._bot_info)
 
     async def _on_chat_service_start(self, _):
         await self.chat_service.subscribe_to_notifications(

@@ -1,9 +1,9 @@
 from swibots.utils.types import JSONDict
-from .types import Layout, Icon, Text
+from .types import Component, Icon, Text
 from typing import Union
 
 
-class FAB(Layout):
+class FAB(Component):
     type = "fab"
 
     def __init__(

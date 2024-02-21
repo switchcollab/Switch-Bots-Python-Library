@@ -1,7 +1,7 @@
 import json
 from typing import List, Tuple, Type, TypeVar
 import swibots, httpx
-from swibots.errors import NetworkError, UnAuthorized, InvalidRouteCall
+from swibots.errors import NetworkError, UnAuthorized, InvalidRouteCall, BadRequest
 from swibots.utils import RestClient
 from swibots.utils.types import JSONDict
 from swibots.base import RestResponse
@@ -134,7 +134,10 @@ class SwitchRestClient(RestClient):
             if ":" in error:
                 error = error.split(":", maxsplit=1)[-1].strip().replace("'", '"')
                 try:
-                    error = json.loads(error)["message"]
+                    errorJson = json.loads(error)
+                    error = errorJson["message"]
+                    if errorJson.get("status") == "BAD_REQUEST":
+                        raise BadRequest(error)
                 except (KeyError, json.JSONDecodeError):
                     pass
             if response.status_code == 401:

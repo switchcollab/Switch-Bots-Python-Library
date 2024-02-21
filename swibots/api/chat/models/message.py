@@ -117,7 +117,6 @@ class Message(
         self.user_session_id = user_session_id
         self.sticker_pack_id = sticker_pack_id
         self.command_details = command_details
-
         self.__dict__.update(**kwargs)
 
     def to_json_request(self) -> JSONDict:
@@ -300,6 +299,10 @@ class Message(
             self.user_session_id = data.get("userSessionId")
             self.sticker_pack_id = data.get("stickerPackId")
         return self
+
+    @property
+    def chat_id(self):
+        return self.user_session_id or self.channel_id or self.group_id or self.user_id
 
     @property
     def is_media(self):
@@ -526,6 +529,10 @@ class Message(
             inline_markup=inline_markup,
             **kwargs,
         )
+
+    async def listen(self, *args, **kwargs):
+        """Listen for messages in current chat"""
+        return await self.app.listen_messages(self.chat_id, *args, **kwargs)
 
     async def forward_to(
         self,

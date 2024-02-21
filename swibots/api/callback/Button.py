@@ -23,6 +23,7 @@ class Button(Component):
         self.icon = icon
         self.callback_data = callback_data
         self.color = color
+        self.clipboard = kwargs.get("clipboard")
         self.action = kwargs.get("action")
         self.url = kwargs.get("url")
         self.file_name = kwargs.get("downloadFileName")
@@ -42,6 +43,8 @@ class Button(Component):
             data["action"] = self.action
         if self.file_name:
             data["downloadFileName"] = self.file_name
+        if self.clipboard:
+            data["clipboard"] = True
         return data
 
 
@@ -66,6 +69,13 @@ class DownloadButton(Button):
 
 # TODO:
 class ShareButton(Button): ...
+
+
+class ClipboardButton(Button):
+    def __init__(
+        self, text: str | Text, icon: str | Icon = "", url: str = "", **kwargs
+    ):
+        super().__init__(text, icon, clipboard=True, url=url, **kwargs)
 
 
 class ButtonGroup(Component):

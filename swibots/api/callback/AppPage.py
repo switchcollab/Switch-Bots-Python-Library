@@ -2,7 +2,7 @@ import swibots
 from swibots.base import SwitchObject
 from logging import getLogger
 from swibots.utils.types import JSONDict
-from .types import ScreenType, Layout, Component, Icon
+from .types import ScreenType, Component, Icon
 from typing import List, Optional, Dict, Any, Union
 from .BottomBar import BottomBar
 from .ListView import ListView
@@ -52,41 +52,37 @@ class AppPage(SwitchObject):
         self,
         app: "swibots.App" = None,
         screen: ScreenType = ScreenType.SCREEN,
-        layouts: List[Layout] = None,
         components: List[Component] = None,
         app_bar: AppBar = None,
         bottom_bar: BottomBar = None,
-        show_continue: bool = False,
+        show_continue: bool = True,
+        back_action: str = None,
+        **kwargs
     ):
         super().__init__(app)
         self.type = "appPage"
         self.screen = screen
-        self.layouts = layouts or []
+        self.back_action = back_action
+        layouts = kwargs.get("layouts")
         self.components = components or []
+        if layouts:
+            self.components.extend(layouts)
         self.app_bar = app_bar
         self.bottom_bar = bottom_bar
         self.show_continue = show_continue
 
     def to_json(self) -> JSONDict:
-        layouts = []
         components = []
-        for layout in self.layouts:
-            if isinstance(layout, ListView):
-                layouts.extend(layout.to_json_request())
-            elif isinstance(layout, Layout):
-                layouts.append(layout.to_json())
-            else:
-                LOG.warning(f"Ignoring: {layout}: type is not layout.")
         for component in self.components:
-            if isinstance(component, Component):
+        #    if isinstance(component, Component):
+            if isinstance(component, ListView):
+                components.extend(component.to_json_request())
+            elif isinstance(component, Component):
                 components.append(component.to_json())
-            else:
-                LOG.warning(f"Ignoring: {layout}: type is not component.")
 
         data = {
             "type": self.type,
             "mode": self.screen.value,
-            "layouts": layouts,
             "components": components,
         }
         if self.app_bar:
@@ -95,4 +91,6 @@ class AppPage(SwitchObject):
             data.update(self.bottom_bar.to_json())
         if self.show_continue:
             data["showContinue"] = self.show_continue
+        if self.back_action:
+            data["pageId"] = self.back_action
         return data

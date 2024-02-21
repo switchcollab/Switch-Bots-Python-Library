@@ -749,7 +749,7 @@ class MessageController:
         if username and user_id:
             raise ValueError("'username' and 'user_id' both were provided!")
         elif user_id:
-            response = await self.client.get(f"{BASE_PATH}/user/info?userId={user_id}")
+            response = await self.client.app.auth_service.get(f"/api/users/getUserById?userid={user_id}")
         elif username:
             if username.startswith("@"):
                 username = username[1:]

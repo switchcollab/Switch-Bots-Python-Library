@@ -1,9 +1,9 @@
 from swibots.utils.types import JSONDict
-from .types import SwitchObject, Component, Layout
+from .types import SwitchObject, Component
 from typing import List, Optional
 
 
-class ListItem(Layout):
+class ListItem(Component):
     type = "list_tile"
 
     def __init__(

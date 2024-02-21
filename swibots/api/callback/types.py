@@ -31,10 +31,6 @@ class Component(SwitchObject):
     type = None
 
 
-class Layout(SwitchObject):
-    type = None
-
-
 class Icon(Component):
     type = "icon"
 

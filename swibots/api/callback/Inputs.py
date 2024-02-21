@@ -29,6 +29,7 @@ class TextInput(Component):
         right_icon: Optional[Icon] = None,
         left_icon: Optional[Icon] = None,
         multiline: bool = False,
+        expanded: bool = False
     ):
         self.label = label
         self.width = width
@@ -40,6 +41,7 @@ class TextInput(Component):
         self.error_text = error_text
         self.password = password
         self.multiline = multiline
+        self.expanded = expanded
 
         if isinstance(right_icon, str):
             right_icon = Icon(right_icon)
@@ -68,6 +70,8 @@ class TextInput(Component):
             data["leftIcon"] = self.left_icon.to_json()
         if self.multiline:
             data["expansion"] = "flexible_expansion"
+        elif self.expanded:
+            data["expansion"] = "expanded_expansion"
         return data
 
 

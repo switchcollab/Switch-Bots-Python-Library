@@ -1,5 +1,5 @@
 from swibots.utils.types import JSONDict
-from .types import Layout, Component
+from .types import Component
 from enum import Enum
 from typing import List
 from swibots.base import SwitchObject

@@ -1,5 +1,5 @@
 from swibots.utils.types import JSONDict
-from .types import Layout, SwitchObject, Expansion, Component
+from .types import SwitchObject, Expansion, Component
 from typing import List, Optional
 from enum import Enum
 
@@ -41,7 +41,7 @@ class GridItem(Component):
         }
 
 
-class Grid(Layout):
+class Grid(Component):
     type = "grid"
 
     def __init__(

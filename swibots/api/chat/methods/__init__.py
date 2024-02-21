@@ -7,6 +7,7 @@ from .flag_message import FlagMessage
 from .forward_message import ForwardMessage
 from .get_channel_chat_history import GetChannelChatHistory
 from .get_group_chat_history import GetGroupChatHistory
+from .listen_messages import ListenMessages
 from .get_community_media_files import GetCommunityMediaFiles
 from .get_community_media_files_by_status import GetCommunityMediaFilesByStatus
 from .get_flag_messages import GetFlagMessages
@@ -44,6 +45,7 @@ class ChatMethods(
     SendMessage,
     AnswerInlineQuery,
     DownloadMedia,
+    ListenMessages,
     UploadMedia,
     GetUser,
     StickerMethods,

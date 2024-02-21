@@ -1,5 +1,5 @@
 from swibots.utils.types import JSONDict
-from .types import SwitchObject, Layout, Image
+from .types import SwitchObject, Component, Image
 from enum import Enum
 from typing import Union, List, Literal
 
@@ -10,7 +10,7 @@ class ListViewType(Enum):
     LARGE = "large"
 
 
-class ListTile(Layout):
+class ListTile(Component):
     type = "list_tile"
 
     def __init__(
@@ -58,7 +58,7 @@ class SmallListTile(ListTile):
         super().__init__(title=title, callback_data=callback_data, thumb=icon)
 
 
-class ListView(Layout):
+class ListView(Component):
     def __init__(
         self,
         options: List[Union[ListTile, SmallListTile]],

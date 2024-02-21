@@ -11,9 +11,10 @@ from .Players import VideoPlayer, Embed, AudioPlayer, FileViewer
 from .Inputs import TextInput, FilePicker
 from .Carousel import Carousel
 from .FAB import FAB
-from .Card import Card
-from .Button import Button, ButtonGroup, DownloadButton, StickyHeader
+from .Card import Card, CardView, CardSize, CardStyle
+from .Button import Button, ButtonGroup, DownloadButton, StickyHeader, ClipboardButton
 from .callbackResponse import CallbackResponse
+from .Table import Table, TableTile
 
 __all__ = [
     "AppBar",
@@ -25,7 +26,11 @@ __all__ = [
     "Button",
     "ButtonGroup",
     "Card",
+    "CardView",
+    "CardSize",
+    "CardStyle",
     "Carousel",
+    "ClipboardButton",
     "DownloadButton",
     "Dropdown",
     "Embed",
@@ -47,6 +52,8 @@ __all__ = [
     "SearchHolder",
     "Spacer",
     "StickyHeader",
+    "Table",
+    "TableTile",
     "TabBar",
     "TabBarTile",
     "TabBarType",

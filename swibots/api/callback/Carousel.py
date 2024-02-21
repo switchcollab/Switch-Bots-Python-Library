@@ -1,9 +1,9 @@
 from swibots.utils.types import JSONDict
-from .types import Image, Component, Layout
+from .types import Image, Component
 from typing import List, Any
 
 
-class Carousel(Layout):
+class Carousel(Component):
     type = "carousel"
 
     def __init__(
