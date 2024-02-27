@@ -1,5 +1,5 @@
 from swibots.utils.types import JSONDict
-from .types import SwitchObject, Component, Image
+from .types import SwitchObject, Component, Image, Badge
 from enum import Enum
 from typing import Union, List, Literal
 
@@ -8,6 +8,7 @@ class ListViewType(Enum):
     DEFAULT = "default"
     SMALL = "small"
     LARGE = "large"
+    COMPACT = "compact"
 
 
 class ListTile(Component):
@@ -23,6 +24,7 @@ class ListTile(Component):
         subtitle_extra: str = "",
         callback_data: str = "",
         thumb: Union[Image, str] = "",
+        badges: List[Badge] = None,
     ):
         self.title = title
         self.subtitle = subtitle
@@ -34,6 +36,7 @@ class ListTile(Component):
         if isinstance(thumb, str):
             thumb = Image(thumb)
         self.thumb = thumb
+        self.badges = badges
 
     def to_json(self):
         data = {
@@ -48,6 +51,8 @@ class ListTile(Component):
         }
         if self.thumb:
             data["image"] = self.thumb.to_json()
+        if self.badges:
+            data["rightComponents"] = [badge.to_json() for badge in self.badges]
         return data
 
 
@@ -59,15 +64,33 @@ class SmallListTile(ListTile):
 
 
 class ListView(Component):
+    type = "list_view"
+
     def __init__(
         self,
         options: List[Union[ListTile, SmallListTile]],
         view_type: ListViewType = ListViewType.DEFAULT,
+        title: str = None,
+        right_image: str = None,
+        image_callback: str = None,
     ):
+        self.title = title
         self.options = options
         self.view_type = view_type
+        self.right_image = right_image
+        self.image_callback = image_callback
 
     def to_json_request(self):
+        if self.view_type == ListViewType.COMPACT:
+            return {
+                "type": self.type,
+                "title": self.title,
+                "listStyle": self.view_type.value,
+                "subTitle": self.right_image,
+                "subTitleAction": self.image_callback,
+                "lists": [tile.to_json() for tile in self.options],
+            }
+
         options = []
 
         for opt in self.options:

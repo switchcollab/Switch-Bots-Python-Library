@@ -14,13 +14,14 @@ import uuid
 from httpx import AsyncClient
 from typing import TYPE_CHECKING, Optional
 
-from swibots.errors import UnknownBackBlazeError
+from swibots.errors import UnknownBackBlazeError, FileTooLarge
 from swibots.utils.types import (
     UploadProgressCallback,
     DownloadProgressCallback,
     IOClient,
     UploadProgress,
 )
+from swibots.types import MAX_FILE_SIZE
 from swibots.config import APP_CONFIG
 from swibots.api.common.models import Media
 
@@ -304,7 +305,8 @@ class MediaController:
             size = os.path.getsize(path)
         else:
             size = path.getbuffer().nbytes
-
+        if size > MAX_FILE_SIZE:
+            raise FileTooLarge(f"{path}: file size is too big to upload!")
         _, ext = os.path.splitext(path.name if _is_bytesio else path)
         file_name = f"{uuid.uuid1()}{ext}"
 

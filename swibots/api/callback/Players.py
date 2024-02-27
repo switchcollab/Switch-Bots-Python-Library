@@ -1,13 +1,17 @@
 from swibots.utils.types import JSONDict
-from typing import Dict, Any, Optional, Union
-from .types import Component, Image
+from typing import Dict, Any, Optional, Union, List
+from .types import Component, Image, Badge
 
 
 class AudioPlayer(Component):
     type = "audio_player"
 
     def __init__(
-        self, title: str, url: str, subtitle: str = "", thumb: Union[Image, str] = None
+        self,
+        title: str,
+        url: str,
+        subtitle: str = "",
+        thumb: Union[Image, str] = None,
     ):
         self.title = title
         self.url = url
@@ -27,18 +31,31 @@ class AudioPlayer(Component):
 class VideoPlayer(Component):
     type = "video_player"
 
-    def __init__(self, url: str, title: str = "", subtitle: str = ""):
+    def __init__(
+        self,
+        url: str,
+        title: str = "",
+        subtitle: str = "",
+        full_screen: bool = False,
+        badges: List[Badge] = None,
+    ):
         self.url = url
         self.title = title
         self.subtitle = subtitle
+        self.full_screen = full_screen
+        self.badges = badges
 
     def to_json(self) -> Dict[str, Any]:
-        return {
+        data = {
             "type": self.type,
             "url": self.url,
             "title": self.title,
             "subtitle": self.subtitle,
+            "fullScreen": self.full_screen,
         }
+        if self.badges:
+            data["badges"] = [badge.to_json() for badge in self.badges]
+        return data
 
 
 class Embed(Component):

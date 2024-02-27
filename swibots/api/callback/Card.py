@@ -1,7 +1,7 @@
 from typing import Union, List
 
 from swibots.utils.types import JSONDict
-from .types import Image, Component, Icon
+from .types import Image, Component, Icon, Text
 from enum import Enum
 
 
@@ -37,8 +37,8 @@ class Card(Component):
         icon2: Icon = "",
         icon3: Icon = "",
         icon4: Icon = "",
-        icon5: Icon = ""
-#        iconAlignment: str = "",
+        icon5: Icon = "",
+        #        iconAlignment: str = "",
     ):
         self.title = title
         self.cardType = cardType
@@ -50,7 +50,7 @@ class Card(Component):
         self.subTitle6 = subtitle6
         self.subTitle7 = subtitle7
         self.subTitle8 = subtitle8
-#        self.image = image
+        #        self.image = image
         if isinstance(icon, str):
             icon = Icon(icon)
         self.icon = icon
@@ -66,9 +66,9 @@ class Card(Component):
         if isinstance(icon5, str):
             icon5 = Icon(icon5)
         self.icon5 = icon5
-#        self.iconAlignment = iconAlignment
-#        self.size = size
 
+    #        self.iconAlignment = iconAlignment
+    #        self.size = size
 
     def to_json(self):
         return {
@@ -83,13 +83,13 @@ class Card(Component):
             "subTitle6": self.subTitle6,
             "subTitle7": self.subTitle7,
             "subTitle8": self.subTitle8,
-#            "image": self.image.to_json() if self.image else None,
+            #            "image": self.image.to_json() if self.image else None,
             "icon": self.icon.to_json() if self.icon else None,
             "icon2": self.icon2.to_json() if self.icon2 else None,
             "icon3": self.icon3.to_json() if self.icon3 else None,
             "icon4": self.icon4.to_json() if self.icon4 else None,
             "icon5": self.icon5.to_json() if self.icon5 else None,
-#            "size": self.size.value,
+            #            "size": self.size.value,
         }
 
 
@@ -102,7 +102,7 @@ class CardView(Component):
         card_size: CardSize = CardSize.MEDIUM,
         card_style: CardStyle = CardStyle.TINT,
         vertical_size: CardSize = CardSize.MEDIUM,
-        scrollable: bool = False
+        scrollable: bool = False,
     ):
         self.card_size = card_size
         self.card_style = card_style
@@ -118,4 +118,43 @@ class CardView(Component):
             "verticalSize": self.vertical_size.value,
             "scrollable": self.scrollable,
             "children": [child.to_json() for child in self.cards],
+        }
+
+
+class Banner(Component):
+    type = "banner"
+
+    def __init__(
+        self,
+        title: Union[str, Text],
+        heading: Union[str, Text] = "",
+        subtitle: Union[str, Text] = "",
+        icon: Union[Icon, str] = "",
+        background: str = "",
+    ):
+        if isinstance(title, str):
+            title = Text(title)
+        self.title = title
+
+        if isinstance(heading, str):
+            heading = Text(heading)
+        self.heading = heading
+
+        if isinstance(subtitle, str):
+            subtitle = Text(subtitle)
+        self.subtitle = subtitle
+
+        if isinstance(icon, str):
+            icon = Icon(icon)
+        self.icon = icon
+        self.background = background
+
+    def to_json(self):
+        return {
+            "type": self.type,
+            "icon": self.icon.to_json() if self.icon else None,
+            "heading": self.heading.to_json() if self.heading else None,
+            "title": self.title.to_json() if self.title else None,
+            "subtitle": self.subtitle.to_json() if self.subtitle else None,
+            "background": self.background,
         }

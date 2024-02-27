@@ -19,7 +19,7 @@ class TableTile(Component):
         self.title = title
 
         if isinstance(icon, str):
-            icon = Icon(str)
+            icon = Icon(icon)
         self.icon = icon
         self.subtitle = subtitle
         self.callback_data = callback_data
@@ -46,7 +46,7 @@ class Table(Component):
         self.title = title
         self.headings = headings
         self.rows = rows
-        self.columns_count = len(rows)
+        self.columns_count = len(headings)
 
     def to_json(self):
         return {

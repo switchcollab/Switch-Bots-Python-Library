@@ -90,3 +90,25 @@ class Spacer(Component):
 
     def to_json(self):
         return {"type": self.type, "x": self.x, "y": self.y}
+
+
+class Badge(Component):
+    type = "badge"
+
+    def __init__(
+        self,
+        text: str,
+        background: str = None,
+        text_color: str = None
+    ):
+        self.text = text
+        self.background = background
+        self.text_color = text_color
+    
+    def to_json(self):
+        return {
+            "type": self.type,
+            "text": self.text,
+            "textColor": self.text_color,
+            "background": self.background
+        }

@@ -74,9 +74,12 @@ class AppPage(SwitchObject):
     def to_json(self) -> JSONDict:
         components = []
         for component in self.components:
-        #    if isinstance(component, Component):
             if isinstance(component, ListView):
-                components.extend(component.to_json_request())
+                parsed = component.to_json_request()
+                if isinstance(parsed, list):
+                    components.extend(parsed)
+                else:
+                    components.append(parsed)
             elif isinstance(component, Component):
                 components.append(component.to_json())
 
