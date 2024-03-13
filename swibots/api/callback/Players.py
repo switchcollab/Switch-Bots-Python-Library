@@ -66,21 +66,51 @@ class Embed(Component):
         url: str,
         height: Optional[int] = 0,
         width: Optional[int] = 0,
+        expand: Optional[bool] = False,
         full_screen: Optional[bool] = True,
+        proxy: Optional[dict] = None,
+        landscape: bool = False,
+        allow_navigation: bool = True,
+        enable_ads: bool = False,
+        view_ratio: int = None,
+        **kwargs
     ):
         self.url = url
         self.height = height
         self.width = width
         self.full_screen = full_screen
+        self.expand = expand
+        self.proxy = proxy
+        self.landscape = landscape
+        self.view_ratio = view_ratio
+        self.enable_ads = enable_ads
+        self.allow_navigation = allow_navigation
+        self.__kwargs = kwargs
 
     def to_json(self):
-        return {
+        data = {
             "type": self.type,
             "url": self.url,
             "height": self.height,
             "width": self.width,
             "fullScreen": self.full_screen,
+            "extraOptions": {
+                **self.__kwargs
+            }
         }
+        if self.expand:
+            data["expansion"] = "flexible_expansion"
+        if self.proxy:
+            data["proxy"] = self.proxy
+        if self.landscape:
+            data["extraOptions"]["orientation"] = "landscape"
+        if self.allow_navigation:
+            data["extraOptions"]["navigation"] = self.allow_navigation
+        if self.view_ratio:
+            data["extraOptions"]["viewRatio"] = self.view_ratio
+        if self.enable_ads:
+            data["extraOptions"]["enableAds"] = self.enable_ads
+        return data
 
 
 class FileViewer(Component):

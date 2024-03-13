@@ -1,7 +1,14 @@
 from typing import Optional, List, Union
 
+from enum import Enum
 from swibots.utils.types import JSONDict
 from .types import Component, Text, Icon
+
+
+class ButtonVariant(Enum):
+    ROUNDED = "rounded"
+    OUTLINED = "outlined"
+    DEFAULT = "elevated"
 
 
 class Button(Component):
@@ -13,6 +20,7 @@ class Button(Component):
         icon: Union[str, Icon] = "",
         callback_data: Optional[str] = None,
         color: str = None,
+        variant: ButtonVariant = ButtonVariant.DEFAULT,
         **kwargs
     ):
         if isinstance(text, str):
@@ -23,6 +31,7 @@ class Button(Component):
         self.icon = icon
         self.callback_data = callback_data
         self.color = color
+        self.variant = variant
         self.clipboard = kwargs.get("clipboard")
         self.action = kwargs.get("action")
         self.url = kwargs.get("url")
@@ -34,6 +43,7 @@ class Button(Component):
             "text": self.text.to_json() if self.text else None,
             "callbackData": self.callback_data if self.callback_data else None,
             "color": self.color,
+            "variant": self.variant.value,
         }
         if self.icon:
             data["icon"] = self.icon.to_json()
@@ -67,8 +77,23 @@ class DownloadButton(Button):
         )
 
 
-# TODO:
-class ShareButton(Button): ...
+class ShareButton(Button):
+    def __init__(
+        self,
+        text: str | Text,
+        icon: str | Icon = "",
+        share_text: str = "",
+        color: str = None,
+        variant: ButtonVariant = ButtonVariant.DEFAULT,
+        **kwargs
+    ):
+        super().__init__(text, icon, color=color, variant=variant, **kwargs)
+        self.share_text = share_text
+
+    def to_json(self):
+        data = super().to_json()
+        data.update({"share": True, "shareText": self.share_text})
+        return data
 
 
 class ClipboardButton(Button):
