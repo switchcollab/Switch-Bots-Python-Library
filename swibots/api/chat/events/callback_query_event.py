@@ -37,6 +37,7 @@ class CallbackQueryEvent(CommandEvent):
         callback_data: Optional[JSONDict] = None,
         query_id: Optional[str] = None,
         details: Optional[CallbackResponse] = None,
+        app_session_id: Optional[str] = None
     ):
         super().__init__(
             app=app,
@@ -59,6 +60,7 @@ class CallbackQueryEvent(CommandEvent):
         self.callback_data = callback_data
         self.query_id = query_id
         self.details = details
+        self.app_session_id = app_session_id
 
     def from_json(self, data: JSONDict) -> "CallbackQueryEvent":
         super().from_json(data)
@@ -68,6 +70,7 @@ class CallbackQueryEvent(CommandEvent):
             self.details = CallbackResponse().from_json(
                 self.data.get("message", {}).get("additionalDetails")
             )
+            self.app_session_id = self.data.get("message", {}).get("appSessionId")
         return self
 
     async def answer(
@@ -85,7 +88,8 @@ class CallbackQueryEvent(CommandEvent):
             if not new_page and self.details.parent_id:
                 query_id = self.details.parent_id
             return await self.app.answer_ui_query(
-                query_id, callback=callback, message_id=self.message.id
+                query_id, callback=callback, message_id=self.message.id,
+                app_session_id=self.app_session_id
             )
         return await self.app.answer_callback_query(
             self.query_id,
@@ -94,4 +98,6 @@ class CallbackQueryEvent(CommandEvent):
             url=url,
             show_alert=show_alert,
             cache_time=cache_time,
+            app_session_id=self.app_session_id
         )
+

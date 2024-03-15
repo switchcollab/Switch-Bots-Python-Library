@@ -12,6 +12,7 @@ class AnswerCallback:
         message_id: Optional[int] = None,
         show_alert: Optional[bool] = False,
         cache_time: Optional[int] = None,
+        app_session_id: Optional[str] = None
     ) -> bool:
         """
         Answer Callback query from callback button
@@ -31,10 +32,12 @@ class AnswerCallback:
             show_alert=show_alert,
             cache_time=cache_time,
             message_id=message_id,
+            app_session_id=app_session_id
         )
 
     async def answer_ui_query(
-        self: "swibots.ApiClient", query_id: str, message_id: int, callback: AppPage
+        self: "swibots.ApiClient", query_id: str, message_id: int, callback: AppPage,
+        app_session_id: str
     ) -> bool:
         """Answer UI Query
 
@@ -47,5 +50,6 @@ class AnswerCallback:
             Bool: whether callback was sent or not
         """
         return await self.bots_service.bots.answer_ui_query(
-            query_id, message_id, callback=callback
+            query_id, message_id, callback=callback,
+            app_session_id=app_session_id
         )

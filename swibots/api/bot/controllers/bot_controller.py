@@ -70,6 +70,7 @@ class BotController:
         message_id: Optional[int] = 0,
         show_alert: Optional[bool] = False,
         cache_time: Optional[int] = None,
+        app_session_id: Optional[str] = None,
     ) -> bool:
         response = await self.client.post(
             f"{BASE_PATH}/callback/answer",
@@ -81,19 +82,23 @@ class BotController:
                 "url": url,
                 "showAlerts": show_alert,
                 "cacheTime": cache_time,
+                "appSessionId": app_session_id,
             },
         )
         return response.data
 
     async def answer_ui_query(
-        self, callback_id: str, message_id: int, callback: AppPage
+        self, callback_id: str, message_id: int, callback: AppPage, app_session_id: str
     ) -> bool:
         default_bar = self.client.app.app_bar
         if not callback.app_bar and default_bar:
             callback.app_bar = default_bar
         data = callback.to_json_request()
-        data["callbackQueryId"] = callback_id
-        data["messageId"] = message_id
+        data.update({
+            "appSessionId": app_session_id,
+            "callbackQueryId": callback_id,
+            "messageId": message_id
+        })
         response = await self.client.post(f"{BASE_PATH}/callback/answer", data=data)
         return response.data
 
