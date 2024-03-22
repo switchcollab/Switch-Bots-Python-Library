@@ -85,7 +85,7 @@ class UploadMedia:
     async def send_media(
         self: "swibots.ApiClient",
         document: str | BytesIO,
-        message: Optional[str] = None,
+        message: Optional[str] = "",
         community_id: Optional[str] = None,
         group_id: Optional[str] = None,
         channel_id: Optional[str] = None,

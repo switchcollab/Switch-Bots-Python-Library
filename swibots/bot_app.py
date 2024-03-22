@@ -17,6 +17,7 @@ from swibots.api.community.events import CommunityEvent
 from swibots.api.chat.events import ChatEvent
 from swibots.bots import BotContext, Decorators, BaseHandler
 from swibots.api.bot.models import BotInfo, BotCommand
+from swibots.api.common.models import User
 from swibots.api.callback import AppBar
 from swibots.api.common.events import Event
 from swibots.utils import (
@@ -54,6 +55,8 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         loop: asyncio.AbstractEventLoop = None,
         receive_updates: Optional[bool] = True,
         app_bar: Optional[AppBar] = None,
+        is_app: Optional[bool] = False,
+        home_callback: Optional[str] = None,
         **kwargs
     ):
         """
@@ -97,6 +100,8 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         self.receive_updates = receive_updates
         self.plugins = plugins or dict()
         self.app_bar = app_bar
+        self._is_app = is_app
+        self._home_callback = home_callback
 
     @property
     def bot(self) -> "swibots.bots.Bot":
@@ -349,6 +354,15 @@ class Client(Decorators, AbstractContextManager, ApiClient):
             )
             self.name = self.user.user_name
             self._bot_id = self.user.id
+            
+            if (self._is_app or self._home_callback):
+                await self.update_user_info(
+                    user_info=User(
+                        id=self.user.id,
+                        is_app=self._is_app,
+                        app_callback=self._home_callback
+                    )
+                )
 
             self.load_plugins()
 

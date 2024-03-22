@@ -25,7 +25,6 @@ from swibots.types import MAX_FILE_SIZE
 from swibots.config import APP_CONFIG
 from swibots.api.common.models import Media
 
-
 if TYPE_CHECKING:
     from swibots.api.chat import ChatClient
 
@@ -275,14 +274,14 @@ class MediaController:
             Media:
         """
 
-        if not min_file_size:
-            min_file_size = 100 * 1024 * 1024
-
         if not part_size:
             part_size = self._min_part_size
 
+        if not min_file_size:
+            min_file_size = self._min_part_size
+
         if not task_count:
-            task_count = 5
+            task_count = 1
 
         if part_size < self._min_part_size:
             log.warning(
@@ -332,7 +331,8 @@ class MediaController:
             )
         else:
             path, file_response = await self.file_to_response(
-                path, mime_type, file_name, callback=callback, file_size=size
+                path, mime_type, file_name, callback=callback, file_size=size,
+                callback_args=callback_args
             )
         if not file_response.get("fileName"):
             raise UnknownBackBlazeError(file_response)
@@ -598,8 +598,8 @@ class MediaController:
                 hash, part_number = await self.__upload_file(
                     token,
                     part_number,
-                    fileId,
                     path,
+                    fileId=fileId,
                     upl_size=part_size * (part_number - 1),
                     part_size=part_size,
                     progress=progress,

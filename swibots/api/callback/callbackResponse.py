@@ -10,8 +10,12 @@ class CallbackResponse(SwitchObject):
         self.file_name = None
         self.input_value = None
         self.parent_id = None
+        self.new_url = None
+        self.__data = None
 
     def get(self, key: str):
+        if self.__data and (val:= self.__data.get(key)):
+            return val
         return self.to_json().get(key)
 
     def from_json(self, data: Dict[str, Any] | None) -> Any:
@@ -21,6 +25,8 @@ class CallbackResponse(SwitchObject):
             self.file_name = data.get("fileName")
             self.parent_id = data.get("callbackQueryId")
             self.input_value = data.get("inputValue")
+            self.new_url = data.get("url")
+        self.__data = data
         return self
 
     def to_json(self) -> Dict[str, Any]:
@@ -30,4 +36,5 @@ class CallbackResponse(SwitchObject):
             "fileName": self.file_name,
             "callbackQueryId": self.parent_id,
             "inputValue": self.input_value,
+            "url": self.url
         }
