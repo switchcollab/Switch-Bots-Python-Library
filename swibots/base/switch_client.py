@@ -1,7 +1,13 @@
 import json
 from typing import List, Tuple, Type, TypeVar
 import swibots, httpx
-from swibots.errors import NetworkError, UnAuthorized, InvalidRouteCall, BadRequest
+from swibots.errors import (
+    NetworkError,
+    UnAuthorized,
+    InvalidRouteCall,
+    BadRequest,
+    ServerError,
+)
 from swibots.utils import RestClient
 from swibots.utils.types import JSONDict
 from swibots.base import RestResponse
@@ -144,6 +150,8 @@ class SwitchRestClient(RestClient):
                 raise UnAuthorized(error)
             elif response.status_code == 404:
                 raise InvalidRouteCall(error)
+            elif response.status_code == 503:
+                raise ServerError(error)
             raise NetworkError(error)
         return response
 

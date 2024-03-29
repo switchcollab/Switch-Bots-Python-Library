@@ -61,6 +61,9 @@ class BadRequest(SwitchError):
 class FileTooLarge(SwitchError):
     ...
 
+class ServerError(NetworkError):
+    ...
+
 class UnAuthorized(SwitchError): ...
 
 

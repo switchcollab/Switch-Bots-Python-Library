@@ -12,11 +12,15 @@ class AudioPlayer(Component):
         url: str,
         subtitle: str = "",
         thumb: Union[Image, str] = None,
+        previous_callback: Optional[str] = "",
+        next_callback: Optional[str] = "",
     ):
         self.title = title
         self.url = url
         self.subtitle = subtitle
         self.thumb = thumb
+        self.previous_callback = previous_callback
+        self.next_callback = next_callback
 
     def to_json(self):
         return {
@@ -25,6 +29,8 @@ class AudioPlayer(Component):
             "subtitle": self.subtitle,
             "image": self.thumb.to_json(),
             "url": self.url,
+            "previousCallback": self.previous_callback,
+            "nextCallback": self.next_callback,
         }
 
 
@@ -94,9 +100,7 @@ class Embed(Component):
             "height": self.height,
             "width": self.width,
             "fullScreen": self.full_screen,
-            "extraOptions": {
-                **self.__kwargs
-            }
+            "extraOptions": {**self.__kwargs},
         }
         if self.expand:
             data["expansion"] = "flexible_expansion"
