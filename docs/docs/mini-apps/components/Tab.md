@@ -39,7 +39,7 @@ tab_tile = TabBarTile(
 ### Usage Example:
 
 ```python
-tab_bar_layout = TabBarLayout(
+tab_bar = TabBar(
     tabs=[tab_tile1, tab_tile2, tab_tile3],
     bar_type=TabBarType.SWIPE
 )

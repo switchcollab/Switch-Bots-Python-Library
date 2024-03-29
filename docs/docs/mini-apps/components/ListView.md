@@ -16,6 +16,8 @@ Enumerates the types of list views available.
 - `DEFAULT`: Represents the default list view type.
 - `SMALL`: Represents a small-sized list view.
 - `LARGE`: Represents a large-sized list view.
+- `COMPACT`: Represents a different view with large thumbnail with badges.
+
 
 
 ### Usage Example:

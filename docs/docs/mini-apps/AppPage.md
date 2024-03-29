@@ -1,3 +1,7 @@
+---
+sidebar_position: 2
+---
+
 ### AppPage
 
 The `AppPage` class represents a page within a Switch application.
@@ -8,6 +12,7 @@ The `AppPage` class represents a page within a Switch application.
 - `layouts` (Optional): A list of layout components to be included in the page.
 - `components` (Optional): A list of standalone components to be included in the page.
 - `app_bar` (Optional): The app bar component for the page.
+- `bottom_bar` (Optional): The bottom bar component for the page.
 
 #### Methods
 
@@ -20,7 +25,8 @@ def __init__(
     screen: ScreenType = ScreenType.SCREEN,
     layouts: List[Layout] = None,
     components: List[Component] = None,
-    app_bar: AppBar = None
+    app_bar: AppBar = None,
+    bottom_bar: BottomBar = None,
 )
 ```
 

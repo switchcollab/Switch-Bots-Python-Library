@@ -1,3 +1,7 @@
+---
+sidebar_position: 3
+---
+
 # AppBar
 
 The `AppBar` class represents an app bar in a user interface.

@@ -1,4 +1,4 @@
-## Button
+# Button
 The `Button` class represents an action button in a user interface.
 
 ### Properties
@@ -65,5 +65,55 @@ download_button = DownloadButton(
     text="Download File",
     icon="https://example.com/download-icon.png",
     callback_data="download_callback_data"
+)
+```
+
+## ShareButton
+
+Extends the `Button` class to represent a button with share functionality.
+
+### Attributes:
+
+- `text` (`str` or `Text`): The text content of the button.
+- `share_text` (`str`): The text to be shared when the button is clicked.
+- `icon` (`str` or `Icon`, optional): The icon associated with the button.
+- `color` (`str`, optional): The color of the button.
+- `variant` (`ButtonVariant`, optional): The variant of the button.
+
+```python
+def __init__(
+    self,
+    text: str | Text,
+    icon: str | Icon = "",
+    share_text: str = "",
+    color: str = None,
+    variant: ButtonVariant = ButtonVariant.DEFAULT,
+)
+```
+
+### Usage Example:
+```python
+share_button = ShareButton(
+    text="Share",
+    share_text="Check out this awesome article!",
+)
+```
+
+## ClipboardButton
+
+
+### Attributes:
+
+- `text` (`str` or `Text`): The text content of the button.
+- `url` (`str`): The URL or text to be copied to the clipboard when the button is clicked.
+- `icon` (`str` or `Icon`, optional): The icon associated with the button.
+- `color` (`str`, optional): The color of the button.
+- `variant` (`ButtonVariant`, optional): The variant of the button.
+
+### Usage Example:
+```python
+clipboard_button = ClipboardButton(
+    text="Copy Link",
+    url="https://example.com/page",
 )
 ```

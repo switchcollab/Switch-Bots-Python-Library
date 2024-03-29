@@ -13,6 +13,7 @@ Represents a list item in a list view.
 - `subtitle_extra` (Optional): Extra information related to the subtitle.
 - `callback_data` (Optional): Callback data associated with the list tile.
 - `thumb` (Optional): An image associated with the list tile. Can be an `Image` instance or a URL string.
+- `badges`: (Optional, List[Badge]): Badges to show in compact list view.
 
 ### Usage Example:
 
