@@ -7,6 +7,8 @@ The `VideoPlayer` class represents a video player in a user interface.
 - `url` (Required): The URL of the video.
 - `title` (Optional): The title of the video.
 - `subtitle` (Optional): The subtitle or additional information about the video.
+- `full_screen` (Optional, bool): Whether to open in full page
+- `badges` (Optional, List[[Badge](../components/Badge.md)]): List of badges to display in full screen mode.
 
 #### Usage Example
 

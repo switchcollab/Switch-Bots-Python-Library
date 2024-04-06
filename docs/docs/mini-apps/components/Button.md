@@ -16,6 +16,7 @@ def __init__(
     self,
     text: Union[str, Text],
     icon: Union[str, Icon] = "",
+    color: str = "",
     callback_data: Optional[str] = None,
 )
 ```

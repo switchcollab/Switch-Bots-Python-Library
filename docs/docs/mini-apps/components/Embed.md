@@ -1,6 +1,6 @@
 # Embed
 
-The `Embed` class represents an embedded content in a user interface.
+The `Embed` class represents an embedded content (i.e WebView) in a user interface.
 
 ### Properties
 

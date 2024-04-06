@@ -32,7 +32,7 @@ app.run(main())
 from swibots import Client
 ```
 
-2. Instantiate the class with your TOKEN
+2. Initialize the class with your TOKEN
 
 ```python
 app = Client("TOKEN")
@@ -42,9 +42,10 @@ app = Client("TOKEN")
 
 ```python
 async def main():
-    async with app:
-        me = await app.get_me()
-        print(me)
+    me = await app.get_me()
+    print(me)
+
+app.run(main())
 ```
 
 4. Finally, we tell Python to schedule our main() async function by using Client run() method.

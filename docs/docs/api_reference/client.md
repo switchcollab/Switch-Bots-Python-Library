@@ -16,6 +16,8 @@ This is the main class of the library. It is used to create a bot app and to cal
 - `auto_update_bot` (`bool`, Optional): Auto update bot (This is the flag to enable/disable the auto update of the bot into the database)
 - `receive_updates` (`bool`, Optional): Whether to receive event updates, defaults to `True`.
 - `loop` (`asyncio.AbstractEventLoop`, Optional): AsyncIO Event loop (This is used in case you want to use a custom event loop)
+- `is_app` (`bool`, Optional): Whether to mark the bot as a APP!
+- `home_callback` (`str`, Optional): The default callback data to send, if opened through 'open app' button!
 
 
 ## Example
@@ -25,7 +27,8 @@ from swibots import Client
 
 app = Client("token", "This is a bot")
 
-async with app:
+async def main():
     await app.send_message(123, "Hello world")
 
+app.run(main())
 ```

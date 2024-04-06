@@ -25,6 +25,11 @@ from swibots import MessageEvent, CallbackQueryEvent
 app = Client("token", app_bar=AppBar(
     title="Magic World"
 ))
+app.set_bot_commands(
+    [
+        BotCommand("start", "Get started", True)
+    ]
+)
 
 # register a command to send button
 @app.on_command("start")

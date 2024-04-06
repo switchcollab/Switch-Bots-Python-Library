@@ -9,9 +9,9 @@ The `AppPage` class represents a page within a Switch application.
 #### Properties
 
 - `screen` (Optional): The type of screen for the page, default is `ScreenType.SCREEN`.
-- `layouts` (Optional): A list of layout components to be included in the page.
 - `components` (Optional): A list of standalone components to be included in the page.
 - `app_bar` (Optional): The app bar component for the page.
+- `disable_appbar` (Optional, bool): Whether to disable the appbar for current page.
 - `bottom_bar` (Optional): The bottom bar component for the page.
 
 #### Methods
@@ -26,6 +26,7 @@ def __init__(
     layouts: List[Layout] = None,
     components: List[Component] = None,
     app_bar: AppBar = None,
+    disable_appbar: bool = None,
     bottom_bar: BottomBar = None,
 )
 ```

@@ -34,6 +34,9 @@ operating system)
    whatever name you want!), and paste the following code:
 
 ```python title="echobot.py"
+import logging
+logging.basicConfig(level=logging.INFO)
+
 from swibots import (
     Client,
     BotContext,
@@ -47,9 +50,14 @@ app = Client(
     TOKEN, # Your Bot Authorization Token
     "A cool bot with annotations and everything you could possibly want :)" # Bot Description
 )
+app.set_bot_commands(
+    [
+        BotCommand("start", "Start the bot", True)
+    ]
+)
 
 @app.on_message()
-async def message_handler(ctx: BotContext[MessageEvent]):
+async def listen_handler(ctx: BotContext[MessageEvent]):
     # easy way to prepare a mesage that is a response of an incomming message
     message = ctx.event.message
     # send the message back to the user

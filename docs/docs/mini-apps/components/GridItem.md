@@ -1,6 +1,6 @@
 ### GridItem
 
-The `GridItem` class represents a tile within a grid layout.
+The `GridItem` class represents a tile within a grid.
 
 #### Properties
 

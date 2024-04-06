@@ -2,8 +2,10 @@ from swibots.utils.types import JSONDict
 from .types import Component
 from enum import Enum
 from typing import List
+from logging import getLogger
 from swibots.base import SwitchObject
 
+LOG = getLogger(__name__)
 
 class TabBarTile(SwitchObject):
     def __init__(
@@ -42,9 +44,17 @@ class TabBar(Component):
         bar_type: TabBarType = TabBarType.SWIPE,
     ):
         self.bar_type = bar_type
+        if not tabs:
+            raise ValueError("'tabs' are not provided in TabBar.")
         self.tabs = tabs
 
     def to_json(self):
+        if not any(tab.selected for tab in self.tabs):
+            if self.tabs:
+                self.tabs[0].selected = True
+            else:
+                raise ValueError("No tab is marked as selected!")
+
         return {
             "type": self.type,
             "tabs": [tab.to_json() for tab in self.tabs],
