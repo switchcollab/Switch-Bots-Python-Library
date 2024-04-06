@@ -2,7 +2,7 @@ import logging
 from typing import TYPE_CHECKING, List, Optional
 
 from swibots.api.chat.models import (
-    Message,
+    Message, SessionInfo
 )
 
 if TYPE_CHECKING:
@@ -29,7 +29,7 @@ class ChatController:
     ) -> bool:
         data = {"status": status, "messageType": message_type, "pinDetails": detail}
         if isinstance(message, Message):
-            data |= {
+            data = {
                 "groupId": message.group_id,
                 "communityId": message.community_id,
                 "channelId": message.channel_id,
@@ -47,3 +47,7 @@ class ChatController:
     async def get_last_seen(self, user_id: int) -> int:
         response = await self.client.get(f"{CHAT_BASE_PATH}lastseen/{user_id}")
         return response.data.get("lastSeen")
+
+    async def get_session_info(self, session_id: str):
+        response = await self.client.get(f"/v1/app/session/get?sessionId={session_id}")
+        return self.client.build_object(SessionInfo, response.data)

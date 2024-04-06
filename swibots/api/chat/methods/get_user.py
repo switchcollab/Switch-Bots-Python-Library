@@ -1,6 +1,7 @@
 from typing import Type, TypeVar
 import swibots
 from swibots.api.common.models import User
+from swibots.api.chat.models import SessionInfo
 
 
 class GetUser:
@@ -18,6 +19,19 @@ class GetUser:
 
         """
         return await self.chat_service.messages.get_user(user_id, username=username)
+
+    async def get_session_info(
+        self: "swibots.ApiClient", session_id: str
+    ) -> SessionInfo:
+        """Get session info from session id
+
+        Args:
+            session_id (str): session id to get info.
+
+        Returns:
+            SessionInfo:
+        """
+        return await self.chat_service.posts.get_session_info(session_id=session_id)
 
     async def get_last_seen(self: "swibots.ApiClient", user_id: int) -> int:
         """Get last seen of user
