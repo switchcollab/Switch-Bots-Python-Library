@@ -37,7 +37,7 @@ class CallbackQueryEvent(CommandEvent):
         callback_data: Optional[JSONDict] = None,
         query_id: Optional[str] = None,
         details: Optional[CallbackResponse] = None,
-        app_session_id: Optional[str] = None
+        app_session_id: Optional[str] = None,
     ):
         super().__init__(
             app=app,
@@ -73,6 +73,33 @@ class CallbackQueryEvent(CommandEvent):
             self.app_session_id = self.data.get("message", {}).get("appSessionId")
         return self
 
+    async def __action_callback(self, **kwargs):
+        resp = await self.app.bots_service.post(
+            "/v1/bots/callback/answer",
+            data={
+                "type": "action_callback",
+                "callbackQueryId": self.query_id,
+                "messageId": str(self.message.id),
+                **kwargs
+            },
+        )
+        return resp.data
+
+    async def share(self, text: str):
+        return await self.__action_callback(
+            action="share", url=text
+        )
+
+    async def copy(self, text: str):
+        return await self.__action_callback(
+            action="copy", url=text
+        )
+    
+    async def redirect(self, url: str):
+        return await self.__action_callback(
+            action="navigate", url=url
+        )
+
     async def answer(
         self,
         text: str = None,
@@ -88,8 +115,10 @@ class CallbackQueryEvent(CommandEvent):
             if not new_page and self.details.parent_id:
                 query_id = self.details.parent_id
             return await self.app.answer_ui_query(
-                query_id, callback=callback, message_id=self.message.id,
-                app_session_id=self.app_session_id
+                query_id,
+                callback=callback,
+                message_id=self.message.id,
+                app_session_id=self.app_session_id,
             )
         return await self.app.answer_callback_query(
             self.query_id,
@@ -98,6 +127,5 @@ class CallbackQueryEvent(CommandEvent):
             url=url,
             show_alert=show_alert,
             cache_time=cache_time,
-            app_session_id=self.app_session_id
+            app_session_id=self.app_session_id,
         )
-

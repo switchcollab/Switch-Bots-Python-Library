@@ -57,7 +57,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         app_bar: Optional[AppBar] = None,
         is_app: Optional[bool] = False,
         home_callback: Optional[str] = None,
-        **kwargs
+        **kwargs,
     ):
         """
         Initialize the client
@@ -85,13 +85,16 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         self._bot_description = bot_description
         self.auto_update_bot = auto_update_bot
         self._loop = loop or asyncio.get_event_loop()
-        self.user = self.auth_service.get_me_sync(user_type=self._user_type)
-        self.name = self.user.name
+        try:
+            self.user = self.auth_service.get_me_sync(user_type=self._user_type)
+            self.name = self.user.name
+        except Exception as er:
+            logging.error(er)
+            # In case, if issues with auth service
+            self.user = self._user_type(app=self)
+            self.name = ""
         if app_bar is None:
-            app_bar = AppBar(
-                self.name,
-                left_icon=self.user.imageurl
-            )
+            app_bar = AppBar(self.name, left_icon=self.user.imageurl)
         self.app_bar = app_bar
         self._bot_id = None
         self._running = False
@@ -238,9 +241,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         self._bot_info = await self.update_bot_info(self._bot_info)
 
     async def _on_chat_service_start(self, _):
-        await self.chat_service.subscribe_to_notifications(
-            callback=self.on_chat_event
-        )
+        await self.chat_service.subscribe_to_notifications(callback=self.on_chat_event)
 
     async def _on_community_service_start(self, _):
         await self.community_service.subscribe_to_notifications(
@@ -346,21 +347,24 @@ class Client(Decorators, AbstractContextManager, ApiClient):
             """Starts the app"""
             log.info("🚀 Starting app...")
 
-            log.info(
-                "Logged in as [%a][%s][%d]",
-                self.user.name,
-                self.user.user_name,
-                self.user.id,
-            )
-            self.name = self.user.user_name
-            self._bot_id = self.user.id
-            
-            if (self._is_app or self._home_callback):
+            if self.user.id:
+                log.info(
+                    "Logged in as [%a][%s][%d]",
+                    self.user.name,
+                    self.user.user_name,
+                    self.user.id,
+                )
+                self.name = self.user.user_name
+                self._bot_id = self.user.id
+            else:
+                log.error("ERROR: Can't identify logged user.")
+
+            if self._is_app or self._home_callback:
                 await self.update_user_info(
                     user_info=User(
                         id=self.user.id,
                         is_app=self._is_app,
-                        app_callback=self._home_callback
+                        app_callback=self._home_callback,
                     )
                 )
 

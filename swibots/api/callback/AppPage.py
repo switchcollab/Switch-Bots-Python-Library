@@ -57,6 +57,7 @@ class AppPage(SwitchObject):
         bottom_bar: BottomBar = None,
         show_continue: bool = True,
         back_action: str = None,
+        disable_appbar: bool = False,
         **kwargs
     ):
         super().__init__(app)
@@ -67,6 +68,7 @@ class AppPage(SwitchObject):
         self.components = components or []
         if layouts:
             self.components.extend(layouts)
+        self.disable_appbar = disable_appbar
         self.app_bar = app_bar
         self.bottom_bar = bottom_bar
         self.show_continue = show_continue
@@ -88,7 +90,7 @@ class AppPage(SwitchObject):
             "mode": self.screen.value,
             "components": components,
         }
-        if self.app_bar:
+        if not self.disable_appbar and self.app_bar:
             data["pageBar"] = self.app_bar.to_json()
         if self.bottom_bar:
             data.update(self.bottom_bar.to_json())

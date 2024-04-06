@@ -45,7 +45,7 @@ headers["Authorization"] = (
 )
 headers["accept"] = "application/json"
 
-MAX_THUMB_SIZE = 1024 * 20
+MAX_THUMB_SIZE = 1024 * 40
 logging.getLogger("httpx").setLevel(logging.ERROR)
 
 
