@@ -28,7 +28,7 @@ class SessionUser(SwitchObject):
             self.name = data.get("name")
             self.username = data.get("username")
             self.role = data.get("role")
-            self.image_url = data.get("imageurl")
+            self.image_url = data.get("imageUrl")
             self.user_id = data.get("userId")
         return self
 

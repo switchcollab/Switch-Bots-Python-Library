@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
 ---
 
 ### AppPage
@@ -23,7 +23,6 @@ def __init__(
     self,
     app: "swibots.App" = None,
     screen: ScreenType = ScreenType.SCREEN,
-    layouts: List[Layout] = None,
     components: List[Component] = None,
     app_bar: AppBar = None,
     disable_appbar: bool = None,
@@ -37,8 +36,9 @@ def __init__(
 # Create an AppPage instance:
 app_page = AppPage(
     screen=ScreenType.FULLSCREEN,
-    layouts=[Carousel(images=[Image(url="https://example.com/image1.jpg")])],
-    components=[Button(text="Click Me")],
+    components=[
+        Carousel(images=[Image(url="https://example.com/image1.jpg")]),
+        Button(text="Click Me")],
     app_bar=AppBar(title="My Page")
 )
 ```

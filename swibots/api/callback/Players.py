@@ -12,13 +12,17 @@ class AudioPlayer(Component):
         url: str,
         subtitle: str = "",
         thumb: Union[Image, str] = None,
+        id: str = None,
+        callback_data: str = None,
         previous_callback: Optional[str] = "",
         next_callback: Optional[str] = "",
     ):
         self.title = title
         self.url = url
+        self.id = id
         self.subtitle = subtitle
         self.thumb = thumb
+        self.callback_data = callback_data
         self.previous_callback = previous_callback
         self.next_callback = next_callback
 
@@ -29,6 +33,8 @@ class AudioPlayer(Component):
             "subtitle": self.subtitle,
             "image": self.thumb.to_json(),
             "url": self.url,
+            "songId": self.id,
+            "onSongUpdate": self.callback_data,
             "previousCallback": self.previous_callback,
             "nextCallback": self.next_callback,
         }
@@ -42,23 +48,30 @@ class VideoPlayer(Component):
         url: str,
         title: str = "",
         subtitle: str = "",
+        id: str = "",
         full_screen: bool = False,
         badges: List[Badge] = None,
+        callback_data: str = None,
     ):
         self.url = url
         self.title = title
+        self.id = id
         self.subtitle = subtitle
         self.full_screen = full_screen
         self.badges = badges
+        self.callback_data = callback_data
 
     def to_json(self) -> Dict[str, Any]:
         data = {
             "type": self.type,
             "url": self.url,
+            "videoId": self.id,
             "title": self.title,
             "subtitle": self.subtitle,
             "fullScreen": self.full_screen,
         }
+        if self.callback_data:
+            data["onVideoUpdate"] = self.callback_data
         if self.badges:
             data["badges"] = [badge.to_json() for badge in self.badges]
         return data
@@ -77,6 +90,7 @@ class Embed(Component):
         proxy: Optional[dict] = None,
         landscape: bool = False,
         allow_navigation: bool = True,
+        navigation_callback: str = None,
         enable_ads: bool = False,
         view_ratio: int = None,
         **kwargs
@@ -91,6 +105,7 @@ class Embed(Component):
         self.view_ratio = view_ratio
         self.enable_ads = enable_ads
         self.allow_navigation = allow_navigation
+        self.navigation_callback = navigation_callback
         self.__kwargs = kwargs
 
     def to_json(self):
@@ -100,7 +115,9 @@ class Embed(Component):
             "height": self.height,
             "width": self.width,
             "fullScreen": self.full_screen,
-            "extraOptions": {**self.__kwargs},
+            "extraOptions": {
+                **self.__kwargs
+                },
         }
         if self.expand:
             data["expansion"] = "flexible_expansion"
@@ -114,6 +131,8 @@ class Embed(Component):
             data["extraOptions"]["viewRatio"] = self.view_ratio
         if self.enable_ads:
             data["extraOptions"]["enableAds"] = self.enable_ads
+        if self.navigation_callback:
+            data["extraOptions"]["navigationCallback"] = self.navigation_callback
         return data
 
 
