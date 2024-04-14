@@ -21,6 +21,7 @@ class Button(Component):
         callback_data: Optional[str] = None,
         color: str = None,
         variant: ButtonVariant = ButtonVariant.DEFAULT,
+        max_size: bool = False,
         **kwargs
     ):
         if isinstance(text, str):
@@ -36,6 +37,7 @@ class Button(Component):
         self.action = kwargs.get("action")
         self.url = kwargs.get("url")
         self.file_name = kwargs.get("downloadFileName")
+        self.max_size = max_size
 
     def to_json(self):
         data = {
@@ -44,6 +46,7 @@ class Button(Component):
             "callbackData": self.callback_data if self.callback_data else None,
             "color": self.color,
             "variant": self.variant.value,
+            "mainAxisSize": "max" if self.max_size else "min",
         }
         if self.icon:
             data["icon"] = self.icon.to_json()
@@ -106,13 +109,15 @@ class ClipboardButton(Button):
 class ButtonGroup(Component):
     type = "button_group"
 
-    def __init__(self, buttons: List[Button]):
+    def __init__(self, buttons: List[Button], max_size: bool = False):
         self.buttons = buttons
+        self.max_size = max_size
 
     def to_json(self):
         return {
             "type": self.type,
             "buttons": [button.to_json() for button in self.buttons],
+            "mainAxisSize": "max" if self.max_size else "min",
         }
 
 

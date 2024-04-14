@@ -29,7 +29,8 @@ class TextInput(Component):
         right_icon: Optional[Icon] = None,
         left_icon: Optional[Icon] = None,
         multiline: bool = False,
-        expanded: bool = False
+        expanded: bool = False,
+        max_size: bool = False
     ):
         self.label = label
         self.width = width
@@ -42,6 +43,7 @@ class TextInput(Component):
         self.password = password
         self.multiline = multiline
         self.expanded = expanded
+        self.max_size = max_size
 
         if isinstance(right_icon, str):
             right_icon = Icon(right_icon)
@@ -72,6 +74,8 @@ class TextInput(Component):
             data["expansion"] = "flexible_expansion"
         elif self.expanded:
             data["expansion"] = "expanded_expansion"
+        
+        data["mainAxisSize"] = "max" if self.max_size else "min"
         return data
 
 
@@ -83,10 +87,12 @@ class FilePicker(Component):
         callback_data: str,
         files_count: int = 1,
         mime_type: List[str] = ["png", "jpg", "jpeg", "webp"],
+        max_size: bool = False
     ):
         self.callback_data = callback_data
         self.files_count = files_count
         self.mime_type = mime_type
+        self.max_size = max_size
 
     def to_json(self):
         return {
@@ -94,4 +100,5 @@ class FilePicker(Component):
             "callbackData": self.callback_data,
             "numberOfFiles": self.files_count,
             "mimeType": self.mime_type,
+            "mainAxisSize": "max" if self.max_size else "min"
         }

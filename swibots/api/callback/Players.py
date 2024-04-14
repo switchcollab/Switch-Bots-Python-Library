@@ -16,6 +16,7 @@ class AudioPlayer(Component):
         callback_data: str = None,
         previous_callback: Optional[str] = "",
         next_callback: Optional[str] = "",
+        max_size: bool = False
     ):
         self.title = title
         self.url = url
@@ -25,6 +26,7 @@ class AudioPlayer(Component):
         self.callback_data = callback_data
         self.previous_callback = previous_callback
         self.next_callback = next_callback
+        self.max_size=  max_size
 
     def to_json(self):
         return {
@@ -37,6 +39,7 @@ class AudioPlayer(Component):
             "onSongUpdate": self.callback_data,
             "previousCallback": self.previous_callback,
             "nextCallback": self.next_callback,
+            "mainAxisSize": "max" if self.max_size else "min"
         }
 
 
@@ -52,6 +55,8 @@ class VideoPlayer(Component):
         full_screen: bool = False,
         badges: List[Badge] = None,
         callback_data: str = None,
+            max_size: bool = False
+    
     ):
         self.url = url
         self.title = title
@@ -60,6 +65,7 @@ class VideoPlayer(Component):
         self.full_screen = full_screen
         self.badges = badges
         self.callback_data = callback_data
+        self.max_size=  max_size
 
     def to_json(self) -> Dict[str, Any]:
         data = {
@@ -69,6 +75,7 @@ class VideoPlayer(Component):
             "title": self.title,
             "subtitle": self.subtitle,
             "fullScreen": self.full_screen,
+            "mainAxisSize": "max" if self.max_size else "min"
         }
         if self.callback_data:
             data["onVideoUpdate"] = self.callback_data
@@ -89,7 +96,7 @@ class Embed(Component):
         full_screen: Optional[bool] = True,
         proxy: Optional[dict] = None,
         landscape: bool = False,
-        allow_navigation: bool = True,
+        allow_navigation: bool = False,
         navigation_callback: str = None,
         enable_ads: bool = False,
         view_ratio: int = None,

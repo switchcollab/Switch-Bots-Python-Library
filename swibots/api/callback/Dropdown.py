@@ -13,11 +13,13 @@ class Dropdown(Component):
         selected: int = None,
         options: List[ListItem] = None,
         disabled: bool = None,
+        max_size: bool = False
     ):
         self.disabled = disabled
         self.options = options
         self.selected = selected
         self.placeholder = placeholder
+        self.max_size = max_size
 
     def to_json(self) -> JSONDict:
         data = {
@@ -28,4 +30,5 @@ class Dropdown(Component):
         }
         if self.selected:
             data["selectedIndex"] = self.selected
+        data["mainAxisSize"] = "max" if self.max_size else "min"
         return data

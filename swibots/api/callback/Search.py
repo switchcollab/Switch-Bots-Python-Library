@@ -7,15 +7,18 @@ class SearchHolder(Component):
     type = "search_holder"
 
     def __init__(
-        self, placeholder: str = "Search..", callback_data: Optional[str] = None
+        self, placeholder: str = "Search..", callback_data: Optional[str] = None,
+        max_size: bool = False
     ):
         self.placeholder = placeholder
         self.callback_data = callback_data
+        self.max_size = max_size
 
     def to_json(self) -> Dict[str, Any]:
         data = {
             "type": self.type,
             "placeholder": self.placeholder,
+            "mainAxisSize": "max" if self.max_size else "min"
         }
         if self.callback_data:
             data["callbackData"] = self.callback_data
