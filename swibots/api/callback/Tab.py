@@ -42,11 +42,13 @@ class TabBar(Component):
         self,
         tabs: List[TabBarTile],
         bar_type: TabBarType = TabBarType.SWIPE,
+        theme_color: str = None
     ):
         self.bar_type = bar_type
         if not tabs:
             raise ValueError("'tabs' are not provided in TabBar.")
         self.tabs = tabs
+        self.theme_color = theme_color
 
     def to_json(self):
         if not any(tab.selected for tab in self.tabs):
@@ -59,4 +61,5 @@ class TabBar(Component):
             "type": self.type,
             "tabs": [tab.to_json() for tab in self.tabs],
             "tabBarStyle": self.bar_type.value,
+            "tabBarColor": self.theme_color
         }

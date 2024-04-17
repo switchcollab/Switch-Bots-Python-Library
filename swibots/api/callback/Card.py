@@ -38,6 +38,7 @@ class Card(Component):
         icon3: Icon = "",
         icon4: Icon = "",
         icon5: Icon = "",
+        callback_data: str = ""
         #        iconAlignment: str = "",
     ):
         self.title = title
@@ -66,6 +67,7 @@ class Card(Component):
         if isinstance(icon5, str):
             icon5 = Icon(icon5)
         self.icon5 = icon5
+        self.callback_data = callback_data
 
     #        self.iconAlignment = iconAlignment
     #        self.size = size
@@ -89,6 +91,7 @@ class Card(Component):
             "icon3": self.icon3.to_json() if self.icon3 else None,
             "icon4": self.icon4.to_json() if self.icon4 else None,
             "icon5": self.icon5.to_json() if self.icon5 else None,
+            "callbackData": self.callback_data
             #            "size": self.size.value,
         }
 
@@ -103,12 +106,14 @@ class CardView(Component):
         card_style: CardStyle = CardStyle.TINT,
         vertical_size: CardSize = CardSize.MEDIUM,
         scrollable: bool = False,
+        horizontal: bool = False
     ):
         self.card_size = card_size
         self.card_style = card_style
         self.vertical_size = vertical_size
         self.scrollable = scrollable
         self.cards = cards
+        self.horizontal = horizontal
 
     def to_json(self):
         return {
@@ -117,6 +122,7 @@ class CardView(Component):
             "cardStyle": self.card_style.value,
             "verticalSize": self.vertical_size.value,
             "scrollable": self.scrollable,
+            "horizontal": self.horizontal,
             "children": [child.to_json() for child in self.cards],
         }
 
@@ -131,6 +137,7 @@ class Banner(Component):
         subtitle: Union[str, Text] = "",
         icon: Union[Icon, str] = "",
         background: str = "",
+        max_size: bool = False
     ):
         if isinstance(title, str):
             title = Text(title)
@@ -148,6 +155,7 @@ class Banner(Component):
             icon = Icon(icon)
         self.icon = icon
         self.background = background
+        self.max_size = max_size
 
     def to_json(self):
         return {
@@ -157,4 +165,5 @@ class Banner(Component):
             "title": self.title.to_json() if self.title else None,
             "subtitle": self.subtitle.to_json() if self.subtitle else None,
             "background": self.background,
+            "mainAxisSize": "max" if self.max_size else "min"
         }
