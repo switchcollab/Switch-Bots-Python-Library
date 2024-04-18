@@ -79,8 +79,8 @@ class AppPage(SwitchObject):
         components = []
         for component in self.components:
             if isinstance(component, ListView):
-                if self.max_size:
-                    component.max_size = True
+                if self.max_size != None and component.max_size == None:
+                    component.max_size = self.max_size
                 parsed = component.to_json_request()
                 if isinstance(parsed, list):
                     components.extend(parsed)
@@ -88,7 +88,8 @@ class AppPage(SwitchObject):
                     components.append(parsed)
             elif isinstance(component, Component):
                 componentJson = component.to_json()
-                componentJson["mainAxisSize"] = "max" if self.max_size else "min"
+                if "mainAxisSize" not in componentJson and self.max_size != None:
+                    componentJson["mainAxisSize"] = "max" if self.max_size else "min"
                 components.append(componentJson)
 
         data = {

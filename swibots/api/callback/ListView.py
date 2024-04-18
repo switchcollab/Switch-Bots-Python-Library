@@ -76,7 +76,7 @@ class ListView(Component):
         title: str = None,
         right_image: str = None,
         image_callback: str = None,
-        max_size: str = None
+        max_size: bool = None
     ):
         self.title = title
         self.options = options

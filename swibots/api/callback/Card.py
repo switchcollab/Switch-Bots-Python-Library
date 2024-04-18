@@ -102,7 +102,7 @@ class CardView(Component):
     def __init__(
         self,
         cards: List[Card],
-        card_size: CardSize = CardSize.MEDIUM,
+        card_size: CardSize = CardSize.LARGE,
         card_style: CardStyle = CardStyle.TINT,
         vertical_size: CardSize = CardSize.MEDIUM,
         scrollable: bool = False,
@@ -137,7 +137,7 @@ class Banner(Component):
         subtitle: Union[str, Text] = "",
         icon: Union[Icon, str] = "",
         background: str = "",
-        max_size: bool = False
+        max_size: bool = None
     ):
         if isinstance(title, str):
             title = Text(title)

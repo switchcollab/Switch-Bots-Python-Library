@@ -125,7 +125,11 @@ class StickyHeader(Component):
     type = "sticky_header"
 
     def __init__(
-        self, text: str, color: str = None, callback_data: str = None, icon: Icon = None
+        self,
+        text: str,
+        color: str = None,
+        callback_data: str = None,
+        icon: Icon = None,
     ):
         self.text = text
         self.color = color
