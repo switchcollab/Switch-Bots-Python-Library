@@ -53,7 +53,7 @@ class Text(Component):
         size: TextSize = TextSize.BODY,
         opacity: float = 1,
         color: str = None,
-        max_size: bool = False,
+        max_size: bool = None,
     ):
         self.text = text
         self.size = size
@@ -79,7 +79,7 @@ class Image(Component):
         url: str,
         callback_data: str = None,
         dark_url: str = None,
-        max_size: bool = False,
+        max_size: bool = None,
     ):
         self.url = url
         self.callback_data = callback_data

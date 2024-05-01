@@ -8,7 +8,7 @@ class SearchHolder(Component):
 
     def __init__(
         self, placeholder: str = "Search..", callback_data: Optional[str] = None,
-        max_size: bool = False
+        max_size: bool = None
     ):
         self.placeholder = placeholder
         self.callback_data = callback_data

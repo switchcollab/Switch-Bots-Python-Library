@@ -58,7 +58,7 @@ class AppPage(SwitchObject):
         show_continue: bool = True,
         back_action: str = None,
         disable_appbar: bool = False,
-        max_size: bool = None,
+        max_size: bool = True,
         **kwargs
     ):
         super().__init__(app)
@@ -79,7 +79,7 @@ class AppPage(SwitchObject):
         components = []
         for component in self.components:
             if isinstance(component, ListView):
-                if self.max_size != None and component.max_size == None:
+                if self.max_size != None:
                     component.max_size = self.max_size
                 parsed = component.to_json_request()
                 if isinstance(parsed, list):
@@ -88,7 +88,7 @@ class AppPage(SwitchObject):
                     components.append(parsed)
             elif isinstance(component, Component):
                 componentJson = component.to_json()
-                if "mainAxisSize" not in componentJson and self.max_size != None:
+                if self.max_size != None:
                     componentJson["mainAxisSize"] = "max" if self.max_size else "min"
                 components.append(componentJson)
 

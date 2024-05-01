@@ -25,7 +25,7 @@ class ListTile(Component):
         callback_data: str = "",
         thumb: Union[Image, str] = "",
         badges: List[Badge] = None,
-        max_size: bool = False
+        max_size: bool = None
     ):
         self.title = title
         self.subtitle = subtitle

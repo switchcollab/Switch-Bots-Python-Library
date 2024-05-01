@@ -30,7 +30,7 @@ class TextInput(Component):
         left_icon: Optional[Icon] = None,
         multiline: bool = False,
         expanded: bool = False,
-        max_size: bool = False
+        max_size: bool = None
     ):
         self.label = label
         self.width = width
@@ -87,7 +87,7 @@ class FilePicker(Component):
         callback_data: str,
         files_count: int = 1,
         mime_type: List[str] = ["png", "jpg", "jpeg", "webp"],
-        max_size: bool = False
+        max_size: bool = None
     ):
         self.callback_data = callback_data
         self.files_count = files_count

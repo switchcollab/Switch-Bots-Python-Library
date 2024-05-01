@@ -21,7 +21,7 @@ class Button(Component):
         callback_data: Optional[str] = None,
         color: str = None,
         variant: ButtonVariant = ButtonVariant.DEFAULT,
-        max_size: bool = False,
+        max_size: bool = None,
         **kwargs
     ):
         if isinstance(text, str):
@@ -109,7 +109,7 @@ class ClipboardButton(Button):
 class ButtonGroup(Component):
     type = "button_group"
 
-    def __init__(self, buttons: List[Button], max_size: bool = False):
+    def __init__(self, buttons: List[Button], max_size: bool = None):
         self.buttons = buttons
         self.max_size = max_size
 

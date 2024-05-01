@@ -419,9 +419,10 @@ class MessageController:
             group_channel = group_channel.id
         elif group_channel is not None:
             group_channel = group_channel
+        message_id_list = isinstance(message_id, list)
 
-        if isinstance(message_id, list):
-            message_id = ",".join(message_id)
+        if message_id_list:
+            message_id = ",".join(map(str, message_id))
 
         q = []
         if group_channel is not None:
@@ -433,9 +434,8 @@ class MessageController:
 
         log.debug("Forwarding message %s", id)
         response = await self.client.put(f"{BASE_PATH}/forward/{message_id}?{strQuery}")
-        if isinstance(response.data, list):
-            message = self.client.build_list(Message, response.data)
-        if isinstance(message_id, list):
+        message = self.client.build_list(Message, [data.get("message") for data in response.data])
+        if message_id_list:
             return message
         return message[0] if message else None
 

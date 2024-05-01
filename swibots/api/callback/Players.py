@@ -16,7 +16,7 @@ class AudioPlayer(Component):
         callback_data: str = None,
         previous_callback: Optional[str] = "",
         next_callback: Optional[str] = "",
-        max_size: bool = False
+        max_size: bool = None
     ):
         self.title = title
         self.url = url
@@ -55,7 +55,7 @@ class VideoPlayer(Component):
         full_screen: bool = False,
         badges: List[Badge] = None,
         callback_data: str = None,
-            max_size: bool = False
+            max_size: bool = None
     
     ):
         self.url = url
