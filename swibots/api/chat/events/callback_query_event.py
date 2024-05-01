@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Literal
 import swibots
 from swibots.api.common.events.event import Event
 from swibots.api.community.models.channel import Channel
@@ -80,25 +80,67 @@ class CallbackQueryEvent(CommandEvent):
                 "type": "action_callback",
                 "callbackQueryId": self.query_id,
                 "messageId": str(self.message.id),
-                **kwargs
+                **kwargs,
             },
         )
         return resp.data
 
     async def share(self, text: str):
-        return await self.__action_callback(
-            action="share", url=text
-        )
+        """Prompt a user to share text"""
+        return await self.__action_callback(action="share", url=text)
 
     async def copy(self, text: str):
-        return await self.__action_callback(
-            action="copy", url=text
-        )
-    
+        """Copy text to user's clipboard.
+
+        text (str): text which should be copied to user's device."""
+        return await self.__action_callback(action="copy", url=text)
+
     async def redirect(self, url: str):
+        """Redirect user to external url.
+
+        url (str): url to open"""
+        return await self.__action_callback(action="navigate", url=url)
+
+    async def show_ad(
+        self,
+        id: str,
+        ad_type: Literal["VIDEO_1", "VIDEO_2"],
+        success_callback: str = None,
+    ):
+        """Display ad to the user on any callback action.
+
+        id: session id to join.
+        ad_type: either 'VIDEO_1' or 'VIDEO_2'
+        success_callback: Callback to trigger after successfully showing.
+        """
         return await self.__action_callback(
-            action="navigate", url=url
+            action="show_ad",
+            addId=id,
+            addType=ad_type,
+            extraOptions={"onAdUpdate": success_callback},
         )
+
+    async def request_session_join(self,
+                                   session_id: str):
+        """Request user to join the session, from session id
+        
+        session_id: (str)
+        """
+        return await self.__action_callback(
+            url=session_id,
+            action="joinSession"
+        )
+
+    async def request_session_create(self,
+                                   callback_data: str = None):
+        """Create the bot session on the behalf of user.
+
+        callback_data: str: Callback data to trigger after creating"""
+        return await self.__action_callback(
+            url=callback_data,
+            action="createSession"
+        )
+
 
     async def answer(
         self,
