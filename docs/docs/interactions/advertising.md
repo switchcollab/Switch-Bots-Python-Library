@@ -86,4 +86,4 @@ async def __e(ctx: BotContext[CallbackQueryEvent]):
     await ctx.event.answer("Showed", show_alert=True)
 ```
 
-[Check the Complete Code Sample](#)
+[Check the Complete Code Sample](https://github.com/switchcollab/Switch-Bots-Python-Library/blob/main/samples/ads.py)
