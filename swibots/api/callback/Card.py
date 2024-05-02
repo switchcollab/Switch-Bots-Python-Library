@@ -38,7 +38,7 @@ class Card(Component):
         icon3: Icon = "",
         icon4: Icon = "",
         icon5: Icon = "",
-        callback_data: str = ""
+        callback_data: str = "",
         #        iconAlignment: str = "",
     ):
         self.title = title
@@ -91,7 +91,7 @@ class Card(Component):
             "icon3": self.icon3.to_json() if self.icon3 else None,
             "icon4": self.icon4.to_json() if self.icon4 else None,
             "icon5": self.icon5.to_json() if self.icon5 else None,
-            "callbackData": self.callback_data
+            "callbackData": self.callback_data,
             #            "size": self.size.value,
         }
 
@@ -106,7 +106,7 @@ class CardView(Component):
         card_style: CardStyle = CardStyle.TINT,
         vertical_size: CardSize = CardSize.MEDIUM,
         scrollable: bool = False,
-        horizontal: bool = False
+        horizontal: bool = False,
     ):
         self.card_size = card_size
         self.card_style = card_style
@@ -137,7 +137,7 @@ class Banner(Component):
         subtitle: Union[str, Text] = "",
         icon: Union[Icon, str] = "",
         background: str = "",
-        max_size: bool = None
+        max_size: bool = None,
     ):
         if isinstance(title, str):
             title = Text(title)
@@ -165,5 +165,5 @@ class Banner(Component):
             "title": self.title.to_json() if self.title else None,
             "subtitle": self.subtitle.to_json() if self.subtitle else None,
             "background": self.background,
-            "mainAxisSize": "max" if self.max_size else "min"
+            "mainAxisSize": "max" if self.max_size else "min",
         }

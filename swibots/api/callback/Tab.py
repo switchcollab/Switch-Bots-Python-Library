@@ -7,6 +7,7 @@ from swibots.base import SwitchObject
 
 LOG = getLogger(__name__)
 
+
 class TabBarTile(SwitchObject):
     def __init__(
         self,
@@ -42,7 +43,7 @@ class TabBar(Component):
         self,
         tabs: List[TabBarTile],
         bar_type: TabBarType = TabBarType.SWIPE,
-        theme_color: str = None
+        theme_color: str = None,
     ):
         self.bar_type = bar_type
         if not tabs:
@@ -61,5 +62,5 @@ class TabBar(Component):
             "type": self.type,
             "tabs": [tab.to_json() for tab in self.tabs],
             "tabBarStyle": self.bar_type.value,
-            "tabBarColor": self.theme_color
+            "tabBarColor": self.theme_color,
         }

@@ -7,8 +7,10 @@ class SearchHolder(Component):
     type = "search_holder"
 
     def __init__(
-        self, placeholder: str = "Search..", callback_data: Optional[str] = None,
-        max_size: bool = None
+        self,
+        placeholder: str = "Search..",
+        callback_data: Optional[str] = None,
+        max_size: bool = None,
     ):
         self.placeholder = placeholder
         self.callback_data = callback_data
@@ -18,7 +20,7 @@ class SearchHolder(Component):
         data = {
             "type": self.type,
             "placeholder": self.placeholder,
-            "mainAxisSize": "max" if self.max_size else "min"
+            "mainAxisSize": "max" if self.max_size else "min",
         }
         if self.callback_data:
             data["callbackData"] = self.callback_data

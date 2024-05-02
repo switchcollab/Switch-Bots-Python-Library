@@ -61,6 +61,17 @@ class Button(Component):
         return data
 
 
+class AdButton(Button):
+    """
+    AdButton: Show Button with different animation for ads.
+    """
+
+    def __init__(self, text: Union[str, Text], callback_data: str, **kwargs):
+        super().__init__(
+            text=text, action="show_ad", callback_data=callback_data, **kwargs
+        )
+
+
 class DownloadButton(Button):
     def __init__(
         self,

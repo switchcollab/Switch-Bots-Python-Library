@@ -1,3 +1,4 @@
+from .ad_methods import AdMethods
 from .clear_conversation import ClearConversation
 from .delete_message import DeleteMessage
 from .delete_messages_from_user import DeleteMessagesFromUser
@@ -26,6 +27,7 @@ from .organization_methods import OrganizationMethods
 
 
 class ChatMethods(
+    AdMethods,
     ClearConversation,
     DeleteMessage,
     DeleteMessagesFromUser,

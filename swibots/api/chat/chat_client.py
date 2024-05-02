@@ -3,6 +3,7 @@ import logging
 
 import swibots
 from swibots.api.chat.controllers import (
+    AdvertisingController,
     MessageController,
     ChatController,
     MediaController,
@@ -58,6 +59,7 @@ class ChatClient(SwitchRestClient):
         self._messages: MessageController = None
         self._post: ChatController = None
         self._media: MediaController = None
+        self._ads: AdvertisingController = None
         self._stickers: StickerController = None
         self._organization: OrganizationController = None
         self._ws: SwitchWSAsyncClient = None
@@ -68,6 +70,12 @@ class ChatClient(SwitchRestClient):
         if self._ws is None:
             self._ws = SwitchWSAsyncClient(self._ws_url, self.token)
         return self._ws
+
+    @property
+    def ads(self) -> AdvertisingController:
+        if self._ads is None:
+            self._ads = AdvertisingController(self)
+        return self._ads
 
     @property
     def organization(self) -> OrganizationController:

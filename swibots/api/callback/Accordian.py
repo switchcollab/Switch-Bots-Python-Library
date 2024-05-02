@@ -23,5 +23,7 @@ class Accordian(Component):
             "icon": self.icon.to_json() if self.icon else None,
         }
         if self.components:
-            data["components"] = [component.to_json() for component in self.components],
+            data["components"] = (
+                [component.to_json() for component in self.components],
+            )
         return data

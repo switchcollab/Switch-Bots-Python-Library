@@ -105,7 +105,7 @@ class CallbackQueryEvent(CommandEvent):
         self,
         id: str,
         ad_type: Literal["VIDEO_1", "VIDEO_2"],
-        success_callback: str = None,
+        success_callback: str,
     ):
         """Display ad to the user on any callback action.
 
@@ -117,7 +117,7 @@ class CallbackQueryEvent(CommandEvent):
             action="show_ad",
             addId=id,
             addType=ad_type,
-            extraOptions={"onAdUpdate": success_callback},
+            extraOptions={"adCallback": success_callback},
         )
 
     async def request_session_join(self,

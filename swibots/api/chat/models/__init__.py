@@ -6,3 +6,4 @@ from .inline import *
 from .sticker import Sticker, StickerPack
 from .organization import Organization, OrgApp
 from .session import SessionInfo, SessionUser
+from .ads import ADInfo

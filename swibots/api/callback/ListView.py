@@ -25,7 +25,7 @@ class ListTile(Component):
         callback_data: str = "",
         thumb: Union[Image, str] = "",
         badges: List[Badge] = None,
-        max_size: bool = None
+        max_size: bool = None,
     ):
         self.title = title
         self.subtitle = subtitle
@@ -76,7 +76,7 @@ class ListView(Component):
         title: str = None,
         right_image: str = None,
         image_callback: str = None,
-        max_size: bool = None
+        max_size: bool = None,
     ):
         self.title = title
         self.options = options
@@ -94,7 +94,7 @@ class ListView(Component):
                 "subTitle": self.right_image,
                 "subTitleAction": self.image_callback,
                 "lists": [tile.to_json() for tile in self.options],
-                "mainAxisSize": "max" if self.max_size else "min"
+                "mainAxisSize": "max" if self.max_size else "min",
             }
 
         options = []

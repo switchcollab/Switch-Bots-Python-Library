@@ -30,7 +30,7 @@ class TextInput(Component):
         left_icon: Optional[Icon] = None,
         multiline: bool = False,
         expanded: bool = False,
-        max_size: bool = None
+        max_size: bool = None,
     ):
         self.label = label
         self.width = width
@@ -74,7 +74,7 @@ class TextInput(Component):
             data["expansion"] = "flexible_expansion"
         elif self.expanded:
             data["expansion"] = "expanded_expansion"
-        
+
         data["mainAxisSize"] = "max" if self.max_size else "min"
         return data
 
@@ -87,7 +87,7 @@ class FilePicker(Component):
         callback_data: str,
         files_count: int = 1,
         mime_type: List[str] = ["png", "jpg", "jpeg", "webp"],
-        max_size: bool = None
+        max_size: bool = None,
     ):
         self.callback_data = callback_data
         self.files_count = files_count
@@ -100,5 +100,5 @@ class FilePicker(Component):
             "callbackData": self.callback_data,
             "numberOfFiles": self.files_count,
             "mimeType": self.mime_type,
-            "mainAxisSize": "max" if self.max_size else "min"
+            "mainAxisSize": "max" if self.max_size else "min",
         }

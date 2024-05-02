@@ -16,7 +16,7 @@ class AudioPlayer(Component):
         callback_data: str = None,
         previous_callback: Optional[str] = "",
         next_callback: Optional[str] = "",
-        max_size: bool = None
+        max_size: bool = None,
     ):
         self.title = title
         self.url = url
@@ -26,7 +26,7 @@ class AudioPlayer(Component):
         self.callback_data = callback_data
         self.previous_callback = previous_callback
         self.next_callback = next_callback
-        self.max_size=  max_size
+        self.max_size = max_size
 
     def to_json(self):
         return {
@@ -39,7 +39,7 @@ class AudioPlayer(Component):
             "onSongUpdate": self.callback_data,
             "previousCallback": self.previous_callback,
             "nextCallback": self.next_callback,
-            "mainAxisSize": "max" if self.max_size else "min"
+            "mainAxisSize": "max" if self.max_size else "min",
         }
 
 
@@ -55,8 +55,7 @@ class VideoPlayer(Component):
         full_screen: bool = False,
         badges: List[Badge] = None,
         callback_data: str = None,
-            max_size: bool = None
-    
+        max_size: bool = None,
     ):
         self.url = url
         self.title = title
@@ -65,7 +64,7 @@ class VideoPlayer(Component):
         self.full_screen = full_screen
         self.badges = badges
         self.callback_data = callback_data
-        self.max_size=  max_size
+        self.max_size = max_size
 
     def to_json(self) -> Dict[str, Any]:
         data = {
@@ -75,7 +74,7 @@ class VideoPlayer(Component):
             "title": self.title,
             "subtitle": self.subtitle,
             "fullScreen": self.full_screen,
-            "mainAxisSize": "max" if self.max_size else "min"
+            "mainAxisSize": "max" if self.max_size else "min",
         }
         if self.callback_data:
             data["onVideoUpdate"] = self.callback_data
@@ -122,9 +121,7 @@ class Embed(Component):
             "height": self.height,
             "width": self.width,
             "fullScreen": self.full_screen,
-            "extraOptions": {
-                **self.__kwargs
-                },
+            "extraOptions": {**self.__kwargs},
         }
         if self.expand:
             data["expansion"] = "flexible_expansion"

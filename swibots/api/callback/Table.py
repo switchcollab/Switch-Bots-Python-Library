@@ -43,7 +43,7 @@ class Table(Component):
         rows: List[List[TableTile]],
         title: str = "",
         scoreboard: bool = False,
-        max_size: bool = None
+        max_size: bool = None,
     ):
         self.title = title
         self.headings = headings
@@ -59,5 +59,5 @@ class Table(Component):
             "rows": [[row.to_json() for row in col] for col in self.rows],
             "columnsCount": self.columns_count,
             "version": 1 if self.scoreboard else 0,
-            "mainAxisSize": "max" if self.max_size else "min"
+            "mainAxisSize": "max" if self.max_size else "min",
         }

@@ -11,7 +11,7 @@ class Carousel(Component):
         images: List[Image],
         title: str = "",
         subtitle: str = "",
-        max_size: bool = None
+        max_size: bool = None,
     ):
         self.title = title
         self.subtitle = subtitle
@@ -24,6 +24,6 @@ class Carousel(Component):
             "components": [image.to_json() for image in self.images],
             "title": self.title,
             "subTitle": self.subtitle,
-            "mainAxisSize": "max" if self.max_size else "min"
+            "mainAxisSize": "max" if self.max_size else "min",
         }
         return data

@@ -14,7 +14,7 @@ class CallbackResponse(SwitchObject):
         self.__data = None
 
     def get(self, key: str):
-        if self.__data and (val:= self.__data.get(key)):
+        if self.__data and (val := self.__data.get(key)):
             return val
         return self.to_json().get(key)
 
@@ -36,5 +36,5 @@ class CallbackResponse(SwitchObject):
             "fileName": self.file_name,
             "callbackQueryId": self.parent_id,
             "inputValue": self.input_value,
-            "url": self.url
+            "url": self.url,
         }

@@ -13,7 +13,7 @@ class Dropdown(Component):
         selected: int = None,
         options: List[ListItem] = None,
         disabled: bool = None,
-        max_size: bool = None
+        max_size: bool = None,
     ):
         self.disabled = disabled
         self.options = options
