@@ -8,6 +8,7 @@ from typing import List, Optional, Callable
 import swibots
 from contextlib import suppress
 from pathlib import Path
+from httpx import AsyncClient
 from signal import signal as signal_fn, SIGINT, SIGTERM, SIGABRT
 from io import BytesIO
 from swibots.bots import Bot
@@ -273,7 +274,6 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         file_name: str,
         directory="downloads/",
         in_memory: bool = False,
-        block: bool = True,
         progress: DownloadProgressCallback = None,
         progress_args: tuple = (),
     ):
@@ -281,11 +281,10 @@ class Client(Decorators, AbstractContextManager, ApiClient):
             directory = "downloads/"
         if not in_memory:
             os.makedirs(directory, exist_ok=True)
-        temp_file_path = (
+        file_path = (
             os.path.abspath(re.sub("\\\\", "/", os.path.join(directory, file_name)))
-            + ".temp"
         )
-        file = BytesIO() if in_memory else open(temp_file_path, "wb")
+        file = BytesIO() if in_memory else open(file_path, "wb")
 
         d_progress = DownloadProgress(
             total=0,
@@ -295,15 +294,13 @@ class Client(Decorators, AbstractContextManager, ApiClient):
             url=url,
         )
 
-        if progress:
-            await progress(d_progress, *progress_args)
         try:
-            with httpx.stream("GET", url) as response:
+            async with AsyncClient().stream("GET", url) as response:
                 d_progress.total = int(response.headers["Content-Length"])
                 d_progress.downloaded = response.num_bytes_downloaded
                 d_progress.client = response
                 d_progress.started = True
-                for chunk in response.iter_bytes():
+                async for chunk in response.aiter_bytes():
                     file.write(chunk)
                     d_progress.downloaded += len(chunk)
                     if progress:
@@ -312,7 +309,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         except BaseException as e:
             if not in_memory:
                 file.close()
-                os.remove(temp_file_path)
+                os.remove(file_path)
             if isinstance(e, CancelError):
                 return None
             if isinstance(e, asyncio.CancelledError):
@@ -323,8 +320,6 @@ class Client(Decorators, AbstractContextManager, ApiClient):
             return file
         else:
             file.close()
-            file_path = os.path.splitext(temp_file_path)[0]
-            shutil.move(temp_file_path, file_path)
             return file_path
 
     async def _on_app_stop(self):

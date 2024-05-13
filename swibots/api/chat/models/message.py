@@ -549,6 +549,8 @@ class Message(
         progress: Callable = None,
         progress_args: tuple = (),
     ) -> Optional[Union[BinaryIO, bytes]]:
+        if not file_name and self.media_info:
+            file_name = self.media_info.description
         return await self.app.download_media(
             self, file_name, in_memory, block, progress, progress_args
         )

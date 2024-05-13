@@ -42,7 +42,6 @@ class DownloadMedia:
             directory=directory,
             file_name=file_name,
             in_memory=in_memory,
-            block=block,
             progress=progress,
             progress_args=progress_args,
         )
