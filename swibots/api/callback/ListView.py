@@ -2,7 +2,7 @@ from swibots.utils.types import JSONDict
 from .types import SwitchObject, Component, Image, Badge
 from enum import Enum
 from typing import Union, List, Literal
-
+from .Progress import ListTileProgress
 
 class ListViewType(Enum):
     DEFAULT = "default"
@@ -26,6 +26,7 @@ class ListTile(Component):
         thumb: Union[Image, str] = "",
         badges: List[Badge] = None,
         max_size: bool = None,
+        progress: ListTileProgress = None
     ):
         self.title = title
         self.subtitle = subtitle
@@ -39,6 +40,7 @@ class ListTile(Component):
         self.thumb = thumb
         self.badges = badges
         self.max_size = max_size
+        self.progress = progress
 
     def to_json(self):
         data = {
@@ -54,6 +56,8 @@ class ListTile(Component):
         }
         if self.thumb:
             data["image"] = self.thumb.to_json()
+        if self.progress:
+            data["progress"] = self.progress.to_json()
         if self.badges:
             data["rightComponents"] = [badge.to_json() for badge in self.badges]
         return data

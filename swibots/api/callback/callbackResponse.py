@@ -36,5 +36,5 @@ class CallbackResponse(SwitchObject):
             "fileName": self.file_name,
             "callbackQueryId": self.parent_id,
             "inputValue": self.input_value,
-            "url": self.url,
+            "url": self.new_url,
         }

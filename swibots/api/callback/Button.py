@@ -120,15 +120,17 @@ class ClipboardButton(Button):
 class ButtonGroup(Component):
     type = "button_group"
 
-    def __init__(self, buttons: List[Button], max_size: bool = None):
+    def __init__(self, buttons: List[Button], max_size: bool = None, flexible=False):
         self.buttons = buttons
         self.max_size = max_size
+        self.flexible = flexible
 
     def to_json(self):
         return {
             "type": self.type,
             "buttons": [button.to_json() for button in self.buttons],
             "mainAxisSize": "max" if self.max_size else "min",
+            "flexible": self.flexible
         }
 
 

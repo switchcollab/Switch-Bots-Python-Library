@@ -2,7 +2,7 @@ import swibots
 from swibots.base import SwitchObject
 from logging import getLogger
 from swibots.utils.types import JSONDict
-from .types import ScreenType, Component, Icon
+from .types import ScreenType, Component, Icon, Text
 from typing import List, Optional, Dict, Any, Union
 from .BottomBar import BottomBar
 from .ListView import ListView
@@ -59,6 +59,7 @@ class AppPage(SwitchObject):
         back_action: str = None,
         disable_appbar: bool = False,
         max_size: bool = True,
+        on_close: str = None,
         **kwargs
     ):
         super().__init__(app)
@@ -74,10 +75,12 @@ class AppPage(SwitchObject):
         self.bottom_bar = bottom_bar
         self.show_continue = show_continue
         self.max_size = max_size
+        self.on_close = on_close
 
     def to_json(self) -> JSONDict:
         components = []
         for component in self.components:
+            
             if isinstance(component, ListView):
                 if self.max_size != None:
                     component.max_size = self.max_size
@@ -91,6 +94,10 @@ class AppPage(SwitchObject):
                 if self.max_size != None:
                     componentJson["mainAxisSize"] = "max" if self.max_size else "min"
                 components.append(componentJson)
+            elif isinstance(component, str):
+                components.append(
+                    Text(component)
+                )
 
         data = {
             "type": self.type,
@@ -105,4 +112,6 @@ class AppPage(SwitchObject):
             data["showContinue"] = self.show_continue
         if self.back_action:
             data["pageId"] = self.back_action
+        if self.on_close:
+            data["onClose"] = self.on_close
         return data
