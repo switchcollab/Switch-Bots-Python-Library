@@ -2,7 +2,7 @@ import logging
 from typing import TYPE_CHECKING, List
 
 from swibots.api.community.models import Channel
-
+from swibots.errors import SwitchError
 
 if TYPE_CHECKING:
     from swibots.api.community import CommunityClient
@@ -24,6 +24,15 @@ class ChannelController:
     async def create_channel(self, channel: Channel) -> str:
         response = await self.client.post(BASE_PATH, data=channel.to_json_request())
         return response.data.get("result", {}).get("channelId")
+
+    async def delete_channel(self, channel_id: str) -> bool:
+        response = await self.client.delete(f"{BASE_PATH}/{channel_id}")
+        if response.status_code == 200:
+            return True
+        logging.debug(response.data)
+        if err:= response.data.get("errorMessage"):
+            raise SwitchError(err)
+        return False
 
     async def update_channel(self, channel: Channel) -> str:
         response = await self.client.put(BASE_PATH, data=channel.to_json_request())
