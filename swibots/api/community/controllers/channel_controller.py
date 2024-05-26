@@ -25,6 +25,15 @@ class ChannelController:
         response = await self.client.post(BASE_PATH, data=channel.to_json_request())
         return response.data.get("result", {}).get("channelId")
 
+    async def delete_channel(self, channel_id: str) -> str:
+        response = await self.client.delete(f"{BASE_PATH}/{channel_id}")
+        # return response.data.get("result", {}).get("channelId")
+        return (
+            "Successfully deleted the channel."
+            if response.status_code == 200
+            else response.data.get("errorMessage")
+        )
+
     async def update_channel(self, channel: Channel) -> str:
         response = await self.client.put(BASE_PATH, data=channel.to_json_request())
         return response.data.get("result", {}).get("channelId")
