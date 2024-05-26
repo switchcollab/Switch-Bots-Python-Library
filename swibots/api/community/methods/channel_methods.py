@@ -37,14 +37,14 @@ class ChannelMethods:
         """
         return await self.community_service.channels.update_channel(channel)
 
-    async def delete_channel(self: "swibots.ApiClient", id: str) -> str:
+    async def delete_channel(self: "swibots.ApiClient", id: str) -> bool:
         """Delete channel
 
         Args:
             :obj:`swibots.api.community.models.Channel`: The channel object.
 
         Returns:
-            str:  status of channel
+            bool: Whether the channel was deleted!
 
         Raises:
             :obj:`switch.error.SwitchError`: If the channel could not be retrieved
