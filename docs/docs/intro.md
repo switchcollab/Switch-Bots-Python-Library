@@ -41,6 +41,7 @@ from swibots import (
     Client,
     BotContext,
     MessageEvent
+    BotCommand
 )
 
 TOKEN = "MY SUPER SECRET TOKEN" # Always keep this token in [.env] file
