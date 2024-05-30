@@ -39,8 +39,8 @@ class Event(SwitchObject):
     def from_json(self, data: swibots.JSONDict) -> "Event":
         if data is not None:
             details = data.get("details") or {}
-            self.type = swibots.EventType(data.get("type"))
-            self.action_by_id = int(data.get("actionById"))
+            self.type = swibots.EventType(data.get("type", "").upper())
+            self.action_by_id = int(data.get("actionById", 0))
             self.action_by = swibots.User.build_from_json(
                 data.get("actionBy"), self.app
             )

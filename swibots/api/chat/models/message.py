@@ -274,10 +274,10 @@ class Message(
             self.pinned = data.get("pinned")
             self.reactions = data.get("reactions")
             self.command_details = data.get("commandDetails")
-            receiver_id = data.get("receiverId")
+            receiver_id = data.get("receiverId", 0)
             if receiver_id == "null":
                 receiver_id = 0
-            self.receiver_id = receiver_id
+            self.receiver_id = int(receiver_id)
             self.replied_to = Message.build_from_json(
                 data.get("repliedMessage"), self.app
             )
@@ -289,7 +289,7 @@ class Message(
             self.status = data.get("status")
 
             self.user = User.build_from_json(data.get("senderInfo"), self.app)
-            self.user_id = data.get("userId")
+            self.user_id = int(data.get("userId", 0))
             self.embed_message = EmbeddedMedia.build_from_json(
                 data.get("embedMessage"), self.app
             )

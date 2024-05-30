@@ -143,15 +143,19 @@ class ChatClient(SwitchRestClient):
 
         This is a shortcut for :meth:`subscribe` with the endpoint set to ``/chat/queue/events``
         """
+        if self.user.is_bot:
+            url = "bot.chat.event"
+        else:
+            url = "listen"
         return await self.ws.subscribe(
-            f"/topic/bot.chat.event.{self.user.id}",
+            f"/topic/{url}.{self.user.id}",
             callback=lambda event: self._parse_event(event, callback),
         )
 
     async def _parse_event(self, raw_message: WsMessage, callback) -> ChatEvent:
         try:
             json_data = json.loads(raw_message.body)
-            messagetype = json_data.get("type", "MESSAGE")
+            messagetype = json_data.get("type", "MESSAGE").upper()
             evt: ChatEvent = None
             if messagetype == EventType.MESSAGE.value:
                 evt = self.build_object(MessageEvent, json_data)
@@ -175,8 +179,9 @@ class ChatClient(SwitchRestClient):
             elif messagetype == EventType.INLINE_QUERY.value:
                 evt = self.build_object(InlineQueryEvent, json_data)
             else:
-                evt = self.build_object(ChatEvent, json_data)
-                # evt = ChatEvent.build_from_json(json_data)
+                logging.error(f"Received unknown event type: {messagetype}")
+#                evt = self.build_object(ChatEvent, json_data)
+                return
         except Exception as e:
             logger.exception(e)
             return
