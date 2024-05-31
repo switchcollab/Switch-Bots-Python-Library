@@ -4,7 +4,7 @@
 
 ![GitHub stars](https://img.shields.io/github/stars/switchcollab/Switch-Bots-Python-Library)
 ![GitHub Forks](https://img.shields.io/github/forks/switchcollab/Switch-Bots-Python-Library)
-![Version](https://img.shields.io/badge/version-1.4.43-blue.svg)
+![Version](https://img.shields.io/badge/version-1.4.44-green.svg)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/swibots)
 
 # SwiBots: Python Library for Switch App
