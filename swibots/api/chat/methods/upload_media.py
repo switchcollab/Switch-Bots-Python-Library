@@ -33,6 +33,7 @@ class UploadMedia:
         callback_args: Optional[tuple] = None,
         part_size: Optional[int] = None,
         task_count: Optional[int] = None,
+        premium: Optional[bool] = False,
         **kwargs,
     ) -> Media:
         """upload a file to get `Media` object.
@@ -59,6 +60,7 @@ class UploadMedia:
             callback_args=callback_args,
             part_size=part_size,
             task_count=task_count,
+            premium=premium,
             **kwargs,
         )
 
@@ -103,6 +105,7 @@ class UploadMedia:
         progress: Optional[callable] = None,
         progress_args: Optional[tuple] = None,
         inline_markup: Optional[InlineMarkup] = None,
+        premium: Optional[bool] = False,
         **kwargs,
     ):
         """Send a media to Chat!
@@ -145,6 +148,7 @@ class UploadMedia:
             progress_args=progress_args,
             reply_to_message_id=reply_to_message_id,
             inline_markup=inline_markup,
+            premium=premium,
             **kwargs,
         )
 

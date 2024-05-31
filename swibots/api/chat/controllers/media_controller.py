@@ -254,6 +254,7 @@ class MediaController:
         task_count: int = int(os.getenv("UPLOAD_TASKS", 0)),
         min_file_size: int = None,
         for_document: bool = False,
+        premium: bool = False,
         retries: int = 10,
     ) -> Media:
         """Upload media to switch
@@ -356,6 +357,7 @@ class MediaController:
             "sourceUri": file_response["fileId"],
             "checksum": file_response["contentSha1"],
             "ownerId": self.client.app.user.id,
+            "premium": premium
         }
         return self.client.build_object(Media, media)
 

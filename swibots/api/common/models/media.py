@@ -23,6 +23,7 @@ class Media(SwitchObject):
         url: Optional[bool] = None,
         owner_id: Optional[int] = None,
         owner_type: Optional[str] = None,
+        premium: Optional[bool] = False
     ):
         super().__init__(app)
         self.id = id
@@ -39,6 +40,7 @@ class Media(SwitchObject):
         self.owner_id = owner_id
         self.url = url
         self.owner_type = owner_type
+        self.premium = premium
 
     @property
     def is_sticker(self) -> bool:
@@ -57,6 +59,7 @@ class Media(SwitchObject):
             "mediaInfo.thumbnailUrl": self.thumbnail_url,
             "mediaInfo.sourceUri": self.source_id,
             "mediaInfo.typeName": self.type_name,
+            "mediaInfo.premium": self.premium
         }
 
     def to_json(self) -> JSONDict:
@@ -78,6 +81,7 @@ class Media(SwitchObject):
                 "ownerType": self.owner_type,
                 "downloadUrl": self.url,
                 "url": self.url,
+                "premium": self.premium
             }.items()
             if y
         }
@@ -99,7 +103,7 @@ class Media(SwitchObject):
             self.owner_type = data.get("ownerType")
             if isinstance(self.owner_id, str) and self.owner_id.isdigit():
                 self.owner_id = int(self.owner_id)
-
+            self.premium = data.get("premium", False)
         return self
 
     def to_update_request(self):
@@ -114,6 +118,7 @@ class Media(SwitchObject):
             "fileName": self.file_name,
             "fileSize": self.file_size,
             "url": self.url,
+            "premium": self.premium
         }
 
     async def edit(

@@ -293,7 +293,7 @@ class Message(
             self.embed_message = EmbeddedMedia.build_from_json(
                 data.get("embedMessage"), self.app
             )
-            self.is_embed_message = data.get("isEmbedMessage") or bool(
+            self.is_embed_message = data.get("isEmbedMessage") == "true" or bool(
                 self.embed_message
             )
             self.user_session_id = data.get("userSessionId")

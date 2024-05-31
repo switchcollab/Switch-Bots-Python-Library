@@ -169,6 +169,7 @@ class MessageController:
         inline_markup: Optional[InlineMarkup] = None,
         part_size: Optional[int] = None,
         task_count: Optional[int] = None,
+        premium: Optional[bool] = False,
         **kwargs,
     ) -> Message | Task:
         async def _upload_media(media):
@@ -188,8 +189,10 @@ class MessageController:
                     thumb=thumb,
                     part_size=part_size,
                     task_count=task_count,
+                    premium=premium,
                     for_document=kwargs.get("is_document")
                     or (kwargs.get("media_type", 0) == MediaType.DOCUMENT.value),
+                    
                 )
             elif not media:
                 raise ValueError("'media' or 'document' must be provided!")
