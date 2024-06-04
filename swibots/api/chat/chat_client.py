@@ -144,19 +144,24 @@ class ChatClient(SwitchRestClient):
         This is a shortcut for :meth:`subscribe` with the endpoint set to ``/chat/queue/events``
         """
         if self.user.is_bot:
-            url = "bot.chat.event"
+            url = f"bot.chat.event.{self.user.id}"
         else:
-            url = "listen"
+            url = "*"
         return await self.ws.subscribe(
-            f"/topic/{url}.{self.user.id}",
+            f"/topic/{url}",
             callback=lambda event: self._parse_event(event, callback),
         )
 
     async def _parse_event(self, raw_message: WsMessage, callback) -> ChatEvent:
         try:
             json_data = json.loads(raw_message.body)
-            messagetype = json_data.get("type", "MESSAGE").upper()
+
+            if "message" in json_data:
+                json_data["type"] = "MESSAGE"
+
+            messagetype = json_data.get("type", "").upper()
             evt: ChatEvent = None
+
             if messagetype == EventType.MESSAGE.value:
                 evt = self.build_object(MessageEvent, json_data)
                 if not (evt.message.community_id or evt.message.receiver_id != "null"):

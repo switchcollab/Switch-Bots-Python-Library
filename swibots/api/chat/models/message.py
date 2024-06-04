@@ -305,6 +305,10 @@ class Message(
         return self.user_session_id or self.channel_id or self.group_id or self.user_id
 
     @property
+    def outgoing(self) -> bool:
+        return self.user_id == self.app.user.id
+
+    @property
     def is_media(self):
         # 1 = IMAGE
         # 2 = Video
@@ -385,7 +389,7 @@ class Message(
     send = respond
 
     async def delete(self) -> None:
-        return await self.app.delete_message(self)
+        return await self.app.delete_messages([self.id])
 
     async def reply_text(
         self,

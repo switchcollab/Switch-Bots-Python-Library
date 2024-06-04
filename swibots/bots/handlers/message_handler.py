@@ -19,13 +19,16 @@ class MessageHandler(EventHandler):
         self,
         callback: HandlerCallback[BotContext[MessageEvent], ResType],
         filter: Optional[Filter] = None,
+        outgoing: bool = False,
         **kwargs,
     ):
+        self._outgoing = outgoing
         super().__init__(EventType.MESSAGE, callback, filter, **kwargs)
 
     async def should_handle(self, context: BotContext[MessageEvent]) -> bool:
+        if (self._outgoing and not context.event.message.outgoing):
+            return
         return (
             await super().should_handle(context)
             and context.event.message is not None
-            and context.event.message.user_id != context.app.user.id
         )
