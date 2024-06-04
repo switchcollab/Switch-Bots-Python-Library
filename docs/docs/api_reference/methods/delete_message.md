@@ -1,12 +1,12 @@
-# delete_message
+# delete_messages
 
-Deletes a message.
+Delete messages.
 
 Usually you will call this method using the `delete` method of the message object itself.
 
 ## Signature
 
-`async def delete_message(message: int | Message) -> bool`
+`async def delete_messages(message_ids: List[int | Message]) -> bool`
 
 ## Parameters
 

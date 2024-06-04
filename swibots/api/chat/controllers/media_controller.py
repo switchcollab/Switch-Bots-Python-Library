@@ -1,18 +1,33 @@
-import asyncio, aiofiles
-import os, tempfile
-import json, mimetypes, re
-from datetime import datetime
-import logging, base64, random
-from io import BytesIO
-import json, mimetypes
-import logging, hashlib
-from uuid import uuid1
+import asyncio
+import aiofiles
+import base64
+import hashlib
 import httpx
-from typing import Union
-from io import BytesIO
+import json
+import logging
+import mimetypes
+import os
+import random
+import re
+import tempfile
 import uuid
+from urllib.parse import urlparse
+from datetime import datetime
 from httpx import AsyncClient
+from io import BytesIO
+from typing import TYPE_CHECKING, Optional, Union
 from typing import TYPE_CHECKING, Optional
+from swibots.api.common.models import Media
+from swibots.config import APP_CONFIG
+from swibots.errors import UnknownBackBlazeError, FileTooLarge
+from swibots.types import MAX_FILE_SIZE
+
+from swibots.utils.types import (
+    DownloadProgressCallback,
+    IOClient,
+    UploadProgress,
+    UploadProgressCallback,
+)
 
 from swibots.errors import UnknownBackBlazeError, FileTooLarge
 from swibots.utils.types import (
@@ -157,14 +172,18 @@ class MediaController:
     async def generate_from_ffmpeg(self, path: str, hw: int):
         log.debug("checking for ffmpeg")
         ffmpeg_path = os.getenv("FFMPEG_PATH") or "ffmpeg"
-        proc = await asyncio.create_subprocess_exec(
-            ffmpeg_path, stderr=asyncio.subprocess.PIPE
-        )
-        await proc.wait()
+        try:
+            proc = await asyncio.create_subprocess_exec(
+                ffmpeg_path, stderr=asyncio.subprocess.PIPE
+            )
+            await proc.wait()
+        except Exception as er:
+            logger.error(er)
+            return
         if b"ffmpeg version" not in (er := await proc.stderr.read()):
             log.info(f"ffmpeg is not installed, {er}")
             return
-        name = os.path.join(tempfile.gettempdir(), f"{uuid1()}.png")
+        name = os.path.join(tempfile.gettempdir(), f"{uuid.uuid1()}.png")
         log.info(f"generating thumb for '{path}'")
         cmd = [
             ffmpeg_path,
@@ -192,6 +211,13 @@ class MediaController:
     ) -> str:
         if not path:
             return
+
+        if path and isinstance(path, str):
+            # check for valid urls
+            parse = urlparse(path)
+            if parse.scheme and parse.netloc:
+                return path
+
         __remove = False
         mime_type = (
             mimetypes.guess_type(path.name if isinstance(path, BytesIO) else path)[0]
@@ -332,8 +358,12 @@ class MediaController:
             )
         else:
             path, file_response = await self.file_to_response(
-                path, mime_type, file_name, callback=callback, file_size=size,
-                callback_args=callback_args
+                path,
+                mime_type,
+                file_name,
+                callback=callback,
+                file_size=size,
+                callback_args=callback_args,
             )
         if not file_response.get("fileName"):
             raise UnknownBackBlazeError(file_response)
@@ -357,7 +387,7 @@ class MediaController:
             "sourceUri": file_response["fileId"],
             "checksum": file_response["contentSha1"],
             "ownerId": self.client.app.user.id,
-            "premium": premium
+            "premium": premium,
         }
         return self.client.build_object(Media, media)
 

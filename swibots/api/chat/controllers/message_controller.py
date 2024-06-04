@@ -192,7 +192,6 @@ class MessageController:
                     premium=premium,
                     for_document=kwargs.get("is_document")
                     or (kwargs.get("media_type", 0) == MediaType.DOCUMENT.value),
-                    
                 )
             elif not media:
                 raise ValueError("'media' or 'document' must be provided!")
@@ -321,7 +320,7 @@ class MessageController:
         response = await self.client.put(f"{BASE_PATH}?id={message_id}", data=data)
         return self.client.build_object(Message, response.data["message"])
 
-    async def delete_message(self, message: int | Message) -> bool:
+    async def delete_messages(self, message_ids: List[Union[int, Message]]) -> bool:
         """Delete a message
 
         Parameters:
@@ -333,12 +332,15 @@ class MessageController:
         Raises:
             ``~switch.error.SwitchError``: If the message could not be deleted
         """
-        if isinstance(message, Message):
-            id = message.id
-        else:
-            id = message
-        log.debug("Deleting message %s", id)
-        response = await self.client.delete(f"{BASE_PATH}/{id}")
+        message_ids = ",".join(
+            [
+                message.id if isinstance(message, Message) else message
+                for message in message_ids
+            ]
+        )
+        log.debug(f"Deleting message {message_ids}")
+        response = await self.client.delete(f"{BASE_PATH}/{message_ids}")
+        log.debug(response)
         return True
 
     async def delete_messages_from_user(
@@ -430,14 +432,16 @@ class MessageController:
         q = []
         if group_channel is not None:
             q.append(f"groupChannelId={group_channel}")
-        if user_id is not None:
+        if user_id:
             q.append(f"receiverId={user_id}")
 
         strQuery = "&".join(q)
 
         log.debug("Forwarding message %s", id)
         response = await self.client.put(f"{BASE_PATH}/forward/{message_id}?{strQuery}")
-        message = self.client.build_list(Message, [data.get("message") for data in response.data])
+        message = self.client.build_list(
+            Message, [data.get("message") for data in response.data]
+        )
         if message_id_list:
             return message
         return message[0] if message else None
@@ -752,7 +756,9 @@ class MessageController:
         if username and user_id:
             raise ValueError("'username' and 'user_id' both were provided!")
         elif user_id:
-            response = await self.client.app.auth_service.get(f"/api/users/getUserById?userid={user_id}")
+            response = await self.client.app.auth_service.get(
+                f"/api/users/getUserById?userid={user_id}"
+            )
         elif username:
             if username.startswith("@"):
                 username = username[1:]
