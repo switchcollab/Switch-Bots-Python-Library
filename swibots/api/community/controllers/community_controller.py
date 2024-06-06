@@ -32,6 +32,12 @@ class CommunityController:
         response = await self.client.get(request_url)
         return self.client.build_object(Community, response.data.get("result"))
 
+    async def update_community(self, community: Community):
+        response = await self.client.put(
+            BASE_PATH, data=community.to_json_request()
+        )
+        return self.client.build_object(Community, response.data.get("result"))
+
     async def deduct_xp(
         self,
         community_id: str,

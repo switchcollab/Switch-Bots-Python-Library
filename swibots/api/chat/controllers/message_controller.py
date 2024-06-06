@@ -334,7 +334,7 @@ class MessageController:
         """
         message_ids = ",".join(
             [
-                message.id if isinstance(message, Message) else message
+                str(message.id if isinstance(message, Message) else message)
                 for message in message_ids
             ]
         )

@@ -108,4 +108,24 @@ class StickerController:
         )
         return self.client.build_object(StickerPack, response.data)
 
+    async def install_sticker_pack(
+        self, pack_id: str, community_id: str = None
+    ) -> bool:
+        data = {"stickerPackId": pack_id}
+        if community_id:
+            data["communityId"] = community_id
+        response = await self.client.post(
+            f"{BASE_PATH}/pack/install?{urlencode(data)}",
+        )
+        return True
+
+    async def search_sticker_packs(
+        self, query: str, limit: int = 10, offset: int = 0
+    ) -> List[StickerPack]:
+        response = await self.client.get(
+            f"{BASE_PATH}/pack/search",
+            data={"query": query, "limit": limit, "offset": offset},
+        )
+        return self.client.build_list(StickerPack, response.data)
+
     # endregion

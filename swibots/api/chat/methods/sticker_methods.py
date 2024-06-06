@@ -148,3 +148,29 @@ class StickerMethods:
         return await self.chat_service.stickers.sort_stickers(
             pack=pack, sorted_stickers=sorted_stickers
         )
+
+    async def search_sticker_packs(
+        self: "swibots.ApiClient", query: str, offset: int = 0, limit: int = 10
+    ) -> List[StickerPack]:
+        """Search sticker packs by query
+
+        Args:
+            query (str): _description_
+            offset (int, optional): _description_. Defaults to 0.
+            limit (int, optional): Defaults to 10.
+
+        """
+        return await self.chat_service.stickers.search_sticker_packs(
+            query=query, limit=limit, offset=offset
+        )
+
+    async def install_sticker_set(self: "swibots.ApiClient",
+                                  pack_id: str,
+                                  community_id: str = None) -> bool:
+        """Install sticker set from pack Id
+
+        Args:
+            pack_id (str): Sticker pack id.
+            community_id (str, optional): community id to link. Defaults to None.
+        """
+        return await self.chat_service.stickers.install_sticker_pack(pack_id, community_id)

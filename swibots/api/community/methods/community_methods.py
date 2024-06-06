@@ -188,3 +188,14 @@ class CommunityMethods:
         if not result:
             return
         return result[0].enabled
+
+    async def update_community(self: "swibots.ApiClient", community: Community) -> Community:
+        """Update community
+
+        Args:
+            community (Community): New community info
+
+        Returns:
+            Community: new community response
+        """
+        return await self.community_service.communities.update_community(community=community)
