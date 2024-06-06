@@ -33,9 +33,7 @@ class CommunityController:
         return self.client.build_object(Community, response.data.get("result"))
 
     async def update_community(self, community: Community):
-        response = await self.client.put(
-            BASE_PATH, data=community.to_json_request()
-        )
+        response = await self.client.put(BASE_PATH, data=community.to_json_request())
         return self.client.build_object(Community, response.data.get("result"))
 
     async def deduct_xp(
@@ -152,3 +150,54 @@ class CommunityController:
         return self.client.build_list(InstantMessaging, response.data.get("result"))
 
     # endregion
+
+    async def add_premium_member(
+        self,
+        user_id: str,
+        community_id: str,
+        channel_id: str = None,
+        group_id: str = None,
+    ):
+        data = {"userId": user_id, "communityId": community_id}
+        if channel_id:
+            data["channelId"] = channel_id
+        if group_id:
+            data["groupId"] = group_id
+        response = await self.client.post(
+            f"{BASE_PATH}/premium/member?{urlencode(data)}"
+        )
+        return response.data.get("success")
+
+    async def delete_premium_member(
+        self,
+        user_id: str,
+        community_id: str,
+        channel_id: str = None,
+        group_id: str = None,
+    ):
+        data = {"userId": user_id, "communityId": community_id}
+        if channel_id:
+            data["channelId"] = channel_id
+        if group_id:
+            data["groupId"] = group_id
+        response = await self.client.delete(
+            f"{BASE_PATH}/premium/member?{urlencode(data)}"
+        )
+        return response.data.get("success")
+
+    async def get_premium_members(
+        self,
+        user_id: str,
+        community_id: str,
+        channel_id: str = None,
+        group_id: str = None,
+    ):
+        data = {"userId": user_id, "communityId": community_id}
+        if channel_id:
+            data["channelId"] = channel_id
+        if group_id:
+            data["groupId"] = group_id
+        response = await self.client.get(
+            f"{BASE_PATH}/premium/member?{urlencode(data)}"
+        )
+        return response.data

@@ -199,3 +199,66 @@ class CommunityMethods:
             Community: new community response
         """
         return await self.community_service.communities.update_community(community=community)
+
+    async def add_premium_member(self: "swibots.ApiClient", user_id: int,
+                               community_id: str,
+                               channel_id: str = None,
+                               group_id: str = None):
+        """Add premium member to the community
+
+        Args:
+            user_id (int): User id
+            community_id (str): Community id
+            channel_id (str, optional): Channel id
+            group_id (str, optional): Group id
+
+        Returns:
+            bool
+        """
+        return await self.community_service.communities.add_premium_member(
+            user_id=user_id,
+            community_id=community_id,
+            channel_id=channel_id,
+            group_id=group_id
+        )
+
+    async def delete_premium_member(self: "swibots.ApiClient", user_id: int,
+                               community_id: str,
+                               channel_id: str = None,
+                               group_id: str = None):
+        """Remove premium member to the community
+
+        Args:
+            user_id (int): User id
+            community_id (str): Community id
+            channel_id (str, optional): Channel id
+            group_id (str, optional): Group id
+
+        Returns:
+            bool
+        """
+        return await self.community_service.communities.delete_premium_member(
+            user_id=user_id,
+            community_id=community_id,
+            channel_id=channel_id,
+            group_id=group_id
+        )
+
+    async def get_premium_members(self: "swibots.ApiClient", user_id: int,
+                               community_id: str,
+                               channel_id: str = None,
+                               group_id: str = None):
+        """Get all premium members in the community
+
+        Args:
+            user_id (int): User id
+            community_id (str): Community id
+            channel_id (str, optional): Channel id
+            group_id (str, optional): Group id
+        """
+        return await self.community_service.communities.get_premium_members(
+            user_id=user_id,
+            community_id=community_id,
+            channel_id=channel_id,
+            group_id=group_id
+        )
