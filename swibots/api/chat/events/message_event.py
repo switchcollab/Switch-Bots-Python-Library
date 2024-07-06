@@ -54,8 +54,13 @@ class MessageEvent(ChatEvent):
         super().from_json(data)
         if data is not None:
             self.message_id = data.get("messageId") or 0
+            m_obj = data.get("message") or self.data.get("message") or {}
+            if "msg" in m_obj:
+                m_obj = m_obj["msg"]
+                self.message_id = m_obj.get("id")
+
             self.message: Message = Message.build_from_json(
-                data.get("message") or self.data.get("message"), self.app
+                m_obj, self.app
             )
 
             self.message.user = self.user
