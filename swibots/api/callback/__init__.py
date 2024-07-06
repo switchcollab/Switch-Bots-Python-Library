@@ -13,6 +13,7 @@ from .Players import VideoPlayer, Embed, AudioPlayer, FileViewer
 from .Inputs import TextInput, FilePicker
 from .Carousel import Carousel
 from .FAB import FAB
+from .Feed import FeedPanel, ShortVideo
 from .Card import Card, CardView, CardSize, CardStyle, Banner
 from .Button import (
     Button,
@@ -52,6 +53,7 @@ __all__ = [
     "Embed",
     "Expansion",
     "FAB",
+    "FeedPanel",
     "FilePicker",
     "FileViewer",
     "Grid",
@@ -70,6 +72,7 @@ __all__ = [
     "SearchBar",
     "SearchHolder",
     "ShareButton",
+    "ShortVideo",
     "Size",
     "Spacer",
     "StickyHeader",
