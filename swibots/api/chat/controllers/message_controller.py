@@ -1,5 +1,4 @@
 import asyncio
-import mimetypes
 import os
 import json
 import logging
@@ -8,7 +7,6 @@ from urllib.parse import urlencode
 from io import BytesIO
 from asyncio.tasks import Task
 from swibots.types import MediaType
-from swibots.errors import CancelError
 from swibots.api.chat.models import (
     Message,
     GroupChatHistory,
@@ -368,7 +366,7 @@ class MessageController:
 
     async def get_messages_between_users(
         self,
-        recipient_id: int,
+        other_user_id: int,
         user_id: int = None,
         page_limit: int = 100,
         page_offset: int = 0,
@@ -376,7 +374,7 @@ class MessageController:
         """Get messages between two users
 
         Parameters:
-            recipient_id (``int``): The recipient id
+            other_user_id (``int``): The recipient id
             user_id (``int``, *optional*): The user id. Defaults to the current user id.
             page_limit (``int``, *optional*): The page limit. Defaults to 100.
             page_offset (``int``, *optional*): The page offset. Defaults to 0.
@@ -389,17 +387,17 @@ class MessageController:
         """
         data = {
             "pageOffset": page_offset,
-            "pageLimit": 0,
+            "pageLimit": page_limit,
         }
 
         if user_id is None:
             user_id = self.client.user.id
 
-        log.debug("Getting messages for user %s", recipient_id)
+        log.debug("Getting messages for user %s", other_user_id)
         response = await self.client.get(
-            f"{BASE_PATH}/{user_id}/{recipient_id}?{urlencode(data)}"
+            f"{BASE_PATH}/{user_id}/{other_user_id}?{urlencode(data)}"
         )
-        return self.client.build_list(Message, response.data["messages"])
+        return self.client.build_list(Message, response)
 
     async def forward_message(
         self,
