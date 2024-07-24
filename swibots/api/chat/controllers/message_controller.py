@@ -374,7 +374,7 @@ class MessageController:
         """Get messages between two users
 
         Parameters:
-            other_user_id (``int``): The recipient id
+            other_user_id (``int``): The other user id.
             user_id (``int``, *optional*): The user id. Defaults to the current user id.
             page_limit (``int``, *optional*): The page limit. Defaults to 100.
             page_offset (``int``, *optional*): The page offset. Defaults to 0.
@@ -397,7 +397,7 @@ class MessageController:
         response = await self.client.get(
             f"{BASE_PATH}/{user_id}/{other_user_id}?{urlencode(data)}"
         )
-        return self.client.build_list(Message, response)
+        return self.client.build_list(Message, response.data)
 
     async def forward_message(
         self,
