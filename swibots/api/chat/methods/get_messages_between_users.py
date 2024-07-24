@@ -28,5 +28,5 @@ class GetMessagesBetweenUsers:
         This function does the same as :meth:`~switch.api.chat.controllers.MessageController.get_messages_between_users`.
         """
         return await self.chat_service.messages.get_messages_between_users(
-            user_id, other_user_id, limit, offset
+            other_user_id, user_id, limit, offset
         )
