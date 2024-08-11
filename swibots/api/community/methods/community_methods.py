@@ -30,6 +30,12 @@ class CommunityMethods:
             community_id
         )
 
+    async def create_community(self: "swibots.ApiClient", community: Community):
+        """Create a community
+        community: Community
+        """
+        return await self.community_service.communities.create_community(community)
+
     async def get_community(
         self: "swibots.ApiClient", id: str = "", username: str = ""
     ) -> Community:
@@ -189,7 +195,9 @@ class CommunityMethods:
             return
         return result[0].enabled
 
-    async def update_community(self: "swibots.ApiClient", community: Community) -> Community:
+    async def update_community(
+        self: "swibots.ApiClient", community: Community
+    ) -> Community:
         """Update community
 
         Args:
@@ -198,12 +206,17 @@ class CommunityMethods:
         Returns:
             Community: new community response
         """
-        return await self.community_service.communities.update_community(community=community)
+        return await self.community_service.communities.update_community(
+            community=community
+        )
 
-    async def add_premium_member(self: "swibots.ApiClient", user_id: int,
-                               community_id: str,
-                               channel_id: str = None,
-                               group_id: str = None):
+    async def add_premium_member(
+        self: "swibots.ApiClient",
+        user_id: int,
+        community_id: str,
+        channel_id: str = None,
+        group_id: str = None,
+    ):
         """Add premium member to the community
 
         Args:
@@ -219,13 +232,16 @@ class CommunityMethods:
             user_id=user_id,
             community_id=community_id,
             channel_id=channel_id,
-            group_id=group_id
+            group_id=group_id,
         )
 
-    async def delete_premium_member(self: "swibots.ApiClient", user_id: int,
-                               community_id: str,
-                               channel_id: str = None,
-                               group_id: str = None):
+    async def delete_premium_member(
+        self: "swibots.ApiClient",
+        user_id: int,
+        community_id: str,
+        channel_id: str = None,
+        group_id: str = None,
+    ):
         """Remove premium member to the community
 
         Args:
@@ -241,13 +257,16 @@ class CommunityMethods:
             user_id=user_id,
             community_id=community_id,
             channel_id=channel_id,
-            group_id=group_id
+            group_id=group_id,
         )
 
-    async def get_premium_members(self: "swibots.ApiClient", user_id: int,
-                               community_id: str,
-                               channel_id: str = None,
-                               group_id: str = None):
+    async def get_premium_members(
+        self: "swibots.ApiClient",
+        user_id: int,
+        community_id: str,
+        channel_id: str = None,
+        group_id: str = None,
+    ):
         """Get all premium members in the community
 
         Args:
@@ -260,5 +279,5 @@ class CommunityMethods:
             user_id=user_id,
             community_id=community_id,
             channel_id=channel_id,
-            group_id=group_id
+            group_id=group_id,
         )

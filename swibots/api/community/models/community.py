@@ -1,6 +1,7 @@
 from typing import Optional
 from swibots.utils.types import JSONDict
 from swibots.base.switch_object import SwitchObject
+from swibots.api.community.models.channel import Channel
 import swibots
 
 
@@ -27,6 +28,8 @@ class Community(SwitchObject):
         members_count: Optional[int] = None,
         groups_count: Optional[int] = None,
         channels_count: Optional[int] = None,
+        default_channel: Optional[Channel] = None,
+        visible: Optional[bool] = True
     ):
         super().__init__(app)
         self.id = id
@@ -48,6 +51,8 @@ class Community(SwitchObject):
         self.members_count = members_count
         self.groups_count = groups_count
         self.channels_count = channels_count
+        self.default_channel = default_channel
+        self.visible = visible
 
     def to_json(self) -> JSONDict:
         return {
@@ -70,6 +75,8 @@ class Community(SwitchObject):
             "member": self.members_count,
             "numberOfGroups": self.groups_count,
             "numberOfChannels": self.channels_count,
+            "visible": self.visible,
+            "defaultChannel": self.default_channel.to_json() if self.default_channel else None
         }
 
     def from_json(self, data: Optional[JSONDict]) -> Optional["Community"]:
@@ -90,7 +97,12 @@ class Community(SwitchObject):
             self.members_count = data.get("member")
             self.groups_count = data.get("numberOfGroups")
             self.channels_count = data.get("numberOfChannels")
-            self.owner_id = int(data.get("createdBy"))
+            self.owner_id = int(data.get("createdBy", 0))
             self.link = data.get("link")
             self.icon = data.get("icon")
+            self.visible = data.get("visible")
+
+            if data.get("defaultChannel"):
+                self.default_channel = Channel().from_json(data.get("defaultChannel"))
+
         return self

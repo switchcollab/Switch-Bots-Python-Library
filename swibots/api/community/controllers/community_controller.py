@@ -18,6 +18,10 @@ class CommunityController:
     def __init__(self, client: "CommunityClient"):
         self.client = client
 
+    async def create_community(self, community: Community):
+        response = await self.client.post(BASE_PATH, data=community.to_json_request())
+        return self.client.build_object(Community, response.data.get("result"))
+
     async def get_community(self, community_id: str = "", username: str = ""):
         """Get a community by id or username"""
         if not (community_id or username):
