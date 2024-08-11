@@ -47,8 +47,6 @@ log = logger = logging.getLogger(__name__)
 
 BASE_PATH = "/v1/media"
 
-api_url = "https://api004.backblazeb2.com"
-
 account_id = APP_CONFIG["BACKBLAZE"].get("ACCOUNT_ID")
 application_key = APP_CONFIG["BACKBLAZE"].get("APPLICATION_KEY")
 
@@ -72,10 +70,12 @@ class MediaController:
     MIN_WAIT = 3
     MAX_WAIT = 7
 
-    def __init__(self, client: "ChatClient"):
+    def __init__(self, client: "ChatClient", bucket_name: str = "ssbucket"):
         self.client = client
         self.__token = None
+        self.url = None
         self._min_part_size = 5000000
+        self.bucket_name = bucket_name
 
     async def getAccountInfo(self):
         response = await self.request(
@@ -84,6 +84,8 @@ class MediaController:
             method="GET",
         )
         data = response.json()
+        self.url = data['apiUrl']
+
         if token := data.get("authorizationToken"):
             self.__token = token
         log.debug(data)
@@ -117,7 +119,7 @@ class MediaController:
             "Authorization": token,
         }
         rsp = await self.request(
-            f"https://api004.backblazeb2.com/b2api/v2/b2_get_upload_url?bucketId={bucket_id}",
+            f"{self.url}/b2api/v2/b2_get_upload_url?bucketId={bucket_id}",
             method="GET",
             headers=head,
         )
@@ -262,7 +264,7 @@ class MediaController:
         path, file = await self.file_to_response(
             path, mime_type, file_name, content=content, remove=__remove
         )
-        return f"https://f004.backblazeb2.com/file/switch-bucket/{file['fileName']}"
+        return f"{self.url}/file/{self.bucket_name}/{file['fileName']}"
 
     async def upload_media(
         self,
@@ -367,7 +369,7 @@ class MediaController:
             )
         if not file_response.get("fileName"):
             raise UnknownBackBlazeError(file_response)
-        url = f"https://f004.backblazeb2.com/file/switch-bucket/{file_response['fileName']}"
+        url = f"{self.url}/file/{self.bucket_name}/{file_response['fileName']}"
         try:
             thumbUrl = await self.get_thumb_url(
                 thumb or (path if auto_thumb else None), for_document
@@ -430,7 +432,7 @@ class MediaController:
             for _ in range(retries):
                 try:
                     respp = await self.request(
-                        f"https://api004.backblazeb2.com/b2api/v2/b2_get_upload_part_url",
+                        f"{self.url}/b2api/v2/b2_get_upload_part_url",
                         json={"fileId": fileId},
                         headers={"Authorization": token},
                         timeout=30,
@@ -525,7 +527,7 @@ class MediaController:
         partHash = {}
         logger.info("start large file")
         respp = await self.request(
-            "https://api004.backblazeb2.com/b2api/v2/b2_start_large_file",
+            f"{self.url}/b2api/v2/b2_start_large_file",
             headers=head,
             data=json.dumps(data),
         )
@@ -601,7 +603,7 @@ class MediaController:
         hashes = list(map(lambda x: x[0], sorted(partHash.items(), key=lambda x: x[1])))
         try:
             response = await self.request(
-                f"https://api004.backblazeb2.com/b2api/v2/b2_finish_large_file",
+                f"{self.url}/b2api/v2/b2_finish_large_file",
                 json={
                     "fileId": fileId,
                     "partSha1Array": hashes,
@@ -613,7 +615,7 @@ class MediaController:
             log.exception(er)
             log.info("canceling upload")
             resp = await self.request(
-                f"https://api004.backblazeb2.com/b2api/v2/b2_cancel_large_file",
+                f"{self.url}/b2api/v2/b2_cancel_large_file",
                 data={"fileId": fileId},
                 headers={"Authorization": token},
             )

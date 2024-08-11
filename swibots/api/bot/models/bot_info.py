@@ -1,5 +1,7 @@
+import json
 from typing import TYPE_CHECKING, List, Optional
 from swibots.api.common.models import User
+from swibots.api.callback import AppPage
 from swibots.utils.types import JSONDict
 from swibots.base import SwitchObject
 from .bot_command import BotCommand
@@ -52,6 +54,7 @@ class BotInfo(User):
         description: Optional[str] = None,
         welcome: BotWelcome = None,
         source_code: Optional[str] = None,
+        preview: Optional[AppPage] = None
     ):
         super().__init__(
             id=id,
@@ -68,6 +71,7 @@ class BotInfo(User):
         self.description: Optional[str] = description
         self.source_code = source_code
         self.welcome = welcome
+        self.preview = preview
 
     def to_json_request(self) -> JSONDict:
         data = {
@@ -77,6 +81,8 @@ class BotInfo(User):
         }
         if self.welcome:
             data.update(self.welcome.to_json())
+        if self.preview:
+            data["preview"] = self.preview.to_json()
         return data
 
     def from_json(self, data: Optional[JSONDict] = None) -> "BotInfo":
@@ -93,6 +99,11 @@ class BotInfo(User):
                 data.get("welcomeImage"),
             )
             self.source_code = data.get("sourceCode")
+            preview = data.get("preview")
+            if isinstance(preview, str):
+                preview = json.loads(preview)
+            self.preview = AppPage.build_from_json(preview)
+
         return self
 
     def to_json(self) -> JSONDict:
@@ -103,4 +114,6 @@ class BotInfo(User):
             data["description"] = self.description
         if self.welcome:
             data.update(self.welcome.to_json())
+        if self.preview:
+            data["preview"] = self.preview.to_json()
         return data

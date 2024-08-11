@@ -19,7 +19,7 @@ from swibots.api.chat.events import ChatEvent
 from swibots.bots import BotContext, Decorators, BaseHandler
 from swibots.api.bot.models import BotInfo, BotCommand
 from swibots.api.common.models import User
-from swibots.api.callback import AppBar
+from swibots.api.callback import AppBar, AppPage
 from swibots.api.common.events import Event
 from swibots.utils import (
     DownloadProgress,
@@ -58,6 +58,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         app_bar: Optional[AppBar] = None,
         is_app: Optional[bool] = False,
         home_callback: Optional[str] = None,
+        preview: Optional[AppPage] = None,
         **kwargs,
     ):
         """
@@ -106,6 +107,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         self.app_bar = app_bar
         self._is_app = is_app
         self._home_callback = home_callback
+        self._app_preview = preview
 
     @property
     def bot(self) -> "swibots.bots.Bot":
@@ -237,6 +239,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
             description=description,
             id=self._bot_id,
             commands=commands,
+            preview=self._app_preview
         )
 
         self._bot_info = await self.update_bot_info(self._bot_info)

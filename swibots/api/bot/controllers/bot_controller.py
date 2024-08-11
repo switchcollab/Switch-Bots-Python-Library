@@ -47,6 +47,8 @@ class BotController:
             :obj:``~switch.api.bot.models.BotInfo``: The bot info
         """
         data = bot_info.to_json_request()
+        if "preview" in data:
+            data["preview"] = json.dumps(data["preview"])
         response = await self.client.put(BASE_PATH, data=data)
         return BotInfo.build_from_json(response.data)
 
@@ -94,11 +96,13 @@ class BotController:
         if not callback.app_bar and default_bar:
             callback.app_bar = default_bar
         data = callback.to_json_request()
-        data.update({
-            "appSessionId": app_session_id,
-            "callbackQueryId": callback_id,
-            "messageId": message_id
-        })
+        data.update(
+            {
+                "appSessionId": app_session_id,
+                "callbackQueryId": callback_id,
+                "messageId": message_id,
+            }
+        )
         response = await self.client.post(f"{BASE_PATH}/callback/answer", data=data)
         return response.data
 

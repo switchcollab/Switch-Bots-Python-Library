@@ -38,8 +38,9 @@ class SwitchObject(Generic[T]):
         return self.__dict__
 
     def from_json(self, data: Optional[JSONDict]) -> T:
-        for key, value in data.items():
-            setattr(self, key, value)
+        if data:
+            for key, value in data.items():
+                setattr(self, key, value)
         return self
 
     def update(self, data: Optional[JSONDict]) -> T:

@@ -115,3 +115,19 @@ class AppPage(SwitchObject):
         if self.on_close:
             data["onClose"] = self.on_close
         return data
+
+    def from_json(self, data: dict) -> Any:
+        if data is not None:
+            self.screen = ScreenType(data.get("mode", "screen"))
+            self.disable_appbar = data.get("disable_appbar", False)
+            self.show_continue = data.get("showContinue", True)
+            self.back_action = data.get("pageId")
+            self.on_close = data.get("onClose")
+            self.max_size = data.get("maxSize")
+            self.app_bar = AppBar().from_json(data.get("pageBar"))
+            self.bottom_bar = BottomBar().from_json(data)
+            self.components = [
+                Component.build_from_json(item) for item in data.get("components", [])
+            ]
+
+        return self

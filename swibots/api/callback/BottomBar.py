@@ -46,17 +46,25 @@ class BottomBarType(Enum):
 class BottomBar(SwitchObject):
     def __init__(
         self,
-        options: List[BottomBarTile],
+        options: List[BottomBarTile] = None,
         type: BottomBarType = BottomBarType.DEFAULT,
         theme_color: str = "",
     ):
         self.options = options
         self.type = type
         self.theme_color = theme_color
+    
+    def from_json(self, data) -> Any:
+        if "BottomBar" in data:
+            self.type = BottomBarType(data.get("bottomBarStyle"))
+            self.options = [BottomBarTile().from_json(option) for option in data.get("bottomBar")]
+            self.theme_color = data.get("bottomBarColour")
+
+        return self
 
     def to_json(self):
         data = {
-            "bottomBar": [option.to_json() for option in self.options],
+            "bottomBar": [option.to_json() for option in self.options or []],
             "bottomBarStyle": self.type.value,
         }
         if self.theme_color:
