@@ -49,7 +49,9 @@ class Client(Decorators, AbstractContextManager, ApiClient):
 
     def __init__(
         self,
-        token: str,
+        token: Optional[str] = None,
+        email: Optional[str] = None,
+        password: Optional[str] = None,
         bot_description: Optional[str] = None,
         plugins: dict = None,
         auto_update_bot: Optional[bool] = True,
@@ -65,7 +67,9 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         Initialize the client
 
         Args:
-            token (:obj:`str`): The bot token.
+            token (:obj:`str`): The bot token (required for bot login).
+            email (:obj:`str`): User email (only for user login).
+            password (:obj:`str`): Password (only for user login).
             bot_description(:obj:`str`): The bot description.
             auto_update_bot(:obj:`bool`): Whether to automatically update the bot description and the registered commands.
             plugins(:obj:`dict`): plugin path to load, use as: dict(root="plugins")
@@ -73,9 +77,13 @@ class Client(Decorators, AbstractContextManager, ApiClient):
 
         """
         super().__init__()
-        self.token = token
+
+        if email and password:
+            auth_result = self.auth_service.login(email, password)
+            token = auth_result.access_token
         if not token:
             raise TokenInvalidError(f"'token' for the bot can't be '{token}'")
+        self.token = token
         self._user_type = Bot
         self._bot_info: BotInfo | None = None
         self.on_app_start = None
@@ -200,11 +208,16 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         log.warning('[%s] No modules loaded from "%s"', self.name, root)
 
     def set_bot_commands(self, command: BotCommand | List[BotCommand]) -> "BotApp":
+        """Add commands to the bot.
+        (Commands will be added to the bot when the app starts, .start() method is called)
+
+        Args:
+            command (BotCommand | List[BotCommand]): List of commands to add
+        """
         if isinstance(command, list):
             self._register_commands.extend(command)
         else:
             self._register_commands.append(command)
-        asyncio.run_coroutine_threadsafe(self.update_bot_commands(), self._loop)
         return self
 
     def delete_bot_commands(self, command: BotCommand | List[BotCommand]) -> "Client":
@@ -213,7 +226,6 @@ class Client(Decorators, AbstractContextManager, ApiClient):
                 self._register_commands.remove(cmd)
         else:
             self._register_commands.remove(command)
-        asyncio.run_coroutine_threadsafe(self.update_bot_commands(), self._loop)
         return self
 
     def add_handler(self, handler: BaseHandler | List[BaseHandler]) -> "BotApp":
@@ -239,7 +251,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
             description=description,
             id=self._bot_id,
             commands=commands,
-            preview=self._app_preview
+            preview=self._app_preview,
         )
 
         self._bot_info = await self.update_bot_info(self._bot_info)
@@ -284,8 +296,8 @@ class Client(Decorators, AbstractContextManager, ApiClient):
             directory = "downloads/"
         if not in_memory:
             os.makedirs(directory, exist_ok=True)
-        file_path = (
-            os.path.abspath(re.sub("\\\\", "/", os.path.join(directory, file_name)))
+        file_path = os.path.abspath(
+            re.sub("\\\\", "/", os.path.join(directory, file_name))
         )
         file = BytesIO() if in_memory else open(file_path, "wb")
 
@@ -338,13 +350,12 @@ class Client(Decorators, AbstractContextManager, ApiClient):
             await self.on_app_start(self)
 
     async def start(self):
+        """Starts the app"""
         try:
             if self._running:
                 return
             self._running = True
-            """Starts the app"""
             log.info("🚀 Starting app...")
-
             if self.user.id:
                 log.info(
                     "Logged in as [%a][%s][%d]",
@@ -366,6 +377,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
                     )
                 )
 
+            await self.update_bot_commands()
             self.load_plugins()
 
             if self.receive_updates:

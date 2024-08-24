@@ -22,7 +22,7 @@ APP_CONFIG = {
         "BASE_URL": os.getenv("COMMUNITY_SERVICE_BASE_URL")
         or "https://gateway.switch.pe/community-service",
         "WS_URL": os.getenv("COMMUNITY_SERVICE_WS_URL")
-        or "wss://gateway.switch.pe/v1/websocket/community/ws",
+        or "wss://gateway.switch.pe/community-service/v1/websocket/community/ws",
     },
     "BACKBLAZE": {
         "BUCKET_ID": os.getenv("BACKBLAZE_BUCKET_ID"),
@@ -48,8 +48,7 @@ def reload_config():
         os.getenv("BOT_SERVICE_BASE_URL") or "https://chat-api.switch.pe"
     )
     APP_CONFIG["AUTH_SERVICE"]["BASE_URL"] = (
-        os.getenv("AUTH_SERVICE_BASE_URL")
-        or "https://gateway.switch.pe/user-service"
+        os.getenv("AUTH_SERVICE_BASE_URL") or "https://gateway.switch.pe/user-service"
     )
     APP_CONFIG["COMMUNITY_SERVICE"]["BASE_URL"] = (
         os.getenv("COMMUNITY_SERVICE_BASE_URL")
@@ -57,8 +56,8 @@ def reload_config():
     )
     APP_CONFIG["COMMUNITY_SERVICE"]["WS_URL"] = (
         os.getenv("COMMUNITY_SERVICE_WS_URL")
-      or "wss://api-gateway.switch.pe/v1/websocket/community/ws"
-     )
+        or "wss://gateway.switch.pe/community-service/v1/websocket/community/ws"
+    )
     APP_CONFIG["AIRDROP_SERVICE"]["BASE_URL"] = (
         os.getenv("AIRDROP_SERVICE_BASE_URL")
         or "https://gateway.switch.pe/airdrop-service"

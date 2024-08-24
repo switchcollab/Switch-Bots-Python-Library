@@ -49,7 +49,6 @@ TOKEN = "MY SUPER SECRET TOKEN" # Always keep this token in [.env] file
 # initialize the app class
 app = Client(
     TOKEN, # Your Bot Authorization Token
-    "A cool bot with annotations and everything you could possibly want :)" # Bot Description
 )
 app.set_bot_commands(
     [

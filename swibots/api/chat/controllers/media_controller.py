@@ -659,6 +659,7 @@ class MediaController:
         data = media.to_update_request()
 
         data["id"] = media_id
+        data = {x: y for x, y in data.items() if y}
         response = await self.client.put(
             BASE_PATH,
             data=data,
