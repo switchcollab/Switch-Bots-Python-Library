@@ -4,7 +4,7 @@
 
 ![GitHub stars](https://img.shields.io/github/stars/switchcollab/Switch-Bots-Python-Library)
 ![GitHub Forks](https://img.shields.io/github/forks/switchcollab/Switch-Bots-Python-Library)
-![Version](https://img.shields.io/badge/version-1.4.44-green.svg)
+![Version](https://img.shields.io/badge/version-1.4.55-green.svg)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/swibots)
 
 # SwiBots: Python Library for Switch App
@@ -53,7 +53,7 @@ Let's create a simple echo bot to get you started quickly. Follow these steps:
 
 ```python
 from swibots import (
-    BotApp,
+    Client,
     BotContext,
     MessageEvent
 )
@@ -61,9 +61,7 @@ from swibots import (
 TOKEN = "MY SUPER SECRET TOKEN"
 
 # Initialize the app and register commands
-app = BotApp(
-    TOKEN, "A cool bot with annotations and everything you could possibly want :)"
-)
+app = Client(TOKEN)
 
 @app.on_message()
 async def message_handler(ctx: BotContext[MessageEvent]):
