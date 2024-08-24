@@ -1,6 +1,6 @@
 from typing import Type, TypeVar
 import swibots
-from swibots.api.auth.models import AuthUser
+from swibots.api.auth.models import AuthUser, AuthResult
 from swibots.base import SwitchRestClient
 from swibots.config import get_config
 
@@ -47,3 +47,9 @@ class AuthClient(SwitchRestClient):
         """
         response = await self.get("/api/user")
         return self.build_object(user_type, response.data)
+
+    def login(self, email: str, password: str):
+        response = self.sync_post(
+            "/api/login", data={"email": email, "password": password}
+        )
+        return self.build_object(AuthResult, response.data)
