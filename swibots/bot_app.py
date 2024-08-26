@@ -21,6 +21,7 @@ from swibots.api.bot.models import BotInfo, BotCommand
 from swibots.api.common.models import User
 from swibots.api.callback import AppBar, AppPage
 from swibots.api.common.events import Event
+from swibots.rate_limiter import AsyncRateLimiter
 from swibots.utils import (
     DownloadProgress,
     IOClient,
@@ -81,8 +82,10 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         if email and password:
             auth_result = self.auth_service.login(email, password)
             token = auth_result.access_token
+
         if not token:
             raise TokenInvalidError(f"'token' for the bot can't be '{token}'")
+
         self.token = token
         self._user_type = Bot
         self._bot_info: BotInfo | None = None
@@ -95,14 +98,17 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         self._bot_description = bot_description
         self.auto_update_bot = auto_update_bot
         self._loop = loop or asyncio.get_event_loop()
-        try:
-            self.user = self.auth_service.get_me_sync(user_type=self._user_type)
-            self.name = self.user.name
-        except Exception as er:
-            logging.error(er)
-            # In case, if issues with auth service
-            self.user = self._user_type(app=self)
-            self.name = ""
+
+        self.user = self.auth_service.get_me_sync(user_type=self._user_type)
+        self.name = self.user.name
+
+        self.rate_limit = AsyncRateLimiter(storage_file=f"{self.user.id}.pkl")
+
+        # Add rate limit functions
+        self.update_bot_commands = self.rate_limit.limit(
+            "update_bot_commands", 10, 15 * 60
+        )(self.update_bot_commands)
+
         if app_bar is None:
             app_bar = AppBar(self.name, left_icon=self.user.imageurl)
         self.app_bar = app_bar
@@ -253,8 +259,9 @@ class Client(Decorators, AbstractContextManager, ApiClient):
             commands=commands,
             preview=self._app_preview,
         )
-
+        log.info("Updating bot commands...")
         self._bot_info = await self.update_bot_info(self._bot_info)
+        log.info("Bot commands updated")
 
     async def _on_chat_service_start(self, _):
         await self.chat_service.subscribe_to_notifications(callback=self.on_chat_event)
@@ -458,6 +465,9 @@ class Client(Decorators, AbstractContextManager, ApiClient):
             except Exception as e:
                 log.exception(e)
                 run(self.stop())
+
+    def limit(self, key: str, times: int, seconds: int):
+        pass
 
 
 BotApp = Client
