@@ -49,7 +49,7 @@ class BotController:
         data = bot_info.to_json_request()
         if "preview" in data:
             data["preview"] = json.dumps(data["preview"])
-        response = await self.client.put(BASE_PATH, data=data)
+        response = await self.client.put(f"{BASE_PATH}/update", data=data)
         return BotInfo.build_from_json(response.data)
 
     async def delete_bot_info(self, bot_id: str) -> bool:

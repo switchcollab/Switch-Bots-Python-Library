@@ -62,6 +62,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         is_app: Optional[bool] = False,
         home_callback: Optional[str] = None,
         preview: Optional[AppPage] = None,
+        session_name: Optional[str] = None,
         **kwargs,
     ):
         """
@@ -102,7 +103,7 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         self.user = self.auth_service.get_me_sync(user_type=self._user_type)
         self.name = self.user.name
 
-        self.rate_limit = AsyncRateLimiter(storage_file=f"{self.user.id}.pkl")
+        self.rate_limit = AsyncRateLimiter(storage_file=f"{session_name or self.user.id}.pkl")
 
         # Add rate limit functions
         self.update_bot_commands = self.rate_limit.limit(
