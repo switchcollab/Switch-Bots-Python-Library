@@ -4,7 +4,6 @@
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/vsDark');
 
-
 const organizationName = "switchcollab";
 const projectName = "Switch-Bots-Python-Library";
 
