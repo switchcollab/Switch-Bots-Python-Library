@@ -29,7 +29,7 @@ class Community(SwitchObject):
         groups_count: Optional[int] = None,
         channels_count: Optional[int] = None,
         default_channel: Optional[Channel] = None,
-        visible: Optional[bool] = True
+        visible: Optional[bool] = True,
     ):
         super().__init__(app)
         self.id = id
@@ -76,7 +76,9 @@ class Community(SwitchObject):
             "numberOfGroups": self.groups_count,
             "numberOfChannels": self.channels_count,
             "visible": self.visible,
-            "defaultChannel": self.default_channel.to_json() if self.default_channel else None
+            "defaultChannel": (
+                self.default_channel.to_json() if self.default_channel else None
+            ),
         }
 
     def from_json(self, data: Optional[JSONDict]) -> Optional["Community"]:
