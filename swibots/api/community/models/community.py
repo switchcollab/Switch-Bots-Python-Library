@@ -61,8 +61,8 @@ class Community(SwitchObject):
             "communityUsername": self.username,
             "communityProfileUrl": self.profile_url,
             "communityCoverUrl": self.cover_url,
-            "isPublic": self.is_public,
-            "isFree": self.is_free,
+            "public": self.is_public,
+            "free": self.is_free,
             "createdBy": self.created_by,
             "communityGuidelines": self.guidelines,
             "communityDescription": self.description,
@@ -88,8 +88,8 @@ class Community(SwitchObject):
             self.username = data.get("communityUsername")
             self.profile_url = data.get("communityProfileUrl")
             self.cover_url = data.get("communityCoverUrl")
-            self.is_public = data.get("isPublic")
-            self.is_free = data.get("isFree")
+            self.is_public = data.get("public")
+            self.is_free = data.get("free")
             self.created_by = data.get("createdBy")
             self.guidelines = data.get("communityGuidelines")
             self.description = data.get("communityDescription")
