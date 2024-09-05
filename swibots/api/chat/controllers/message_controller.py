@@ -60,7 +60,9 @@ class MessageController:
             app=self.client.app,
         )
 
-    async def get_messages(self, user_id: int = None) -> List[Message]:
+    async def get_messages(
+        self, user_id: int = None, limit: int = 100, offset: int = 0
+    ) -> List[Message]:
         """Get messages for a user
 
         Parameters:
@@ -74,8 +76,11 @@ class MessageController:
         """
         if user_id is None:
             user_id = self.client.user.id
+        data = {"limit": limit, "offset": offset}
         log.debug("Getting messages for user %s", user_id)
-        response = await self.client.get(f"{BASE_PATH}/{user_id}")
+        response = await self.client.get(
+            f"{BASE_PATH}/personal/{user_id}?{urlencode(data)}"
+        )
         return self.client.build_list(Message, response.data)
 
     async def send_message(
@@ -341,9 +346,7 @@ class MessageController:
         log.debug(response)
         return True
 
-    async def delete_messages_from_user(
-        self, recipient_id: int, user_id: int = None
-    ) -> bool:
+    async def delete_messages_from_user(self, receiver_id: int) -> bool:
         """Delete messages from a user
 
         Parameters:
@@ -357,11 +360,10 @@ class MessageController:
             ``~switch.error.SwitchError``: If the messages could not be deleted
 
         """
-        log.debug("Deleting messages for user %s", recipient_id)
-        if user_id is None:
-            user_id = self.client.user.id
-
-        response = await self.client.delete(f"{BASE_PATH}/{user_id}/{recipient_id}")
+        log.debug("Deleting messages for user %s", receiver_id)
+        response = await self.client.delete(
+            f"{BASE_PATH}/clear-personal-messages?receiverId={receiver_id}"
+        )
         return True
 
     async def get_messages_between_users(
@@ -487,15 +489,12 @@ class MessageController:
         log.debug("Getting group chat history for group %s", group_id)
         data = {
             "communityId": community_id,
-            "pageOffset": page_offset,
-            "pageLimit": page_limit,
-            "isChannel": "false",
+            "offset": page_offset,
+            "limit": page_limit,
+            "groupId": group_id,
         }
-        if user_id is None:
-            user_id = self.client.user.id
-
         response = await self.client.get(
-            f"{BASE_PATH}/group/{user_id}/{group_id}?{urlencode(data)}"
+            f"{BASE_PATH}/community-messages?{urlencode(data)}"
         )
         return self.client.build_object(GroupChatHistory, response.data)
 
@@ -528,14 +527,11 @@ class MessageController:
             "communityId": community_id,
             "pageOffset": page_offset,
             "pageLimit": page_limit,
-            "isChannel": "true",
+            "channelId": channel_id,
         }
 
-        if user_id is None:
-            user_id = self.client.user.id
-
         response = await self.client.get(
-            f"{BASE_PATH}/group/{user_id}/{channel_id}?{urlencode(data)}"
+            f"{BASE_PATH}/community-messages?{urlencode(data)}"
         )
         return self.client.build_object(GroupChatHistory, response.data)
 
