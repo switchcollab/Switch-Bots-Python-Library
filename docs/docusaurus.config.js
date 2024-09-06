@@ -2,7 +2,7 @@
 // Note: type annotations allow type checking and IDEs autocompletion
 
 const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/vsDark');
+const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 const organizationName = "switchcollab";
 const projectName = "Switch-Bots-Python-Library";
@@ -50,7 +50,9 @@ const config = {
         //   //   'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
         // },
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
+          customCss: [
+            require.resolve('./src/css/custom.css'),
+          ],
         },
       }),
     ],
@@ -59,6 +61,11 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      colorMode: {
+        defaultMode: 'dark',
+        disableSwitch: false,
+        respectPrefersColorScheme: true,
+      },
       navbar: {
         title: 'SwiBots',
         logo: {
@@ -97,30 +104,22 @@ const config = {
               },
             ],
           },
-          // {
-          //   title: 'Community',
-          //   items: [
-          //     {
-          //       label: 'Stack Overflow',
-          //       href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-          //     },
-          //     {
-          //       label: 'Discord',
-          //       href: 'https://discordapp.com/invite/docusaurus',
-          //     },
-          //     {
-          //       label: 'Twitter',
-          //       href: 'https://twitter.com/docusaurus',
-          //     },
-          //   ],
-          // },
+         {
+             title: 'Community',
+            items: [
+               {
+                 label: 'Switch',
+               href: 'https://switch.click/c/support',
+               },
+               {
+                 label: 'Twitter',
+                 href: 'https:/x.com/switch_pe',
+               },
+             ],
+           },
           {
             title: 'More',
             items: [
-              // {
-              //   label: 'Blog',
-              //   to: '/blog',
-              // },
               {
                 label: 'GitHub',
                 href: 'https://github.com/switchcollab/Switch-Bots-Python-Library',
@@ -132,7 +131,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Switch. Built with Docusaurus.`,
+//        copyright: `Copyright © ${new Date().getFullYear()} Switch. Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,

@@ -1,0 +1,115 @@
+:root {
+  --ifm-color-primary: #2e8555;
+  --ifm-color-primary-dark: #29784c;
+  --ifm-color-primary-darker: #277148;
+  --ifm-color-primary-darkest: #205d3b;
+  --ifm-color-primary-light: #33925d;
+  --ifm-color-primary-lighter: #359962;
+  --ifm-color-primary-lightest: #3cad6e;
+}
+
+.margin-bottom--lg {
+  margin-bottom: 2rem !important;
+}
+
+.row {
+  margin-bottom: -2rem;
+}
+
+/* Improve typography */
+h1, h2, h3 {
+  letter-spacing: -0.5px;
+}
+
+/* Add margin to top columns */
+.features .row > div {
+  margin-top: 2rem;
+  transition: transform 0.3s ease-in-out;
+}
+
+.features .row > div:hover {
+  transform: translateY(-5px);
+}
+
+/* Add margin to bottom buttons */
+.gettingStarted .buttons {
+  margin-top: 2rem;
+}
+
+/* Add space between buttons and margin to left and right */
+.gettingStarted .buttons .button:not(:last-child) {
+  margin-right: 1rem;
+}
+
+.gettingStarted .buttons .button {
+  margin: 0.5rem;
+  transition: transform 0.3s ease-in-out;
+}
+
+.gettingStarted .buttons .button:hover {
+  transform: translateY(-2px);
+}
+
+/* Add margin bottom to the "Ready to dive in" section */
+.gettingStarted {
+  margin-top: 4rem;
+  margin-bottom: 6rem;  /* Increased margin-bottom */
+  background-color: var(--ifm-color-primary-lightest);
+  padding: 4rem 0;
+}
+
+/* Add margin top to the "SwiBots in Action" section */
+.examples {
+  margin-top: 4rem;
+}
+
+/* Add margin to header buttons */
+.heroBanner .buttons .button {
+  margin: 0.5rem;
+  transition: transform 0.3s ease-in-out;
+}
+
+.heroBanner .buttons .button:hover {
+  transform: translateY(-2px);
+}
+
+/* Enhance code blocks */
+.codeExample {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.codeExample:hover {
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.codeExample h3 {
+  background-color: var(--ifm-color-primary);
+  color: white;
+  padding: 1rem;
+  margin: 0;
+}
+
+.codeExample pre {
+  margin: 0;
+  border-radius: 0;
+}
+
+.main-wrapper {
+    margin-bottom: 3rem;
+}
+
+/* Fix footer overlap */
+.footer {
+  padding-bottom: 2rem;
+}
+
+.footer__links {
+  margin-bottom: 2rem;
+}
+
+.footer__col {
+  margin-bottom: 1rem;
+}
