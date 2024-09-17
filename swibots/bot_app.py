@@ -99,11 +99,14 @@ class Client(Decorators, AbstractContextManager, ApiClient):
         self._bot_description = bot_description
         self.auto_update_bot = auto_update_bot
         self._loop = loop or asyncio.get_event_loop()
+        self._upload_mode = kwargs.get("upload_method")
 
         self.user = self.auth_service.get_me_sync(user_type=self._user_type)
         self.name = self.user.name
 
-        self.rate_limit = AsyncRateLimiter(storage_file=f"{session_name or self.user.id}.pkl")
+        self.rate_limit = AsyncRateLimiter(
+            storage_file=f"{session_name or self.user.id}.pkl"
+        )
 
         # Add rate limit functions
         self.update_bot_commands = self.rate_limit.limit(

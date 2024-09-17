@@ -2,6 +2,7 @@ import enum
 
 MAX_FILE_SIZE = 8589934592
 
+
 class EventType(enum.Enum):
     """Represents the type of a event."""
 

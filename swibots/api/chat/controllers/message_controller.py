@@ -177,6 +177,12 @@ class MessageController:
     ) -> Message | Task:
         async def _upload_media(media):
             if document:
+                force_storage_method = kwargs.get("secondary_upload", False)
+                private_community = None
+                if community_id:
+                    community = await self.client.app.get_community(community_id)
+                    private_community = not community.is_public
+
                 media = await self.client.app.upload_media(
                     path=document,
                     caption=caption,
@@ -195,6 +201,7 @@ class MessageController:
                     premium=premium,
                     for_document=kwargs.get("is_document")
                     or (kwargs.get("media_type", 0) == MediaType.DOCUMENT.value),
+                    private_community=private_community or force_storage_method,
                 )
             elif not media:
                 raise ValueError("'media' or 'document' must be provided!")

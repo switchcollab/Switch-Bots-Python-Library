@@ -62,7 +62,421 @@ MAX_THUMB_SIZE = 1024 * 40
 logging.getLogger("httpx").setLevel(logging.ERROR)
 
 
-class MediaController:
+class ReadableFile:
+    def __init__(self, file, name,
+                 start_bytes: int = 0,
+                 max_read: int = None):
+        self.file = file
+        self.name = name
+        self.readed = 0
+        self.file.seek(start_bytes)
+        self.max_read_size = max_read
+
+    def read(self, n):
+        if self.max_read_size and self.readed > self.max_read_size:
+            return b''
+
+        chunk = self.file.read(n)
+        self.readed += len(chunk)
+        if self.max_read_size and self.readed > self.max_read_size:
+            chunk = chunk[:self.max_read_size - self.readed]
+        return chunk
+    
+    def close(self):
+        if hasattr(self.file, 'close'):
+            self.file.close()
+
+
+class MediaService:
+    def __init__(self) -> None:
+        pass
+
+
+    async def get_thumb_url(
+        self, path: Union[str, BytesIO], for_document: bool = False, *args, **kwargs
+    ) -> str:
+        if not path:
+            return
+
+        if path and isinstance(path, str):
+            # check for valid urls
+            parse = urlparse(path)
+            if parse.scheme and parse.netloc:
+                return path
+
+        __remove = False
+        mime_type = (
+            mimetypes.guess_type(path.name if isinstance(path, BytesIO) else path)[0]
+            or "application/octet-stream"
+        )
+        hw = 30 if for_document else 100
+        if "video/" in mime_type:
+            path = await self.generate_from_ffmpeg(path, hw)
+            if not path:
+                return
+            __remove = True
+        elif not "image/" in mime_type:
+            return
+
+        content = None
+        if isinstance(path, str):
+            size = os.path.getsize(path)
+            name = path
+        else:
+            size = path.getbuffer().nbytes
+            name = path.name
+
+        if size > MAX_THUMB_SIZE:
+            try:
+                from PIL import Image
+
+                log.info(f"creating thumb for {path}")
+
+                img = Image.open(content or path)
+                img.thumbnail((hw, hw))
+                path = tempfile.gettempdir() + f"/{uuid.uuid1()}.png"
+                __remove = True
+                img.save(path)
+            except ImportError:
+                log.warning(
+                    "[Pillow is not installed] and [thumb size is greater than 20kb], ignoring thumb"
+                )
+                return
+
+        _, ext = os.path.splitext(name)
+        file_name = f"{uuid.uuid1()}{ext}"
+
+        output = await self.file_to_response(
+            path, mime_type, file_name, content=content, remove=__remove
+        )
+        if isinstance(output, dict):
+            return output['downloadUrl']
+
+        path, file = output
+        return f"{self.url}/file/{self.bucket_name}/{file['fileName']}"
+
+
+    async def generate_from_ffmpeg(self, path: str, hw: int):
+        log.debug("checking for ffmpeg")
+        ffmpeg_path = os.getenv("FFMPEG_PATH") or "ffmpeg"
+        try:
+            proc = await asyncio.create_subprocess_exec(
+                ffmpeg_path, stderr=asyncio.subprocess.PIPE
+            )
+            await proc.wait()
+        except Exception as er:
+            logger.error(er)
+            return
+        if b"ffmpeg version" not in (er := await proc.stderr.read()):
+            log.info(f"ffmpeg is not installed, {er}")
+            return
+        name = os.path.join(tempfile.gettempdir(), f"{uuid.uuid1()}.png")
+        log.info(f"generating thumb for '{path}'")
+        cmd = [
+            ffmpeg_path,
+            "-i",
+            path,
+            "-ss",
+            "00:00:01.000",
+            "-vf",
+            f"scale={hw}:-1:force_original_aspect_ratio=increase",
+            "-vframes",
+            "1",
+            name,
+        ]
+        log.debug(f"Running command, {cmd}")
+        proc = await asyncio.create_subprocess_shell(
+            " ".join(cmd), stderr=asyncio.subprocess.PIPE
+        )
+        await proc.wait()
+        if os.path.exists(name):
+            return name
+        log.info(await proc.stderr.read())
+
+
+class StorageMediaService(MediaService):
+    def __init__(self, client: "ChatClient") -> None:
+        self.client = client
+        self.api_url = "https://storage.switch.click"
+
+        self._min_file_size = 100 * 1024 * 1024
+    
+    async def get_upload_url(self):
+        async with AsyncClient(timeout=None) as client:
+            response = await client.get(f"{self.api_url}/get_upload_url")
+            return response.json()['url']
+
+
+    async def check_if_active(self):
+        try:
+            async with AsyncClient(timeout=None) as client:
+                resp = await client.get(self.api_url)
+                assert resp.status_code == 200
+                return True
+        except Exception as e:
+            log.error(f"Failed to check if api is active: {e}")
+            return False
+
+    async def start_large_file(self,  file_name: str, file_size: int):
+        logger.info(f"Starting large file upload for {file_name} with size {file_size}")
+
+        upload_url = await self.get_upload_url()    
+        async with AsyncClient(timeout=None) as client:
+            response = await client.post(f"{upload_url}/start_large_file",
+                                         json={
+                "file_name": os.path.basename(file_name),
+                "file_size": file_size
+            })
+        response_data = response.json()
+        response_data['upload_url'] = upload_url
+        return response_data
+
+
+    async def upload_part(self, upload_url: str, path: str, fileId: str, start_bytes: int, part_size: int, part_number: int,
+                          progress: UploadProgress):
+        if isinstance(path, str):
+            path = open(path, "rb")
+
+        file = ReadableFile(path, path,
+                           start_bytes=start_bytes,
+                           max_read=part_size)
+
+        async def __upload_part():
+            async with AsyncClient(timeout=None) as client:
+                response = await client.post(
+                    "{}/upload_part?fileId={}&partNumber={}".format( 
+                        upload_url, fileId, part_number
+                    ),
+                        files={
+                            "file": file,
+                        },
+                )
+                print(response.text)
+            return response.json()
+        
+        try:
+            task = asyncio.create_task(__upload_part())
+
+            readed = 0
+            if progress.callback:
+                while not task.done():
+                    await asyncio.sleep(0.1)
+                    if readed != file.readed:
+                        change_read = file.readed - readed
+                        if change_read + progress.readed <= progress.total:
+                            await progress.bytes_readed(change_read)
+                        readed = file.readed
+            else:
+                await task
+        finally:
+            file.close()
+
+        return task.result()
+
+
+
+    async def upload_media(
+        self,
+        path: str | BytesIO,
+        caption: Optional[str] = None,
+        file_name: Optional[str] = None,
+        description: Optional[str] = None,
+        thumb: Optional[str] = None,
+        mime_type: Optional[str] = None,
+        media_type: Optional[int] = None,
+        callback: UploadProgressCallback = None,
+        callback_args: Optional[tuple] = None,
+        auto_thumb: Optional[bool] = True,
+        part_size: int = int(os.getenv("UPLOAD_PART_SIZE", 100 * 1024 * 1024)),
+        task_count: int = int(os.getenv("UPLOAD_TASKS", 0)),
+        for_document: bool = False,
+        premium: bool = False,
+        retries: int = 10,
+
+    ) -> Media:
+        _is_bytesio = isinstance(path, BytesIO)
+        if not  part_size or part_size < self._min_file_size:
+            part_size = self._min_file_size
+
+        if not _is_bytesio:
+            size = os.path.getsize(path)
+        else:
+            size = path.getbuffer().nbytes
+
+        if size > MAX_FILE_SIZE:
+            raise FileTooLarge(f"{path}: file size is too big to upload!")
+
+        if not mime_type:
+            mime_type = (
+                    mimetypes.guess_type(path.name if isinstance(path, BytesIO) else path)[0]
+                    or "application/octet-stream"
+            )
+        
+        if size <= self._min_file_size:
+            response = await self.file_to_response(
+                path=path,
+                callback=callback,
+                callback_args=callback_args,
+                file_size=size,
+                mime_type=mime_type
+            )
+            downloadUrl = response['downloadUrl']
+        else:
+            if not file_name:
+                file_name = os.path.basename(path)
+
+            response = await self.start_large_file(file_name, size)
+            upload_url = response['upload_url']
+
+            queue = asyncio.Queue()
+            progress = UploadProgress(
+            path=path,
+            callback=callback,
+            callback_args=callback_args,
+            client=IOClient(),
+            size=size,
+        )
+            upl_size = 0
+            part_number = 0
+            while upl_size < size:
+                await queue.put(
+                    self.upload_part(
+                        path=path,
+                        upload_url=upload_url,
+                        start_bytes=upl_size,
+                        part_size= part_size,
+                        fileId=response['fileId'],
+                        part_number=part_number,
+                        progress=progress
+                    )
+                )
+                upl_size += part_size
+                part_number += 1
+
+            logger.info(f"total parts: {part_number - 1}")
+
+            async def runFromQueue():
+                while not queue.empty():
+                    try:
+                        task = await queue.get()
+                        await task
+                    except Exception as er:
+                        log.exception(er)
+
+            qTask = [asyncio.create_task(runFromQueue()) for _ in range(task_count)]
+
+            try:
+                await asyncio.wait(qTask)
+            except Exception as er:
+                log.exception(er)
+
+            for q in qTask:
+                if q.done() and (exc := q.exception()):
+                    log.exception(exc)
+                if not q.done():
+                    q.cancel()
+
+            response = await self.complete_large_file(upload_url, response['fileId'], part_number)
+            downloadUrl = response['downloadUrl']
+
+        try:
+            thumbUrl = await self.get_thumb_url(
+                thumb or (path if auto_thumb else None), for_document
+            )
+        except Exception as er:
+            log.exception(er)
+            thumbUrl = None
+
+        media = {
+            "caption": caption,
+            "description": description,
+            "mimeType": mime_type,
+            "fileSize": size,
+            "fileName": file_name or os.path.basename(path),
+            "downloadUrl": downloadUrl,
+            "thumbnailUrl": thumbUrl,
+            "mediaType": media_type,
+            "sourceUri": response['fileId'],
+            "checksum": ' ',
+            "ownerId": self.client.app.user.id,
+            "premium": premium,
+        }
+
+        return self.client.build_object(Media, media)
+
+    async def complete_large_file(self, upload_url: str, file_id: str, total_parts: int):
+        async with AsyncClient(timeout=None) as client:
+            response = await client.post(f"{upload_url}/finish_large_file",
+                                         json={
+                                             "totalParts": total_parts,
+                                             "fileId": file_id,
+                                             "blocking": True
+                                         })
+            return response.json()
+
+
+    async def file_to_response(self,
+        path: str | BytesIO,
+        mime_type=None,
+        file_name=None,
+        content: bytes = None,
+        callback=None,
+        callback_args=None,
+        file_size=None,
+        remove: bool = None,
+    ):
+        upload_url = await self.get_upload_url()
+        Isbytes = isinstance(path, BytesIO)
+
+        if not Isbytes:
+            file = open(path, "rb")
+        file = ReadableFile(file, path.name if Isbytes else path)
+
+        if not mime_type:
+            mime_type = (
+                mimetypes.guess_type(path.name if Isbytes else path)[0]
+                or "application/octet-stream"
+            )
+
+        async def upload_file():
+            async with AsyncClient(timeout=None) as client:
+                response = await client.post(
+                        f"{upload_url}/upload?blocking=true",
+                        files={"file": file}
+                    )
+                jsonData = response.json()
+
+            file.close()
+            return jsonData
+        
+        task = asyncio.create_task(upload_file())
+
+        if callback:
+                readed = 0
+                while not task.done():
+                    await asyncio.sleep(0.1)
+                    if readed != file.readed:
+                        readed = file.readed
+                        progress = UploadProgress(
+                            path=path,
+                            callback=callback,
+                            callback_args=callback_args,
+                            client=IOClient(),
+                            size=file_size,
+                        )
+                        await progress.bytes_readed(file.readed)
+        else:
+                await task
+   
+        result = task.result()
+        if remove and not Isbytes:
+            os.remove(path)
+
+        return result
+
+
+
+class MediaController(MediaService):
     """Media controller
     This controller is used to communicate with the media endpoints.
     """
@@ -76,6 +490,8 @@ class MediaController:
         self.url = None
         self._min_part_size = 5000000
         self.bucket_name = bucket_name
+        self.storage_service = StorageMediaService(client)
+
 
     async def getAccountInfo(self):
         response = await self.request(
@@ -93,6 +509,7 @@ class MediaController:
             self._min_part_size = min_size
 
         return self.__token
+
 
     async def file_to_response(
         self,
@@ -171,100 +588,6 @@ class MediaController:
             log.error(file_response)
         return path, file_response
 
-    async def generate_from_ffmpeg(self, path: str, hw: int):
-        log.debug("checking for ffmpeg")
-        ffmpeg_path = os.getenv("FFMPEG_PATH") or "ffmpeg"
-        try:
-            proc = await asyncio.create_subprocess_exec(
-                ffmpeg_path, stderr=asyncio.subprocess.PIPE
-            )
-            await proc.wait()
-        except Exception as er:
-            logger.error(er)
-            return
-        if b"ffmpeg version" not in (er := await proc.stderr.read()):
-            log.info(f"ffmpeg is not installed, {er}")
-            return
-        name = os.path.join(tempfile.gettempdir(), f"{uuid.uuid1()}.png")
-        log.info(f"generating thumb for '{path}'")
-        cmd = [
-            ffmpeg_path,
-            "-i",
-            path,
-            "-ss",
-            "00:00:01.000",
-            "-vf",
-            f"scale={hw}:-1:force_original_aspect_ratio=increase",
-            "-vframes",
-            "1",
-            name,
-        ]
-        log.debug(f"Running command, {cmd}")
-        proc = await asyncio.create_subprocess_shell(
-            " ".join(cmd), stderr=asyncio.subprocess.PIPE
-        )
-        await proc.wait()
-        if os.path.exists(name):
-            return name
-        log.info(await proc.stderr.read())
-
-    async def get_thumb_url(
-        self, path: Union[str, BytesIO], for_document: bool = False, *args, **kwargs
-    ) -> str:
-        if not path:
-            return
-
-        if path and isinstance(path, str):
-            # check for valid urls
-            parse = urlparse(path)
-            if parse.scheme and parse.netloc:
-                return path
-
-        __remove = False
-        mime_type = (
-            mimetypes.guess_type(path.name if isinstance(path, BytesIO) else path)[0]
-            or "application/octet-stream"
-        )
-        hw = 30 if for_document else 100
-        if "video/" in mime_type:
-            path = await self.generate_from_ffmpeg(path, hw)
-            if not path:
-                return
-            __remove = True
-        elif not "image/" in mime_type:
-            return
-        content = None
-        if isinstance(path, str):
-            size = os.path.getsize(path)
-            name = path
-        else:
-            size = path.getbuffer().nbytes
-            name = path.name
-
-        if size > MAX_THUMB_SIZE:
-            try:
-                from PIL import Image
-
-                log.info(f"creating thumb for {path}")
-
-                img = Image.open(content or path)
-                img.thumbnail((hw, hw))
-                path = tempfile.gettempdir() + f"/{uuid.uuid1()}.png"
-                __remove = True
-                img.save(path)
-            except ImportError:
-                log.warning(
-                    "[Pillow is not installed] and [thumb size is greater than 20kb], ignoring thumb"
-                )
-                return
-
-        _, ext = os.path.splitext(name)
-        file_name = f"{uuid.uuid1()}{ext}"
-
-        path, file = await self.file_to_response(
-            path, mime_type, file_name, content=content, remove=__remove
-        )
-        return f"{self.url}/file/{self.bucket_name}/{file['fileName']}"
 
     async def upload_media(
         self,
@@ -284,6 +607,9 @@ class MediaController:
         for_document: bool = False,
         premium: bool = False,
         retries: int = 10,
+        private_community: bool = False,
+        storage_method_retries: int = 3
+
     ) -> Media:
         """Upload media to switch
 
@@ -302,6 +628,41 @@ class MediaController:
         Returns:
             Media:
         """
+        if not task_count:
+            task_count = 1
+
+        if not file_name:
+            if isinstance(path, BytesIO):
+                file_name = path.name
+            else:
+                file_name = path
+
+        if private_community or self.client.app._upload_mode == "STORAGE":
+            if await self.storage_service.check_if_active():
+                for _ in range(storage_method_retries):
+                    if _:
+                        logger.info(f"Retrying storage method: {_}")
+                    try:
+                        return await self.storage_service.upload_media(
+                            path=path,
+                            caption=caption,
+                            file_name=file_name,
+                            description=description,
+                            thumb=thumb,
+                            mime_type=mime_type,
+                            media_type=media_type,
+                            callback=callback,
+                            callback_args=callback_args,
+                            auto_thumb=auto_thumb,
+                            part_size=part_size,
+                            task_count=task_count,
+                            premium=premium,
+                        retries=retries,
+                        for_document=for_document,
+                        )
+                    except Exception as er:
+                        logger.error(f"Error in storage method: {er}")
+                        logger.exception(er)
 
         if not part_size:
             part_size = self._min_part_size
@@ -309,8 +670,6 @@ class MediaController:
         if not min_file_size:
             min_file_size = self._min_part_size
 
-        if not task_count:
-            task_count = 1
 
         if part_size < self._min_part_size:
             log.warning(
@@ -318,11 +677,6 @@ class MediaController:
             )
             part_size = self._min_part_size
 
-        if not file_name:
-            if isinstance(path, BytesIO):
-                file_name = path.name
-            else:
-                file_name = path
 
         if not mime_type:
             mime_type = mimetypes.guess_type(file_name)[0] or "application/octet-stream"
@@ -568,7 +922,7 @@ class MediaController:
                         part_size,
                         fileId,
                         progress,
-                        retries=retries,
+                        retries=retries
                     )
                 )
                 part_number += 1
