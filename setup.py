@@ -16,8 +16,8 @@ except (IOError, ImportError):
 
 setup(
     name="swibots",
-    version="1.4.57",
-    packages=find_packages(exclude=["samples", "bots_impl", "docs"]),
+    version="1.4.60",
+    packages=find_packages(include=['swibots']),
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/switchcollab/Switch-Bots-Python-Library",

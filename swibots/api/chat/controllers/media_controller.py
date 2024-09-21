@@ -63,9 +63,7 @@ logging.getLogger("httpx").setLevel(logging.ERROR)
 
 
 class ReadableFile:
-    def __init__(self, file, name,
-                 start_bytes: int = 0,
-                 max_read: int = None):
+    def __init__(self, file, name, start_bytes: int = 0, max_read: int = None):
         self.file = file
         self.name = name
         self.readed = 0
@@ -74,23 +72,22 @@ class ReadableFile:
 
     def read(self, n):
         if self.max_read_size and self.readed > self.max_read_size:
-            return b''
+            return b""
 
         chunk = self.file.read(n)
         self.readed += len(chunk)
         if self.max_read_size and self.readed > self.max_read_size:
-            chunk = chunk[:self.max_read_size - self.readed]
+            chunk = chunk[: self.max_read_size - self.readed]
         return chunk
-    
+
     def close(self):
-        if hasattr(self.file, 'close'):
+        if hasattr(self.file, "close"):
             self.file.close()
 
 
 class MediaService:
     def __init__(self) -> None:
         pass
-
 
     async def get_thumb_url(
         self, path: Union[str, BytesIO], for_document: bool = False, *args, **kwargs
@@ -150,11 +147,10 @@ class MediaService:
             path, mime_type, file_name, content=content, remove=__remove
         )
         if isinstance(output, dict):
-            return output['downloadUrl']
+            return output["downloadUrl"]
 
         path, file = output
         return f"{self.url}/file/{self.bucket_name}/{file['fileName']}"
-
 
     async def generate_from_ffmpeg(self, path: str, hw: int):
         log.debug("checking for ffmpeg")
@@ -199,13 +195,12 @@ class StorageMediaService(MediaService):
         self.client = client
         self.api_url = "https://storage.switch.click"
 
-        self._min_file_size = 100 * 1024 * 1024
-    
+        self._min_file_size = 150 * 1024 * 1024
+
     async def get_upload_url(self):
         async with AsyncClient(timeout=None) as client:
             response = await client.get(f"{self.api_url}/get_upload_url")
-            return response.json()['url']
-
+            return response.json()["url"]
 
     async def check_if_active(self):
         try:
@@ -217,43 +212,54 @@ class StorageMediaService(MediaService):
             log.error(f"Failed to check if api is active: {e}")
             return False
 
-    async def start_large_file(self,  file_name: str, file_size: int):
+    async def start_large_file(self, file_name: str, file_size: int):
         logger.info(f"Starting large file upload for {file_name} with size {file_size}")
 
-        upload_url = await self.get_upload_url()    
+        upload_url = await self.get_upload_url()
         async with AsyncClient(timeout=None) as client:
-            response = await client.post(f"{upload_url}/start_large_file",
-                                         json={
-                "file_name": os.path.basename(file_name),
-                "file_size": file_size
-            })
+            response = await client.post(
+                f"{upload_url}/start_large_file",
+                json={"file_name": os.path.basename(file_name), "file_size": file_size},
+            )
         response_data = response.json()
-        response_data['upload_url'] = upload_url
+        response_data["upload_url"] = upload_url
         return response_data
 
-
-    async def upload_part(self, upload_url: str, path: str, fileId: str, start_bytes: int, part_size: int, part_number: int,
-                          progress: UploadProgress):
+    async def upload_part(
+        self,
+        upload_url: str,
+        path: str,
+        fileId: str,
+        start_bytes: int,
+        part_size: int,
+        part_number: int,
+        progress: UploadProgress,
+        retries: int = 10,
+    ):
         if isinstance(path, str):
             path = open(path, "rb")
 
-        file = ReadableFile(path, path,
-                           start_bytes=start_bytes,
-                           max_read=part_size)
+        file = ReadableFile(path, path, start_bytes=start_bytes, max_read=part_size)
 
         async def __upload_part():
-            async with AsyncClient(timeout=None) as client:
-                response = await client.post(
-                    "{}/upload_part?fileId={}&partNumber={}".format( 
-                        upload_url, fileId, part_number
-                    ),
-                        files={
-                            "file": file,
-                        },
-                )
-                print(response.text)
-            return response.json()
-        
+            for i in range(retries):
+                try:
+                    async with AsyncClient(timeout=None) as client:
+                        response = await client.post(
+                            "{}/upload_part?fileId={}&partNumber={}".format(
+                                upload_url, fileId, part_number
+                            ),
+                            files={
+                                "file": file,
+                            },
+                        )
+                        return response.json()
+                except Exception as e:
+                    log.error(f"Failed to upload part {i}: {e}")
+                    await asyncio.sleep(1)
+
+            raise Exception(f"Failed to upload part {part_number} after 10 attempts")
+
         try:
             task = asyncio.create_task(__upload_part())
 
@@ -273,8 +279,6 @@ class StorageMediaService(MediaService):
 
         return task.result()
 
-
-
     async def upload_media(
         self,
         path: str | BytesIO,
@@ -292,10 +296,9 @@ class StorageMediaService(MediaService):
         for_document: bool = False,
         premium: bool = False,
         retries: int = 10,
-
     ) -> Media:
         _is_bytesio = isinstance(path, BytesIO)
-        if not  part_size or part_size < self._min_file_size:
+        if not part_size or part_size < self._min_file_size:
             part_size = self._min_file_size
 
         if not _is_bytesio:
@@ -308,34 +311,36 @@ class StorageMediaService(MediaService):
 
         if not mime_type:
             mime_type = (
-                    mimetypes.guess_type(path.name if isinstance(path, BytesIO) else path)[0]
-                    or "application/octet-stream"
+                mimetypes.guess_type(path.name if isinstance(path, BytesIO) else path)[
+                    0
+                ]
+                or "application/octet-stream"
             )
-        
+
         if size <= self._min_file_size:
             response = await self.file_to_response(
                 path=path,
                 callback=callback,
                 callback_args=callback_args,
                 file_size=size,
-                mime_type=mime_type
+                mime_type=mime_type,
             )
-            downloadUrl = response['downloadUrl']
+            downloadUrl = response["downloadUrl"]
         else:
             if not file_name:
                 file_name = os.path.basename(path)
 
             response = await self.start_large_file(file_name, size)
-            upload_url = response['upload_url']
+            upload_url = response["upload_url"]
 
             queue = asyncio.Queue()
             progress = UploadProgress(
-            path=path,
-            callback=callback,
-            callback_args=callback_args,
-            client=IOClient(),
-            size=size,
-        )
+                path=path,
+                callback=callback,
+                callback_args=callback_args,
+                client=IOClient(),
+                size=size,
+            )
             upl_size = 0
             part_number = 0
             while upl_size < size:
@@ -344,16 +349,17 @@ class StorageMediaService(MediaService):
                         path=path,
                         upload_url=upload_url,
                         start_bytes=upl_size,
-                        part_size= part_size,
-                        fileId=response['fileId'],
+                        part_size=part_size,
+                        fileId=response["fileId"],
                         part_number=part_number,
-                        progress=progress
+                        progress=progress,
+                        retries=retries,
                     )
                 )
                 upl_size += part_size
                 part_number += 1
 
-            logger.info(f"total parts: {part_number - 1}")
+            logger.info(f"total parts: {part_number}")
 
             async def runFromQueue():
                 while not queue.empty():
@@ -376,8 +382,10 @@ class StorageMediaService(MediaService):
                 if not q.done():
                     q.cancel()
 
-            response = await self.complete_large_file(upload_url, response['fileId'], part_number)
-            downloadUrl = response['downloadUrl']
+            response = await self.complete_large_file(
+                upload_url, response["fileId"], part_number
+            )
+            downloadUrl = response["downloadUrl"]
 
         try:
             thumbUrl = await self.get_thumb_url(
@@ -396,26 +404,26 @@ class StorageMediaService(MediaService):
             "downloadUrl": downloadUrl,
             "thumbnailUrl": thumbUrl,
             "mediaType": media_type,
-            "sourceUri": response['fileId'],
-            "checksum": ' ',
+            "sourceUri": response["fileId"],
+            "checksum": " ",
             "ownerId": self.client.app.user.id,
             "premium": premium,
         }
 
         return self.client.build_object(Media, media)
 
-    async def complete_large_file(self, upload_url: str, file_id: str, total_parts: int):
+    async def complete_large_file(
+        self, upload_url: str, file_id: str, total_parts: int
+    ):
         async with AsyncClient(timeout=None) as client:
-            response = await client.post(f"{upload_url}/finish_large_file",
-                                         json={
-                                             "totalParts": total_parts,
-                                             "fileId": file_id,
-                                             "blocking": True
-                                         })
+            response = await client.post(
+                f"{upload_url}/finish_large_file",
+                json={"totalParts": total_parts, "fileId": file_id, "blocking": True},
+            )
             return response.json()
 
-
-    async def file_to_response(self,
+    async def file_to_response(
+        self,
         path: str | BytesIO,
         mime_type=None,
         file_name=None,
@@ -441,39 +449,39 @@ class StorageMediaService(MediaService):
         async def upload_file():
             async with AsyncClient(timeout=None) as client:
                 response = await client.post(
-                        f"{upload_url}/upload?blocking=true",
-                        files={"file": file}
-                    )
+                    f"{upload_url}/upload?blocking=true", files={"file": file}
+                )
                 jsonData = response.json()
 
             file.close()
             return jsonData
-        
+
         task = asyncio.create_task(upload_file())
 
         if callback:
-                readed = 0
-                while not task.done():
-                    await asyncio.sleep(0.1)
-                    if readed != file.readed:
-                        readed = file.readed
-                        progress = UploadProgress(
-                            path=path,
-                            callback=callback,
-                            callback_args=callback_args,
-                            client=IOClient(),
-                            size=file_size,
-                        )
-                        await progress.bytes_readed(file.readed)
+            readed = 0
+            while not task.done():
+                await asyncio.sleep(0.1)
+                if readed != file.readed:
+                    change_read = file.readed - readed
+                    readed = file.readed
+                    progress = UploadProgress(
+                        path=path,
+                        callback=callback,
+                        callback_args=callback_args,
+                        client=IOClient(),
+                        size=file_size,
+                    )
+                    if change_read + progress.readed <= progress.total:
+                        await progress.bytes_readed(change_read)
         else:
-                await task
-   
+            await task
+
         result = task.result()
         if remove and not Isbytes:
             os.remove(path)
 
         return result
-
 
 
 class MediaController(MediaService):
@@ -484,14 +492,13 @@ class MediaController(MediaService):
     MIN_WAIT = 3
     MAX_WAIT = 7
 
-    def __init__(self, client: "ChatClient", bucket_name: str = "ssbucket"):
+    def __init__(self, client: "ChatClient", bucket_name: str = "lambooo"):
         self.client = client
         self.__token = None
         self.url = None
         self._min_part_size = 5000000
         self.bucket_name = bucket_name
         self.storage_service = StorageMediaService(client)
-
 
     async def getAccountInfo(self):
         response = await self.request(
@@ -500,7 +507,7 @@ class MediaController(MediaService):
             method="GET",
         )
         data = response.json()
-        self.url = data['apiUrl']
+        self.url = data["apiUrl"]
 
         if token := data.get("authorizationToken"):
             self.__token = token
@@ -509,7 +516,6 @@ class MediaController(MediaService):
             self._min_part_size = min_size
 
         return self.__token
-
 
     async def file_to_response(
         self,
@@ -588,7 +594,6 @@ class MediaController(MediaService):
             log.error(file_response)
         return path, file_response
 
-
     async def upload_media(
         self,
         path: str | BytesIO,
@@ -608,8 +613,7 @@ class MediaController(MediaService):
         premium: bool = False,
         retries: int = 10,
         private_community: bool = False,
-        storage_method_retries: int = 3
-
+        storage_method_retries: int = 3,
     ) -> Media:
         """Upload media to switch
 
@@ -657,9 +661,10 @@ class MediaController(MediaService):
                             part_size=part_size,
                             task_count=task_count,
                             premium=premium,
-                        retries=retries,
-                        for_document=for_document,
+                            retries=storage_method_retries,
+                            for_document=for_document,
                         )
+                        break
                     except Exception as er:
                         logger.error(f"Error in storage method: {er}")
                         logger.exception(er)
@@ -670,13 +675,11 @@ class MediaController(MediaService):
         if not min_file_size:
             min_file_size = self._min_part_size
 
-
         if part_size < self._min_part_size:
             log.warning(
                 f"part_size cant be smaller than minimum [{self._min_part_size}]"
             )
             part_size = self._min_part_size
-
 
         if not mime_type:
             mime_type = mimetypes.guess_type(file_name)[0] or "application/octet-stream"
@@ -922,7 +925,7 @@ class MediaController(MediaService):
                         part_size,
                         fileId,
                         progress,
-                        retries=retries
+                        retries=retries,
                     )
                 )
                 part_number += 1
