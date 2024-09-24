@@ -2,7 +2,7 @@ import asyncio
 import os
 import json
 import logging
-from typing import TYPE_CHECKING, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, List, Optional, Tuple, Union, Literal
 from urllib.parse import urlencode
 from io import BytesIO
 from asyncio.tasks import Task
@@ -16,7 +16,7 @@ from swibots.api.chat.models import (
 )
 from swibots.utils import isUrl
 from swibots.api.common.models import User, EmbeddedMedia, Media
-from swibots.api.community.models import Channel, Group
+from swibots.api.community.models import Channel, Group, CommunityMember, SearchResultUser
 
 if TYPE_CHECKING:
     from swibots.api.chat import ChatClient
@@ -771,3 +771,45 @@ class MessageController:
         else:
             raise ValueError("Either provide 'user_id' or 'username' to get user info.")
         return self.client.build_object(User, response.data)
+
+
+    async def search_community_data(
+            self,
+            query: str,
+            community_id: str,
+            filter: Literal["MESSAGES", "MEDIA", "LINK", "GROUP", "CHANNEL", "MEMBER"] = "MESSAGES",
+            limit: int = 10,
+            page: int = 0,
+    ) -> Union[List[Message], List[Group], List[Channel], List[SearchResultUser]]:
+        """Search community data
+
+        Parameters:
+            query (``str``): The search query
+            community_id (``str``): The community id
+            filter (``str``, *optional*): The filter. Defaults to "MESSAGES".
+            limit (``int``, *optional*): The limit. Defaults to 10.
+            page (``int``, *optional*): The page. Defaults to 0.
+
+        Returns:
+            Union[List[Message], List[Group], List[Channel], List[SearchResultUser]]: The search results
+
+                    """
+        data = {
+            "searchString": query,
+            "item": filter,
+            "communityId": community_id,
+            "limit": limit,
+            "page": page,
+        }
+        response = await self.client.get(
+            "/v1/search/community-data?{}".format(urlencode(data))
+        )
+        if filter in ["MESSAGES", "MEDIA", "LINK"]:
+            return self.client.build_list(Message, response.data)
+        elif filter == "GROUP":
+            return self.client.build_list(Group, response.data)
+        elif filter == "CHANNEL":
+            return self.client.build_list(Channel, response.data)
+        elif filter == "MEMBER":
+            return self.client.build_list(SearchResultUser, response.data)
+        return response.data

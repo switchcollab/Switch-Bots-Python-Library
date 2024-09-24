@@ -80,3 +80,43 @@ class CommunityMember(SwitchObject):
             self.xp = data.get("xp")
             self.xp_spend = data.get("xp_spend")
         return self
+
+
+class SearchResultUser(SwitchObject):
+    def __init__(self, app: "swibots.App" = None, id: str = None, member_id: str = None, name: str = None, username: str = None, image_url: str = None, active: bool = None, deleted: bool = None, profile_colour: str = None, bot: bool = None):
+        super().__init__(app)
+        self.id = id
+        self.member_id = member_id
+        self.name = name
+        self.username = username
+        self.image_url = image_url
+        self.active = active
+        self.deleted = deleted
+        self.profile_colour = profile_colour
+        self.bot = bot
+
+    def to_json(self) -> JSONDict:
+        return {
+            "id": self.id,
+            "memberId": self.member_id,
+            "name": self.name,
+            "username": self.username,
+            "imageUrl": self.image_url,
+            "active": self.active,
+            "deleted": self.deleted,
+            "profileColour": self.profile_colour,
+            "bot": self.bot,
+        }
+
+    def from_json(self, data: JSONDict = None) -> "SearchResultUser":
+        if data is not None:
+            self.id = data.get("id")
+            self.member_id = data.get("memberId")
+            self.name = data.get("name")
+            self.username = data.get("username")
+            self.image_url = data.get("imageUrl")
+            self.active = data.get("active")
+            self.deleted = data.get("deleted")
+            self.profile_colour = data.get("profileColour")
+            self.bot = data.get("bot")
+        return self
