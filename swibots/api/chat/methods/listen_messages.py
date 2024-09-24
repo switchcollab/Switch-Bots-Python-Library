@@ -33,7 +33,7 @@ class ListenMessages:
             raise er
         finally:
             app.remove_handler(handler)
-            
+
         if count == 1:
             return messageBox[0]
         return messageBox

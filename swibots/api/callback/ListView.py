@@ -4,6 +4,7 @@ from enum import Enum
 from typing import Union, List, Literal
 from .Progress import ListTileProgress
 
+
 class ListViewType(Enum):
     DEFAULT = "default"
     SMALL = "small"
@@ -26,7 +27,7 @@ class ListTile(Component):
         thumb: Union[Image, str] = "",
         badges: List[Badge] = None,
         max_size: bool = None,
-        progress: ListTileProgress = None
+        progress: ListTileProgress = None,
     ):
         self.title = title
         self.subtitle = subtitle

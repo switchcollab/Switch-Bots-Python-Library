@@ -4,8 +4,9 @@ from swibots.api.chat.models import ADInfo
 
 
 class AdMethods:
-    async def get_all_ads(self: "swibots.ApiClient", limit: int = 100,
-                          page: int = 0) -> List[ADInfo]:
+    async def get_all_ads(
+        self: "swibots.ApiClient", limit: int = 100, page: int = 0
+    ) -> List[ADInfo]:
         """Get all ads created by the user
 
         Parameters:

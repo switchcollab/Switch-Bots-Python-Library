@@ -193,7 +193,7 @@ class FeedPanel(Component):
 
     def to_json(self) -> Dict[str, Any]:
         data = {
-            "type":  self.type,
+            "type": self.type,
             "feeds": [feed.to_json() for feed in self.feeds],
             "offsetCallbackData": self.next_callback,
         }

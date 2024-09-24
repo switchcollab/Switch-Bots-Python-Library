@@ -112,11 +112,14 @@ class Community(SwitchObject):
 
 
 class CommunityHeading(SwitchObject):
-    def __init__(self, app: "swibots.Client" = None,
-                 name: str = None,
-                 heading_type: str = None,
-                 public: bool = None,
-                 details: List[Union[Channel, Group]] = None):
+    def __init__(
+        self,
+        app: "swibots.Client" = None,
+        name: str = None,
+        heading_type: str = None,
+        public: bool = None,
+        details: List[Union[Channel, Group]] = None,
+    ):
         super().__init__(app)
         self.name = name
         self.details = details
@@ -125,7 +128,10 @@ class CommunityHeading(SwitchObject):
 
     def from_json(self, data):
         self.name = data.get("headingName")
-        self.details = [(Group if detail['isGroup'] else Channel)().from_json(detail) for detail in data.get("details")]
+        self.details = [
+            (Group if detail["isGroup"] else Channel)().from_json(detail)
+            for detail in data.get("details")
+        ]
         self.public = data.get("enabledPublic")
         self.heading_type = data.get("headingType")
 

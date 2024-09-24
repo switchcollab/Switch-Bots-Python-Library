@@ -120,27 +120,18 @@ class CallbackQueryEvent(CommandEvent):
             extraOptions={"adCallback": success_callback},
         )
 
-    async def request_session_join(self,
-                                   session_id: str):
+    async def request_session_join(self, session_id: str):
         """Request user to join the session, from session id
-        
+
         session_id: (str)
         """
-        return await self.__action_callback(
-            url=session_id,
-            action="joinSession"
-        )
+        return await self.__action_callback(url=session_id, action="joinSession")
 
-    async def request_session_create(self,
-                                   callback_data: str = None):
+    async def request_session_create(self, callback_data: str = None):
         """Create the bot session on the behalf of user.
 
         callback_data: str: Callback data to trigger after creating"""
-        return await self.__action_callback(
-            url=callback_data,
-            action="createSession"
-        )
-
+        return await self.__action_callback(url=callback_data, action="createSession")
 
     async def answer(
         self,

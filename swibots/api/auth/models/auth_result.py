@@ -11,7 +11,7 @@ class AuthResult(SwitchObject):
         user_id: Optional[int] = None,
         is_bot: Optional[bool] = False,
         roles: Optional[List[str]] = None,
-        active: Optional[bool] = False
+        active: Optional[bool] = False,
     ):
         self.access_token = access_token
         self.refresh_token = refresh_token

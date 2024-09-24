@@ -53,11 +53,13 @@ class BottomBar(SwitchObject):
         self.options = options
         self.type = type
         self.theme_color = theme_color
-    
+
     def from_json(self, data) -> Any:
         if "BottomBar" in data:
             self.type = BottomBarType(data.get("bottomBarStyle"))
-            self.options = [BottomBarTile().from_json(option) for option in data.get("bottomBar")]
+            self.options = [
+                BottomBarTile().from_json(option) for option in data.get("bottomBar")
+            ]
             self.theme_color = data.get("bottomBarColour")
 
         return self

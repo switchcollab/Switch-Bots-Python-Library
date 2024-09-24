@@ -130,7 +130,7 @@ class ButtonGroup(Component):
             "type": self.type,
             "buttons": [button.to_json() for button in self.buttons],
             "mainAxisSize": "max" if self.max_size else "min",
-            "flexible": self.flexible
+            "flexible": self.flexible,
         }
 
 

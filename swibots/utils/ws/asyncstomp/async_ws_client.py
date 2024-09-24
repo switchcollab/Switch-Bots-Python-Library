@@ -158,9 +158,15 @@ class AsyncWsClient:
         **kwargs,
     ):
         headers = self._set_default_headers(headers)
-        await self._connect(login, passcode, headers,
-                            connect_callback, error_callback,
-                            timeout, **kwargs)
+        await self._connect(
+            login,
+            passcode,
+            headers,
+            connect_callback,
+            error_callback,
+            timeout,
+            **kwargs,
+        )
 
     async def _connect(
         self,

@@ -5,13 +5,16 @@ from swibots.base.switch_object import SwitchObject
 from .usertournament import UserTournament
 from enum import Enum
 
+
 class UserStatus(Enum):
     OFFLINE = "OFFLINE"
     ONLINE = "ONLINE"
 
+
 class BotPrivacy(Enum):
     PUBLIC = "public"
     PRIVATE = "private"
+
 
 class User(SwitchObject):
     def __init__(
@@ -35,7 +38,7 @@ class User(SwitchObject):
         is_friend: Optional[bool] = None,
         tournaments: Optional[List[Any]] = None,
         status: Optional[str] = None,
-        privacy: Optional[BotPrivacy] = BotPrivacy.PUBLIC
+        privacy: Optional[BotPrivacy] = BotPrivacy.PUBLIC,
     ):
         super().__init__(app)
         self.id = id
@@ -77,7 +80,7 @@ class User(SwitchObject):
             "is_app": self.is_app,
             "app_callback": self.app_callback,
             "tournamentsParticipated": [x.to_json(x) for x in self.tournaments or []],
-            "bot_privacy": self.privacy
+            "bot_privacy": self.privacy,
         }
 
     def from_json(self, data: Optional[JSONDict] = None) -> "User":
@@ -105,6 +108,6 @@ class User(SwitchObject):
             status = data.get("user_status", {}).get("status")
             if status:
                 self.status = getattr(UserStatus, status, None)
-            if privacy:= data.get("bot_privacy"):
+            if privacy := data.get("bot_privacy"):
                 self.privacy = getattr(BotPrivacy, privacy, None)
         return self

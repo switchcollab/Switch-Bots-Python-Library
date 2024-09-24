@@ -5,7 +5,9 @@ from swibots.api.community.models import CommunityHeading
 
 class HeadingMethods:
 
-    async def get_headings(self: "swibots.ApiClient", community_id: str, additional: bool = False) -> List[CommunityHeading]:
+    async def get_headings(
+        self: "swibots.ApiClient", community_id: str, additional: bool = False
+    ) -> List[CommunityHeading]:
         """
         Get the headings of a community
 
@@ -14,11 +16,14 @@ class HeadingMethods:
         """
         return await self.chat_service.headings.get_headings(community_id, additional)
 
-    async def create_heading(self: "swibots.ApiClient", community_id: str, name: str,
-                             chat_id: str,
-                             heading_for: Literal["CHANNEL", "GROUP"] = "CHANNEL",
-                             heading_type: Literal['BLANK', "VALUE"] = "VALUE",
-                             ):
+    async def create_heading(
+        self: "swibots.ApiClient",
+        community_id: str,
+        name: str,
+        chat_id: str,
+        heading_for: Literal["CHANNEL", "GROUP"] = "CHANNEL",
+        heading_type: Literal["BLANK", "VALUE"] = "VALUE",
+    ):
         """
         Create a heading in a community
 
@@ -28,7 +33,9 @@ class HeadingMethods:
         :param heading_for: The type of the heading
         :param heading_type: The type of the heading
         """
-        return await self.chat_service.headings.create_heading(community_id, name, chat_id, heading_for, heading_type)
+        return await self.chat_service.headings.create_heading(
+            community_id, name, chat_id, heading_for, heading_type
+        )
 
     async def delete_heading(self, community_id: str, heading_name: str):
         """
@@ -37,10 +44,17 @@ class HeadingMethods:
         :param community_id: The ID of the community
         :param heading_name: The name of the heading to delete
         """
-        return await self.chat_service.headings.delete_heading(community_id, heading_name)
+        return await self.chat_service.headings.delete_heading(
+            community_id, heading_name
+        )
 
-    async def edit_heading(self, community_id: str, heading_name: str, new_heading_name: str,
-                           heading_type: Literal['BLANK', "VALUE"] = "VALUE"):
+    async def edit_heading(
+        self,
+        community_id: str,
+        heading_name: str,
+        new_heading_name: str,
+        heading_type: Literal["BLANK", "VALUE"] = "VALUE",
+    ):
         """
         Edit a heading in a community
 
@@ -49,4 +63,6 @@ class HeadingMethods:
         :param new_heading_name: The new name of the heading
         :param heading_type: The type of the heading
         """
-        return await self.chat_service.headings.edit_heading(community_id, heading_name, new_heading_name, heading_type)
+        return await self.chat_service.headings.edit_heading(
+            community_id, heading_name, new_heading_name, heading_type
+        )

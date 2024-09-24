@@ -33,7 +33,7 @@ class GroupController:
         if response.status_code == 200:
             return True
         logging.debug(response.data)
-        if err:= response.data.get("errorMessage"):
+        if err := response.data.get("errorMessage"):
             raise SwitchError(err)
         return False
 

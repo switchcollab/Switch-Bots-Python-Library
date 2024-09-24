@@ -289,16 +289,18 @@ class CommunityMethods:
             community_id (str): Community ID
         """
         community_client = self.community_service.communities.client
-        response = await community_client.get(f"/v1/community/bots?communityId={community_id}")
-        result = response.data['result']
-        members = result['communityMembers']
+        response = await community_client.get(
+            f"/v1/community/bots?communityId={community_id}"
+        )
+        result = response.data["result"]
+        members = result["communityMembers"]
         for member in members:
 
             def filterMemberId(x):
-                return int(x['id']) == int(member['userId'])
+                return int(x["id"]) == int(member["userId"])
 
-            userInfo = list(filter(filterMemberId, result['userInfoList']))
+            userInfo = list(filter(filterMemberId, result["userInfoList"]))
             if userInfo:
-                member['userInfo'] = userInfo[0]
+                member["userInfo"] = userInfo[0]
 
         return community_client.build_list(CommunityMember, members)

@@ -58,6 +58,7 @@ class CancelError(SwitchError):
 class BadRequest(SwitchError):
     pass
 
+
 class FileTooLarge(SwitchError): ...
 
 

@@ -1,9 +1,7 @@
 import logging
 from typing import TYPE_CHECKING, List, Optional
 
-from swibots.api.chat.models import (
-    Message, SessionInfo
-)
+from swibots.api.chat.models import Message, SessionInfo
 
 if TYPE_CHECKING:
     from swibots.api.chat import ChatClient

@@ -80,7 +80,7 @@ class AppPage(SwitchObject):
     def to_json(self) -> JSONDict:
         components = []
         for component in self.components:
-            
+
             if isinstance(component, ListView):
                 if self.max_size != None:
                     component.max_size = self.max_size
@@ -95,9 +95,7 @@ class AppPage(SwitchObject):
                     componentJson["mainAxisSize"] = "max" if self.max_size else "min"
                 components.append(componentJson)
             elif isinstance(component, str):
-                components.append(
-                    Text(component)
-                )
+                components.append(Text(component))
 
         data = {
             "type": self.type,

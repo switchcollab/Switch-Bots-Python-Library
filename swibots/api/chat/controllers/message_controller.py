@@ -16,7 +16,12 @@ from swibots.api.chat.models import (
 )
 from swibots.utils import isUrl
 from swibots.api.common.models import User, EmbeddedMedia, Media
-from swibots.api.community.models import Channel, Group, CommunityMember, SearchResultUser
+from swibots.api.community.models import (
+    Channel,
+    Group,
+    CommunityMember,
+    SearchResultUser,
+)
 
 if TYPE_CHECKING:
     from swibots.api.chat import ChatClient
@@ -772,14 +777,15 @@ class MessageController:
             raise ValueError("Either provide 'user_id' or 'username' to get user info.")
         return self.client.build_object(User, response.data)
 
-
     async def search_community_data(
-            self,
-            query: str,
-            community_id: str,
-            filter: Literal["MESSAGES", "MEDIA", "LINK", "GROUP", "CHANNEL", "MEMBER"] = "MESSAGES",
-            limit: int = 10,
-            page: int = 0,
+        self,
+        query: str,
+        community_id: str,
+        filter: Literal[
+            "MESSAGES", "MEDIA", "LINK", "GROUP", "CHANNEL", "MEMBER"
+        ] = "MESSAGES",
+        limit: int = 10,
+        page: int = 0,
     ) -> Union[List[Message], List[Group], List[Channel], List[SearchResultUser]]:
         """Search community data
 
@@ -793,7 +799,7 @@ class MessageController:
         Returns:
             Union[List[Message], List[Group], List[Channel], List[SearchResultUser]]: The search results
 
-                    """
+        """
         data = {
             "searchString": query,
             "item": filter,

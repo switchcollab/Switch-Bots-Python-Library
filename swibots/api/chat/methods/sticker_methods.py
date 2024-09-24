@@ -164,13 +164,15 @@ class StickerMethods:
             query=query, limit=limit, offset=offset
         )
 
-    async def install_sticker_set(self: "swibots.ApiClient",
-                                  pack_id: str,
-                                  community_id: str = None) -> bool:
+    async def install_sticker_set(
+        self: "swibots.ApiClient", pack_id: str, community_id: str = None
+    ) -> bool:
         """Install sticker set from pack Id
 
         Args:
             pack_id (str): Sticker pack id.
             community_id (str, optional): community id to link. Defaults to None.
         """
-        return await self.chat_service.stickers.install_sticker_pack(pack_id, community_id)
+        return await self.chat_service.stickers.install_sticker_pack(
+            pack_id, community_id
+        )

@@ -59,9 +59,7 @@ class MessageEvent(ChatEvent):
                 m_obj = m_obj["msg"]
                 self.message_id = m_obj.get("id")
 
-            self.message: Message = Message.build_from_json(
-                m_obj, self.app
-            )
+            self.message: Message = Message.build_from_json(m_obj, self.app)
 
             self.message.user = self.user
             self.message.community = self.community

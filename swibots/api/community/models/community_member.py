@@ -83,7 +83,19 @@ class CommunityMember(SwitchObject):
 
 
 class SearchResultUser(SwitchObject):
-    def __init__(self, app: "swibots.App" = None, id: str = None, member_id: str = None, name: str = None, username: str = None, image_url: str = None, active: bool = None, deleted: bool = None, profile_colour: str = None, bot: bool = None):
+    def __init__(
+        self,
+        app: "swibots.App" = None,
+        id: str = None,
+        member_id: str = None,
+        name: str = None,
+        username: str = None,
+        image_url: str = None,
+        active: bool = None,
+        deleted: bool = None,
+        profile_colour: str = None,
+        bot: bool = None,
+    ):
         super().__init__(app)
         self.id = id
         self.member_id = member_id

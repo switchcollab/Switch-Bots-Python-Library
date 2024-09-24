@@ -31,7 +31,5 @@ class GetMe:
             bool: Whether request was successful
         """
         data = {x: y for x, y in user_info.to_json_request().items() if y is not None}
-        response = await self.auth_service.post(
-            "/api/update/bot", data=data
-        )
+        response = await self.auth_service.post("/api/update/bot", data=data)
         return response.data

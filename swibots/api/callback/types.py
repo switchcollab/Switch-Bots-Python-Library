@@ -36,18 +36,22 @@ class Component(SwitchObject):
 class Icon(Component):
     type = "icon"
 
-    def __init__(self, url: str, dark_url: str = None,
-                 text: str = "",
-                 callback_data: str = None):
+    def __init__(
+        self, url: str, dark_url: str = None, text: str = "", callback_data: str = None
+    ):
         self.url = url
         self.dark_url = dark_url or url
         self.text = text
         self.callback_data = callback_data
 
     def to_json(self) -> Dict[str, Any]:
-        return {"type": self.type, "name": self.url, "darkIcon": self.dark_url,
-                "alt": self.text,
-                "callbackData": self.callback_data}
+        return {
+            "type": self.type,
+            "name": self.url,
+            "darkIcon": self.dark_url,
+            "alt": self.text,
+            "callbackData": self.callback_data,
+        }
 
 
 class Text(Component):

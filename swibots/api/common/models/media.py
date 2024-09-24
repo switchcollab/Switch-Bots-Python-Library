@@ -23,7 +23,7 @@ class Media(SwitchObject):
         url: Optional[bool] = None,
         owner_id: Optional[int] = None,
         owner_type: Optional[str] = None,
-        premium: Optional[bool] = False
+        premium: Optional[bool] = False,
     ):
         super().__init__(app)
         self.id = id
@@ -59,7 +59,7 @@ class Media(SwitchObject):
             "mediaInfo.thumbnailUrl": self.thumbnail_url,
             "mediaInfo.sourceUri": self.source_id,
             "mediaInfo.typeName": self.type_name,
-            "mediaInfo.premium": self.premium
+            "mediaInfo.premium": self.premium,
         }
 
     def to_json(self) -> JSONDict:
@@ -81,7 +81,7 @@ class Media(SwitchObject):
                 "ownerType": self.owner_type,
                 "downloadUrl": self.url,
                 "url": self.url,
-                "premium": self.premium
+                "premium": self.premium,
             }.items()
             if y
         }
@@ -118,7 +118,7 @@ class Media(SwitchObject):
             "fileName": self.file_name,
             "fileSize": self.file_size,
             "url": self.url,
-            "premium": self.premium
+            "premium": self.premium,
         }
 
     async def edit(

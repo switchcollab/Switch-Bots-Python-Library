@@ -4,6 +4,7 @@ from swibots.api.chat.models import Message
 from typing import Literal, Union
 from swibots.api.community.models import Channel, Group, SearchResultUser
 
+
 class GetCommunityMediaFiles:
     async def get_community_media_files(
         self: "swibots.ApiClient", community_id: str
@@ -23,12 +24,13 @@ class GetCommunityMediaFiles:
         """
         return await self.chat_service.messages.get_community_media_files(community_id)
 
-
     async def search_community_data(
         self: "swibots.ApiClient",
         query: str,
         community_id: str,
-        filter: Literal["MESSAGES", "MEDIA", "LINK", "GROUP", "CHANNEL", "MEMBER"] = "MESSAGES",
+        filter: Literal[
+            "MESSAGES", "MEDIA", "LINK", "GROUP", "CHANNEL", "MEMBER"
+        ] = "MESSAGES",
         limit: int = 10,
         page: int = 0,
     ) -> Union[List[Message], List[Group], List[Channel], List[SearchResultUser]]:
@@ -47,4 +49,6 @@ class GetCommunityMediaFiles:
         Raises:
             ``~switch.error.SwitchError``: If the search results could not be retrieved
         """
-        return await self.chat_service.messages.search_community_data(query, community_id, filter, limit, page)
+        return await self.chat_service.messages.search_community_data(
+            query, community_id, filter, limit, page
+        )

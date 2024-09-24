@@ -54,7 +54,7 @@ class BotInfo(User):
         description: Optional[str] = None,
         welcome: BotWelcome = None,
         source_code: Optional[str] = None,
-        preview: Optional[AppPage] = None
+        preview: Optional[AppPage] = None,
     ):
         super().__init__(
             id=id,

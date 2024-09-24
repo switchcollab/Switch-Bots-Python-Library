@@ -26,9 +26,8 @@ class MessageHandler(EventHandler):
         super().__init__(EventType.MESSAGE, callback, filter, **kwargs)
 
     async def should_handle(self, context: BotContext[MessageEvent]) -> bool:
-        if (self._outgoing and not context.event.message.outgoing):
+        if self._outgoing and not context.event.message.outgoing:
             return
         return (
-            await super().should_handle(context)
-            and context.event.message is not None
+            await super().should_handle(context) and context.event.message is not None
         )

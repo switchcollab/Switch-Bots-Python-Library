@@ -20,11 +20,11 @@ class AdvertisingController:
         self.client = client
 
     async def get_all_ads(
-        self, limit: int = 100, page: int = 0,
+        self,
+        limit: int = 100,
+        page: int = 0,
     ):
-        param = urlencode(
-            {"page": page, "limit": limit, "appId": self.client.user.id}
-        )
+        param = urlencode({"page": page, "limit": limit, "appId": self.client.user.id})
         response = await self.client.get(f"{BASE_PATH}/byAppId?{param}")
         return self.client.build_list(ADInfo, response.data)
 
