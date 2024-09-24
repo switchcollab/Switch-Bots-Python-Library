@@ -9,6 +9,7 @@ from swibots.api.chat.controllers import (
     MediaController,
     StickerController,
     OrganizationController,
+    HeadingsController,
 )
 from swibots.api.chat.events import (
     ChatEvent,
@@ -62,6 +63,7 @@ class ChatClient(SwitchRestClient):
         self._ads: AdvertisingController = None
         self._stickers: StickerController = None
         self._organization: OrganizationController = None
+        self._headings: HeadingsController = None
         self._ws: SwitchWSAsyncClient = None
         self._started = False
 
@@ -76,6 +78,12 @@ class ChatClient(SwitchRestClient):
         if self._ads is None:
             self._ads = AdvertisingController(self)
         return self._ads
+
+    @property
+    def headings(self) -> HeadingsController:
+        if self._headings is None:
+            self._headings = HeadingsController(self)
+        return self._headings
 
     @property
     def organization(self) -> OrganizationController:
@@ -185,7 +193,7 @@ class ChatClient(SwitchRestClient):
                 evt = self.build_object(InlineQueryEvent, json_data)
             else:
                 logging.error(f"Received unknown event type: {messagetype}")
-#                evt = self.build_object(ChatEvent, json_data)
+                #                evt = self.build_object(ChatEvent, json_data)
                 return
         except Exception as e:
             logger.exception(e)

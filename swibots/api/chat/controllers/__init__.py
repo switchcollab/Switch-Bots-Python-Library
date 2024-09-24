@@ -4,6 +4,7 @@ from .media_controller import MediaController
 from .sticker_controller import StickerController
 from .organization_controller import OrganizationController
 from .ads_controller import AdvertisingController
+from .heading_controller import HeadingsController
 
 __all__ = [
     "AdvertisingController",
@@ -11,5 +12,6 @@ __all__ = [
     "ChatController",
     "MediaController",
     "StickerController",
-    "OrganizationController"
+    "OrganizationController",
+    "HeadingsController",
 ]

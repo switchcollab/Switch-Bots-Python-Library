@@ -1,7 +1,8 @@
-from typing import Optional
+from typing import Optional, Union, List
 from swibots.utils.types import JSONDict
 from swibots.base.switch_object import SwitchObject
 from swibots.api.community.models.channel import Channel
+from swibots.api.community.models.group import Group
 import swibots
 
 
@@ -106,5 +107,26 @@ class Community(SwitchObject):
 
             if data.get("defaultChannel"):
                 self.default_channel = Channel().from_json(data.get("defaultChannel"))
+
+        return self
+
+
+class CommunityHeading(SwitchObject):
+    def __init__(self, app: "swibots.Client" = None,
+                 name: str = None,
+                 heading_type: str = None,
+                 public: bool = None,
+                 details: List[Union[Channel, Group]] = None):
+        super().__init__(app)
+        self.name = name
+        self.details = details
+        self.heading_type = heading_type
+        self.public = public
+
+    def from_json(self, data):
+        self.name = data.get("headingName")
+        self.details = [(Group if detail['isGroup'] else Channel)().from_json(detail) for detail in data.get("details")]
+        self.public = data.get("enabledPublic")
+        self.heading_type = data.get("headingType")
 
         return self
