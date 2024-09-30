@@ -195,7 +195,7 @@ class StorageMediaService(MediaService):
         self.client = client
         self.api_url = "https://storage.switch.click"
 
-        self._min_file_size = 150 * 1024 * 1024
+        self._min_file_size = 200 * 1024 * 1024
 
     async def get_upload_url(self):
         async with AsyncClient(timeout=None) as client:
@@ -291,7 +291,7 @@ class StorageMediaService(MediaService):
         callback: UploadProgressCallback = None,
         callback_args: Optional[tuple] = None,
         auto_thumb: Optional[bool] = True,
-        part_size: int = int(os.getenv("UPLOAD_PART_SIZE", 100 * 1024 * 1024)),
+        part_size: int = int(os.getenv("UPLOAD_PART_SIZE", 200 * 1024 * 1024)),
         task_count: int = int(os.getenv("UPLOAD_TASKS", 0)),
         for_document: bool = False,
         premium: bool = False,

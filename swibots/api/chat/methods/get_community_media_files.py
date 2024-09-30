@@ -29,8 +29,8 @@ class GetCommunityMediaFiles:
         query: str,
         community_id: str,
         filter: Literal[
-            "MESSAGES", "MEDIA", "LINK", "GROUP", "CHANNEL", "MEMBER"
-        ] = "MESSAGES",
+            "MESSAGE", "MEDIA", "LINK", "GROUP", "CHANNEL", "MEMBER"
+        ] = "MESSAGE",
         limit: int = 10,
         page: int = 0,
     ) -> Union[List[Message], List[Group], List[Channel], List[SearchResultUser]]:

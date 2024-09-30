@@ -183,7 +183,7 @@ class MessageController:
         async def _upload_media(media):
             if document:
                 force_storage_method = kwargs.get("secondary_upload", False)
-                private_community = None
+                private_community = bool(user_id)
                 if community_id:
                     community = await self.client.app.get_community(community_id)
                     private_community = not community.is_public
@@ -782,8 +782,8 @@ class MessageController:
         query: str,
         community_id: str,
         filter: Literal[
-            "MESSAGES", "MEDIA", "LINK", "GROUP", "CHANNEL", "MEMBER"
-        ] = "MESSAGES",
+            "MESSAGE", "MEDIA", "LINK", "GROUP", "CHANNEL", "MEMBER"
+        ] = "MESSAGE",
         limit: int = 10,
         page: int = 0,
     ) -> Union[List[Message], List[Group], List[Channel], List[SearchResultUser]]:
@@ -810,7 +810,7 @@ class MessageController:
         response = await self.client.get(
             "/v1/search/community-data?{}".format(urlencode(data))
         )
-        if filter in ["MESSAGES", "MEDIA", "LINK"]:
+        if filter in ["MESSAGE", "MEDIA", "LINK"]:
             return self.client.build_list(Message, response.data)
         elif filter == "GROUP":
             return self.client.build_list(Group, response.data)

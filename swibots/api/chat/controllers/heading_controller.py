@@ -60,6 +60,7 @@ class HeadingsController:
         response = await self.client.post(f"/headings/delete-headings?{query}")
         return response.data
 
+
     async def edit_heading(
         self,
         community_id: str,
@@ -77,3 +78,17 @@ class HeadingsController:
         )
         response = await self.client.post(f"/headings/edit-headings?{query}")
         return response.data
+    
+    async def rearrange_headings(self,
+                                 community_id: str,
+                                 heading_names: List[str],
+                                 subheading: str = ''
+                                 ):
+        body = {
+            "communityId": community_id,
+            "headingNames": heading_names,
+            "subHeading": subheading
+        }
+        response = await self.client.post("/headings/rearrange-headings",
+                                          data=body)
+        
