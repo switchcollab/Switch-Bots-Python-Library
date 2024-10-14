@@ -21,14 +21,12 @@ class BanController:
         )
         return self.client.build_object(BanInfo, response.data.get("result"))
 
-    async def unban_user(self, unban: bool, community_id: str, id: int, user_id: str):
-        response = await self.client.put(
-            f"{BASE_PATH}",
+    async def unban_user(self,  community_id: str,  user_id: str):
+        response = await self.client.post(
+            f"{BASE_PATH}/unban",
             data={
-                "approveUnban": unban,
                 "communityId": community_id,
-                "id": id,
                 "userId": user_id,
             },
         )
-        return response.data.get("status")
+        return response.data.get("result")
