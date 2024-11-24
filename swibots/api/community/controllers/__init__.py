@@ -7,3 +7,4 @@ from .rolemember_controller import *
 from .restrict_controller import *
 from .ban_controller import *
 from .quest_controller import *
+from .messaging_controller import InstantMessagingController

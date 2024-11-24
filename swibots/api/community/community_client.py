@@ -18,6 +18,7 @@ from .controllers import (
     RoleMemberController,
     RestrictController,
     BanController,
+    InstantMessagingController,
     QuestsController,
 )
 
@@ -45,6 +46,7 @@ class CommunityClient(SwitchRestClient):
         self._restrict = None
         self._ws: SwitchWSAsyncClient = None
         self._started = False
+        self._instant_messaging = None
 
     @property
     def quests(self) -> QuestsController:
@@ -58,6 +60,12 @@ class CommunityClient(SwitchRestClient):
         if self._channels is None:
             self._channels = ChannelController(self)
         return self._channels
+
+    @property
+    def instant_messaging(self) -> InstantMessagingController:
+        if self._instant_messaging is None:
+            self._instant_messaging = InstantMessagingController(self)
+        return self._instant_messaging
 
     @property
     def groups(self) -> GroupController:

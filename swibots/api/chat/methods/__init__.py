@@ -24,6 +24,7 @@ from .download_media import DownloadMedia
 from .upload_media import UploadMedia
 from .sticker_methods import StickerMethods
 from .organization_methods import OrganizationMethods
+from .heading_methods import HeadingMethods
 
 
 class ChatMethods(
@@ -52,5 +53,6 @@ class ChatMethods(
     GetUser,
     StickerMethods,
     OrganizationMethods,
+    HeadingMethods,
 ):
     pass

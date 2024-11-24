@@ -91,4 +91,15 @@ class HeadingsController:
         }
         response = await self.client.post("/headings/rearrange-headings",
                                           data=body)
+        return response.data
+
+    async def move_heading_content(self, request_dto: dict):
+        """
+        Move content from one heading to another
         
+        :param request_dto: Dictionary containing move heading content details
+        :return: Response data from the API
+        """
+        response = await self.client.post("/headings/move-heading-content", 
+                                        data=request_dto)
+        return response.data

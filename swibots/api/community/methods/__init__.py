@@ -8,6 +8,7 @@ from .channel_methods import ChannelMethods
 from .community_methods import CommunityMethods
 from .restrict_user import RestrictUser
 from .deduct_xp import DeductXP
+from .instant_messaging import InstantMessagingMethods
 from .quest_methods import QuestsMethods
 
 
@@ -23,5 +24,6 @@ class CommunityMethods(
     RestrictUser,
     DeductXP,
     QuestsMethods,
+    InstantMessagingMethods,
 ):
     pass

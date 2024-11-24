@@ -25,6 +25,8 @@ class Channel(SwitchObject):
         link: Optional[str] = None,
         muted: Optional[bool] = None,
         bot_id: Optional[str] = None,
+        mini_app_link: Optional[str] = None,
+        linked_group_id: Optional[str] = None,
     ):
         super().__init__(app)
         self.id = id
@@ -46,6 +48,8 @@ class Channel(SwitchObject):
         self.link_based = bool(self.link)
         self.muted = muted
         self.bot_id = bot_id
+        self.mini_app_link = mini_app_link
+        self.linked_group_id = linked_group_id
 
     def to_json(self) -> JSONDict:
         return {
@@ -68,6 +72,8 @@ class Channel(SwitchObject):
             "twitterUsername": self.twitter,
             "muted": self.muted,
             "linkBased": self.link_based,
+            "miniAppLink": self.mini_app_link,
+            "linkedGroupId": self.linked_group_id,
         }
 
     def from_json(self, data: JSONDict) -> "Channel":
@@ -90,4 +96,7 @@ class Channel(SwitchObject):
             self.muted = data.get("muted")
             self.is_twitter = data.get("isTwitter")
             self.twitter = data.get("twitterUsername")
+            self.mini_app_link = data.get("miniAppLink")
+            self.linked_group_id = data.get("linkedGroupId")
         return self
+

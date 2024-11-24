@@ -66,3 +66,47 @@ class HeadingMethods:
         return await self.chat_service.headings.edit_heading(
             community_id, heading_name, new_heading_name, heading_type
         )
+
+    async def rearrange_headings(
+        self: "swibots.ApiClient",
+        community_id: str,
+        heading_names: List[str],
+        subheading: str = ''
+    ):
+        """
+        Rearrange headings in a community
+
+        :param community_id: The ID of the community
+        :param heading_names: List of heading names in the desired order
+        :param subheading: Optional subheading name
+        """
+        return await self.chat_service.headings.rearrange_headings(
+            community_id, heading_names, subheading
+        )
+
+    async def move_heading_content(
+        self,
+        community_id: str,
+        heading_for: Literal["GROUP", "CHANNEL", "STORE", "WIDGET"],
+        heading_type: Literal["BLANK", "VALUE"],
+        type_id: str,
+        updated_heading: str
+    ):
+        """
+        Move content from one heading to another
+
+        :param community_id: The ID of the community
+        :param heading_for: The type of content being moved
+        :param heading_type: The type of heading
+        :param type_id: The ID of the content being moved
+        :param updated_heading: The name of the heading to move content to
+        """
+        move_dto = {
+            "communityId": community_id,
+            "headingFor": heading_for,
+            "headingType": heading_type,
+            "typeId": type_id,
+            "updatedHeading": updated_heading
+        }
+        request_dto = {"moveHeadingContentDto": [move_dto]}
+        return await self.chat_service.headings.move_heading_content(request_dto)

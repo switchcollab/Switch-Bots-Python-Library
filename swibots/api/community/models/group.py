@@ -21,6 +21,7 @@ class Group(SwitchObject):
         allowed_content: Optional[str] = None,
         created_at: Optional[str] = None,
         updated_at: Optional[str] = None,
+        is_linked_chat: Optional[bool] = None,
     ):
         super().__init__(app)
         self.id = id
@@ -36,6 +37,7 @@ class Group(SwitchObject):
         self.allowed_content = allowed_content
         self.created_at = created_at
         self.updated_at = updated_at
+        self.is_linked_chat = is_linked_chat
 
     def to_json(self) -> JSONDict:
         return {
@@ -52,6 +54,7 @@ class Group(SwitchObject):
             "allowedContent": self.allowed_content,
             "createdAt": self.created_at,
             "updatedAt": self.updated_at,
+            "linkedChat": self.is_linked_chat,
         }
 
     def from_json(self, data: JSONDict) -> "Group":
@@ -69,6 +72,7 @@ class Group(SwitchObject):
             self.allowed_content = data.get("allowedContent")
             self.created_at = data.get("createdAt")
             self.updated_at = data.get("updatedAt")
+            self.is_linked_chat = data.get("linkedChat")
         return self
 
     async def m_enabled(self) -> bool:

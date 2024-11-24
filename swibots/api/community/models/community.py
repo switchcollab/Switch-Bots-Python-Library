@@ -31,6 +31,7 @@ class Community(SwitchObject):
         channels_count: Optional[int] = None,
         default_channel: Optional[Channel] = None,
         visible: Optional[bool] = True,
+        ai_data: Optional[dict] = None,
     ):
         super().__init__(app)
         self.id = id
@@ -54,6 +55,7 @@ class Community(SwitchObject):
         self.channels_count = channels_count
         self.default_channel = default_channel
         self.visible = visible
+        self.ai_data = ai_data
 
     def to_json(self) -> JSONDict:
         return {
@@ -80,6 +82,7 @@ class Community(SwitchObject):
             "defaultChannel": (
                 self.default_channel.to_json() if self.default_channel else None
             ),
+            "aiData": self.ai_data,
         }
 
     def from_json(self, data: Optional[JSONDict]) -> Optional["Community"]:
@@ -104,6 +107,7 @@ class Community(SwitchObject):
             self.link = data.get("link")
             self.icon = data.get("icon")
             self.visible = data.get("visible")
+            self.ai_data = data.get("aiData")
 
             if data.get("defaultChannel"):
                 self.default_channel = Channel().from_json(data.get("defaultChannel"))
