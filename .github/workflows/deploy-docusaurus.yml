@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies and build
         run: |
           cd docs/
-          yarn install --frozen-lockfile
+          yarn install
           yarn build
 
       # Popular action to deploy to GitHub Pages:
